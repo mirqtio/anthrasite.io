@@ -4,7 +4,7 @@ export default function Privacy () {
       <div dangerouslySetInnerHTML={{ __html: `<!-- Navigation -->
      <nav>
         <div class="nav-container">
-            <div class="logo"><a href="/" class="logo">ANTHRASITE</a></div>
+            <div class="logo"><a href="/" class="logo"><img src="/logo.png" alt="Anthrasite Logo" width="27" style="padding-right: 5px; margin-top:0px"/>ANTHRASITE</a></div>
             <ul class="nav-links">
                 <li><a href="/#assessment">Assessment</a></li>
                 <li><a href="/#faq">FAQ</a></li>
@@ -17,8 +17,7 @@ export default function Privacy () {
     <section class="hero">
         <div class="hero-text">
             <h1>Privacy Policy</h1>
-  <p><strong>Effective Date:</strong> May 15th, 2025</p>
-  
+<p style="padding-left: 20px"><i>Effective Date: May 12th 2025</i></p>
 
 <!-- Privacy Policy -->
 <p style="padding-top: 2em"></p>
