@@ -283,6 +283,21 @@
             max-height: 200px;
         }
         
+
+        /* generic links */
+
+        .generic-links a {
+            color: white;
+                    text-decoration: none;
+                            opacity: 0.5;
+                    transition: opacity 0.3s ease;
+        }
+
+        .generic-links a:hover {
+                    opacity: 0.8;
+                }
+
+
         /* Footer */
         footer {
             padding: 60px 40px;

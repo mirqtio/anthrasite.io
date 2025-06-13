@@ -3,7 +3,7 @@ export default function Home() {
     <div dangerouslySetInnerHTML={{ __html: `<!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo"><a href="/" class="logo">ANTHRASITE</a></div>
+            <div class="logo"><a href="/" class="logo"><img src="/logo.png" alt="Anthrasite Logo" width="27" style="padding-right: 5px; margin-top:0px"/>ANTHRASITE</a></div>
             <ul class="nav-links">
                 <li><a href="#assessment">Assessment</a></li>
                 <li><a href="#faq">FAQ</a></li>
@@ -14,6 +14,7 @@ export default function Home() {
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
+         <img src="logo.png"/>
             <h1>Your website analyzed.<br>Crystallized.</h1>
             <p class="hero-subtitle">
                 We compress thousands of data points into the 2-3 insights 
@@ -88,10 +89,7 @@ export default function Home() {
                     <span class="faq-toggle">+</span>
                 </div>
                 <div class="faq-answer">
-                    A focused report showing your 2-3 biggest website issues, 
-                    their specific impact on your revenue, and exactly what 
-                    needs to be fixed. One page of critical insights, 
-                    not 50 pages of data dumps.
+                    [A focused report of all of your website problems, including their estimated impact  on your revenue. You'll also receive customlized recommendations for how to fix each problem. <!-- with options to engage digital agencies and other Anthrasite service partners. --> Bottom line: You'll receieve timely and critical insights, ready for you to action to protect and grow your business.]
                 </div>
             </div>
        
@@ -153,7 +151,7 @@ export default function Home() {
                     waiting for you to claim the insights.
                 </div>
             </div>
-            
+            <!--- removed for now
             <div class="faq-item">
                 <div class="faq-question">
                     What if I need help implementing fixes?
@@ -165,6 +163,8 @@ export default function Home() {
                     agencies who specialize in your specific issues.
                 </div>
             </div>
+            -->
+
         </div>
     </section>
     
