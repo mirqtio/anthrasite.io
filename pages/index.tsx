@@ -3,7 +3,7 @@ export default function Home() {
     <div dangerouslySetInnerHTML={{ __html: `<!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo">ANTHRASITE</div>
+            <div class="logo"><a href="/" class="logo">ANTHRASITE</a></div>
             <ul class="nav-links">
                 <li><a href="#assessment">Assessment</a></li>
                 <li><a href="#faq">FAQ</a></li>
@@ -94,7 +94,41 @@ export default function Home() {
                     not 50 pages of data dumps.
                 </div>
             </div>
-            
+       
+            <div class="faq-item">
+                <div class="faq-question">
+                    How do we put a dollar figure on your score?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    We start with publicly‑available business‑pattern data from the <i>U.S. Census ZIP Business Patterns (2022) and BLS QCEW Employment & Wages (2024 Q3)</i>. Payroll is converted to revenue using ratios published in the <i>BEA Bridging Tables, 2023</i> — typically <b>2.2</b>× for small businesses. We then apply an evidence‑based digital‑conversion uplift (Google Chrome UX Report, 2023) showing that <b>a 10‑point performance gain lifts online conversions by 9 %</b>. Finally, we adjust for your industry’s average online‑revenue share (Adobe Digital Economy Index, 2024). The result is an annual revenue‑per‑point estimate unique to your ZIP and vertical.
+
+                </div>
+            </div>
+
+             <div class="faq-item">
+                <div class="faq-question">
+                    How accurate are these dollar numbers?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <i>They’re conservative first‑pass estimates based on federal payroll data and peer benchmarks. As soon as you authorise Google Business Profile or Stripe insights we replace estimates with your real numbers.</i>
+
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    Do you sell or share my data?
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <i>Never. We only collect publicly‑available signals plus the information you choose to share.</i>
+
+                </div>
+            </div>
+
+
             <div class="faq-item">
                 <div class="faq-question">
                     How is this different from free tools?
@@ -137,9 +171,9 @@ export default function Home() {
     <!-- Footer -->
     <footer>
         <div class="footer-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
         </div>
         <p class="footer-copy">
             © 2024 Anthrasite. All rights reserved.
