@@ -1,31 +1,42 @@
 export default function Terms () {
   return (
-    <main style={{ backgroundColor: '#0A0A0A', color: 'white', minHeight: '100vh', padding: '2rem' }}>
-      {/* Add the div with dangerouslySetInnerHTML here */}
+   
       <div dangerouslySetInnerHTML={{ __html: `<!-- Navigation -->
-     <nav>
+   <nav>
         <div class="nav-container">
             <div class="logo"><a href="/" class="logo">ANTHRASITE</a></div>
             <ul class="nav-links">
-                <li><a href="#assessment">Assessment</a></li>
-                <li><a href="#faq">FAQ</a></li>
+                <li><a href="/#assessment">Assessment</a></li>
+                <li><a href="/#faq">FAQ</a></li>
             </ul>
         </div>
-    </nav>`
-    }} />
-
-      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Our Terms of Service</h1>
-      <p>
-Coming soon...
-
-
-<a href="your-link-url" style={{ textDecoration:'none', color: 'white'  }}>
-  Your linked text here
-</a>
-
+    </nav>
+    
+<p style="padding-top: 2em"></p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Terms of Service</h1>
+            <p>Effective Date: [Insert Effective Date Here]</p>
+        </div>
+    </section>
 
 
 </p>
-    </main>
+
+        <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
+        </div>
+        <p class="footer-copy">
+            © 2024 Anthrasite. All rights reserved.
+        </p>
+    </footer>
+      
+    `}} />   
+
   );
 }

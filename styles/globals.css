@@ -314,6 +314,37 @@
             font-size: 12px;
             opacity: 0.3;
         }
+
+        /* privacy policy container */
+        .body-content-container {
+  /* Center the block horizontally */
+  margin: 0 auto;
+  /* Set a maximum width so it doesn't stretch across the whole page */
+  max-width: 800px; /* Adjust this value as needed */
+  /* Add some padding inside the container */
+  padding: 0 20px; /* Add padding on the sides */
+
+  /* Text is left-aligned by default, but you can explicitly set it */
+  text-align: left;
+}
+
+/* Add spacing between sections (headings, paragraphs, lists) */
+.body-content-container h2,
+.body-content-container p,
+.body-content-container ul {
+  margin-bottom: 1.5em; /* Add space below each element */
+  /* You might also want margin-top for headings */
+}
+
+.body-content-container h2 {
+    margin-top: 2em; /* More space above headings */
+}
+
+/* Remove extra bottom margin from the last element if needed */
+.body-content-container *:last-child {
+    margin-bottom: 0;
+}
+
         
         /* Purchase Flow Modal */
         .purchase-modal {

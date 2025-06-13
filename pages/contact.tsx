@@ -1,12 +1,42 @@
 export default function Contact () {
-  return (
-  
+ return (
+   
+      <div dangerouslySetInnerHTML={{ __html: `<!-- Navigation -->
+   <nav>
+        <div class="nav-container">
+            <div class="logo"><a href="/" class="logo">ANTHRASITE</a></div>
+            <ul class="nav-links">
+                <li><a href="/#assessment">Assessment</a></li>
+                <li><a href="/#faq">FAQ</a></li>
+            </ul>
+        </div>
+    </nav>
     
-    <main style={{ backgroundColor: '#0A0A0A', color: 'white', minHeight: '100vh', padding: '2rem' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Contact Us</h1>
-      <p> 
-Coming soon...
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Contact</h1>
+            <p>contact content.</p>
+        </div>
+    </section>
+
 
 </p>
-    </main>)
+
+        <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
+        </div>
+        <p class="footer-copy">
+            © 2024 Anthrasite. All rights reserved.
+        </p>
+    </footer>
+      
+    `}} />   
+
+  );
 }
