@@ -11,6 +11,13 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: false,
+    // Allow warnings to not fail the lint process
+    dirs: ['app', 'components', 'lib', 'middleware.ts'],
+  },
 }
 
 // Wrap with Sentry config
