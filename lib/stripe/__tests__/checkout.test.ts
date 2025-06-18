@@ -30,7 +30,16 @@ jest.mock('../config', () => ({
 }))
 
 // Mock LRU Cache
-jest.mock('lru-cache')
+jest.mock('lru-cache', () => {
+  const mockCache = {
+    get: jest.fn(),
+    set: jest.fn(),
+  }
+  return {
+    LRUCache: jest.fn(() => mockCache),
+    __getMockCache: () => mockCache,
+  }
+})
 
 describe('Stripe Checkout Service', () => {
   beforeEach(() => {
@@ -106,11 +115,11 @@ describe('Stripe Checkout Service', () => {
     let mockCache: any
 
     beforeEach(() => {
-      mockCache = {
-        get: jest.fn(),
-        set: jest.fn(),
-      }
-      ;(LRUCache as jest.Mock) = jest.fn(() => mockCache)
+      // Get the mock cache instance
+      const lruCache = require('lru-cache')
+      mockCache = lruCache.__getMockCache()
+      mockCache.get.mockClear()
+      mockCache.set.mockClear()
     })
 
     it('should retrieve session from cache if available', async () => {
@@ -121,11 +130,7 @@ describe('Stripe Checkout Service', () => {
 
       mockCache.get.mockReturnValue(mockSession)
 
-      // Need to re-import the module to get fresh instance with new mock
-      jest.resetModules()
-      const { retrieveSession: retrieveSessionFresh } = require('../checkout')
-
-      const result = await retrieveSessionFresh('cs_test_123')
+      const result = await retrieveSession('cs_test_123')
 
       expect(result).toEqual(mockSession)
       expect(mockCache.get).toHaveBeenCalledWith('cs_test_123')
@@ -143,11 +148,7 @@ describe('Stripe Checkout Service', () => {
         mockSession
       )
 
-      // Need to re-import the module to get fresh instance with new mock
-      jest.resetModules()
-      const { retrieveSession: retrieveSessionFresh } = require('../checkout')
-
-      const result = await retrieveSessionFresh('cs_test_123')
+      const result = await retrieveSession('cs_test_123')
 
       expect(result).toEqual(mockSession)
       expect(stripe.checkout.sessions.retrieve).toHaveBeenCalledWith(

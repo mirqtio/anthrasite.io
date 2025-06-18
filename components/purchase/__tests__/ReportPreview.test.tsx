@@ -71,15 +71,15 @@ describe('ReportPreview', () => {
 
     // Performance score (75) should be yellow
     const performanceScore = screen.getByText('75')
-    expect(performanceScore).toHaveClass('text-yellow-600')
+    expect(performanceScore).toHaveClass('text-yellow-500')
 
-    // Security score (90) should be green
+    // Security score (90) should be accent (green)
     const securityScore = screen.getByText('90')
-    expect(securityScore).toHaveClass('text-green-600')
+    expect(securityScore).toHaveClass('text-accent')
 
     // Accessibility score (68) should be red
     const accessibilityScore = screen.getByText('68')
-    expect(accessibilityScore).toHaveClass('text-red-600')
+    expect(accessibilityScore).toHaveClass('text-red-500')
   })
 
   it("renders what's included sections", () => {
@@ -101,6 +101,14 @@ describe('ReportPreview', () => {
       screen.getByText(
         /Here's a preview of what we discovered about example.com/
       )
+    ).toBeInTheDocument()
+  })
+  
+  it('renders the main header', () => {
+    render(<ReportPreview preview={mockPreview} />)
+
+    expect(
+      screen.getByText("Your Website's Current Performance")
     ).toBeInTheDocument()
   })
 })

@@ -133,7 +133,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
       analytics: false,
       marketing: false,
       performance: false,
-      functional: false,
+      functional: true, // Functional cookies are required for basic site operation
       timestamp: new Date().toISOString(),
     }
     savePreferences(newPreferences)

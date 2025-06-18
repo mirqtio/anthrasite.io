@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ConsentProvider } from '@/lib/context/ConsentContext'
 import { ConsentManager } from '../ConsentManager'
 
@@ -75,7 +75,7 @@ describe('Consent Integration', () => {
     expect(initializeAnalytics).toHaveBeenCalledWith(
       expect.objectContaining({
         analytics: false,
-        functional: false,
+        functional: true,
       })
     )
   })
@@ -136,7 +136,9 @@ describe('Consent Integration', () => {
         version: '1.0',
         preferences: {
           analytics: true,
-          functional: false,
+          functional: true,
+          marketing: false,
+          performance: false,
           timestamp: new Date().toISOString(),
         },
       })
@@ -162,7 +164,7 @@ describe('Consent Integration', () => {
     expect(initializeAnalytics).toHaveBeenCalledWith(
       expect.objectContaining({
         analytics: true,
-        functional: false,
+        functional: true,
       })
     )
   })

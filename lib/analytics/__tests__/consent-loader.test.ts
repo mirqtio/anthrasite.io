@@ -6,6 +6,15 @@ process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'GA-TEST123'
 process.env.NEXT_PUBLIC_POSTHOG_KEY = 'phc_test123'
 process.env.NEXT_PUBLIC_POSTHOG_HOST = 'https://app.posthog.com'
 
+// Mock window objects
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void
+    dataLayer?: any[]
+    posthog?: any
+  }
+}
+
 // Mock document methods
 const mockAppendChild = jest.fn()
 const mockCreateElement = jest.fn((tagName: string) => {
@@ -17,7 +26,7 @@ const mockCreateElement = jest.fn((tagName: string) => {
     onload: null,
     onerror: null,
   }
-  return element
+  return element as HTMLScriptElement
 })
 
 Object.defineProperty(document, 'createElement', {

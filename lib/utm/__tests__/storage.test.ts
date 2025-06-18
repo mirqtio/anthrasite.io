@@ -8,7 +8,6 @@ import {
   createAndStoreToken,
 } from '../storage'
 import { prisma } from '@/lib/db'
-import { generateNonce } from '../crypto'
 
 // Mock the database
 jest.mock('@/lib/db', () => ({
@@ -57,6 +56,7 @@ describe('UTM Token Storage', () => {
           nonce: 'test-nonce',
           businessId: 'business-123',
           expiresAt: expect.any(Date),
+          token: expect.any(String),
         },
       })
       expect(result).toEqual(mockToken)
@@ -108,9 +108,10 @@ describe('UTM Token Storage', () => {
       expect(prisma.utmToken.update).toHaveBeenCalledWith({
         where: {
           nonce: 'test-nonce',
-          usedAt: null,
+          used: false,
         },
         data: {
+          used: true,
           usedAt: expect.any(Date),
         },
       })
@@ -131,7 +132,7 @@ describe('UTM Token Storage', () => {
   describe('isTokenUsed', () => {
     it('should return true for used token', async () => {
       ;(prisma.utmToken.findUnique as jest.Mock).mockResolvedValue({
-        usedAt: new Date(),
+        used: true,
       })
 
       const result = await isTokenUsed('test-nonce')
@@ -141,7 +142,7 @@ describe('UTM Token Storage', () => {
 
     it('should return false for unused token', async () => {
       ;(prisma.utmToken.findUnique as jest.Mock).mockResolvedValue({
-        usedAt: null,
+        used: false,
       })
 
       const result = await isTokenUsed('test-nonce')
@@ -206,6 +207,7 @@ describe('UTM Token Storage', () => {
           nonce: expect.any(String),
           businessId: 'business-123',
           expiresAt: expect.any(Date),
+          token: expect.any(String),
         },
       })
       expect(result.token).toEqual(mockToken)
