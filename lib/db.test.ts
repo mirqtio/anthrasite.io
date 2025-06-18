@@ -86,12 +86,14 @@ describe('Database Schema', () => {
       const token = await prisma.utmToken.create({
         data: {
           nonce: 'unique-nonce-123',
+          token: 'token-hash-123',
           businessId: business.id,
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
         },
       })
 
       expect(token.nonce).toBe('unique-nonce-123')
+      expect(token.token).toBe('token-hash-123')
       expect(token.businessId).toBe(business.id)
       expect(token.usedAt).toBeNull()
     })
@@ -107,6 +109,7 @@ describe('Database Schema', () => {
       const token = await prisma.utmToken.create({
         data: {
           nonce: 'used-nonce-456',
+          token: 'token-hash-456',
           businessId: business.id,
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
         },
@@ -134,14 +137,14 @@ describe('Database Schema', () => {
         data: {
           businessId: business.id,
           stripeSessionId: 'cs_test_123',
-          amountCents: 19900, // $199.00
+          amount: 19900, // $199.00
           status: 'completed',
           metadata: { campaignId: 'launch-2024' },
         },
       })
 
       expect(purchase.stripeSessionId).toBe('cs_test_123')
-      expect(purchase.amountCents).toBe(19900)
+      expect(purchase.amount).toBe(19900)
       expect(purchase.status).toBe('completed')
     })
   })
