@@ -128,10 +128,18 @@ export async function setupSlowNetwork(page: Page) {
  * Restore default state
  */
 export async function resetState(page: Page) {
-  // Clear all storage
+  // Clear all storage with error handling for CI environments
   await page.evaluate(() => {
-    localStorage.clear()
-    sessionStorage.clear()
+    try {
+      localStorage.clear()
+    } catch (e) {
+      // localStorage access denied in CI - ignore
+    }
+    try {
+      sessionStorage.clear()
+    } catch (e) {
+      // sessionStorage access denied in CI - ignore
+    }
   })
 
   // Clear cookies
