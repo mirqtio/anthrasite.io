@@ -20,7 +20,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : 4,
+  workers: process.env.CI ? 1 : 4,
   reporter: [
     ['html', { outputFolder: 'playwright-visual-report' }],
     ['json', { outputFile: 'visual-test-results.json' }],
@@ -30,7 +30,7 @@ export default defineConfig({
 
   use: {
     actionTimeout: 0,
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.CI ? 'http://localhost:3333' : 'http://localhost:3000',
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
     screenshot: {
@@ -53,80 +53,94 @@ export default defineConfig({
     '{snapshotDir}/{testFileDir}/{testFileName}-{projectName}/{arg}-{platform}{ext}',
 
   // Cross-browser and device projects
-  projects: [
-    // Desktop browsers
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1920, height: 1080 },
-      },
-    },
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        viewport: { width: 1920, height: 1080 },
-      },
-    },
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        viewport: { width: 1920, height: 1080 },
-      },
-    },
-
-    // Tablet viewports
-    {
-      name: 'iPad',
-      use: {
-        ...devices['iPad Pro'],
-        viewport: { width: 1024, height: 1366 },
-      },
-    },
-
-    // Mobile devices
-    {
-      name: 'Mobile Chrome',
-      use: {
-        ...devices['Pixel 5'],
-        viewport: { width: 393, height: 851 },
-      },
-    },
-    {
-      name: 'Mobile Safari',
-      use: {
-        ...devices['iPhone 14'],
-        viewport: { width: 390, height: 844 },
-      },
-    },
-
-    // Dark mode variants
-    {
-      name: 'chromium-dark',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1920, height: 1080 },
-        colorScheme: 'dark',
-      },
-    },
-    {
-      name: 'mobile-dark',
-      use: {
-        ...devices['iPhone 14'],
-        viewport: { width: 390, height: 844 },
-        colorScheme: 'dark',
-      },
-    },
-  ],
+  projects: process.env.CI
+    ? [
+        // Reduced set for CI to avoid timeouts
+        {
+          name: 'chromium',
+          use: {
+            ...devices['Desktop Chrome'],
+            viewport: { width: 1920, height: 1080 },
+          },
+        },
+        {
+          name: 'Mobile Chrome',
+          use: {
+            ...devices['Pixel 5'],
+            viewport: { width: 393, height: 851 },
+          },
+        },
+      ]
+    : [
+        // Full set for local development
+        {
+          name: 'chromium',
+          use: {
+            ...devices['Desktop Chrome'],
+            viewport: { width: 1920, height: 1080 },
+          },
+        },
+        {
+          name: 'firefox',
+          use: {
+            ...devices['Desktop Firefox'],
+            viewport: { width: 1920, height: 1080 },
+          },
+        },
+        {
+          name: 'webkit',
+          use: {
+            ...devices['Desktop Safari'],
+            viewport: { width: 1920, height: 1080 },
+          },
+        },
+        {
+          name: 'iPad',
+          use: {
+            ...devices['iPad Pro'],
+            viewport: { width: 1024, height: 1366 },
+          },
+        },
+        {
+          name: 'Mobile Chrome',
+          use: {
+            ...devices['Pixel 5'],
+            viewport: { width: 393, height: 851 },
+          },
+        },
+        {
+          name: 'Mobile Safari',
+          use: {
+            ...devices['iPhone 14'],
+            viewport: { width: 390, height: 844 },
+          },
+        },
+        {
+          name: 'chromium-dark',
+          use: {
+            ...devices['Desktop Chrome'],
+            viewport: { width: 1920, height: 1080 },
+            colorScheme: 'dark',
+          },
+        },
+        {
+          name: 'mobile-dark',
+          use: {
+            ...devices['iPhone 14'],
+            viewport: { width: 390, height: 844 },
+            colorScheme: 'dark',
+          },
+        },
+      ],
 
   // Web server configuration
   webServer: {
-    command: 'npm run dev',
-    port: 3000,
+    command: process.env.CI ? 'npm run build && npm run start' : 'npm run dev',
+    port: process.env.CI ? 3333 : 3000,
     reuseExistingServer: !process.env.CI,
     // Wait for server to be ready
-    timeout: 120 * 1000,
+    timeout: 180 * 1000, // 3 minutes for build + start in CI
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 })
