@@ -5,6 +5,8 @@ import { Button } from '@/components/Button'
 import { retrieveSessionWithLineItems } from '@/lib/stripe/checkout'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 interface SuccessPageProps {
   searchParams: {
     session_id?: string
