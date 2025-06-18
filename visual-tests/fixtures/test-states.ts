@@ -21,7 +21,10 @@ export async function setupPurchaseMode(page: Page) {
   await page.goto('/?utm=dev-utm-valid', { waitUntil: 'networkidle' })
 
   // Verify purchase mode is active by checking for business name in heading
-  await page.waitForSelector('h1:has-text("Acme Corporation, your audit is ready")', { timeout: 10000 })
+  await page.waitForSelector(
+    'h1:has-text("Acme Corporation, your audit is ready")',
+    { timeout: 10000 }
+  )
 }
 
 export async function setupExpiredUTM(page: Page) {

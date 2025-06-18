@@ -135,8 +135,8 @@ export default defineConfig({
 
   // Web server configuration
   webServer: {
-    command: process.env.CI 
-      ? 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start' 
+    command: process.env.CI
+      ? 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start'
       : 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run dev',
     port: process.env.CI ? 3333 : 3000,
     reuseExistingServer: !process.env.CI,
@@ -146,7 +146,7 @@ export default defineConfig({
     stderr: 'pipe',
     env: {
       NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
-      NODE_ENV: 'development'
-    }
+      NODE_ENV: 'development',
+    },
   },
 })
