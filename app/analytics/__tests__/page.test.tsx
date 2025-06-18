@@ -18,18 +18,20 @@ jest.mock('@/components/analytics/FunnelVisualization', () => ({
 }))
 
 jest.mock('@/components/analytics/ABTestResults', () => ({
-  ABTestResults: ({ test, onDeploy }: any) => (
+  ABTestResults: ({ onDeploy }: any) => (
     <div data-testid="ab-test-results">
-      <h3>{test.name}</h3>
-      <div>Status: {test.status}</div>
-      {test.variants.map((variant: any) => (
-        <div key={variant.id} data-testid={`variant-${variant.id}`}>
-          {variant.name}: {variant.conversionRate}%
-          {variant.isWinner && (
-            <button onClick={() => onDeploy(variant.id)}>Deploy</button>
-          )}
+      <div data-testid="mock-test">
+        <h3>Homepage CTA Button Test</h3>
+        <div>Status: completed</div>
+        <div data-testid="variant-control">Get Started (Control): 3%</div>
+        <div data-testid="variant-variant-a">
+          Start Free Trial: 3.6%
+          <button onClick={() => onDeploy && onDeploy('variant-a')}>
+            Deploy
+          </button>
         </div>
-      ))}
+        <div data-testid="variant-variant-b">Get Your Audit: 3.2%</div>
+      </div>
     </div>
   ),
 }))

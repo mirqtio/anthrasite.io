@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
-import { onCLS, onFID, onFCP, onLCP, onTTFB, onINP } from 'web-vitals'
+import { onCLS, onFCP, onLCP, onTTFB, onINP } from 'web-vitals'
 import {
   trackEvent,
   trackPageView,
@@ -149,7 +149,8 @@ export function useWebVitals() {
       })
     })
 
-    onFID((metric) => {
+    // Note: FID is deprecated, using INP (Interaction to Next Paint) instead
+    onINP((metric) => {
       trackEvent('web_vitals', {
         metric_name: metric.name,
         metric_value: metric.value,
@@ -166,14 +167,6 @@ export function useWebVitals() {
     })
 
     onTTFB((metric) => {
-      trackEvent('web_vitals', {
-        metric_name: metric.name,
-        metric_value: metric.value,
-        metric_id: metric.id,
-      })
-    })
-
-    onINP((metric) => {
       trackEvent('web_vitals', {
         metric_name: metric.name,
         metric_value: metric.value,

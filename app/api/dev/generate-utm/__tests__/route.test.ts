@@ -26,14 +26,18 @@ describe('Generate UTM API (Dev)', () => {
       email: 'test@example.com',
     }
 
-    const mockToken = 'generated_utm_token'
-    const mockUrl = `http://localhost:3000/purchase?utm=${mockToken}`
+    const mockUTMToken = {
+      payload: 'mock_payload',
+      signature: 'mock_signature',
+    }
+    const mockParameter = 'mock_payload.mock_signature'
 
     ;(getBusinessByDomain as jest.Mock).mockResolvedValue(mockBusiness)
-    ;(generateUTMToken as jest.Mock).mockResolvedValue({
-      token: mockToken,
-      url: mockUrl,
-    })
+    ;(generateUTMToken as jest.Mock).mockResolvedValue(mockUTMToken)
+
+    // Also mock createUTMParameter
+    const { createUTMParameter } = require('@/lib/utm/crypto')
+    ;(createUTMParameter as jest.Mock).mockReturnValue(mockParameter)
 
     const request = new NextRequest(
       'http://localhost:3000/api/dev/generate-utm',
@@ -52,19 +56,17 @@ describe('Generate UTM API (Dev)', () => {
     expect(response.status).toBe(200)
     expect(data).toEqual({
       success: true,
-      token: mockToken,
-      url: mockUrl,
-      business: mockBusiness,
+      token: mockParameter,
+      url: `http://localhost:3000/purchase?utm=${mockParameter}`,
+      business: {
+        ...mockBusiness,
+        price: 9900,
+        value: 49500,
+      },
     })
 
     expect(getBusinessByDomain).toHaveBeenCalledWith('testbusiness.com')
-    expect(generateUTMToken).toHaveBeenCalledWith({
-      businessId: 'biz_123',
-      businessName: 'Test Business',
-      domain: 'testbusiness.com',
-      price: 9900,
-      value: 49500,
-    })
+    expect(generateUTMToken).toHaveBeenCalledWith('biz_123')
   })
 
   it('should handle missing domain', async () => {
@@ -113,11 +115,17 @@ describe('Generate UTM API (Dev)', () => {
       domain: 'testbusiness.com',
     }
 
+    const mockUTMToken = {
+      payload: 'mock_payload',
+      signature: 'mock_signature',
+    }
+
     ;(getBusinessByDomain as jest.Mock).mockResolvedValue(mockBusiness)
-    ;(generateUTMToken as jest.Mock).mockResolvedValue({
-      token: 'token',
-      url: 'http://example.com',
-    })
+    ;(generateUTMToken as jest.Mock).mockResolvedValue(mockUTMToken)
+
+    // Mock createUTMParameter
+    const { createUTMParameter } = require('@/lib/utm/crypto')
+    ;(createUTMParameter as jest.Mock).mockReturnValue('mock_parameter')
 
     const request = new NextRequest(
       'http://localhost:3000/api/dev/generate-utm',
@@ -130,13 +138,12 @@ describe('Generate UTM API (Dev)', () => {
     )
 
     const response = await POST(request)
+    const data = await response.json()
 
     expect(response.status).toBe(200)
-    expect(generateUTMToken).toHaveBeenCalledWith(
-      expect.objectContaining({
-        price: 19900, // Default price
-      })
-    )
+    expect(generateUTMToken).toHaveBeenCalledWith('biz_123')
+    expect(data.business.price).toBe(19900) // Default price
+    expect(data.business.value).toBe(99500) // 5x default price
   })
 
   it('should calculate value as 5x price', async () => {
@@ -146,11 +153,17 @@ describe('Generate UTM API (Dev)', () => {
       domain: 'testbusiness.com',
     }
 
+    const mockUTMToken = {
+      payload: 'mock_payload',
+      signature: 'mock_signature',
+    }
+
     ;(getBusinessByDomain as jest.Mock).mockResolvedValue(mockBusiness)
-    ;(generateUTMToken as jest.Mock).mockResolvedValue({
-      token: 'token',
-      url: 'http://example.com',
-    })
+    ;(generateUTMToken as jest.Mock).mockResolvedValue(mockUTMToken)
+
+    // Mock createUTMParameter
+    const { createUTMParameter } = require('@/lib/utm/crypto')
+    ;(createUTMParameter as jest.Mock).mockReturnValue('mock_parameter')
 
     const request = new NextRequest(
       'http://localhost:3000/api/dev/generate-utm',
@@ -164,14 +177,12 @@ describe('Generate UTM API (Dev)', () => {
     )
 
     const response = await POST(request)
+    const data = await response.json()
 
     expect(response.status).toBe(200)
-    expect(generateUTMToken).toHaveBeenCalledWith(
-      expect.objectContaining({
-        price: 10000,
-        value: 50000, // 5x price
-      })
-    )
+    expect(generateUTMToken).toHaveBeenCalledWith('biz_123')
+    expect(data.business.price).toBe(10000)
+    expect(data.business.value).toBe(50000) // 5x price
   })
 
   it('should return 404 in production', async () => {
