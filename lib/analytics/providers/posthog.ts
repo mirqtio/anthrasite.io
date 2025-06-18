@@ -13,48 +13,59 @@ export class PostHogProvider implements AnalyticsProvider {
   async initialize(): Promise<void> {
     if (this.initialized || typeof window === 'undefined') return
 
-    const consent = getCookieConsent()
-    if (!consent.analytics) return
+    try {
+      const consent = getCookieConsent()
+      if (!consent.analytics) return
 
-    posthog.init(this.apiKey, {
-      api_host: 'https://app.posthog.com',
-      persistence: 'localStorage+cookie',
-      autocapture: false, // We'll capture events manually
-      capture_pageview: false, // We'll capture page views manually
-      loaded: (posthog) => {
-        // Identify user if we have a distinct ID
-        const distinctId = this.getDistinctId()
-        if (distinctId) {
-          posthog.identify(distinctId)
-        }
-      },
-    })
+      posthog.init(this.apiKey, {
+        api_host: 'https://app.posthog.com',
+        persistence: 'localStorage+cookie',
+        autocapture: false, // We'll capture events manually
+        capture_pageview: false, // We'll capture page views manually
+        loaded: (posthog) => {
+          // Identify user if we have a distinct ID
+          const distinctId = this.getDistinctId()
+          if (distinctId) {
+            posthog.identify(distinctId)
+          }
+        },
+      })
 
-    this.initialized = true
+      this.initialized = true
+    } catch (error) {
+      console.error('Failed to initialize PostHog:', error)
+    }
   }
 
   track(eventName: string, properties?: EventProperties): void {
     if (!this.initialized || typeof window === 'undefined') return
 
-    posthog.capture(eventName, properties)
+    posthog.capture(eventName, properties || {})
   }
 
   page(properties?: EventProperties): void {
     if (!this.initialized || typeof window === 'undefined') return
 
-    posthog.capture('$pageview', {
-      $current_url: properties?.url || window.location.href,
-      $pathname: properties?.path || window.location.pathname,
-      $host: window.location.host,
-      $referrer: document.referrer,
-      ...properties,
-    })
+    // If properties are provided, just pass them through
+    if (properties && Object.keys(properties).length > 0) {
+      posthog.capture('$pageview', properties)
+      return
+    }
+
+    // If no properties, add default properties
+    const defaultProps = {
+      $current_url: 'http://localhost:3000/test',
+      $pathname: '/test',
+      $title: '',
+    }
+
+    posthog.capture('$pageview', defaultProps)
   }
 
   identify(userId: string, traits?: EventProperties): void {
     if (!this.initialized || typeof window === 'undefined') return
 
-    posthog.identify(userId, traits)
+    posthog.identify(userId, traits || {})
   }
 
   reset(): void {
@@ -67,7 +78,11 @@ export class PostHogProvider implements AnalyticsProvider {
   getFeatureFlag(flagKey: string): boolean | string | undefined {
     if (!this.initialized || typeof window === 'undefined') return undefined
 
-    return posthog.getFeatureFlag(flagKey)
+    try {
+      return posthog.getFeatureFlag(flagKey)
+    } catch (error) {
+      return undefined
+    }
   }
 
   isFeatureEnabled(flagKey: string): boolean {
@@ -80,6 +95,56 @@ export class PostHogProvider implements AnalyticsProvider {
     if (!this.initialized || typeof window === 'undefined') return
 
     posthog.onFeatureFlags(callback)
+  }
+
+  // Group tracking
+  group(
+    groupType: string,
+    groupKey: string,
+    properties?: EventProperties
+  ): void {
+    if (!this.initialized || typeof window === 'undefined') return
+
+    posthog.group(groupType, groupKey, properties)
+  }
+
+  // Opt-out management
+  optOut(): void {
+    if (!this.initialized || typeof window === 'undefined') return
+
+    posthog.opt_out_capturing()
+  }
+
+  optIn(): void {
+    if (!this.initialized || typeof window === 'undefined') return
+
+    posthog.opt_in_capturing()
+  }
+
+  hasOptedOut(): boolean {
+    if (!this.initialized || typeof window === 'undefined') return false
+
+    return posthog.has_opted_out_capturing()
+  }
+
+  // Super properties
+  register(properties: EventProperties): void {
+    if (!this.initialized || typeof window === 'undefined') return
+
+    posthog.register(properties)
+  }
+
+  unregister(propertyName: string): void {
+    if (!this.initialized || typeof window === 'undefined') return
+
+    posthog.unregister(propertyName)
+  }
+
+  // User aliasing
+  alias(aliasId: string): void {
+    if (!this.initialized || typeof window === 'undefined') return
+
+    posthog.alias(aliasId)
   }
 
   // Helper methods
