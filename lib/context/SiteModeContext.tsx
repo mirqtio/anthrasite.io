@@ -10,11 +10,7 @@ interface SiteModeContextValue {
   isLoading: boolean
 }
 
-export const SiteModeContext = createContext<SiteModeContextValue>({
-  mode: 'organic',
-  businessId: null,
-  isLoading: true,
-})
+export const SiteModeContext = createContext<SiteModeContextValue | null>(null)
 
 export function useSiteMode() {
   const context = useContext(SiteModeContext)
@@ -32,14 +28,23 @@ interface SiteModeProviderProps {
 
 export function SiteModeProvider({
   children,
-  initialMode = 'organic',
-  initialBusinessId = null,
+  initialMode,
+  initialBusinessId,
 }: SiteModeProviderProps) {
-  const [mode, setMode] = useState<SiteMode>(initialMode)
-  const [businessId, setBusinessId] = useState<string | null>(initialBusinessId)
-  const [isLoading, setIsLoading] = useState(true)
+  // If initial props are provided, use them and don't start in loading state
+  const hasInitialProps = initialMode !== undefined
+  const [mode, setMode] = useState<SiteMode>(initialMode || 'organic')
+  const [businessId, setBusinessId] = useState<string | null>(
+    initialBusinessId || null
+  )
+  const [isLoading, setIsLoading] = useState(!hasInitialProps)
 
   useEffect(() => {
+    // If we have initial props, don't do any client-side detection
+    if (hasInitialProps) {
+      return
+    }
+
     // Check URL parameters on client side
     const urlParams = new URLSearchParams(window.location.search)
     const utm = urlParams.get('utm')
@@ -47,6 +52,7 @@ export function SiteModeProvider({
     if (utm) {
       // UTM present - we're in purchase mode
       setMode('purchase')
+      setBusinessId(null) // UTM doesn't provide business ID directly
       setIsLoading(false)
       return
     }
@@ -70,7 +76,7 @@ export function SiteModeProvider({
     }
 
     setIsLoading(false)
-  }, [])
+  }, [hasInitialProps])
 
   return (
     <SiteModeContext.Provider value={{ mode, businessId, isLoading }}>

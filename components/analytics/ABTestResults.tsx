@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
@@ -12,7 +12,9 @@ export interface ABTestVariant {
   visitors: number
   conversions: number
   conversionRate: number
-  confidence: number
+  confidence?: number
+  improvement?: number
+  significance?: number
   isControl?: boolean
   isWinner?: boolean
 }
@@ -21,21 +23,85 @@ export interface ABTestResult {
   id: string
   name: string
   status: 'running' | 'completed' | 'paused'
-  startDate: Date
+  startDate: string | Date
   variants: ABTestVariant[]
 }
 
 interface ABTestResultsProps {
-  test: ABTestResult
   onDeploy?: (variantId: string) => void
   className?: string
 }
 
 export function ABTestResults({
-  test,
   onDeploy,
   className = '',
 }: ABTestResultsProps) {
+  const [tests, setTests] = useState<ABTestResult[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchTests = async () => {
+      try {
+        const response = await fetch('/api/analytics/ab-tests')
+        if (!response.ok) {
+          throw new Error('Failed to fetch A/B tests')
+        }
+        const data = await response.json()
+        setTests(data.tests || [])
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTests()
+  }, [])
+
+  if (loading) {
+    return (
+      <div
+        data-testid="ab-test-loading"
+        className="flex items-center justify-center p-8"
+      >
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div data-testid="ab-test-error" className="text-red-600 p-4">
+        Error loading A/B tests: {error}
+      </div>
+    )
+  }
+
+  if (tests.length === 0) {
+    return (
+      <div data-testid="ab-test-empty" className="text-gray-500 p-4">
+        No A/B tests found
+      </div>
+    )
+  }
+
+  return (
+    <div className={`space-y-6 ${className}`}>
+      {tests.map((test) => (
+        <ABTestResultCard key={test.id} test={test} onDeploy={onDeploy} />
+      ))}
+    </div>
+  )
+}
+
+function ABTestResultCard({
+  test,
+  onDeploy,
+}: {
+  test: ABTestResult
+  onDeploy?: (variantId: string) => void
+}) {
   const control = test.variants.find((v) => v.isControl)
   const winner = test.variants.find((v) => v.isWinner)
 
@@ -63,7 +129,7 @@ export function ABTestResults({
   }
 
   return (
-    <Card className={`p-6 ${className}`}>
+    <Card className="p-6">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
@@ -71,7 +137,10 @@ export function ABTestResults({
             {test.name}
           </h3>
           <p className="text-sm text-anthracite-gray mt-1">
-            Started {test.startDate.toLocaleDateString()}
+            Started{' '}
+            {typeof test.startDate === 'string'
+              ? test.startDate
+              : test.startDate.toLocaleDateString()}
           </p>
         </div>
 
@@ -91,7 +160,7 @@ export function ABTestResults({
       <div className="space-y-4">
         {test.variants.map((variant, index) => {
           const improvement = getImprovementPercent(variant)
-          const isSignificant = variant.confidence >= 95
+          const isSignificant = (variant.confidence || 0) >= 95
 
           return (
             <motion.div
@@ -162,9 +231,9 @@ export function ABTestResults({
                 <div>
                   <p className="text-sm text-anthracite-gray">Confidence</p>
                   <p
-                    className={`font-medium ${getConfidenceColor(variant.confidence)}`}
+                    className={`font-medium ${getConfidenceColor(variant.confidence || 0)}`}
                   >
-                    {variant.confidence}%
+                    {variant.confidence || 0}%
                     {isSignificant && <span className="ml-1 text-xs">✓</span>}
                   </p>
                 </div>
