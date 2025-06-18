@@ -31,6 +31,7 @@ export default defineConfig({
     command: 'npm run build && npm run start',
     port: 3333,
     reuseExistingServer: false,
+    timeout: 120 * 1000, // 2 minutes for build + start
     stdout: 'pipe',
     stderr: 'pipe',
   },
