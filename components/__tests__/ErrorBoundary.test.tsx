@@ -32,7 +32,7 @@ describe('ErrorBoundary', () => {
         <div>Test content</div>
       </ErrorBoundary>
     )
-    
+
     expect(screen.getByText('Test content')).toBeInTheDocument()
   })
 
@@ -42,39 +42,41 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     expect(screen.getByText('Something went wrong')).toBeInTheDocument()
-    expect(screen.getByText(/We encountered an unexpected error/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/We encountered an unexpected error/)
+    ).toBeInTheDocument()
     expect(screen.getByText('Try Again')).toBeInTheDocument()
     expect(screen.getByText('Refresh Page')).toBeInTheDocument()
   })
 
   it('should render custom fallback when provided', () => {
     const customFallback = <div>Custom error message</div>
-    
+
     render(
       <ErrorBoundary fallback={customFallback}>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     expect(screen.getByText('Custom error message')).toBeInTheDocument()
     expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument()
   })
 
   it('should call onError callback when error occurs', () => {
     const onError = jest.fn()
-    
+
     render(
       <ErrorBoundary onError={onError}>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     expect(onError).toHaveBeenCalledWith(
       expect.any(Error),
       expect.objectContaining({
-        componentStack: expect.any(String)
+        componentStack: expect.any(String),
       })
     )
   })
@@ -85,17 +87,17 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     expect(screen.getByText('Something went wrong')).toBeInTheDocument()
-    
+
     fireEvent.click(screen.getByText('Try Again'))
-    
+
     rerender(
       <ErrorBoundary>
         <ThrowError shouldThrow={false} />
       </ErrorBoundary>
     )
-    
+
     expect(screen.getByText('No error')).toBeInTheDocument()
     expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument()
   })
@@ -103,51 +105,51 @@ describe('ErrorBoundary', () => {
   it('should reload page when Refresh Page is clicked', () => {
     const originalReload = window.location.reload
     window.location.reload = jest.fn()
-    
+
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     fireEvent.click(screen.getByText('Refresh Page'))
-    
+
     expect(window.location.reload).toHaveBeenCalled()
-    
+
     window.location.reload = originalReload
   })
 
   it('should show error details in development mode', () => {
     const originalEnv = process.env.NODE_ENV
     process.env.NODE_ENV = 'development'
-    
+
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     expect(screen.getByText('Error Details')).toBeInTheDocument()
-    
+
     fireEvent.click(screen.getByText('Error Details'))
-    
+
     expect(screen.getByText(/Error: Test error/)).toBeInTheDocument()
-    
+
     process.env.NODE_ENV = originalEnv
   })
 
   it('should not show error details in production mode', () => {
     const originalEnv = process.env.NODE_ENV
     process.env.NODE_ENV = 'production'
-    
+
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     expect(screen.queryByText('Error Details')).not.toBeInTheDocument()
-    
+
     process.env.NODE_ENV = originalEnv
   })
 
@@ -157,12 +159,12 @@ describe('ErrorBoundary', () => {
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     )
-    
+
     expect(console.error).toHaveBeenCalledWith(
       'Uncaught error:',
       expect.any(Error),
       expect.objectContaining({
-        componentStack: expect.any(String)
+        componentStack: expect.any(String),
       })
     )
   })
@@ -171,14 +173,14 @@ describe('ErrorBoundary', () => {
 describe('useErrorHandler', () => {
   it('should provide error handling functions', () => {
     const { result } = renderHook(() => useErrorHandler())
-    
+
     expect(result.current.resetError).toBeInstanceOf(Function)
     expect(result.current.captureError).toBeInstanceOf(Function)
   })
 
   it('should throw error when captureError is called', () => {
     renderHook(() => useErrorHandler())
-    
+
     const TestComponent = () => {
       const { captureError } = useErrorHandler()
       React.useEffect(() => {
@@ -186,7 +188,7 @@ describe('useErrorHandler', () => {
       }, [captureError])
       return null
     }
-    
+
     expect(() => {
       render(
         <ErrorBoundary>
@@ -194,23 +196,23 @@ describe('useErrorHandler', () => {
         </ErrorBoundary>
       )
     }).not.toThrow()
-    
+
     expect(screen.getByText('Something went wrong')).toBeInTheDocument()
   })
 
   it('should reset error state', () => {
     const { result } = renderHook(() => useErrorHandler())
-    
+
     act(() => {
       result.current.captureError(new Error('Test'))
     })
-    
+
     // Error should be captured but not thrown yet
-    
+
     act(() => {
       result.current.resetError()
     })
-    
+
     // Error should be cleared
   })
 })

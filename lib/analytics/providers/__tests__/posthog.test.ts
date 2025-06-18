@@ -24,7 +24,7 @@ const mockPostHog = {
   get_config: jest.fn(),
   get_property: jest.fn(),
   toString: jest.fn(),
-  _send_request: jest.fn()
+  _send_request: jest.fn(),
 }
 
 // Mock dynamic import
@@ -36,7 +36,7 @@ describe('PostHogProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Reset window
     global.window = Object.create(window)
     Object.defineProperty(window, 'location', {
@@ -44,11 +44,11 @@ describe('PostHogProvider', () => {
         href: 'http://localhost:3000/test',
         pathname: '/test',
         search: '',
-        hash: ''
+        hash: '',
       },
-      writable: true
+      writable: true,
     })
-    
+
     provider = new PostHogProvider(apiKey)
   })
 
@@ -63,7 +63,7 @@ describe('PostHogProvider', () => {
         capture_pageleave: false,
         disable_session_recording: true,
         opt_out_capturing_by_default: false,
-        loaded: expect.any(Function)
+        loaded: expect.any(Function),
       })
     })
 
@@ -71,9 +71,10 @@ describe('PostHogProvider', () => {
       const euProvider = new PostHogProvider(apiKey, { host: 'eu' })
       await euProvider.initialize()
 
-      expect(mockPostHog.init).toHaveBeenCalledWith(apiKey, 
+      expect(mockPostHog.init).toHaveBeenCalledWith(
+        apiKey,
         expect.objectContaining({
-          api_host: 'https://eu.posthog.com'
+          api_host: 'https://eu.posthog.com',
         })
       )
     })
@@ -93,8 +94,11 @@ describe('PostHogProvider', () => {
 
       await provider.initialize()
 
-      expect(consoleSpy).toHaveBeenCalledWith('Failed to initialize PostHog:', expect.any(Error))
-      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to initialize PostHog:',
+        expect.any(Error)
+      )
+
       consoleSpy.mockRestore()
     })
   })
@@ -109,7 +113,7 @@ describe('PostHogProvider', () => {
 
       expect(mockPostHog.capture).toHaveBeenCalledWith('test_event', {
         value: 100,
-        category: 'test'
+        category: 'test',
       })
     })
 
@@ -121,9 +125,9 @@ describe('PostHogProvider', () => {
 
     it('should not track when not initialized', () => {
       const uninitializedProvider = new PostHogProvider(apiKey)
-      
+
       uninitializedProvider.track('test_event')
-      
+
       expect(mockPostHog.capture).not.toHaveBeenCalled()
     })
   })
@@ -137,13 +141,13 @@ describe('PostHogProvider', () => {
       provider.page({
         path: '/test-page',
         title: 'Test Page',
-        referrer: 'https://google.com'
+        referrer: 'https://google.com',
       })
 
       expect(mockPostHog.capture).toHaveBeenCalledWith('$pageview', {
         path: '/test-page',
         title: 'Test Page',
-        referrer: 'https://google.com'
+        referrer: 'https://google.com',
       })
     })
 
@@ -153,7 +157,7 @@ describe('PostHogProvider', () => {
       expect(mockPostHog.capture).toHaveBeenCalledWith('$pageview', {
         $current_url: 'http://localhost:3000/test',
         $pathname: '/test',
-        $title: ''
+        $title: '',
       })
     })
   })
@@ -167,13 +171,13 @@ describe('PostHogProvider', () => {
       provider.identify('user123', {
         email: 'test@example.com',
         name: 'Test User',
-        plan: 'premium'
+        plan: 'premium',
       })
 
       expect(mockPostHog.identify).toHaveBeenCalledWith('user123', {
         email: 'test@example.com',
         name: 'Test User',
-        plan: 'premium'
+        plan: 'premium',
       })
     })
 
@@ -238,12 +242,12 @@ describe('PostHogProvider', () => {
     it('should set group properties', () => {
       provider.group('company', 'acme-corp', {
         name: 'Acme Corporation',
-        plan: 'enterprise'
+        plan: 'enterprise',
       })
 
       expect(mockPostHog.group).toHaveBeenCalledWith('company', 'acme-corp', {
         name: 'Acme Corporation',
-        plan: 'enterprise'
+        plan: 'enterprise',
       })
     })
   })
@@ -283,12 +287,12 @@ describe('PostHogProvider', () => {
     it('should register super properties', () => {
       provider.register({
         app_version: '1.0.0',
-        environment: 'production'
+        environment: 'production',
       })
 
       expect(mockPostHog.register).toHaveBeenCalledWith({
         app_version: '1.0.0',
-        environment: 'production'
+        environment: 'production',
       })
     })
 

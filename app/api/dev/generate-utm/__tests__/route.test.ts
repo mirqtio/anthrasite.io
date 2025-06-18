@@ -23,7 +23,7 @@ describe('Generate UTM API (Dev)', () => {
       id: 'biz_123',
       name: 'Test Business',
       domain: 'testbusiness.com',
-      email: 'test@example.com'
+      email: 'test@example.com',
     }
 
     const mockToken = 'generated_utm_token'
@@ -32,16 +32,19 @@ describe('Generate UTM API (Dev)', () => {
     ;(getBusinessByDomain as jest.Mock).mockResolvedValue(mockBusiness)
     ;(generateUTMToken as jest.Mock).mockResolvedValue({
       token: mockToken,
-      url: mockUrl
+      url: mockUrl,
     })
 
-    const request = new NextRequest('http://localhost:3000/api/dev/generate-utm', {
-      method: 'POST',
-      body: JSON.stringify({
-        domain: 'testbusiness.com',
-        price: 9900
-      })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/dev/generate-utm',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          domain: 'testbusiness.com',
+          price: 9900,
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -51,7 +54,7 @@ describe('Generate UTM API (Dev)', () => {
       success: true,
       token: mockToken,
       url: mockUrl,
-      business: mockBusiness
+      business: mockBusiness,
     })
 
     expect(getBusinessByDomain).toHaveBeenCalledWith('testbusiness.com')
@@ -60,17 +63,20 @@ describe('Generate UTM API (Dev)', () => {
       businessName: 'Test Business',
       domain: 'testbusiness.com',
       price: 9900,
-      value: 49000
+      value: 49000,
     })
   })
 
   it('should handle missing domain', async () => {
-    const request = new NextRequest('http://localhost:3000/api/dev/generate-utm', {
-      method: 'POST',
-      body: JSON.stringify({
-        price: 9900
-      })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/dev/generate-utm',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          price: 9900,
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -82,13 +88,16 @@ describe('Generate UTM API (Dev)', () => {
   it('should handle business not found', async () => {
     ;(getBusinessByDomain as jest.Mock).mockResolvedValue(null)
 
-    const request = new NextRequest('http://localhost:3000/api/dev/generate-utm', {
-      method: 'POST',
-      body: JSON.stringify({
-        domain: 'unknown.com',
-        price: 9900
-      })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/dev/generate-utm',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          domain: 'unknown.com',
+          price: 9900,
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -101,28 +110,31 @@ describe('Generate UTM API (Dev)', () => {
     const mockBusiness = {
       id: 'biz_123',
       name: 'Test Business',
-      domain: 'testbusiness.com'
+      domain: 'testbusiness.com',
     }
 
     ;(getBusinessByDomain as jest.Mock).mockResolvedValue(mockBusiness)
     ;(generateUTMToken as jest.Mock).mockResolvedValue({
       token: 'token',
-      url: 'http://example.com'
+      url: 'http://example.com',
     })
 
-    const request = new NextRequest('http://localhost:3000/api/dev/generate-utm', {
-      method: 'POST',
-      body: JSON.stringify({
-        domain: 'testbusiness.com'
-      })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/dev/generate-utm',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          domain: 'testbusiness.com',
+        }),
+      }
+    )
 
     const response = await POST(request)
 
     expect(response.status).toBe(200)
     expect(generateUTMToken).toHaveBeenCalledWith(
       expect.objectContaining({
-        price: 19900 // Default price
+        price: 19900, // Default price
       })
     )
   })
@@ -131,22 +143,25 @@ describe('Generate UTM API (Dev)', () => {
     const mockBusiness = {
       id: 'biz_123',
       name: 'Test Business',
-      domain: 'testbusiness.com'
+      domain: 'testbusiness.com',
     }
 
     ;(getBusinessByDomain as jest.Mock).mockResolvedValue(mockBusiness)
     ;(generateUTMToken as jest.Mock).mockResolvedValue({
       token: 'token',
-      url: 'http://example.com'
+      url: 'http://example.com',
     })
 
-    const request = new NextRequest('http://localhost:3000/api/dev/generate-utm', {
-      method: 'POST',
-      body: JSON.stringify({
-        domain: 'testbusiness.com',
-        price: 10000
-      })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/dev/generate-utm',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          domain: 'testbusiness.com',
+          price: 10000,
+        }),
+      }
+    )
 
     const response = await POST(request)
 
@@ -154,7 +169,7 @@ describe('Generate UTM API (Dev)', () => {
     expect(generateUTMToken).toHaveBeenCalledWith(
       expect.objectContaining({
         price: 10000,
-        value: 50000 // 5x price
+        value: 50000, // 5x price
       })
     )
   })
@@ -162,12 +177,15 @@ describe('Generate UTM API (Dev)', () => {
   it('should return 404 in production', async () => {
     process.env.NODE_ENV = 'production'
 
-    const request = new NextRequest('http://localhost:3000/api/dev/generate-utm', {
-      method: 'POST',
-      body: JSON.stringify({
-        domain: 'testbusiness.com'
-      })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/dev/generate-utm',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          domain: 'testbusiness.com',
+        }),
+      }
+    )
 
     const response = await POST(request)
 
@@ -175,14 +193,19 @@ describe('Generate UTM API (Dev)', () => {
   })
 
   it('should handle errors gracefully', async () => {
-    ;(getBusinessByDomain as jest.Mock).mockRejectedValue(new Error('Database error'))
+    ;(getBusinessByDomain as jest.Mock).mockRejectedValue(
+      new Error('Database error')
+    )
 
-    const request = new NextRequest('http://localhost:3000/api/dev/generate-utm', {
-      method: 'POST',
-      body: JSON.stringify({
-        domain: 'testbusiness.com'
-      })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/dev/generate-utm',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          domain: 'testbusiness.com',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()

@@ -4,7 +4,7 @@ import {
   sendReportReadyEmail,
   sendWelcomeEmail,
   getEmailService,
-  validateEmailConfig
+  validateEmailConfig,
 } from '../index'
 import { EmailService } from '../email-service'
 
@@ -14,13 +14,13 @@ jest.mock('../email-service', () => ({
     sendOrderConfirmation: jest.fn().mockResolvedValue(true),
     sendCartRecovery: jest.fn().mockResolvedValue(true),
     sendReportReady: jest.fn().mockResolvedValue(true),
-    sendWelcome: jest.fn().mockResolvedValue(true)
-  }))
+    sendWelcome: jest.fn().mockResolvedValue(true),
+  })),
 }))
 
 // Mock config validation
 jest.mock('../config', () => ({
-  validateEmailConfig: jest.fn()
+  validateEmailConfig: jest.fn(),
 }))
 
 describe('Email Module Exports', () => {
@@ -38,24 +38,28 @@ describe('Email Module Exports', () => {
         businessName: 'Test Business',
         domain: 'testbusiness.com',
         reportUrl: 'https://example.com/report.pdf',
-        amount: '$99.00'
+        amount: '$99.00',
       }
 
       const result = await sendOrderConfirmationEmail(emailData)
 
       expect(result).toBe(true)
-      expect(mockEmailService.sendOrderConfirmation).toHaveBeenCalledWith(emailData)
+      expect(mockEmailService.sendOrderConfirmation).toHaveBeenCalledWith(
+        emailData
+      )
     })
 
     it('should handle errors gracefully', async () => {
-      mockEmailService.sendOrderConfirmation.mockRejectedValue(new Error('Send failed'))
+      mockEmailService.sendOrderConfirmation.mockRejectedValue(
+        new Error('Send failed')
+      )
 
       const result = await sendOrderConfirmationEmail({
         to: 'test@example.com',
         businessName: 'Test',
         domain: 'test.com',
         reportUrl: 'https://example.com/report.pdf',
-        amount: '$99'
+        amount: '$99',
       })
 
       expect(result).toBe(false)
@@ -70,7 +74,7 @@ describe('Email Module Exports', () => {
         domain: 'testbusiness.com',
         cartValue: '$99.00',
         recoveryUrl: 'https://example.com/recover',
-        attemptNumber: 1
+        attemptNumber: 1,
       }
 
       const result = await sendCartRecoveryEmail(emailData)
@@ -86,7 +90,7 @@ describe('Email Module Exports', () => {
         to: 'test@example.com',
         businessName: 'Test Business',
         domain: 'testbusiness.com',
-        reportUrl: 'https://example.com/report.pdf'
+        reportUrl: 'https://example.com/report.pdf',
       }
 
       const result = await sendReportReadyEmail(emailData)
@@ -100,7 +104,7 @@ describe('Email Module Exports', () => {
     it('should send welcome email', async () => {
       const emailData = {
         to: 'test@example.com',
-        name: 'Test User'
+        name: 'Test User',
       }
 
       const result = await sendWelcomeEmail(emailData)
