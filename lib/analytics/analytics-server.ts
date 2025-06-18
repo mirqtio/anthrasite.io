@@ -3,26 +3,35 @@ import { ANALYTICS_EVENTS } from './event-schemas'
 import { cookies } from 'next/headers'
 
 // Server-side analytics functions
-export async function trackEvent(eventName: string, properties?: EventProperties): Promise<void> {
+export async function trackEvent(
+  eventName: string,
+  properties?: EventProperties
+): Promise<void> {
   try {
     const cookieStore = await cookies()
-    
+
     // Get client ID from cookies or generate new one
-    const clientId = cookieStore.get('_ga_client_id')?.value || generateClientId()
-    
+    const clientId =
+      cookieStore.get('_ga_client_id')?.value || generateClientId()
+
     // Get distinct ID for PostHog
     const distinctId = cookieStore.get('posthog_distinct_id')?.value || clientId
 
     // Track to GA4 via Measurement Protocol
-    if (process.env.GA4_API_SECRET && process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID) {
+    if (
+      process.env.GA4_API_SECRET &&
+      process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+    ) {
       const ga4Payload = {
         client_id: clientId,
-        events: [{
-          name: eventName,
-          params: properties || {},
-        }],
+        events: [
+          {
+            name: eventName,
+            params: properties || {},
+          },
+        ],
       }
-      
+
       await fetch(
         `https://www.google-analytics.com/mp/collect?measurement_id=${process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID}&api_secret=${process.env.GA4_API_SECRET}`,
         {
@@ -38,13 +47,13 @@ export async function trackEvent(eventName: string, properties?: EventProperties
       const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
         host: 'https://app.posthog.com',
       })
-      
+
       posthog.capture({
         distinctId: distinctId,
         event: eventName,
         properties: properties || {},
       })
-      
+
       await posthog.shutdown()
     }
   } catch (error) {
@@ -54,9 +63,9 @@ export async function trackEvent(eventName: string, properties?: EventProperties
 
 // Funnel tracking
 export async function trackFunnelStep(
-  funnelName: string, 
-  step: number, 
-  stepName: string, 
+  funnelName: string,
+  step: number,
+  stepName: string,
   properties?: EventProperties
 ): Promise<void> {
   await trackEvent(ANALYTICS_EVENTS.FUNNEL_STEP, {
@@ -69,9 +78,9 @@ export async function trackFunnelStep(
 
 // E-commerce tracking
 export async function trackPurchase(
-  orderId: string, 
-  amount: number, 
-  currency: string = 'USD', 
+  orderId: string,
+  amount: number,
+  currency: string = 'USD',
   properties?: EventProperties
 ): Promise<void> {
   await trackEvent(ANALYTICS_EVENTS.PURCHASE, {

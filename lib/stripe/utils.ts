@@ -15,13 +15,13 @@ export function handleStripeError(error: unknown): {
       type: error.type,
     }
   }
-  
+
   if (error instanceof Error) {
     return {
       message: error.message,
     }
   }
-  
+
   return {
     message: 'An unexpected error occurred',
   }
@@ -32,7 +32,7 @@ export function handleStripeError(error: unknown): {
  */
 export function getStripeErrorMessage(error: unknown): string {
   const { code, type } = handleStripeError(error)
-  
+
   // Card errors
   if (type === 'card_error') {
     switch (code) {
@@ -43,22 +43,22 @@ export function getStripeErrorMessage(error: unknown): string {
       case 'expired_card':
         return 'Your card has expired. Please use a different card.'
       case 'incorrect_cvc':
-        return 'Your card\'s security code is incorrect. Please check and try again.'
+        return "Your card's security code is incorrect. Please check and try again."
       default:
         return 'There was an issue with your card. Please try a different payment method.'
     }
   }
-  
+
   // API errors
   if (type === 'api_error') {
-    return 'We\'re experiencing technical difficulties. Please try again later.'
+    return "We're experiencing technical difficulties. Please try again later."
   }
-  
+
   // Validation errors
   if (type === 'validation_error') {
     return 'Please check your payment information and try again.'
   }
-  
+
   return 'An unexpected error occurred. Please try again or contact support.'
 }
 
@@ -75,7 +75,9 @@ export function formatPrice(amount: number, currency: string = 'usd'): string {
 /**
  * Type guards for webhook events
  */
-export function isCheckoutSession(object: any): object is Stripe.Checkout.Session {
+export function isCheckoutSession(
+  object: any
+): object is Stripe.Checkout.Session {
   return object.object === 'checkout.session'
 }
 
@@ -90,14 +92,18 @@ export function isCustomer(object: any): object is Stripe.Customer {
 /**
  * Extract business ID from metadata safely
  */
-export function extractBusinessId(metadata?: Stripe.Metadata | null): string | null {
+export function extractBusinessId(
+  metadata?: Stripe.Metadata | null
+): string | null {
   return metadata?.businessId || null
 }
 
 /**
  * Extract UTM token from metadata safely
  */
-export function extractUtmToken(metadata?: Stripe.Metadata | null): string | null {
+export function extractUtmToken(
+  metadata?: Stripe.Metadata | null
+): string | null {
   return metadata?.utmToken || null
 }
 
@@ -120,30 +126,34 @@ export async function retryStripeOperation<T>(
 ): Promise<T> {
   let lastError: unknown
   let delay = config.initialDelay
-  
+
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await operation()
     } catch (error) {
       lastError = error
-      
+
       if (attempt === config.maxRetries) {
         break
       }
-      
+
       // Don't retry certain errors
       if (error instanceof Stripe.errors.StripeError) {
-        const nonRetryableTypes = ['card_error', 'validation_error', 'invalid_request_error']
+        const nonRetryableTypes = [
+          'card_error',
+          'validation_error',
+          'invalid_request_error',
+        ]
         if (nonRetryableTypes.includes(error.type)) {
           throw error
         }
       }
-      
+
       // Wait before retrying
-      await new Promise(resolve => setTimeout(resolve, delay))
+      await new Promise((resolve) => setTimeout(resolve, delay))
       delay = Math.min(delay * config.backoffFactor, config.maxDelay)
     }
   }
-  
+
   throw lastError
 }

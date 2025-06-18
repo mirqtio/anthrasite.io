@@ -11,7 +11,7 @@ export function getCookieConsent(): ConsentPreferences {
       marketing: false,
       performance: false,
       functional: true,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
   }
 
@@ -24,7 +24,7 @@ export function getCookieConsent(): ConsentPreferences {
         marketing: parsed.preferences?.marketing ?? false,
         performance: parsed.preferences?.performance ?? false,
         functional: parsed.preferences?.functional ?? true,
-        timestamp: parsed.preferences?.timestamp ?? new Date().toISOString()
+        timestamp: parsed.preferences?.timestamp ?? new Date().toISOString(),
       }
     }
   } catch (error) {
@@ -36,11 +36,13 @@ export function getCookieConsent(): ConsentPreferences {
     marketing: false,
     performance: false,
     functional: true,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   }
 }
 
-export function onConsentChange(callback: (consent: ConsentPreferences) => void): () => void {
+export function onConsentChange(
+  callback: (consent: ConsentPreferences) => void
+): () => void {
   if (typeof window === 'undefined') {
     return () => {}
   }
@@ -51,7 +53,7 @@ export function onConsentChange(callback: (consent: ConsentPreferences) => void)
   }
 
   window.addEventListener('consentUpdated', handler)
-  
+
   // Return cleanup function
   return () => {
     window.removeEventListener('consentUpdated', handler)

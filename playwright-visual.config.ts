@@ -15,7 +15,7 @@ export default defineConfig({
       animations: 'disabled',
       // Style elements to mask
       stylePath: './visual-tests/screenshot.css',
-    }
+    },
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -27,7 +27,7 @@ export default defineConfig({
     // Add custom reporter for CI diff reports
     ...(process.env.CI ? [['github']] : []),
   ] as any,
-  
+
   use: {
     actionTimeout: 0,
     baseURL: 'http://localhost:3000',
@@ -49,33 +49,34 @@ export default defineConfig({
 
   // Screenshot storage configuration
   snapshotDir: './visual-tests/screenshots',
-  snapshotPathTemplate: '{snapshotDir}/{testFileDir}/{testFileName}-{projectName}/{arg}-{platform}{ext}',
+  snapshotPathTemplate:
+    '{snapshotDir}/{testFileDir}/{testFileName}-{projectName}/{arg}-{platform}{ext}',
 
   // Cross-browser and device projects
   projects: [
     // Desktop browsers
     {
       name: 'chromium',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
       },
     },
     {
       name: 'firefox',
-      use: { 
+      use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1920, height: 1080 },
       },
     },
     {
       name: 'webkit',
-      use: { 
+      use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1920, height: 1080 },
       },
     },
-    
+
     // Tablet viewports
     {
       name: 'iPad',
@@ -84,7 +85,7 @@ export default defineConfig({
         viewport: { width: 1024, height: 1366 },
       },
     },
-    
+
     // Mobile devices
     {
       name: 'Mobile Chrome',
@@ -100,7 +101,7 @@ export default defineConfig({
         viewport: { width: 390, height: 844 },
       },
     },
-    
+
     // Dark mode variants
     {
       name: 'chromium-dark',

@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
 /**
  * A/B Testing React Hooks
  * Convenient hooks for accessing experiment variants
  */
 
-import { useEffect, useRef, useCallback } from 'react';
-import { useABTest } from '../context/ABTestingContext';
-import { ExperimentVariant } from './types';
+import { useEffect, useRef, useCallback } from 'react'
+import { useABTest } from '../context/ABTestingContext'
+import { ExperimentVariant } from './types'
 
 /**
  * Get variant for an experiment and track exposure
@@ -19,23 +19,23 @@ export function useExperiment(
   experimentId: string,
   trackOnMount: boolean = true
 ): string | null {
-  const { getVariant, trackExposure } = useABTest();
-  const hasTracked = useRef(false);
-  const variantId = getVariant(experimentId);
-  
+  const { getVariant, trackExposure } = useABTest()
+  const hasTracked = useRef(false)
+  const variantId = getVariant(experimentId)
+
   useEffect(() => {
     if (trackOnMount && variantId && !hasTracked.current) {
-      trackExposure(experimentId);
-      hasTracked.current = true;
+      trackExposure(experimentId)
+      hasTracked.current = true
     }
-  }, [experimentId, variantId, trackOnMount, trackExposure]);
-  
+  }, [experimentId, variantId, trackOnMount, trackExposure])
+
   // Reset tracking flag when experiment or variant changes
   useEffect(() => {
-    hasTracked.current = false;
-  }, [experimentId, variantId]);
-  
-  return variantId;
+    hasTracked.current = false
+  }, [experimentId, variantId])
+
+  return variantId
 }
 
 /**
@@ -50,23 +50,23 @@ export function useVariant(
   variantId: string,
   trackOnMount: boolean = true
 ): boolean {
-  const { isInVariant, trackExposure } = useABTest();
-  const hasTracked = useRef(false);
-  const isInTargetVariant = isInVariant(experimentId, variantId);
-  
+  const { isInVariant, trackExposure } = useABTest()
+  const hasTracked = useRef(false)
+  const isInTargetVariant = isInVariant(experimentId, variantId)
+
   useEffect(() => {
     if (trackOnMount && isInTargetVariant && !hasTracked.current) {
-      trackExposure(experimentId);
-      hasTracked.current = true;
+      trackExposure(experimentId)
+      hasTracked.current = true
     }
-  }, [experimentId, isInTargetVariant, trackOnMount, trackExposure]);
-  
+  }, [experimentId, isInTargetVariant, trackOnMount, trackExposure])
+
   // Reset tracking flag when experiment changes
   useEffect(() => {
-    hasTracked.current = false;
-  }, [experimentId]);
-  
-  return isInTargetVariant;
+    hasTracked.current = false
+  }, [experimentId])
+
+  return isInTargetVariant
 }
 
 /**
@@ -75,8 +75,8 @@ export function useVariant(
  * @returns The experiment object or null if not found
  */
 export function useExperimentDetails(experimentId: string) {
-  const { experiments } = useABTest();
-  return experiments.get(experimentId) || null;
+  const { experiments } = useABTest()
+  return experiments.get(experimentId) || null
 }
 
 /**
@@ -87,16 +87,16 @@ export function useExperimentDetails(experimentId: string) {
 export function useVariantConfig<T = Record<string, any>>(
   experimentId: string
 ): T | null {
-  const { getVariant, experiments } = useABTest();
-  const variantId = getVariant(experimentId);
-  const experiment = experiments.get(experimentId);
-  
+  const { getVariant, experiments } = useABTest()
+  const variantId = getVariant(experimentId)
+  const experiment = experiments.get(experimentId)
+
   if (!variantId || !experiment) {
-    return null;
+    return null
   }
-  
-  const variant = experiment.variants.find(v => v.id === variantId);
-  return variant?.config as T || null;
+
+  const variant = experiment.variants.find((v) => v.id === variantId)
+  return (variant?.config as T) || null
 }
 
 /**
@@ -105,43 +105,43 @@ export function useVariantConfig<T = Record<string, any>>(
  * @returns Function to track custom events
  */
 export function useExperimentTracking(experimentId: string) {
-  const { getVariant, trackExposure } = useABTest();
-  const variantId = getVariant(experimentId);
-  
+  const { getVariant, trackExposure } = useABTest()
+  const variantId = getVariant(experimentId)
+
   const trackEvent = useCallback(
     (eventName: string, metadata?: Record<string, any>) => {
       if (!variantId) {
-        return;
+        return
       }
-      
+
       // Track the event with experiment context
       if (typeof window !== 'undefined' && window.analytics) {
         window.analytics.track(eventName, {
           experiment_id: experimentId,
           variant_id: variantId,
           ...metadata,
-        });
+        })
       }
     },
     [experimentId, variantId]
-  );
-  
+  )
+
   const trackConversion = useCallback(
     (value?: number, metadata?: Record<string, any>) => {
       trackEvent('experiment_conversion', {
         conversion_value: value,
         ...metadata,
-      });
+      })
     },
     [trackEvent]
-  );
-  
+  )
+
   return {
     variantId,
     trackEvent,
     trackConversion,
     trackExposure: () => trackExposure(experimentId),
-  };
+  }
 }
 
 /**
@@ -156,13 +156,13 @@ export function useMultiVariant<T>(
   variants: Record<string, () => T>,
   defaultContent: () => T
 ): T {
-  const variantId = useExperiment(experimentId);
-  
+  const variantId = useExperiment(experimentId)
+
   if (!variantId || !variants[variantId]) {
-    return defaultContent();
+    return defaultContent()
   }
-  
-  return variants[variantId]();
+
+  return variants[variantId]()
 }
 
 /**
@@ -170,8 +170,8 @@ export function useMultiVariant<T>(
  * @returns Array of experiment IDs the user is enrolled in
  */
 export function useActiveExperiments(): string[] {
-  const { assignments } = useABTest();
-  return Array.from(assignments.keys());
+  const { assignments } = useABTest()
+  return Array.from(assignments.keys())
 }
 
 /**
@@ -179,6 +179,6 @@ export function useActiveExperiments(): string[] {
  * @returns Function to trigger refresh
  */
 export function useRefreshExperiments() {
-  const { refreshExperiments } = useABTest();
-  return refreshExperiments;
+  const { refreshExperiments } = useABTest()
+  return refreshExperiments
 }

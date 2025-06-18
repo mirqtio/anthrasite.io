@@ -1,6 +1,12 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react'
 
 export interface ConsentPreferences {
   analytics: boolean
@@ -40,7 +46,9 @@ interface ConsentProviderProps {
 }
 
 export function ConsentProvider({ children }: ConsentProviderProps) {
-  const [preferences, setPreferences] = useState<ConsentPreferences | null>(null)
+  const [preferences, setPreferences] = useState<ConsentPreferences | null>(
+    null
+  )
   const [showBanner, setShowBanner] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -75,17 +83,22 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
 
   const savePreferences = (newPreferences: ConsentPreferences) => {
     try {
-      localStorage.setItem(CONSENT_KEY, JSON.stringify({
-        version: CONSENT_VERSION,
-        preferences: newPreferences
-      }))
+      localStorage.setItem(
+        CONSENT_KEY,
+        JSON.stringify({
+          version: CONSENT_VERSION,
+          preferences: newPreferences,
+        })
+      )
       setPreferences(newPreferences)
       setShowBanner(false)
-      
+
       // Emit custom event for analytics scripts to listen to
-      window.dispatchEvent(new CustomEvent('consentUpdated', { 
-        detail: newPreferences 
-      }))
+      window.dispatchEvent(
+        new CustomEvent('consentUpdated', {
+          detail: newPreferences,
+        })
+      )
     } catch (error) {
       console.error('Error saving consent preferences:', error)
     }
@@ -97,7 +110,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
       marketing: updates.marketing ?? preferences?.marketing ?? false,
       performance: updates.performance ?? preferences?.performance ?? false,
       functional: updates.functional ?? preferences?.functional ?? true,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
     savePreferences(newPreferences)
   }
@@ -108,7 +121,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
       marketing: true,
       performance: true,
       functional: true,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
     savePreferences(newPreferences)
     setShowPreferences(false)
@@ -120,7 +133,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
       marketing: false,
       performance: false,
       functional: false,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
     savePreferences(newPreferences)
     setShowPreferences(false)
@@ -146,7 +159,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
     rejectAll,
     openPreferences,
     closePreferences,
-    hasConsented
+    hasConsented,
   }
 
   // If still loading, provide context but don't render children

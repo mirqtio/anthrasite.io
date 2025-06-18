@@ -3,7 +3,14 @@
 import { useEffect, useState } from 'react'
 import { useConsent } from '@/lib/context/ConsentContext'
 import { Button } from '@/components/Button'
-import { animation, colors, spacing, typography, radii, shadows } from '@/lib/design-system/tokens'
+import {
+  animation,
+  colors,
+  spacing,
+  typography,
+  radii,
+  shadows,
+} from '@/lib/design-system/tokens'
 
 export function ConsentBanner() {
   const { showBanner, acceptAll, rejectAll, openPreferences } = useConsent()
@@ -31,7 +38,8 @@ export function ConsentBanner() {
     <div
       className={`fixed bottom-0 left-0 right-0 z-[9999] p-4 md:p-6 transition-all ${animation.duration.normal}`}
       style={{
-        transform: isVisible && !isExiting ? 'translateY(0)' : 'translateY(100%)',
+        transform:
+          isVisible && !isExiting ? 'translateY(0)' : 'translateY(100%)',
         opacity: isVisible && !isExiting ? 1 : 0,
         transitionTimingFunction: animation.easing.easeOut,
       }}
@@ -50,7 +58,7 @@ export function ConsentBanner() {
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex-1">
-            <h2 
+            <h2
               className="text-lg font-semibold mb-2"
               style={{
                 fontSize: typography.fontSize.lg,
@@ -60,7 +68,7 @@ export function ConsentBanner() {
             >
               We value your privacy
             </h2>
-            <p 
+            <p
               className="text-sm leading-relaxed"
               style={{
                 fontSize: typography.fontSize.sm,
@@ -69,12 +77,13 @@ export function ConsentBanner() {
                 opacity: 0.7,
               }}
             >
-              We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
-              By clicking "Accept all", you consent to our use of cookies. You can manage your preferences 
-              or learn more about our cookie policy.
+              We use cookies to enhance your browsing experience, analyze site
+              traffic, and personalize content. By clicking "Accept all", you
+              consent to our use of cookies. You can manage your preferences or
+              learn more about our cookie policy.
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               variant="ghost"

@@ -31,12 +31,12 @@ describe('ConsentContext', () => {
 
   it('should show banner on first visit', async () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     // Wait for useEffect to complete
     act(() => {
       jest.runAllTimers()
     })
-    
+
     expect(result.current.showBanner).toBe(true)
     expect(result.current.hasConsented).toBe(false)
     expect(result.current.preferences).toBe(null)
@@ -48,17 +48,17 @@ describe('ConsentContext', () => {
       preferences: {
         analytics: true,
         functional: true,
-        timestamp: '2024-01-01T00:00:00.000Z'
-      }
+        timestamp: '2024-01-01T00:00:00.000Z',
+      },
     })
     localStorageMock.getItem.mockReturnValue(storedConsent)
 
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     act(() => {
       jest.runAllTimers()
     })
-    
+
     expect(result.current.showBanner).toBe(false)
     expect(result.current.hasConsented).toBe(true)
     expect(result.current.preferences?.analytics).toBe(true)
@@ -71,28 +71,28 @@ describe('ConsentContext', () => {
       preferences: {
         analytics: true,
         functional: true,
-        timestamp: '2024-01-01T00:00:00.000Z'
-      }
+        timestamp: '2024-01-01T00:00:00.000Z',
+      },
     })
     localStorageMock.getItem.mockReturnValue(oldConsent)
 
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     act(() => {
       jest.runAllTimers()
     })
-    
+
     expect(result.current.showBanner).toBe(true)
     expect(result.current.hasConsented).toBe(false)
   })
 
   it('should accept all cookies', () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     act(() => {
       jest.runAllTimers()
     })
-    
+
     act(() => {
       result.current.acceptAll()
     })
@@ -110,18 +110,18 @@ describe('ConsentContext', () => {
         detail: expect.objectContaining({
           analytics: true,
           functional: true,
-        })
+        }),
       })
     )
   })
 
   it('should reject all cookies', () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     act(() => {
       jest.runAllTimers()
     })
-    
+
     act(() => {
       result.current.rejectAll()
     })
@@ -137,11 +137,11 @@ describe('ConsentContext', () => {
 
   it('should update specific preferences', () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     act(() => {
       jest.runAllTimers()
     })
-    
+
     act(() => {
       result.current.updateConsent({ analytics: true, functional: false })
     })
@@ -152,23 +152,23 @@ describe('ConsentContext', () => {
 
   it('should open and close preferences modal', () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     act(() => {
       jest.runAllTimers()
     })
-    
+
     expect(result.current.showPreferences).toBe(false)
-    
+
     act(() => {
       result.current.openPreferences()
     })
-    
+
     expect(result.current.showPreferences).toBe(true)
-    
+
     act(() => {
       result.current.closePreferences()
     })
-    
+
     expect(result.current.showPreferences).toBe(false)
   })
 
@@ -176,21 +176,21 @@ describe('ConsentContext', () => {
     localStorageMock.getItem.mockImplementation(() => {
       throw new Error('Storage error')
     })
-    
+
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
-    
+
     const { result } = renderHook(() => useConsent(), { wrapper })
-    
+
     act(() => {
       jest.runAllTimers()
     })
-    
+
     expect(result.current.showBanner).toBe(true)
     expect(consoleSpy).toHaveBeenCalledWith(
       'Error loading consent preferences:',
       expect.any(Error)
     )
-    
+
     consoleSpy.mockRestore()
   })
 })

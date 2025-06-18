@@ -7,7 +7,9 @@ Phase 4.4 of the Anthrasite.io project implements a comprehensive abandoned cart
 ## Key Components Implemented
 
 ### 1. Database Schema (`/prisma/schema.prisma`)
+
 Added `AbandonedCart` model to track:
+
 - Stripe session ID and business information
 - Customer email and purchase details
 - Recovery token for secure recovery links
@@ -15,6 +17,7 @@ Added `AbandonedCart` model to track:
 - Recovery status and timestamps
 
 ### 2. Tracking System (`/lib/abandoned-cart/tracker.ts`)
+
 - `trackCheckoutSession`: Records new checkout sessions as potentially abandoned
 - `markSessionCompleted`: Removes carts that complete purchase
 - `isSessionRecoverable`: Validates if a cart can still be recovered
@@ -22,7 +25,9 @@ Added `AbandonedCart` model to track:
 - `markCartRecovered`: Updates cart status when recovered
 
 ### 3. Service Layer (`/lib/abandoned-cart/service.ts`)
+
 Main service class `AbandonedCartService` provides:
+
 - `trackAbandonedSession`: Integration point for checkout creation
 - `checkAbandoned`: Finds carts abandoned for 3+ hours and sends emails
 - `sendRecoveryEmail`: Sends personalized recovery emails
@@ -31,7 +36,9 @@ Main service class `AbandonedCartService` provides:
 - `getMetrics`: Comprehensive analytics and reporting
 
 ### 4. Email Template (`/lib/email/templates/cartRecovery.ts`)
+
 Professional recovery email featuring:
+
 - Personalized greeting with business name
 - Clear call-to-action button
 - List of report benefits
@@ -39,26 +46,33 @@ Professional recovery email featuring:
 - Support contact information
 
 ### 5. Cron Job Handler (`/app/api/cron/abandoned-cart/route.ts`)
+
 - Runs hourly to check for abandoned carts
 - Secured with bearer token authentication
 - Sends recovery emails with rate limiting (1 per cart)
 - Tracks execution metrics for monitoring
 
 ### 6. Recovery Page (`/app/purchase/recover/page.tsx`)
+
 User-facing recovery flow:
+
 - Validates recovery token
 - Checks session hasn't expired
 - Marks cart as recovered
 - Redirects to Stripe checkout
 
 ### 7. Webhook Integration
+
 Updated Stripe webhook to:
+
 - Mark carts as completed on successful payment
 - Clean up expired sessions
 - Prevent duplicate recovery emails
 
 ### 8. Analytics (`/lib/abandoned-cart/analytics.ts`)
+
 Comprehensive metrics tracking:
+
 - Abandonment and recovery rates
 - Revenue impact analysis
 - Time-based breakdowns
@@ -67,12 +81,14 @@ Comprehensive metrics tracking:
 ## Configuration
 
 ### Environment Variables
+
 ```env
 CRON_SECRET=your-secure-cron-secret
 NEXT_PUBLIC_BASE_URL=https://anthrasite.io
 ```
 
 ### Business Rules
+
 - **Abandonment Threshold**: 3 hours after checkout creation
 - **Recovery Emails**: Maximum 1 per abandoned cart
 - **Session Expiry**: Respects Stripe's 24-hour limit
@@ -83,15 +99,18 @@ NEXT_PUBLIC_BASE_URL=https://anthrasite.io
 Comprehensive test suite includes:
 
 ### Unit Tests
+
 - `tracker.test.ts`: Core tracking functionality
 - `service.test.ts`: Service layer logic
 - `cartRecovery.test.ts`: Email template generation
 
 ### Integration Tests
+
 - `integration.test.ts`: Full recovery flow testing
 - Mock database implementation for isolated testing
 
 ### Test Coverage
+
 - ✅ Abandoned cart tracking
 - ✅ Recovery email sending
 - ✅ Rate limiting enforcement
@@ -102,19 +121,25 @@ Comprehensive test suite includes:
 ## Deployment Considerations
 
 ### Cron Job Setup
+
 Configure your hosting provider to call the cron endpoint hourly:
+
 ```bash
 0 * * * * curl -H "Authorization: Bearer $CRON_SECRET" https://anthrasite.io/api/cron/abandoned-cart
 ```
 
 ### Database Migration
+
 Run the migration to add the abandoned cart table:
+
 ```bash
 npx prisma migrate deploy
 ```
 
 ### Monitoring
+
 Key metrics to monitor:
+
 - Cron job execution success rate
 - Recovery email delivery rate
 - Recovery conversion rate
@@ -138,6 +163,7 @@ Key metrics to monitor:
 ## Metrics and Success Criteria
 
 Target metrics for abandoned cart recovery:
+
 - **Recovery Rate**: 20-30% of abandoned carts
 - **Email Open Rate**: 40-50%
 - **Click-through Rate**: 15-20%
@@ -146,6 +172,7 @@ Target metrics for abandoned cart recovery:
 ## Integration Points
 
 The abandoned cart system integrates with:
+
 - Stripe webhook for payment events
 - SendGrid for email delivery
 - Prisma ORM for database operations

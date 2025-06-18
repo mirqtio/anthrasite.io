@@ -1,6 +1,10 @@
 import { prisma } from '@/lib/db'
 import { sendCartRecoveryEmail } from '@/lib/email/email-service'
-import { trackCheckoutSession, markSessionCompleted, markCartRecovered } from './tracker'
+import {
+  trackCheckoutSession,
+  markSessionCompleted,
+  markCartRecovered,
+} from './tracker'
 import type { Stripe } from 'stripe'
 
 // Configuration
@@ -17,7 +21,7 @@ export interface AbandonedCartServiceConfig {
  */
 export class AbandonedCartService {
   constructor(private config: AbandonedCartServiceConfig) {}
-  
+
   /**
    * Tracks a new abandoned session
    */
@@ -32,14 +36,16 @@ export class AbandonedCartService {
   }) {
     return trackCheckoutSession({ session, businessId, utmToken })
   }
-  
+
   /**
    * Checks for abandoned carts and sends recovery emails
    */
   async checkAbandoned() {
     const thresholdTime = new Date()
-    thresholdTime.setHours(thresholdTime.getHours() - ABANDONMENT_THRESHOLD_HOURS)
-    
+    thresholdTime.setHours(
+      thresholdTime.getHours() - ABANDONMENT_THRESHOLD_HOURS
+    )
+
     try {
       // Find abandoned carts that:
       // 1. Were created more than 3 hours ago
@@ -61,9 +67,9 @@ export class AbandonedCartService {
           business: true,
         },
       })
-      
+
       const results = []
-      
+
       for (const cart of abandonedCarts) {
         try {
           if (cart.customerEmail) {
@@ -71,14 +77,21 @@ export class AbandonedCartService {
             results.push({ cartId: cart.id, success: true })
           } else {
             console.log(`Skipping cart ${cart.id} - no customer email`)
-            results.push({ cartId: cart.id, success: false, reason: 'no_email' })
+            results.push({
+              cartId: cart.id,
+              success: false,
+              reason: 'no_email',
+            })
           }
         } catch (error) {
-          console.error(`Failed to send recovery email for cart ${cart.id}:`, error)
+          console.error(
+            `Failed to send recovery email for cart ${cart.id}:`,
+            error
+          )
           results.push({ cartId: cart.id, success: false, error })
         }
       }
-      
+
       return {
         processed: abandonedCarts.length,
         results,
@@ -88,7 +101,7 @@ export class AbandonedCartService {
       throw error
     }
   }
-  
+
   /**
    * Sends a recovery email for an abandoned cart
    */
@@ -97,10 +110,10 @@ export class AbandonedCartService {
     if (cart.recoveryEmailSent && MAX_RECOVERY_EMAILS_PER_CART <= 1) {
       throw new Error('Recovery email already sent for this cart')
     }
-    
+
     // Generate recovery URL
     const recoveryUrl = `${this.config.baseUrl}/purchase/recover?token=${cart.recoveryToken}`
-    
+
     // Send recovery email
     await sendCartRecoveryEmail({
       to: cart.customerEmail,
@@ -110,7 +123,7 @@ export class AbandonedCartService {
       recoveryUrl,
       expiresAt: cart.sessionExpiresAt,
     })
-    
+
     // Mark email as sent
     await prisma.abandonedCart.update({
       where: { id: cart.id },
@@ -119,11 +132,11 @@ export class AbandonedCartService {
         emailSentAt: new Date(),
       },
     })
-    
+
     // Track analytics
     await this.trackRecoveryEmailSent(cart)
   }
-  
+
   /**
    * Marks a cart as recovered when user returns via recovery link
    */
@@ -131,28 +144,28 @@ export class AbandonedCartService {
     const cart = await prisma.abandonedCart.findUnique({
       where: { recoveryToken },
     })
-    
+
     if (!cart) {
       throw new Error('Invalid recovery token')
     }
-    
+
     if (cart.recovered) {
       return { alreadyRecovered: true }
     }
-    
+
     await markCartRecovered(cart.id)
     await this.trackRecoverySuccess(cart)
-    
+
     return { success: true, stripeSessionId: cart.stripeSessionId }
   }
-  
+
   /**
    * Handles successful payment completion
    */
   async handlePaymentSuccess(stripeSessionId: string) {
     await markSessionCompleted(stripeSessionId)
   }
-  
+
   /**
    * Track analytics for recovery email sent
    */
@@ -167,7 +180,8 @@ export class AbandonedCartService {
             amount: cart.amount,
             currency: cart.currency,
             hoursAbandoned: Math.floor(
-              (new Date().getTime() - cart.createdAt.getTime()) / (1000 * 60 * 60)
+              (new Date().getTime() - cart.createdAt.getTime()) /
+                (1000 * 60 * 60)
             ),
           },
         },
@@ -176,7 +190,7 @@ export class AbandonedCartService {
       console.error('Failed to track recovery email analytics:', error)
     }
   }
-  
+
   /**
    * Track analytics for successful recovery
    */
@@ -198,14 +212,14 @@ export class AbandonedCartService {
       console.error('Failed to track recovery success analytics:', error)
     }
   }
-  
+
   /**
    * Get abandoned cart metrics
    */
   async getMetrics(days: number = 30) {
     const startDate = new Date()
     startDate.setDate(startDate.getDate() - days)
-    
+
     try {
       const [
         totalAbandoned,
@@ -255,11 +269,10 @@ export class AbandonedCartService {
           },
         }),
       ])
-      
-      const recoveryRate = totalEmailsSent > 0 
-        ? (totalRecovered / totalEmailsSent) * 100 
-        : 0
-      
+
+      const recoveryRate =
+        totalEmailsSent > 0 ? (totalRecovered / totalEmailsSent) * 100 : 0
+
       return {
         totalAbandoned,
         totalRecovered,

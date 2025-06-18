@@ -13,9 +13,9 @@
 }
 
 /* Hide dynamic content */
-[data-testid*="timestamp"],
-[data-testid*="date"],
-[data-dynamic-content="true"],
+[data-testid*='timestamp'],
+[data-testid*='date'],
+[data-dynamic-content='true'],
 .timestamp,
 .date,
 time {
@@ -34,7 +34,7 @@ time {
 
 /* Ensure consistent focus styles */
 *:focus {
-  outline: 2px solid #0066CC !important;
+  outline: 2px solid #0066cc !important;
   outline-offset: 2px !important;
 }
 
@@ -50,9 +50,9 @@ time {
 
 /* Ensure consistent rendering of loading states */
 .skeleton,
-[data-loading="true"],
+[data-loading='true'],
 .shimmer {
-  background: #E5E5E5 !important;
+  background: #e5e5e5 !important;
   animation: none !important;
 }
 
@@ -69,7 +69,7 @@ video {
 }
 
 /* Hide tooltips and popovers */
-[role="tooltip"],
+[role='tooltip'],
 [data-tooltip],
 .tooltip,
 .popover {

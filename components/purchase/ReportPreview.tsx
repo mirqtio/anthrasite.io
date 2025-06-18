@@ -1,15 +1,15 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { 
-  Zap, 
-  Search, 
-  Shield, 
+import {
+  Zap,
+  Search,
+  Shield,
   Eye,
   TrendingUp,
   CheckCircle,
   FileText,
-  BarChart3
+  BarChart3,
 } from 'lucide-react'
 import { ReportPreviewData } from '@/lib/purchase/purchase-service'
 
@@ -62,18 +62,29 @@ export function ReportPreview({ preview }: ReportPreviewProps) {
           {Object.entries(preview.metrics).map(([key, score], index) => {
             const Icon = metricIcons[key as keyof typeof metricIcons]
             const label = metricLabels[key as keyof typeof metricLabels]
-            const color = score >= 90 ? 'text-accent' : score >= 70 ? 'text-yellow-500' : 'text-red-500'
-            
+            const color =
+              score >= 90
+                ? 'text-accent'
+                : score >= 70
+                  ? 'text-yellow-500'
+                  : 'text-red-500'
+
             return (
               <motion.div
                 key={key}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1, ease: 'easeOut' }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.1,
+                  ease: 'easeOut',
+                }}
                 className="carbon-container p-8 text-center"
               >
-                <Icon className={`w-10 h-10 ${color} mx-auto mb-4 opacity-80`} />
+                <Icon
+                  className={`w-10 h-10 ${color} mx-auto mb-4 opacity-80`}
+                />
                 <div className={`text-[40px] font-light ${color} mb-2`}>
                   {score}
                 </div>
@@ -95,7 +106,7 @@ export function ReportPreview({ preview }: ReportPreviewProps) {
             <TrendingUp className="w-8 h-8 text-accent" />
             <h3 className="text-[32px] font-light">Key Improvements Found</h3>
           </div>
-          
+
           <div className="space-y-6">
             {preview.improvements.map((improvement, index) => (
               <motion.div
@@ -103,7 +114,11 @@ export function ReportPreview({ preview }: ReportPreviewProps) {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.5 + index * 0.1, ease: 'easeOut' }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.5 + index * 0.1,
+                  ease: 'easeOut',
+                }}
                 className="flex items-start gap-4"
               >
                 <div className="w-[2px] h-8 bg-accent flex-shrink-0 mt-0.5" />
@@ -111,10 +126,17 @@ export function ReportPreview({ preview }: ReportPreviewProps) {
               </motion.div>
             ))}
           </div>
-          
-          <div className="mt-12 p-8 bg-accent/10 rounded-lg" data-testid="value-proposition">
-            <p className="text-[17px] opacity-60 mb-2">Estimated monthly value of improvements:</p>
-            <p className="text-[40px] font-light text-accent">{preview.estimatedValue}</p>
+
+          <div
+            className="mt-12 p-8 bg-accent/10 rounded-lg"
+            data-testid="value-proposition"
+          >
+            <p className="text-[17px] opacity-60 mb-2">
+              Estimated monthly value of improvements:
+            </p>
+            <p className="text-[40px] font-light text-accent">
+              {preview.estimatedValue}
+            </p>
           </div>
         </motion.div>
 
@@ -132,42 +154,58 @@ export function ReportPreview({ preview }: ReportPreviewProps) {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">50+ page comprehensive report</span>
+                <span className="text-[17px] opacity-80">
+                  50+ page comprehensive report
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">Technical SEO audit</span>
+                <span className="text-[17px] opacity-80">
+                  Technical SEO audit
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">Performance optimization guide</span>
+                <span className="text-[17px] opacity-80">
+                  Performance optimization guide
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">Security vulnerability assessment</span>
+                <span className="text-[17px] opacity-80">
+                  Security vulnerability assessment
+                </span>
               </li>
             </ul>
           </div>
-          
+
           <div className="carbon-container p-10">
             <BarChart3 className="w-12 h-12 text-accent mb-6" />
             <h3 className="text-[24px] font-light mb-6">Actionable Insights</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">Priority-ranked improvements</span>
+                <span className="text-[17px] opacity-80">
+                  Priority-ranked improvements
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">Step-by-step implementation guides</span>
+                <span className="text-[17px] opacity-80">
+                  Step-by-step implementation guides
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">ROI estimates for each fix</span>
+                <span className="text-[17px] opacity-80">
+                  ROI estimates for each fix
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-[2px] h-6 bg-accent/60 flex-shrink-0 mt-0.5" />
-                <span className="text-[17px] opacity-80">Competitor comparison data</span>
+                <span className="text-[17px] opacity-80">
+                  Competitor comparison data
+                </span>
               </li>
             </ul>
           </div>

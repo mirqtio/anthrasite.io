@@ -2,17 +2,17 @@ import { Page } from '@playwright/test'
 
 export async function mockStripeCheckout(page: Page) {
   // Mock Stripe checkout session creation
-  await page.route('**/api/stripe/checkout', route => {
+  await page.route('**/api/stripe/checkout', (route) => {
     route.fulfill({
       status: 200,
       body: JSON.stringify({
         id: 'cs_test_123',
         url: 'https://checkout.stripe.com/test',
         amount_total: 9900,
-      })
+      }),
     })
   })
-  
+
   // Mock Stripe JS
   await page.addScriptTag({
     content: `
@@ -21,11 +21,15 @@ export async function mockStripeCheckout(page: Page) {
           redirectToCheckout: async () => ({ error: null })
         }
       }
-    `
+    `,
   })
 }
 
-export async function mockStripeWebhook(page: Page, eventType: string, sessionId: string) {
+export async function mockStripeWebhook(
+  page: Page,
+  eventType: string,
+  sessionId: string
+) {
   const webhookPayload = {
     id: 'evt_test_123',
     type: eventType,
@@ -42,10 +46,10 @@ export async function mockStripeWebhook(page: Page, eventType: string, sessionId
         metadata: {
           businessId: 'test-business-123',
           utmToken: 'test-utm-token',
-        }
-      }
-    }
+        },
+      },
+    },
   }
-  
+
   return webhookPayload
 }

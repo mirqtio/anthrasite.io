@@ -8,7 +8,7 @@ export async function GET() {
     sentry: false,
     analytics: false,
     datadog: false,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   }
 
   try {
@@ -27,7 +27,7 @@ export async function GET() {
       if (analytics) {
         analytics.track('test_monitoring_api', {
           test: true,
-          source: 'api'
+          source: 'api',
         })
         results.analytics = true
       }
@@ -52,14 +52,17 @@ export async function GET() {
         ga4_id: !!process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID,
         posthog_key: !!process.env.NEXT_PUBLIC_POSTHOG_KEY,
         datadog_app_id: !!process.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID,
-        datadog_client_token: !!process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN
-      }
+        datadog_client_token: !!process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN,
+      },
     })
   } catch (error) {
-    return NextResponse.json({ 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error',
-      results 
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        results,
+      },
+      { status: 500 }
+    )
   }
 }

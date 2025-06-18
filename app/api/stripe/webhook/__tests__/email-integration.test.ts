@@ -2,7 +2,10 @@ import { POST } from '../route'
 import { NextRequest } from 'next/server'
 import { stripe } from '@/lib/stripe/config'
 import { prisma } from '@/lib/db'
-import { sendOrderConfirmation, sendWelcomeEmail } from '@/lib/email/email-service'
+import {
+  sendOrderConfirmation,
+  sendWelcomeEmail,
+} from '@/lib/email/email-service'
 import type { Stripe } from 'stripe'
 
 // Mock dependencies
@@ -98,13 +101,11 @@ describe('Stripe Webhook - Email Integration', () => {
         customerEmail: 'customer@example.com',
         status: 'completed',
       })
-
       ;(prisma.business.findUnique as jest.Mock).mockResolvedValue({
         id: 'business-123',
         domain: 'example.com',
         name: 'Example Business',
       })
-
       ;(prisma.utmToken.update as jest.Mock).mockResolvedValue({})
 
       // Mock email service
@@ -142,29 +143,24 @@ describe('Stripe Webhook - Email Integration', () => {
 
     it('should send welcome email for first-time customers', async () => {
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
-
       ;(prisma.purchase.create as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
         businessId: 'business-123',
         customerEmail: 'customer@example.com',
       })
-
       ;(prisma.business.findUnique as jest.Mock).mockResolvedValue({
         id: 'business-123',
         domain: 'example.com',
       })
-
       ;(prisma.utmToken.update as jest.Mock).mockResolvedValue({})
 
       // Mock no previous purchases
       ;(prisma.purchase.count as jest.Mock).mockResolvedValue(0)
-
       ;(sendOrderConfirmation as jest.Mock).mockResolvedValue({
         success: true,
         messageId: 'msg-123',
         status: 'sent',
       })
-
       ;(sendWelcomeEmail as jest.Mock).mockResolvedValue({
         success: true,
         messageId: 'msg-456',
@@ -191,23 +187,19 @@ describe('Stripe Webhook - Email Integration', () => {
 
     it('should not send welcome email for returning customers', async () => {
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
-
       ;(prisma.purchase.create as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
         businessId: 'business-123',
         customerEmail: 'customer@example.com',
       })
-
       ;(prisma.business.findUnique as jest.Mock).mockResolvedValue({
         id: 'business-123',
         domain: 'example.com',
       })
-
       ;(prisma.utmToken.update as jest.Mock).mockResolvedValue({})
 
       // Mock existing purchases
       ;(prisma.purchase.count as jest.Mock).mockResolvedValue(2)
-
       ;(sendOrderConfirmation as jest.Mock).mockResolvedValue({
         success: true,
         messageId: 'msg-123',
@@ -230,18 +222,15 @@ describe('Stripe Webhook - Email Integration', () => {
 
     it('should handle email failures gracefully', async () => {
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
-
       ;(prisma.purchase.create as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
         businessId: 'business-123',
         customerEmail: 'customer@example.com',
       })
-
       ;(prisma.business.findUnique as jest.Mock).mockResolvedValue({
         id: 'business-123',
         domain: 'example.com',
       })
-
       ;(prisma.utmToken.update as jest.Mock).mockResolvedValue({})
 
       // Mock email failure
@@ -281,19 +270,18 @@ describe('Stripe Webhook - Email Integration', () => {
         },
       }
 
-      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(eventWithoutEmail)
-
+      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(
+        eventWithoutEmail
+      )
       ;(prisma.purchase.create as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
         businessId: 'business-123',
         customerEmail: null,
       })
-
       ;(prisma.business.findUnique as jest.Mock).mockResolvedValue({
         id: 'business-123',
         domain: 'example.com',
       })
-
       ;(prisma.utmToken.update as jest.Mock).mockResolvedValue({})
 
       const request = new NextRequest('http://localhost/api/stripe/webhook', {

@@ -4,7 +4,11 @@
  */
 
 import { Business } from '@prisma/client'
-import { PurchasePageData, CheckoutSession, ReportPreviewData } from './purchase-service'
+import {
+  PurchasePageData,
+  CheckoutSession,
+  ReportPreviewData,
+} from './purchase-service'
 
 // Mock business data for development
 const MOCK_BUSINESSES: Record<string, Business> = {
@@ -18,8 +22,8 @@ const MOCK_BUSINESSES: Record<string, Business> = {
         performance: 75,
         seo: 82,
         security: 88,
-        accessibility: 71
-      }
+        accessibility: 71,
+      },
     },
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
@@ -34,8 +38,8 @@ const MOCK_BUSINESSES: Record<string, Business> = {
         performance: 68,
         seo: 91,
         security: 79,
-        accessibility: 85
-      }
+        accessibility: 85,
+      },
     },
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-15'),
@@ -50,8 +54,8 @@ const MOCK_BUSINESSES: Record<string, Business> = {
         performance: 82,
         seo: 77,
         security: 93,
-        accessibility: 88
-      }
+        accessibility: 88,
+      },
     },
     createdAt: new Date('2024-02-01'),
     updatedAt: new Date('2024-02-01'),
@@ -66,8 +70,8 @@ const MOCK_BUSINESSES: Record<string, Business> = {
         performance: 85,
         seo: 78,
         security: 92,
-        accessibility: 88
-      }
+        accessibility: 88,
+      },
     },
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
@@ -82,8 +86,8 @@ const MOCK_BUSINESSES: Record<string, Business> = {
         performance: 72,
         seo: 88,
         security: 81,
-        accessibility: 79
-      }
+        accessibility: 79,
+      },
     },
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-15'),
@@ -102,9 +106,11 @@ const MOCK_UTM_TOKENS: Record<string, { businessId: string; used: boolean }> = {
 /**
  * Mock implementation of fetchBusinessByUTM for development
  */
-export async function fetchBusinessByUTMDev(utm: string): Promise<PurchasePageData | null> {
+export async function fetchBusinessByUTMDev(
+  utm: string
+): Promise<PurchasePageData | null> {
   // Simulate async behavior
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 500))
 
   const tokenData = MOCK_UTM_TOKENS[utm]
   if (!tokenData) {
@@ -131,7 +137,7 @@ export async function createCheckoutSessionDev(
   utm: string
 ): Promise<CheckoutSession | null> {
   // Simulate async behavior
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
   const business = MOCK_BUSINESSES[businessId]
   if (!business) {
@@ -140,7 +146,7 @@ export async function createCheckoutSessionDev(
 
   // Generate mock session data
   const sessionId = `cs_test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-  
+
   return {
     id: sessionId,
     url: `/test-purchase/checkout-simulator?session=${sessionId}&business=${businessId}`,
@@ -153,14 +159,14 @@ export async function createCheckoutSessionDev(
  */
 export async function markUTMAsUsedDev(utm: string): Promise<boolean> {
   // Simulate async behavior
-  await new Promise(resolve => setTimeout(resolve, 200))
+  await new Promise((resolve) => setTimeout(resolve, 200))
 
   const tokenData = MOCK_UTM_TOKENS[utm]
   if (tokenData) {
     tokenData.used = true
     return true
   }
-  
+
   return false
 }
 
@@ -168,7 +174,7 @@ export async function markUTMAsUsedDev(utm: string): Promise<boolean> {
  * Enhanced report preview for development testing
  */
 export function getReportPreviewDev(business: Business): ReportPreviewData {
-  const reportData = business.reportData as any || {}
+  const reportData = (business.reportData as any) || {}
   const scores = reportData.scores || {}
 
   const domain = business.domain

@@ -31,7 +31,7 @@ export default function CheckoutSimulator() {
     setIsProcessing(true)
 
     // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     // Redirect to success page
     router.push(`/purchase/success?session_id=${sessionId}&dev=true`)
@@ -57,7 +57,8 @@ export default function CheckoutSimulator() {
           {/* Warning Banner */}
           <div className="bg-accent/10 border-b border-accent/20 p-6">
             <p className="text-[17px] text-accent">
-              <strong>Test Mode:</strong> This is a simulated checkout for development. No real payment will be processed.
+              <strong>Test Mode:</strong> This is a simulated checkout for
+              development. No real payment will be processed.
             </p>
           </div>
 
@@ -109,7 +110,9 @@ export default function CheckoutSimulator() {
                 className="form-input opacity-60"
                 readOnly
               />
-              <p className="text-[15px] opacity-40 mt-2">Test card number (read-only)</p>
+              <p className="text-[15px] opacity-40 mt-2">
+                Test card number (read-only)
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -149,7 +152,9 @@ export default function CheckoutSimulator() {
             <div className="border-t border-white/10 pt-6 mt-8">
               <div className="flex justify-between items-center mb-6">
                 <span className="text-[24px] font-light">Total</span>
-                <span className="text-[32px] font-light text-accent">$99.00</span>
+                <span className="text-[32px] font-light text-accent">
+                  $99.00
+                </span>
               </div>
             </div>
 
@@ -161,9 +166,25 @@ export default function CheckoutSimulator() {
             >
               {isProcessing ? (
                 <span className="flex items-center justify-center opacity-60">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Processing...
                 </span>

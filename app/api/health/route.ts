@@ -10,7 +10,7 @@ async function healthCheck(req: NextRequest) {
     database: 'unknown',
     version: process.env.NEXT_PUBLIC_RELEASE || 'development',
   }
-  
+
   try {
     // Check database connectivity
     await monitorDbQuery('health_check', async () => {
@@ -21,9 +21,9 @@ async function healthCheck(req: NextRequest) {
     checks.database = 'unhealthy'
     console.error('Database health check failed:', error)
   }
-  
+
   const isHealthy = checks.database === 'healthy'
-  
+
   return NextResponse.json(checks, {
     status: isHealthy ? 200 : 503,
   })

@@ -9,13 +9,13 @@ interface CookieSettingsButtonProps {
   className?: string
 }
 
-export function CookieSettingsButton({ 
-  variant = 'ghost', 
+export function CookieSettingsButton({
+  variant = 'ghost',
   size = 'sm',
-  className 
+  className,
 }: CookieSettingsButtonProps) {
   const { openPreferences } = useConsent()
-  
+
   return (
     <Button
       variant={variant}

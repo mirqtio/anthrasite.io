@@ -1,4 +1,10 @@
-import { trackCheckoutSession, markSessionCompleted, isSessionRecoverable, getAbandonedCartByToken, markCartRecovered } from '../tracker'
+import {
+  trackCheckoutSession,
+  markSessionCompleted,
+  isSessionRecoverable,
+  getAbandonedCartByToken,
+  markCartRecovered,
+} from '../tracker'
 import { prisma } from '@/lib/db'
 import type { Stripe } from 'stripe'
 
@@ -74,7 +80,9 @@ describe('Abandoned Cart Tracker', () => {
         expires_at: Math.floor(Date.now() / 1000) + 86400,
       } as Stripe.Checkout.Session
 
-      ;(prisma.abandonedCart.create as jest.Mock).mockRejectedValue(new Error('Database error'))
+      ;(prisma.abandonedCart.create as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
       const result = await trackCheckoutSession({
         session: mockSession,
@@ -90,7 +98,9 @@ describe('Abandoned Cart Tracker', () => {
     it('should delete abandoned cart record when session is completed', async () => {
       const stripeSessionId = 'cs_test_123'
 
-      ;(prisma.abandonedCart.deleteMany as jest.Mock).mockResolvedValue({ count: 1 })
+      ;(prisma.abandonedCart.deleteMany as jest.Mock).mockResolvedValue({
+        count: 1,
+      })
 
       const result = await markSessionCompleted(stripeSessionId)
 
@@ -101,7 +111,9 @@ describe('Abandoned Cart Tracker', () => {
     })
 
     it('should handle errors gracefully', async () => {
-      ;(prisma.abandonedCart.deleteMany as jest.Mock).mockRejectedValue(new Error('Database error'))
+      ;(prisma.abandonedCart.deleteMany as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
       const result = await markSessionCompleted('cs_test_123')
 
@@ -114,7 +126,6 @@ describe('Abandoned Cart Tracker', () => {
     it('should return true for recoverable sessions', async () => {
       const futureDate = new Date()
       futureDate.setHours(futureDate.getHours() + 24)
-
       ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue({
         id: 'cart-123',
         stripeSessionId: 'cs_test_123',
@@ -130,7 +141,6 @@ describe('Abandoned Cart Tracker', () => {
     it('should return false for expired sessions', async () => {
       const pastDate = new Date()
       pastDate.setHours(pastDate.getHours() - 1)
-
       ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue({
         id: 'cart-123',
         stripeSessionId: 'cs_test_123',
@@ -146,7 +156,6 @@ describe('Abandoned Cart Tracker', () => {
     it('should return false for recovered sessions', async () => {
       const futureDate = new Date()
       futureDate.setHours(futureDate.getHours() + 24)
-
       ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue({
         id: 'cart-123',
         stripeSessionId: 'cs_test_123',
@@ -180,7 +189,9 @@ describe('Abandoned Cart Tracker', () => {
         },
       }
 
-      ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue(mockCart)
+      ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue(
+        mockCart
+      )
 
       const result = await getAbandonedCartByToken('recovery-token-123')
 
@@ -223,7 +234,9 @@ describe('Abandoned Cart Tracker', () => {
     })
 
     it('should handle errors gracefully', async () => {
-      ;(prisma.abandonedCart.update as jest.Mock).mockRejectedValue(new Error('Database error'))
+      ;(prisma.abandonedCart.update as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
       const result = await markCartRecovered('cart-123')
 

@@ -7,21 +7,21 @@ export interface AbandonmentMetrics {
   totalRecovered: number
   abandonmentRate: number
   recoveryRate: number
-  
+
   // Revenue metrics
   totalRevenueLost: number
   totalRevenueRecovered: number
   averageOrderValue: number
-  
+
   // Email metrics
   totalEmailsSent: number
   emailOpenRate: number
   emailClickRate: number
-  
+
   // Time-based metrics
   averageTimeToRecovery: number
   averageTimeToAbandonment: number
-  
+
   // Trends (compared to previous period)
   abandonmentTrend: number
   recoveryTrend: number
@@ -38,13 +38,15 @@ export interface AbandonmentBreakdown {
 /**
  * Get comprehensive abandonment metrics
  */
-export async function getAbandonmentMetrics(days: number = 30): Promise<AbandonmentMetrics> {
+export async function getAbandonmentMetrics(
+  days: number = 30
+): Promise<AbandonmentMetrics> {
   const startDate = new Date()
   startDate.setDate(startDate.getDate() - days)
-  
+
   const previousStartDate = new Date()
-  previousStartDate.setDate(previousStartDate.getDate() - (days * 2))
-  
+  previousStartDate.setDate(previousStartDate.getDate() - days * 2)
+
   try {
     // Current period metrics
     const [
@@ -76,29 +78,30 @@ export async function getAbandonmentMetrics(days: number = 30): Promise<Abandonm
         where: { createdAt: { gte: startDate }, status: 'completed' },
       }),
     ])
-    
+
     // Previous period metrics for trends
-    const [previousAbandoned, previousRecovered, previousRevenue] = await Promise.all([
-      prisma.abandonedCart.count({
-        where: {
-          createdAt: { gte: previousStartDate, lt: startDate },
-        },
-      }),
-      prisma.abandonedCart.count({
-        where: {
-          createdAt: { gte: previousStartDate, lt: startDate },
-          recovered: true,
-        },
-      }),
-      prisma.abandonedCart.aggregate({
-        where: {
-          createdAt: { gte: previousStartDate, lt: startDate },
-          recovered: true,
-        },
-        _sum: { amount: true },
-      }),
-    ])
-    
+    const [previousAbandoned, previousRecovered, previousRevenue] =
+      await Promise.all([
+        prisma.abandonedCart.count({
+          where: {
+            createdAt: { gte: previousStartDate, lt: startDate },
+          },
+        }),
+        prisma.abandonedCart.count({
+          where: {
+            createdAt: { gte: previousStartDate, lt: startDate },
+            recovered: true,
+          },
+        }),
+        prisma.abandonedCart.aggregate({
+          where: {
+            createdAt: { gte: previousStartDate, lt: startDate },
+            recovered: true,
+          },
+          _sum: { amount: true },
+        }),
+      ])
+
     // Calculate recovery times
     const recoveredCarts = await prisma.abandonedCart.findMany({
       where: {
@@ -111,36 +114,48 @@ export async function getAbandonmentMetrics(days: number = 30): Promise<Abandonm
         recoveredAt: true,
       },
     })
-    
+
     const recoveryTimes = recoveredCarts
-      .filter(cart => cart.recoveredAt)
-      .map(cart => cart.recoveredAt!.getTime() - cart.createdAt.getTime())
-    
-    const averageTimeToRecovery = recoveryTimes.length > 0
-      ? recoveryTimes.reduce((a, b) => a + b, 0) / recoveryTimes.length / (1000 * 60 * 60) // hours
-      : 0
-    
+      .filter((cart) => cart.recoveredAt)
+      .map((cart) => cart.recoveredAt!.getTime() - cart.createdAt.getTime())
+
+    const averageTimeToRecovery =
+      recoveryTimes.length > 0
+        ? recoveryTimes.reduce((a, b) => a + b, 0) /
+          recoveryTimes.length /
+          (1000 * 60 * 60) // hours
+        : 0
+
     // Calculate metrics
     const totalCarts = currentAbandoned + totalPurchases
-    const abandonmentRate = totalCarts > 0 ? (currentAbandoned / totalCarts) * 100 : 0
-    const recoveryRate = currentEmailsSent > 0 ? (currentRecovered / currentEmailsSent) * 100 : 0
+    const abandonmentRate =
+      totalCarts > 0 ? (currentAbandoned / totalCarts) * 100 : 0
+    const recoveryRate =
+      currentEmailsSent > 0 ? (currentRecovered / currentEmailsSent) * 100 : 0
     const totalRevenueLost = (currentRevenueLost._sum.amount || 0) / 100
-    const totalRevenueRecovered = (currentRevenueRecovered._sum.amount || 0) / 100
-    const averageOrderValue = currentAbandoned > 0 
-      ? (totalRevenueLost + totalRevenueRecovered) / currentAbandoned 
-      : 0
-    
+    const totalRevenueRecovered =
+      (currentRevenueRecovered._sum.amount || 0) / 100
+    const averageOrderValue =
+      currentAbandoned > 0
+        ? (totalRevenueLost + totalRevenueRecovered) / currentAbandoned
+        : 0
+
     // Calculate trends
-    const abandonmentTrend = previousAbandoned > 0 
-      ? ((currentAbandoned - previousAbandoned) / previousAbandoned) * 100 
-      : 0
-    const recoveryTrend = previousRecovered > 0 
-      ? ((currentRecovered - previousRecovered) / previousRecovered) * 100 
-      : 0
-    const revenueTrend = previousRevenue._sum.amount && previousRevenue._sum.amount > 0
-      ? ((totalRevenueRecovered - (previousRevenue._sum.amount / 100)) / (previousRevenue._sum.amount / 100)) * 100
-      : 0
-    
+    const abandonmentTrend =
+      previousAbandoned > 0
+        ? ((currentAbandoned - previousAbandoned) / previousAbandoned) * 100
+        : 0
+    const recoveryTrend =
+      previousRecovered > 0
+        ? ((currentRecovered - previousRecovered) / previousRecovered) * 100
+        : 0
+    const revenueTrend =
+      previousRevenue._sum.amount && previousRevenue._sum.amount > 0
+        ? ((totalRevenueRecovered - previousRevenue._sum.amount / 100) /
+            (previousRevenue._sum.amount / 100)) *
+          100
+        : 0
+
     return {
       totalCarts,
       totalAbandoned: currentAbandoned,
@@ -168,10 +183,12 @@ export async function getAbandonmentMetrics(days: number = 30): Promise<Abandonm
 /**
  * Get abandonment breakdown by various dimensions
  */
-export async function getAbandonmentBreakdown(days: number = 30): Promise<AbandonmentBreakdown> {
+export async function getAbandonmentBreakdown(
+  days: number = 30
+): Promise<AbandonmentBreakdown> {
   const startDate = new Date()
   startDate.setDate(startDate.getDate() - days)
-  
+
   try {
     const abandonedCarts = await prisma.abandonedCart.findMany({
       where: { createdAt: { gte: startDate } },
@@ -182,22 +199,33 @@ export async function getAbandonmentBreakdown(days: number = 30): Promise<Abando
         recoveredAt: true,
       },
     })
-    
+
     // By hour of day
     const byHour = Array.from({ length: 24 }, (_, i) => ({ hour: i, count: 0 }))
-    abandonedCarts.forEach(cart => {
+    abandonedCarts.forEach((cart) => {
       const hour = cart.createdAt.getHours()
       byHour[hour].count++
     })
-    
+
     // By day of week
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    const byDay = Array.from({ length: 7 }, (_, i) => ({ day: dayNames[i], count: 0 }))
-    abandonedCarts.forEach(cart => {
+    const dayNames = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ]
+    const byDay = Array.from({ length: 7 }, (_, i) => ({
+      day: dayNames[i],
+      count: 0,
+    }))
+    abandonedCarts.forEach((cart) => {
       const day = cart.createdAt.getDay()
       byDay[day].count++
     })
-    
+
     // By amount range
     const amountRanges = [
       { range: '$0-50', min: 0, max: 5000, count: 0 },
@@ -205,11 +233,13 @@ export async function getAbandonmentBreakdown(days: number = 30): Promise<Abando
       { range: '$100-200', min: 10000, max: 20000, count: 0 },
       { range: '$200+', min: 20000, max: Infinity, count: 0 },
     ]
-    abandonedCarts.forEach(cart => {
-      const range = amountRanges.find(r => cart.amount >= r.min && cart.amount < r.max)
+    abandonedCarts.forEach((cart) => {
+      const range = amountRanges.find(
+        (r) => cart.amount >= r.min && cart.amount < r.max
+      )
       if (range) range.count++
     })
-    
+
     // By recovery time
     const recoveryTimeRanges = [
       { hours: '0-6h', count: 0 },
@@ -218,15 +248,17 @@ export async function getAbandonmentBreakdown(days: number = 30): Promise<Abando
       { hours: '24h+', count: 0 },
     ]
     abandonedCarts
-      .filter(cart => cart.recovered && cart.recoveredAt)
-      .forEach(cart => {
-        const hoursToRecovery = (cart.recoveredAt!.getTime() - cart.createdAt.getTime()) / (1000 * 60 * 60)
+      .filter((cart) => cart.recovered && cart.recoveredAt)
+      .forEach((cart) => {
+        const hoursToRecovery =
+          (cart.recoveredAt!.getTime() - cart.createdAt.getTime()) /
+          (1000 * 60 * 60)
         if (hoursToRecovery < 6) recoveryTimeRanges[0].count++
         else if (hoursToRecovery < 12) recoveryTimeRanges[1].count++
         else if (hoursToRecovery < 24) recoveryTimeRanges[2].count++
         else recoveryTimeRanges[3].count++
       })
-    
+
     return {
       byHour,
       byDay,
@@ -265,17 +297,17 @@ export async function getTopAbandonedBusinesses(limit: number = 10) {
       },
       take: limit,
     })
-    
+
     // Get business details
-    const businessIds = topAbandoned.map(item => item.businessId)
+    const businessIds = topAbandoned.map((item) => item.businessId)
     const businesses = await prisma.business.findMany({
       where: { id: { in: businessIds } },
       select: { id: true, name: true, domain: true },
     })
-    
-    const businessMap = new Map(businesses.map(b => [b.id, b]))
-    
-    return topAbandoned.map(item => ({
+
+    const businessMap = new Map(businesses.map((b) => [b.id, b]))
+
+    return topAbandoned.map((item) => ({
       business: businessMap.get(item.businessId),
       abandonedCount: item._count.id,
       totalRevenueLost: (item._sum.amount || 0) / 100,

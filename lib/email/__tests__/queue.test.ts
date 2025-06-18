@@ -37,8 +37,16 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id1 = emailQueue.add('orderConfirmation', { to: 'test1@example.com' }, metadata)
-      const id2 = emailQueue.add('orderConfirmation', { to: 'test2@example.com' }, metadata)
+      const id1 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test1@example.com' },
+        metadata
+      )
+      const id2 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test2@example.com' },
+        metadata
+      )
 
       expect(id1).not.toBe(id2)
       expect(emailQueue.getAllItems()).toHaveLength(2)
@@ -52,7 +60,11 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id = emailQueue.add('orderConfirmation', { to: 'test@example.com' }, metadata)
+      const id = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test@example.com' },
+        metadata
+      )
       emailQueue.updateAfterAttempt(id, true)
 
       expect(emailQueue.getAllItems()).toHaveLength(0)
@@ -64,7 +76,11 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id = emailQueue.add('orderConfirmation', { to: 'test@example.com' }, metadata)
+      const id = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test@example.com' },
+        metadata
+      )
       emailQueue.updateAfterAttempt(id, false, 'Network error')
 
       const items = emailQueue.getAllItems()
@@ -79,7 +95,11 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id = emailQueue.add('orderConfirmation', { to: 'test@example.com' }, metadata)
+      const id = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test@example.com' },
+        metadata
+      )
 
       // Simulate max attempts
       for (let i = 0; i < emailConfig.retry.maxAttempts; i++) {
@@ -98,7 +118,11 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id = emailQueue.add('orderConfirmation', { to: 'test@example.com' }, metadata)
+      const id = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test@example.com' },
+        metadata
+      )
 
       // First retry - 1 second
       emailQueue.updateAfterAttempt(id, false)
@@ -133,8 +157,16 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id1 = emailQueue.add('orderConfirmation', { to: 'test1@example.com' }, metadata)
-      const id2 = emailQueue.add('orderConfirmation', { to: 'test2@example.com' }, metadata)
+      const id1 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test1@example.com' },
+        metadata
+      )
+      const id2 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test2@example.com' },
+        metadata
+      )
 
       // Mark first as ready for retry
       emailQueue.updateAfterAttempt(id1, false)
@@ -152,7 +184,11 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id = emailQueue.add('orderConfirmation', { to: 'test@example.com' }, metadata)
+      const id = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test@example.com' },
+        metadata
+      )
 
       // Max out attempts
       for (let i = 0; i < emailConfig.retry.maxAttempts; i++) {
@@ -169,7 +205,11 @@ describe('Email Queue', () => {
         timestamp: new Date(),
       }
 
-      const id = emailQueue.add('orderConfirmation', { to: 'test@example.com' }, metadata)
+      const id = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test@example.com' },
+        metadata
+      )
       emailQueue.updateAfterAttempt(id, false)
 
       // Don't advance time
@@ -186,15 +226,27 @@ describe('Email Queue', () => {
       }
 
       // Add various items
-      const id1 = emailQueue.add('orderConfirmation', { to: 'test1@example.com' }, metadata)
-      const id2 = emailQueue.add('reportReady', { to: 'test2@example.com' }, {
-        ...metadata,
-        template: 'reportReady',
-      })
-      const id3 = emailQueue.add('welcomeEmail', { to: 'test3@example.com' }, {
-        ...metadata,
-        template: 'welcomeEmail',
-      })
+      const id1 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test1@example.com' },
+        metadata
+      )
+      const id2 = emailQueue.add(
+        'reportReady',
+        { to: 'test2@example.com' },
+        {
+          ...metadata,
+          template: 'reportReady',
+        }
+      )
+      const id3 = emailQueue.add(
+        'welcomeEmail',
+        { to: 'test3@example.com' },
+        {
+          ...metadata,
+          template: 'welcomeEmail',
+        }
+      )
 
       // Mark one as failed
       for (let i = 0; i < emailConfig.retry.maxAttempts; i++) {
@@ -225,7 +277,9 @@ describe('Email Queue', () => {
       // Advance timer to trigger processing
       jest.advanceTimersByTime(30000)
 
-      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Processing 1 queued emails'))
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Processing 1 queued emails')
+      )
 
       consoleSpy.mockRestore()
     })

@@ -18,13 +18,13 @@ export const emailConfig = {
     email: process.env.SENDGRID_FROM_EMAIL || 'noreply@anthrasite.io',
     name: process.env.SENDGRID_FROM_NAME || 'Anthrasite',
   },
-  
+
   // Reply-to configuration
   replyTo: {
     email: process.env.SENDGRID_REPLY_TO_EMAIL || 'support@anthrasite.io',
     name: process.env.SENDGRID_REPLY_TO_NAME || 'Anthrasite Support',
   },
-  
+
   // Email templates configuration
   templates: {
     orderConfirmation: {
@@ -37,10 +37,10 @@ export const emailConfig = {
     },
     welcomeEmail: {
       subject: 'Welcome to Anthrasite',
-      preheader: 'Thank you for joining us. Here\'s what happens next.',
+      preheader: "Thank you for joining us. Here's what happens next.",
     },
   },
-  
+
   // Retry configuration
   retry: {
     maxAttempts: 3,
@@ -48,12 +48,14 @@ export const emailConfig = {
     maxDelay: 60000, // 1 minute
     backoffMultiplier: 2,
   },
-  
+
   // Feature flags
   features: {
     trackOpens: true,
     trackClicks: true,
-    sandboxMode: process.env.NODE_ENV === 'development' && process.env.SENDGRID_SANDBOX_MODE !== 'false',
+    sandboxMode:
+      process.env.NODE_ENV === 'development' &&
+      process.env.SENDGRID_SANDBOX_MODE !== 'false',
   },
 }
 

@@ -8,7 +8,7 @@ async function handleWaitlistSignup(request: NextRequest) {
   try {
     const body = await request.json()
     const { domain, email, referralSource } = body
-    
+
     // Validate required fields
     if (!domain || !email) {
       return NextResponse.json(
@@ -16,7 +16,7 @@ async function handleWaitlistSignup(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // Validate email format
     if (!validateEmail(email)) {
       return NextResponse.json(
@@ -24,10 +24,10 @@ async function handleWaitlistSignup(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // Validate domain
     const domainValidation = await validateDomain(domain)
-    
+
     if (!domainValidation.isValid) {
       return NextResponse.json(
         {
@@ -37,21 +37,18 @@ async function handleWaitlistSignup(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // Add to waitlist
     const result = await addToWaitlist({
       domain: domainValidation.normalizedDomain,
       email,
       referralSource,
     })
-    
+
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: result.error }, { status: 500 })
     }
-    
+
     return NextResponse.json({
       success: true,
       position: result.position,
@@ -59,7 +56,7 @@ async function handleWaitlistSignup(request: NextRequest) {
     })
   } catch (error) {
     console.error('Waitlist signup error:', error)
-    
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -71,30 +68,27 @@ async function handleGetPosition(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const domain = searchParams.get('domain')
-    
+
     if (!domain) {
-      return NextResponse.json(
-        { error: 'Domain is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Domain is required' }, { status: 400 })
     }
-    
+
     const position = await getWaitlistPosition(domain)
-    
+
     if (!position) {
       return NextResponse.json(
         { error: 'Domain not found in waitlist' },
         { status: 404 }
       )
     }
-    
+
     return NextResponse.json({
       success: true,
       position,
     })
   } catch (error) {
     console.error('Get position error:', error)
-    
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

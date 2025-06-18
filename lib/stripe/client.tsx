@@ -4,7 +4,9 @@ import { loadStripe, Stripe } from '@stripe/stripe-js'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 // Initialize Stripe client
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+)
 
 interface StripeContextValue {
   stripe: Stripe | null
@@ -22,7 +24,7 @@ export function StripeProvider({ children }: { children: React.ReactNode }) {
   const [stripe, setStripe] = useState<Stripe | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
-  
+
   useEffect(() => {
     stripePromise
       .then((stripe) => {
@@ -34,7 +36,7 @@ export function StripeProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false)
       })
   }, [])
-  
+
   return (
     <StripeContext.Provider value={{ stripe, isLoading, error }}>
       {children}

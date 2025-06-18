@@ -26,32 +26,28 @@ export default function LinkExpiredPage() {
               />
             </svg>
           </div>
-          
+
           <h1 className="text-2xl font-bold text-anthracite-black">
             Link Expired
           </h1>
-          
+
           <p className="text-anthracite-black/60">
-            This purchase link has expired. Purchase links are valid for 24 hours
-            from when they were sent.
+            This purchase link has expired. Purchase links are valid for 24
+            hours from when they were sent.
           </p>
-          
+
           <p className="text-anthracite-black/60">
             Please contact the sender to request a new link, or return to our
             homepage to learn more about Anthrasite.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <Link href="/">
-              <Button variant="primary">
-                Return to Homepage
-              </Button>
+              <Button variant="primary">Return to Homepage</Button>
             </Link>
-            
+
             <Link href="/contact">
-              <Button variant="secondary">
-                Contact Support
-              </Button>
+              <Button variant="secondary">Contact Support</Button>
             </Link>
           </div>
         </div>

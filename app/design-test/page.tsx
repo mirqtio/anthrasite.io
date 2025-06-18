@@ -17,25 +17,33 @@ export default function DesignTestPage() {
             <h2 className="text-2xl font-medium mb-8">Typography</h2>
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-anthracite-black/60 mb-1">Hero (64px/40px mobile)</p>
+                <p className="text-sm text-anthracite-black/60 mb-1">
+                  Hero (64px/40px mobile)
+                </p>
                 <h1 className="text-hero-mobile md:text-hero font-light text-anthracite-black">
                   Your website has untapped potential
                 </h1>
               </div>
               <div>
-                <p className="text-sm text-anthracite-black/60 mb-1">Subheadline (18px)</p>
+                <p className="text-sm text-anthracite-black/60 mb-1">
+                  Subheadline (18px)
+                </p>
                 <p className="text-subheadline text-anthracite-black/60">
                   Join the waitlist for automated website audits
                 </p>
               </div>
               <div>
-                <p className="text-sm text-anthracite-black/60 mb-1">Business Name (32px)</p>
+                <p className="text-sm text-anthracite-black/60 mb-1">
+                  Business Name (32px)
+                </p>
                 <p className="text-business-name font-medium text-anthracite-black">
                   Acme Corporation
                 </p>
               </div>
               <div>
-                <p className="text-sm text-anthracite-black/60 mb-1">Value Prop (48px)</p>
+                <p className="text-sm text-anthracite-black/60 mb-1">
+                  Value Prop (48px)
+                </p>
                 <p className="text-value-prop font-light text-anthracite-blue">
                   $2,400
                 </p>
@@ -72,17 +80,25 @@ export default function DesignTestPage() {
             <div className="space-y-4">
               <div className="flex flex-wrap gap-4">
                 <Button size="lg">Get Your Report for $99</Button>
-                <Button size="lg" variant="secondary">Secondary Button</Button>
-                <Button size="lg" variant="outline">Outline Button</Button>
+                <Button size="lg" variant="secondary">
+                  Secondary Button
+                </Button>
+                <Button size="lg" variant="outline">
+                  Outline Button
+                </Button>
               </div>
               <div className="flex flex-wrap gap-4">
                 <Button size="md">Medium Button</Button>
                 <Button size="sm">Small Button</Button>
               </div>
               <div>
-                <p className="text-sm text-anthracite-black/60 mb-2">Full Width (Mobile)</p>
+                <p className="text-sm text-anthracite-black/60 mb-2">
+                  Full Width (Mobile)
+                </p>
                 <div className="max-w-md">
-                  <Button size="lg" fullWidth>Get Your Report for $99</Button>
+                  <Button size="lg" fullWidth>
+                    Get Your Report for $99
+                  </Button>
                 </div>
               </div>
             </div>
@@ -138,7 +154,8 @@ export default function DesignTestPage() {
           <section>
             <h2 className="text-2xl font-medium mb-8">Help Widget</h2>
             <p className="text-anthracite-black/60 mb-4">
-              The help widget appears in the bottom right corner. Look for the blue circle with "?" icon.
+              The help widget appears in the bottom right corner. Look for the
+              blue circle with "?" icon.
             </p>
             <Button onClick={() => setShowWidget(!showWidget)}>
               {showWidget ? 'Help widget is visible' : 'Show help widget'}
@@ -149,7 +166,9 @@ export default function DesignTestPage() {
           <section>
             <h2 className="text-2xl font-medium mb-8">Grain Texture</h2>
             <div className="relative grain-texture bg-white border border-anthracite-gray-200 rounded h-48 flex items-center justify-center">
-              <p className="text-anthracite-black/60">Subtle 2% grain texture overlay</p>
+              <p className="text-anthracite-black/60">
+                Subtle 2% grain texture overlay
+              </p>
             </div>
           </section>
         </div>

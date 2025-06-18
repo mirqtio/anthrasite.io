@@ -12,36 +12,36 @@ export interface AlertRule {
 class AlertManager {
   private rules: Map<string, AlertRule> = new Map()
   private lastAlerted: Map<string, number> = new Map()
-  
+
   addRule(rule: AlertRule) {
     this.rules.set(rule.name, rule)
   }
-  
+
   removeRule(name: string) {
     this.rules.delete(name)
   }
-  
+
   async checkRules() {
     for (const [name, rule] of this.rules) {
       try {
         // Check cooldown
         const lastAlert = this.lastAlerted.get(name) || 0
         const cooldown = rule.cooldown || 300000 // 5 minutes default
-        
+
         if (Date.now() - lastAlert < cooldown) {
           continue
         }
-        
+
         // Check condition
         const shouldAlert = await rule.condition()
-        
+
         if (shouldAlert) {
           sendAlert(rule.alertType, {
             rule: name,
             message: rule.message,
             ...rule.metadata,
           })
-          
+
           this.lastAlerted.set(name, Date.now())
         }
       } catch (error) {
@@ -49,8 +49,9 @@ class AlertManager {
       }
     }
   }
-  
-  startMonitoring(interval: number = 60000) { // Check every minute
+
+  startMonitoring(interval: number = 60000) {
+    // Check every minute
     setInterval(() => {
       this.checkRules()
     }, interval)
@@ -73,7 +74,7 @@ export const setupDefaultAlerts = () => {
     message: 'Database connection pool near exhaustion',
     cooldown: 600000, // 10 minutes
   })
-  
+
   // Payment failure rate monitoring
   alertManager.addRule({
     name: 'high_payment_failure_rate',
@@ -89,7 +90,7 @@ export const setupDefaultAlerts = () => {
       window: '1 hour',
     },
   })
-  
+
   // Email delivery monitoring
   alertManager.addRule({
     name: 'email_delivery_failures',
@@ -102,7 +103,7 @@ export const setupDefaultAlerts = () => {
     message: 'High email bounce rate detected',
     cooldown: 1800000, // 30 minutes
   })
-  
+
   // Start monitoring
   if (process.env.NODE_ENV === 'production') {
     alertManager.startMonitoring()
@@ -110,9 +111,12 @@ export const setupDefaultAlerts = () => {
 }
 
 // Helper functions for common monitoring scenarios
-export const monitorDatabasePool = (currentConnections: number, maxConnections: number) => {
+export const monitorDatabasePool = (
+  currentConnections: number,
+  maxConnections: number
+) => {
   const usage = (currentConnections / maxConnections) * 100
-  
+
   if (usage > 90) {
     sendAlert(AlertType.DATABASE_CONNECTION_FAILED, {
       type: 'pool_near_exhaustion',
@@ -123,11 +127,14 @@ export const monitorDatabasePool = (currentConnections: number, maxConnections: 
   }
 }
 
-export const monitorPaymentSuccess = (successCount: number, totalCount: number) => {
+export const monitorPaymentSuccess = (
+  successCount: number,
+  totalCount: number
+) => {
   if (totalCount === 0) return
-  
+
   const successRate = (successCount / totalCount) * 100
-  
+
   if (successRate < 90) {
     sendAlert(AlertType.PAYMENT_FAILED, {
       type: 'low_success_rate',
@@ -138,11 +145,15 @@ export const monitorPaymentSuccess = (successCount: number, totalCount: number) 
   }
 }
 
-export const monitorEmailDelivery = (delivered: number, bounced: number, total: number) => {
+export const monitorEmailDelivery = (
+  delivered: number,
+  bounced: number,
+  total: number
+) => {
   if (total === 0) return
-  
+
   const bounceRate = (bounced / total) * 100
-  
+
   if (bounceRate > 5) {
     sendAlert(AlertType.EMAIL_FAILED, {
       type: 'high_bounce_rate',
@@ -154,12 +165,15 @@ export const monitorEmailDelivery = (delivered: number, bounced: number, total: 
   }
 }
 
-export const monitorUtmValidation = (validCount: number, invalidCount: number) => {
+export const monitorUtmValidation = (
+  validCount: number,
+  invalidCount: number
+) => {
   const total = validCount + invalidCount
   if (total === 0) return
-  
+
   const failureRate = (invalidCount / total) * 100
-  
+
   if (failureRate > 20) {
     sendAlert(AlertType.UTM_VALIDATION_FAILED, {
       type: 'high_failure_rate',

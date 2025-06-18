@@ -23,28 +23,29 @@ export interface RateLimitResult {
 export function checkRateLimit(ip: string): RateLimitResult {
   const now = Date.now()
   const windowStart = now - RATE_LIMIT_WINDOW
-  
+
   // Get existing requests for this IP
   const requests = rateLimitCache.get(ip) || []
-  
+
   // Filter out requests outside the current window
-  const recentRequests = requests.filter(timestamp => timestamp > windowStart)
-  
+  const recentRequests = requests.filter((timestamp) => timestamp > windowStart)
+
   // Check if limit exceeded
   const allowed = recentRequests.length < RATE_LIMIT_MAX_REQUESTS
-  
+
   if (allowed) {
     // Add current request
     recentRequests.push(now)
     rateLimitCache.set(ip, recentRequests)
   }
-  
+
   return {
     allowed,
     remaining: Math.max(0, RATE_LIMIT_MAX_REQUESTS - recentRequests.length),
-    resetAt: recentRequests.length > 0 
-      ? recentRequests[0] + RATE_LIMIT_WINDOW 
-      : now + RATE_LIMIT_WINDOW,
+    resetAt:
+      recentRequests.length > 0
+        ? recentRequests[0] + RATE_LIMIT_WINDOW
+        : now + RATE_LIMIT_WINDOW,
   }
 }
 
@@ -57,10 +58,10 @@ export function withRateLimit(
   return async (req: Request) => {
     // Extract IP from request
     const ip = getClientIp(req)
-    
+
     // Check rate limit
     const { allowed, remaining, resetAt } = checkRateLimit(ip)
-    
+
     if (!allowed) {
       return new Response(
         JSON.stringify({
@@ -79,15 +80,18 @@ export function withRateLimit(
         }
       )
     }
-    
+
     // Execute handler
     const response = await handler(req)
-    
+
     // Add rate limit headers
-    response.headers.set('X-RateLimit-Limit', RATE_LIMIT_MAX_REQUESTS.toString())
+    response.headers.set(
+      'X-RateLimit-Limit',
+      RATE_LIMIT_MAX_REQUESTS.toString()
+    )
     response.headers.set('X-RateLimit-Remaining', remaining.toString())
     response.headers.set('X-RateLimit-Reset', resetAt.toString())
-    
+
     return response
   }
 }
@@ -98,18 +102,18 @@ export function withRateLimit(
 function getClientIp(req: Request): string {
   // Check various headers that might contain the real IP
   const headers = req.headers
-  
+
   // Vercel forwards the real IP
   const forwardedFor = headers.get('x-forwarded-for')
   if (forwardedFor) {
     return forwardedFor.split(',')[0].trim()
   }
-  
+
   const realIp = headers.get('x-real-ip')
   if (realIp) {
     return realIp
   }
-  
+
   // Fallback to a default
   return '127.0.0.1'
 }
@@ -127,15 +131,16 @@ export function resetRateLimit(ip: string): void {
 export function getRateLimitStatus(ip: string): RateLimitResult {
   const now = Date.now()
   const windowStart = now - RATE_LIMIT_WINDOW
-  
+
   const requests = rateLimitCache.get(ip) || []
-  const recentRequests = requests.filter(timestamp => timestamp > windowStart)
-  
+  const recentRequests = requests.filter((timestamp) => timestamp > windowStart)
+
   return {
     allowed: recentRequests.length < RATE_LIMIT_MAX_REQUESTS,
     remaining: Math.max(0, RATE_LIMIT_MAX_REQUESTS - recentRequests.length),
-    resetAt: recentRequests.length > 0 
-      ? recentRequests[0] + RATE_LIMIT_WINDOW 
-      : now + RATE_LIMIT_WINDOW,
+    resetAt:
+      recentRequests.length > 0
+        ? recentRequests[0] + RATE_LIMIT_WINDOW
+        : now + RATE_LIMIT_WINDOW,
   }
 }

@@ -5,7 +5,10 @@ import { stripe, webhookSecret } from '@/lib/stripe/config'
 import { prisma } from '@/lib/db'
 import { handleStripeError } from '@/lib/stripe/utils'
 import { LRUCache } from 'lru-cache'
-import { sendOrderConfirmation, sendWelcomeEmail } from '@/lib/email/email-service'
+import {
+  sendOrderConfirmation,
+  sendWelcomeEmail,
+} from '@/lib/email/email-service'
 import { AbandonedCartService } from '@/lib/abandoned-cart/service'
 
 // Idempotency cache to prevent duplicate processing
@@ -36,19 +39,23 @@ async function retryWithBackoff<T>(
     return await fn()
   } catch (error: any) {
     if (retries === 0) throw error
-    
+
     // Check if error is retryable
-    const isRetryable = 
+    const isRetryable =
       error.code === 'ECONNREFUSED' ||
       error.code === 'ETIMEDOUT' ||
       error.code === 'ENOTFOUND' ||
       error.message?.includes('network') ||
       error.message?.includes('timeout')
-    
+
     if (!isRetryable) throw error
-    
-    console.log(`Retrying after error: ${error.message}. Retries left: ${retries}`)
-    await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (MAX_RETRIES - retries + 1)))
+
+    console.log(
+      `Retrying after error: ${error.message}. Retries left: ${retries}`
+    )
+    await new Promise((resolve) =>
+      setTimeout(resolve, RETRY_DELAY * (MAX_RETRIES - retries + 1))
+    )
     return retryWithBackoff(fn, retries - 1)
   }
 }
@@ -71,10 +78,7 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
   } catch (err) {
     console.error('Webhook signature verification failed:', err)
-    return NextResponse.json(
-      { error: 'Invalid signature' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
   // Check idempotency
@@ -111,12 +115,12 @@ export async function POST(req: NextRequest) {
  */
 async function handleCheckoutSessionCompleted(event: Stripe.Event) {
   const session = event.data.object as Stripe.Checkout.Session
-  
+
   console.log('Processing checkout.session.completed:', session.id)
-  
+
   // Extract metadata
   const { businessId, utmToken } = session.metadata || {}
-  
+
   if (!businessId || !utmToken) {
     console.error('Missing required metadata in session:', session.id)
     throw new Error('Missing required metadata')
@@ -144,8 +148,8 @@ async function handleCheckoutSessionCompleted(event: Stripe.Event) {
     console.log('Purchase record created:', purchase.id)
 
     // Mark cart as no longer abandoned
-    const abandonedCartService = new AbandonedCartService({ 
-      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://anthrasite.io' 
+    const abandonedCartService = new AbandonedCartService({
+      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://anthrasite.io',
     })
     await abandonedCartService.handlePaymentSuccess(session.id)
 
@@ -162,7 +166,7 @@ async function handleCheckoutSessionCompleted(event: Stripe.Event) {
     // Mark UTM token as used
     await prisma.utmToken.update({
       where: { token: utmToken },
-      data: { 
+      data: {
         used: true,
         usedAt: new Date(),
       },
@@ -171,7 +175,7 @@ async function handleCheckoutSessionCompleted(event: Stripe.Event) {
     // Send order confirmation email with retry
     if (session.customer_details?.email) {
       try {
-        const emailResult = await retryWithBackoff(async () => 
+        const emailResult = await retryWithBackoff(async () =>
           sendOrderConfirmation({
             to: session.customer_details!.email!,
             customerName: session.customer_details?.name || undefined,
@@ -185,27 +189,30 @@ async function handleCheckoutSessionCompleted(event: Stripe.Event) {
 
         if (emailResult.success) {
           console.log('Order confirmation email sent:', emailResult.messageId)
-          
+
           // Update purchase record with email sent status
           await prisma.purchase.update({
             where: { id: purchase.id },
             data: {
               metadata: {
-                ...purchase.metadata as object,
+                ...(purchase.metadata as object),
                 orderConfirmationSent: true,
                 orderConfirmationSentAt: new Date().toISOString(),
               },
             },
           })
         } else {
-          console.error('Failed to send order confirmation email:', emailResult.error)
-          
+          console.error(
+            'Failed to send order confirmation email:',
+            emailResult.error
+          )
+
           // Queue for manual retry if needed
           await prisma.purchase.update({
             where: { id: purchase.id },
             data: {
               metadata: {
-                ...purchase.metadata as object,
+                ...(purchase.metadata as object),
                 orderConfirmationFailed: true,
                 orderConfirmationError: emailResult.error,
               },
@@ -213,17 +220,21 @@ async function handleCheckoutSessionCompleted(event: Stripe.Event) {
           })
         }
       } catch (error) {
-        console.error('Error sending order confirmation email after retries:', error)
+        console.error(
+          'Error sending order confirmation email after retries:',
+          error
+        )
         // Don't throw - we don't want to fail the webhook if email fails
-        
+
         // Mark for manual follow-up
         await prisma.purchase.update({
           where: { id: purchase.id },
           data: {
             metadata: {
-              ...purchase.metadata as object,
+              ...(purchase.metadata as object),
               orderConfirmationFailed: true,
-              orderConfirmationError: error instanceof Error ? error.message : 'Unknown error',
+              orderConfirmationError:
+                error instanceof Error ? error.message : 'Unknown error',
             },
           },
         })
@@ -261,7 +272,6 @@ async function handleCheckoutSessionCompleted(event: Stripe.Event) {
     // TODO: Trigger report generation
     // This would typically be a call to a queue or external service
     await triggerReportGeneration(purchase.id, businessId)
-    
   } catch (error) {
     console.error('Failed to create purchase record:', error)
     throw error
@@ -273,9 +283,9 @@ async function handleCheckoutSessionCompleted(event: Stripe.Event) {
  */
 async function handlePaymentIntentSucceeded(event: Stripe.Event) {
   const paymentIntent = event.data.object as Stripe.PaymentIntent
-  
+
   console.log('Processing payment_intent.succeeded:', paymentIntent.id)
-  
+
   // Check if purchase already exists
   const existingPurchase = await prisma.purchase.findFirst({
     where: { stripePaymentIntentId: paymentIntent.id },
@@ -287,7 +297,10 @@ async function handlePaymentIntentSucceeded(event: Stripe.Event) {
   }
 
   // This is a backup handler - the checkout.session.completed should handle most cases
-  console.warn('Payment intent succeeded without checkout session:', paymentIntent.id)
+  console.warn(
+    'Payment intent succeeded without checkout session:',
+    paymentIntent.id
+  )
 }
 
 /**
@@ -295,9 +308,9 @@ async function handlePaymentIntentSucceeded(event: Stripe.Event) {
  */
 async function handlePaymentFailed(event: Stripe.Event) {
   const paymentIntent = event.data.object as Stripe.PaymentIntent
-  
+
   console.log('Processing payment_intent.payment_failed:', paymentIntent.id)
-  
+
   // Update purchase record if it exists
   const purchase = await prisma.purchase.findFirst({
     where: { stripePaymentIntentId: paymentIntent.id },
@@ -309,7 +322,7 @@ async function handlePaymentFailed(event: Stripe.Event) {
       data: {
         status: 'failed',
         metadata: {
-          ...purchase.metadata as object,
+          ...(purchase.metadata as object),
           failureReason: paymentIntent.last_payment_error?.message,
         },
       },
@@ -322,9 +335,9 @@ async function handlePaymentFailed(event: Stripe.Event) {
  */
 async function handleCheckoutSessionExpired(event: Stripe.Event) {
   const session = event.data.object as Stripe.Checkout.Session
-  
+
   console.log('Processing checkout.session.expired:', session.id)
-  
+
   try {
     // Delete the abandoned cart record since it's no longer recoverable
     await prisma.abandonedCart.deleteMany({
@@ -332,7 +345,7 @@ async function handleCheckoutSessionExpired(event: Stripe.Event) {
         stripeSessionId: session.id,
       },
     })
-    
+
     console.log('Removed expired abandoned cart:', session.id)
   } catch (error) {
     console.error('Failed to handle expired session:', error)
@@ -344,13 +357,15 @@ async function handleCheckoutSessionExpired(event: Stripe.Event) {
  * Stub for report generation trigger
  */
 async function triggerReportGeneration(purchaseId: string, businessId: string) {
-  console.log(`Triggering report generation for purchase ${purchaseId}, business ${businessId}`)
-  
+  console.log(
+    `Triggering report generation for purchase ${purchaseId}, business ${businessId}`
+  )
+
   // In production, this would:
   // 1. Send a message to a queue (SQS, Pub/Sub, etc.)
   // 2. Call an external report generation service
   // 3. Send a webhook to a report generation microservice
-  
+
   // For now, just update the purchase record
   await prisma.purchase.update({
     where: { id: purchaseId },

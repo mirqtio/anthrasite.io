@@ -63,7 +63,6 @@ export class PostHogProvider implements AnalyticsProvider {
     posthog.reset()
   }
 
-
   // A/B Testing methods
   getFeatureFlag(flagKey: string): boolean | string | undefined {
     if (!this.initialized || typeof window === 'undefined') return undefined
@@ -96,5 +95,4 @@ export class PostHogProvider implements AnalyticsProvider {
     localStorage.setItem('posthog_distinct_id', distinctId)
     return distinctId
   }
-
 }

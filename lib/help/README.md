@@ -5,10 +5,11 @@ A comprehensive, accessible, and performant help widget for Anthrasite.io that p
 ## Features
 
 ### Core Functionality
+
 - **Floating Help Button**: Unobtrusive button in the bottom-right corner
 - **Context-Aware FAQs**: Shows relevant FAQs based on the current page
 - **Smart Search**: Full-text search with highlighting and scoring
-- **Keyboard Shortcuts**: 
+- **Keyboard Shortcuts**:
   - `?` - Toggle help widget
   - `Escape` - Close widget
   - `/` - Focus search
@@ -16,6 +17,7 @@ A comprehensive, accessible, and performant help widget for Anthrasite.io that p
 - **Lazy Loading**: Dynamic imports keep initial bundle size under 10KB
 
 ### Accessibility (WCAG AA Compliant)
+
 - Full keyboard navigation support
 - Screen reader announcements
 - Proper ARIA labels and roles
@@ -24,6 +26,7 @@ A comprehensive, accessible, and performant help widget for Anthrasite.io that p
 - Touch-friendly targets (minimum 44x44px)
 
 ### Performance Optimizations
+
 - Debounced search (300ms default)
 - Virtual scrolling for long FAQ lists
 - Cached FAQ context to prevent re-fetching
@@ -35,22 +38,23 @@ A comprehensive, accessible, and performant help widget for Anthrasite.io that p
 ### Components
 
 #### HelpWidget (`/components/help/HelpWidget.tsx`)
+
 The main widget component that renders the floating button and help panel.
 
 ```tsx
-import { HelpWidget } from '@/components/help';
+import { HelpWidget } from '@/components/help'
 
 // Automatically included in layout
-<HelpWidget />
+;<HelpWidget />
 ```
 
 #### HelpProvider (`/components/help/HelpProvider.tsx`)
+
 Global state management for the help widget.
 
 ```tsx
-import { HelpWidgetProvider } from '@/components/help';
-
-<HelpWidgetProvider config={{ position: 'bottom-right' }}>
+import { HelpWidgetProvider } from '@/components/help'
+;<HelpWidgetProvider config={{ position: 'bottom-right' }}>
   {children}
 </HelpWidgetProvider>
 ```
@@ -58,25 +62,28 @@ import { HelpWidgetProvider } from '@/components/help';
 ### Services
 
 #### FAQ Service (`/lib/help/faq-service.ts`)
+
 Manages FAQ operations including search and context-aware loading.
 
 ```tsx
-import { faqService } from '@/lib/help/faq-service';
+import { faqService } from '@/lib/help/faq-service'
 
 // Get FAQs for current context
-const faqs = faqService.getFAQsForContext({ page: PageContext.PURCHASE });
+const faqs = faqService.getFAQsForContext({ page: PageContext.PURCHASE })
 
 // Search FAQs
-const results = await faqService.searchFAQs('pricing');
+const results = await faqService.searchFAQs('pricing')
 
 // Get related FAQs
-const related = faqService.getRelatedFAQs('faq-id');
+const related = faqService.getRelatedFAQs('faq-id')
 ```
 
 ### Content
 
 #### FAQ Content (`/lib/help/content.ts`)
+
 Contains all FAQ data organized by category:
+
 - General FAQs
 - Purchase FAQs
 - Technical FAQs
@@ -86,6 +93,7 @@ Contains all FAQ data organized by category:
 ## Usage
 
 ### Basic Setup
+
 The help widget is automatically included in the root layout:
 
 ```tsx
@@ -112,13 +120,13 @@ The help widget is automatically included in the root layout:
 ### Using the Help Context
 
 ```tsx
-import { useHelpWidget } from '@/components/help';
+import { useHelpWidget } from '@/components/help'
 
 function MyComponent() {
-  const { isOpen, setIsOpen, config } = useHelpWidget();
-  
+  const { isOpen, setIsOpen, config } = useHelpWidget()
+
   // Programmatically open help
-  const openHelp = () => setIsOpen(true);
+  const openHelp = () => setIsOpen(true)
 }
 ```
 
@@ -137,7 +145,7 @@ export const GENERAL_FAQS: FAQItem[] = [
     relatedQuestions: ['other-faq-id'], // Optional
   },
   // ...
-];
+]
 ```
 
 2. FAQs are automatically indexed and searchable
@@ -146,6 +154,7 @@ export const GENERAL_FAQS: FAQItem[] = [
 ## Testing
 
 ### Unit Tests
+
 ```bash
 npm test components/help/__tests__/HelpWidget.test.tsx
 npm test components/help/__tests__/HelpProvider.test.tsx
@@ -153,11 +162,13 @@ npm test lib/help/__tests__/faq-service.test.ts
 ```
 
 ### Accessibility Tests
+
 ```bash
 npm test components/help/__tests__/HelpWidget.accessibility.test.tsx
 ```
 
 ### Performance Tests
+
 ```bash
 npm test components/help/__tests__/HelpWidget.performance.test.tsx
 ```

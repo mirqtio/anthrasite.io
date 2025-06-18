@@ -7,7 +7,7 @@ export const initMonitoring = () => {
   if (typeof window !== 'undefined') {
     initDatadog()
   }
-  
+
   // Sentry is initialized automatically via config files
 }
 
@@ -19,7 +19,7 @@ export const captureError = (error: Error, context?: Record<string, any>) => {
       custom: context,
     },
   })
-  
+
   // Send to Datadog
   if (typeof window !== 'undefined') {
     ddLogError(error.message, error, context)
@@ -45,14 +45,18 @@ export const startTransaction = (name: string, op: string = 'navigation') => {
 }
 
 // User identification
-export const identifyUser = (user: { id: string; email?: string; name?: string }) => {
+export const identifyUser = (user: {
+  id: string
+  email?: string
+  name?: string
+}) => {
   // Sentry
   Sentry.setUser({
     id: user.id,
     email: user.email,
     username: user.name,
   })
-  
+
   // Datadog
   if (typeof window !== 'undefined') {
     const { setDatadogUser } = require('./datadog')
@@ -75,7 +79,7 @@ export const trackEvent = (name: string, data?: Record<string, any>) => {
     level: 'info',
     data,
   })
-  
+
   // Datadog action
   if (typeof window !== 'undefined') {
     trackAction(name, data)
@@ -98,7 +102,7 @@ export const sendAlert = (type: AlertType, details: Record<string, any>) => {
     environment: process.env.NEXT_PUBLIC_ENVIRONMENT || 'development',
     ...details,
   }
-  
+
   // Critical alerts go to Sentry as warnings
   Sentry.captureMessage(`Alert: ${type}`, {
     level: 'warning',
@@ -106,7 +110,7 @@ export const sendAlert = (type: AlertType, details: Record<string, any>) => {
       alert: alertData,
     },
   })
-  
+
   // Also track in Datadog
   if (typeof window !== 'undefined') {
     trackAction('alert.triggered', alertData)
@@ -123,33 +127,33 @@ export const monitorApiCall = async <T>(
     op: 'http.client',
     description: name,
   })
-  
+
   const startTime = Date.now()
-  
+
   try {
     const result = await apiCall()
-    
+
     span.setStatus('ok')
     trackEvent('api.success', {
       endpoint: name,
       duration: Date.now() - startTime,
     })
-    
+
     return result
   } catch (error) {
     span.setStatus('internal_error')
-    
+
     captureError(error as Error, {
       api_endpoint: name,
       duration: Date.now() - startTime,
     })
-    
+
     trackEvent('api.error', {
       endpoint: name,
       error: (error as Error).message,
       duration: Date.now() - startTime,
     })
-    
+
     throw error
   } finally {
     span.finish()
@@ -163,10 +167,10 @@ export const monitorDbQuery = async <T>(
   query: () => Promise<T>
 ): Promise<T> => {
   const startTime = Date.now()
-  
+
   try {
     const result = await query()
-    
+
     // Log slow queries
     const duration = Date.now() - startTime
     if (duration > 1000) {
@@ -175,7 +179,7 @@ export const monitorDbQuery = async <T>(
         duration,
       })
     }
-    
+
     return result
   } catch (error) {
     captureError(error as Error, {
@@ -187,16 +191,21 @@ export const monitorDbQuery = async <T>(
 }
 
 // Feature flag monitoring
-export const checkFeatureFlag = (flagName: string, defaultValue: boolean = false): boolean => {
+export const checkFeatureFlag = (
+  flagName: string,
+  defaultValue: boolean = false
+): boolean => {
   // This would integrate with your feature flag service
   // For now, using environment variables
-  const value = process.env[`NEXT_PUBLIC_FF_${flagName.toUpperCase()}`] === 'true' || defaultValue
-  
+  const value =
+    process.env[`NEXT_PUBLIC_FF_${flagName.toUpperCase()}`] === 'true' ||
+    defaultValue
+
   // Track feature flag evaluation
   trackEvent('feature_flag.evaluated', {
     flag: flagName,
     value,
   })
-  
+
   return value
 }

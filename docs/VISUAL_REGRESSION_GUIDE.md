@@ -18,26 +18,31 @@ Visual regression testing helps catch unintended visual changes in the UI by com
 ### Local Development
 
 Run all visual tests:
+
 ```bash
 npm run test:visual
 ```
 
 Run visual tests with UI mode (recommended for debugging):
+
 ```bash
 npm run test:visual:ui
 ```
 
 Run specific test file:
+
 ```bash
 npm run test:visual -- visual-tests/homepage.spec.ts
 ```
 
 Run tests for specific browser:
+
 ```bash
 npm run test:visual -- --project=chromium
 ```
 
 View test report:
+
 ```bash
 npm run test:visual:report
 ```
@@ -70,10 +75,10 @@ import { preparePageForScreenshot, compareScreenshots } from './utils'
 test('component visual test', async ({ page }) => {
   // Navigate to the page
   await page.goto('/path')
-  
+
   // Prepare page (wait for animations, hide dynamic content)
   await preparePageForScreenshot(page)
-  
+
   // Take and compare screenshot
   await compareScreenshots(page, 'component-name.png')
 })
@@ -109,7 +114,7 @@ import { testResponsiveViewports } from './utils'
 
 test('responsive layout', async ({ page }) => {
   await page.goto('/page')
-  
+
   await testResponsiveViewports(page, async (viewport) => {
     await preparePageForScreenshot(page)
     await compareScreenshots(page, `layout-${viewport}.png`)
@@ -135,11 +140,13 @@ test('dark mode', async ({ page }) => {
 ### GitHub Actions
 
 Visual tests run automatically on:
+
 - Push to `main` or `develop` branches
 - Pull requests
 - Manual workflow dispatch
 
 The workflow:
+
 1. Runs tests in parallel across 4 shards
 2. Uploads test results and failed screenshots
 3. Comments on PRs with test results
@@ -171,6 +178,7 @@ When visual changes are detected in a PR:
 ### 2. Meaningful Names
 
 Use descriptive names for screenshots:
+
 ```typescript
 // Good
 await compareScreenshots(page, 'homepage-hero-mobile-dark.png')
@@ -182,16 +190,25 @@ await compareScreenshots(page, 'test1.png')
 ### 3. Test Organization
 
 Group related tests:
+
 ```typescript
 test.describe('Purchase Page', () => {
   test.describe('Valid UTM State', () => {
-    test('full page', async ({ page }) => { /* ... */ })
-    test('pricing section', async ({ page }) => { /* ... */ })
+    test('full page', async ({ page }) => {
+      /* ... */
+    })
+    test('pricing section', async ({ page }) => {
+      /* ... */
+    })
   })
-  
+
   test.describe('Error States', () => {
-    test('expired UTM', async ({ page }) => { /* ... */ })
-    test('invalid UTM', async ({ page }) => { /* ... */ })
+    test('expired UTM', async ({ page }) => {
+      /* ... */
+    })
+    test('invalid UTM', async ({ page }) => {
+      /* ... */
+    })
   })
 })
 ```
@@ -199,6 +216,7 @@ test.describe('Purchase Page', () => {
 ### 4. Selective Screenshots
 
 Don't screenshot everything. Focus on:
+
 - Critical UI components
 - Complex layouts
 - Interactive states
@@ -208,14 +226,15 @@ Don't screenshot everything. Focus on:
 ### 5. Handle Dynamic Content
 
 Hide or mock dynamic content:
+
 ```typescript
 // Hide timestamps
 await page.addStyleTag({
-  content: '[data-testid*="timestamp"] { visibility: hidden !important; }'
+  content: '[data-testid*="timestamp"] { visibility: hidden !important; }',
 })
 
 // Mock API responses
-await page.route('**/api/data', route => {
+await page.route('**/api/data', (route) => {
   route.fulfill({ body: JSON.stringify(mockData) })
 })
 ```
@@ -223,9 +242,10 @@ await page.route('**/api/data', route => {
 ### 6. Cross-Browser Testing
 
 Test critical paths across browsers:
+
 ```typescript
 const browsers = ['chromium', 'firefox', 'webkit']
-browsers.forEach(browser => {
+browsers.forEach((browser) => {
   test(`critical flow - ${browser}`, async ({ page }) => {
     // Test implementation
   })
@@ -239,7 +259,8 @@ browsers.forEach(browser => {
 #### 1. Flaky Tests
 
 **Problem**: Tests pass/fail inconsistently
-**Solution**: 
+**Solution**:
+
 - Ensure all animations are disabled
 - Wait for network idle state
 - Use `waitForAnimations()` helper
@@ -249,6 +270,7 @@ browsers.forEach(browser => {
 
 **Problem**: Fonts render differently across environments
 **Solution**:
+
 - Use `waitForFonts()` helper
 - Consider increasing threshold for text-heavy screenshots
 - Use web fonts with consistent rendering
@@ -257,6 +279,7 @@ browsers.forEach(browser => {
 
 **Problem**: Screenshots are too large
 **Solution**:
+
 - Use `fullPage: false` for component tests
 - Clip to specific regions
 - Compress images in CI
@@ -265,6 +288,7 @@ browsers.forEach(browser => {
 
 **Problem**: Merge conflicts in baseline images
 **Solution**:
+
 - Always pull latest changes before updating baselines
 - Use `--update-snapshots` flag locally
 - Let CI update baselines on main branch
@@ -298,6 +322,7 @@ npm run test:visual -- --video=retain-on-failure
 ### Parallel Execution
 
 Tests run in parallel by default. Control with:
+
 ```bash
 # Run with specific number of workers
 npm run test:visual -- --workers=2
@@ -309,6 +334,7 @@ npm run test:visual -- --workers=1
 ### Selective Testing
 
 Run only changed tests:
+
 ```bash
 # Run tests related to changed files
 npm run test:visual -- --only-changed
@@ -320,13 +346,13 @@ npm run test:visual -- --only-changed
 // Take smaller screenshots when possible
 await compareScreenshots(element, 'component.png', {
   fullPage: false,
-  clip: { x: 0, y: 0, width: 300, height: 200 }
+  clip: { x: 0, y: 0, width: 300, height: 200 },
 })
 
 // Increase threshold for non-critical elements
 await compareScreenshots(page, 'page.png', {
   threshold: 0.3, // 30% difference allowed
-  maxDiffPixels: 1000
+  maxDiffPixels: 1000,
 })
 ```
 

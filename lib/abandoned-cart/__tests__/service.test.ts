@@ -99,7 +99,11 @@ describe('AbandonedCartService', () => {
       expect(result.processed).toBe(2)
       expect(result.results).toHaveLength(2)
       expect(result.results[0]).toEqual({ cartId: 'cart-1', success: true })
-      expect(result.results[1]).toEqual({ cartId: 'cart-2', success: false, reason: 'no_email' })
+      expect(result.results[1]).toEqual({
+        cartId: 'cart-2',
+        success: false,
+        reason: 'no_email',
+      })
 
       // Should only send email to cart with email address
       expect(sendEmail).toHaveBeenCalledTimes(1)
@@ -122,8 +126,12 @@ describe('AbandonedCartService', () => {
         createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
       }
 
-      ;(prisma.abandonedCart.findMany as jest.Mock).mockResolvedValue([mockCart])
-      ;(sendEmail as jest.Mock).mockRejectedValue(new Error('Email service error'))
+      ;(prisma.abandonedCart.findMany as jest.Mock).mockResolvedValue([
+        mockCart,
+      ])
+      ;(sendEmail as jest.Mock).mockRejectedValue(
+        new Error('Email service error')
+      )
 
       const result = await service.checkAbandoned()
 
@@ -204,8 +212,12 @@ describe('AbandonedCartService', () => {
         emailSentAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       }
 
-      ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue(mockCart)
-      ;(tracker.markCartRecovered as jest.Mock).mockResolvedValue({ success: true })
+      ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue(
+        mockCart
+      )
+      ;(tracker.markCartRecovered as jest.Mock).mockResolvedValue({
+        success: true,
+      })
       ;(prisma.analyticsEvent.create as jest.Mock).mockResolvedValue({})
 
       const result = await service.markRecovered('recovery-123')
@@ -221,7 +233,9 @@ describe('AbandonedCartService', () => {
         recovered: true,
       }
 
-      ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue(mockCart)
+      ;(prisma.abandonedCart.findUnique as jest.Mock).mockResolvedValue(
+        mockCart
+      )
 
       const result = await service.markRecovered('recovery-123')
 
@@ -240,7 +254,9 @@ describe('AbandonedCartService', () => {
 
   describe('handlePaymentSuccess', () => {
     it('should mark session as completed', async () => {
-      ;(tracker.markSessionCompleted as jest.Mock).mockResolvedValue({ success: true })
+      ;(tracker.markSessionCompleted as jest.Mock).mockResolvedValue({
+        success: true,
+      })
 
       await service.handlePaymentSuccess('cs_test_123')
 
@@ -254,7 +270,6 @@ describe('AbandonedCartService', () => {
         .mockResolvedValueOnce(100) // total abandoned
         .mockResolvedValueOnce(25) // total recovered
         .mockResolvedValueOnce(80) // total emails sent
-
       ;(prisma.abandonedCart.aggregate as jest.Mock)
         .mockResolvedValueOnce({ _sum: { amount: 747500 } }) // revenue lost
         .mockResolvedValueOnce({ _sum: { amount: 247500 } }) // revenue recovered
@@ -274,7 +289,9 @@ describe('AbandonedCartService', () => {
 
     it('should handle zero values gracefully', async () => {
       ;(prisma.abandonedCart.count as jest.Mock).mockResolvedValue(0)
-      ;(prisma.abandonedCart.aggregate as jest.Mock).mockResolvedValue({ _sum: { amount: null } })
+      ;(prisma.abandonedCart.aggregate as jest.Mock).mockResolvedValue({
+        _sum: { amount: null },
+      })
 
       const metrics = await service.getMetrics(7)
 

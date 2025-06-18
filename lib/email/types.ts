@@ -29,7 +29,11 @@ export interface WelcomeEmailData extends BaseEmailData {
 }
 
 // Email template types
-export type EmailTemplate = 'orderConfirmation' | 'reportReady' | 'welcomeEmail' | 'cartRecovery'
+export type EmailTemplate =
+  | 'orderConfirmation'
+  | 'reportReady'
+  | 'welcomeEmail'
+  | 'cartRecovery'
 
 // Email metadata for tracking
 export interface EmailMetadata {
@@ -41,7 +45,12 @@ export interface EmailMetadata {
 }
 
 // Email delivery status
-export type EmailStatus = 'pending' | 'sent' | 'failed' | 'bounced' | 'complained'
+export type EmailStatus =
+  | 'pending'
+  | 'sent'
+  | 'failed'
+  | 'bounced'
+  | 'complained'
 
 // Email delivery result
 export interface EmailDeliveryResult {
@@ -66,7 +75,7 @@ export interface EmailQueueItem {
 }
 
 // SendGrid event types for webhook handling
-export type SendGridEventType = 
+export type SendGridEventType =
   | 'delivered'
   | 'bounce'
   | 'deferred'

@@ -6,17 +6,17 @@ if (SENTRY_DSN) {
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: process.env.NEXT_PUBLIC_ENVIRONMENT || 'development',
-    
+
     // Performance Monitoring
     tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-    
+
     // Session Replay
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
-    
+
     // Release tracking
     release: process.env.NEXT_PUBLIC_RELEASE || 'development',
-    
+
     // Integrations
     integrations: [
       Sentry.replayIntegration({
@@ -24,7 +24,7 @@ if (SENTRY_DSN) {
         blockAllMedia: false,
       }),
     ],
-    
+
     // Filtering
     beforeSend(event, hint) {
       // Filter out non-critical errors in development
@@ -33,7 +33,7 @@ if (SENTRY_DSN) {
           return null
         }
       }
-      
+
       // Don't send events for certain errors
       const error = hint.originalException
       if (error && error instanceof Error) {
@@ -42,7 +42,7 @@ if (SENTRY_DSN) {
           return null
         }
       }
-      
+
       return event
     },
   })

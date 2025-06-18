@@ -122,7 +122,10 @@ const baseEventProperties = z.object({
   experiment_variants: z.record(z.string()).optional(),
 })
 
-export function validateEventSchema(eventName: string, properties?: EventProperties): boolean {
+export function validateEventSchema(
+  eventName: string,
+  properties?: EventProperties
+): boolean {
   // If no schema defined for this event, allow it (for custom events)
   const schema = eventSchemas[eventName as keyof typeof eventSchemas]
   if (!schema) {
@@ -146,49 +149,49 @@ export function validateEventSchema(eventName: string, properties?: EventPropert
 export const ANALYTICS_EVENTS = {
   // Page events
   PAGE_VIEW: 'page_view',
-  
+
   // Funnel events
   FUNNEL_STEP: 'funnel_step',
   HOMEPAGE_VIEW: 'homepage_view',
   UTM_VALIDATED: 'utm_validated',
   CHECKOUT_STARTED: 'checkout_started',
   PAYMENT_COMPLETED: 'payment_completed',
-  
+
   // E-commerce events
   PURCHASE: 'purchase',
   CHECKOUT_ERROR: 'checkout_error',
   CHECKOUT_SESSION_CREATED: 'checkout_session_created',
   CHECKOUT_ABANDONED: 'checkout_abandoned',
-  
+
   // Waitlist events
   WAITLIST_SIGNUP: 'waitlist_signup',
   WAITLIST_DOMAIN_VALIDATED: 'waitlist_domain_validated',
-  
+
   // A/B testing events
   EXPERIMENT_EVENT: 'experiment_event',
   VARIANT_IMPRESSION: 'variant_impression',
-  
+
   // Performance events
   PERFORMANCE_METRIC: 'performance_metric',
   WEB_VITALS: 'web_vitals',
-  
+
   // Error events
   ERROR_BOUNDARY_TRIGGERED: 'error_boundary_triggered',
   STRIPE_ERROR: 'stripe_error',
-  
+
   // Email events
   EMAIL_SENT: 'email_sent',
   EMAIL_BOUNCED: 'email_bounced',
-  
+
   // Help widget events
   HELP_WIDGET_OPENED: 'help_widget_opened',
   HELP_WIDGET_FAQ_EXPANDED: 'help_widget_faq_expanded',
-  
+
   // Recovery events
   CHECKOUT_RECOVERY_ATTEMPT: 'checkout_recovery_attempt',
   CHECKOUT_RECOVERY_SUCCESS: 'checkout_recovery_success',
   CHECKOUT_RECOVERY_FAILED: 'checkout_recovery_failed',
-  
+
   // Analytics meta events
   ANALYTICS_INITIALIZED: 'analytics_initialized',
   CONSENT_UPDATED: 'consent_updated',

@@ -26,7 +26,7 @@ export class PurchaseErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: any) {
     console.error('Purchase error boundary caught:', error, errorInfo)
-    
+
     // In production, log to error tracking service
     if (typeof window !== 'undefined' && window.Sentry) {
       window.Sentry.captureException(error, {
@@ -44,18 +44,17 @@ export class PurchaseErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) {
         return this.props.fallback
       }
-      
+
       return (
         <div className="min-h-[400px] flex items-center justify-center p-8">
           <div className="max-w-md w-full text-center">
             <div className="mb-4">
               <AlertCircle className="w-12 h-12 text-red-600 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">
-              Something went wrong
-            </h3>
+            <h3 className="text-xl font-semibold mb-2">Something went wrong</h3>
             <p className="text-gray-600 mb-6">
-              We encountered an error while processing your request. Please try again or contact support if the issue persists.
+              We encountered an error while processing your request. Please try
+              again or contact support if the issue persists.
             </p>
             <div className="space-y-3">
               <Button
@@ -66,7 +65,9 @@ export class PurchaseErrorBoundary extends Component<Props, State> {
                 Try Again
               </Button>
               <Button
-                onClick={() => window.location.href = 'mailto:support@anthrasite.io'}
+                onClick={() =>
+                  (window.location.href = 'mailto:support@anthrasite.io')
+                }
                 variant="outline"
                 className="w-full"
               >

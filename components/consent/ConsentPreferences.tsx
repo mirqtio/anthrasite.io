@@ -3,7 +3,14 @@
 import { useEffect, useState } from 'react'
 import { useConsent } from '@/lib/context/ConsentContext'
 import { Button } from '@/components/Button'
-import { animation, colors, spacing, typography, radii, shadows } from '@/lib/design-system/tokens'
+import {
+  animation,
+  colors,
+  spacing,
+  typography,
+  radii,
+  shadows,
+} from '@/lib/design-system/tokens'
 
 interface CookieCategory {
   id: 'analytics' | 'functional'
@@ -16,19 +23,28 @@ const categories: CookieCategory[] = [
   {
     id: 'functional',
     name: 'Functional Cookies',
-    description: 'These cookies enable core functionality such as security, network management, and accessibility. They help us remember your preferences and settings to improve your experience.',
+    description:
+      'These cookies enable core functionality such as security, network management, and accessibility. They help us remember your preferences and settings to improve your experience.',
     required: false,
   },
   {
     id: 'analytics',
     name: 'Analytics Cookies',
-    description: 'We use Google Analytics 4 and PostHog to understand how visitors interact with our website. These tools help us improve our services by collecting anonymized data about page views, session duration, and user behavior.',
+    description:
+      'We use Google Analytics 4 and PostHog to understand how visitors interact with our website. These tools help us improve our services by collecting anonymized data about page views, session duration, and user behavior.',
     required: false,
   },
 ]
 
 export function ConsentPreferences() {
-  const { showPreferences, preferences, updateConsent, closePreferences, acceptAll, rejectAll } = useConsent()
+  const {
+    showPreferences,
+    preferences,
+    updateConsent,
+    closePreferences,
+    acceptAll,
+    rejectAll,
+  } = useConsent()
   const [isVisible, setIsVisible] = useState(false)
   const [isExiting, setIsExiting] = useState(false)
   const [localPreferences, setLocalPreferences] = useState({
@@ -62,9 +78,9 @@ export function ConsentPreferences() {
   }
 
   const handleToggle = (categoryId: 'analytics' | 'functional') => {
-    setLocalPreferences(prev => ({
+    setLocalPreferences((prev) => ({
       ...prev,
-      [categoryId]: !prev[categoryId]
+      [categoryId]: !prev[categoryId],
     }))
   }
 
@@ -87,9 +103,10 @@ export function ConsentPreferences() {
       <div
         className={`fixed inset-x-4 top-1/2 -translate-y-1/2 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 z-50 w-full max-w-2xl transition-all ${animation.duration.normal}`}
         style={{
-          transform: isVisible && !isExiting 
-            ? 'translate(-50%, -50%) scale(1)' 
-            : 'translate(-50%, -50%) scale(0.95)',
+          transform:
+            isVisible && !isExiting
+              ? 'translate(-50%, -50%) scale(1)'
+              : 'translate(-50%, -50%) scale(0.95)',
           opacity: isVisible && !isExiting ? 1 : 0,
           transitionTimingFunction: animation.easing.easeOut,
         }}
@@ -105,11 +122,11 @@ export function ConsentPreferences() {
           }}
         >
           {/* Header */}
-          <div 
+          <div
             className="px-6 py-5 border-b"
             style={{ borderColor: colors.anthracite.gray[100] }}
           >
-            <h2 
+            <h2
               id="preferences-title"
               className="text-xl font-semibold"
               style={{
@@ -124,7 +141,7 @@ export function ConsentPreferences() {
 
           {/* Content */}
           <div className="px-6 py-4 max-h-[60vh] overflow-y-auto">
-            <p 
+            <p
               className="text-sm mb-6"
               style={{
                 fontSize: typography.fontSize.sm,
@@ -133,15 +150,16 @@ export function ConsentPreferences() {
                 opacity: 0.7,
               }}
             >
-              We use cookies and similar technologies to help personalize content, tailor and measure ads, 
-              and provide a better experience. You can customize your choices below.
+              We use cookies and similar technologies to help personalize
+              content, tailor and measure ads, and provide a better experience.
+              You can customize your choices below.
             </p>
 
             {/* Essential Cookies (Always On) */}
             <div className="mb-6">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
-                  <h3 
+                  <h3
                     className="font-medium mb-1"
                     style={{
                       fontSize: typography.fontSize.base,
@@ -151,7 +169,7 @@ export function ConsentPreferences() {
                   >
                     Essential Cookies
                   </h3>
-                  <p 
+                  <p
                     className="text-sm"
                     style={{
                       fontSize: typography.fontSize.sm,
@@ -159,12 +177,13 @@ export function ConsentPreferences() {
                       opacity: 0.7,
                     }}
                   >
-                    Required for the website to function properly. These cookies ensure basic functionalities 
-                    and security features of the website.
+                    Required for the website to function properly. These cookies
+                    ensure basic functionalities and security features of the
+                    website.
                   </p>
                 </div>
                 <div className="ml-4 mt-1">
-                  <span 
+                  <span
                     className="text-sm font-medium px-3 py-1 rounded-full"
                     style={{
                       fontSize: typography.fontSize.xs,
@@ -184,7 +203,7 @@ export function ConsentPreferences() {
               <div key={category.id} className="mb-6 last:mb-0">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 
+                    <h3
                       className="font-medium mb-1"
                       style={{
                         fontSize: typography.fontSize.base,
@@ -194,7 +213,7 @@ export function ConsentPreferences() {
                     >
                       {category.name}
                     </h3>
-                    <p 
+                    <p
                       className="text-sm"
                       style={{
                         fontSize: typography.fontSize.sm,
@@ -213,19 +232,20 @@ export function ConsentPreferences() {
                       onClick={() => handleToggle(category.id)}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${animation.duration.fast}`}
                       style={{
-                        backgroundColor: localPreferences[category.id] 
-                          ? colors.anthracite.blue 
+                        backgroundColor: localPreferences[category.id]
+                          ? colors.anthracite.blue
                           : colors.anthracite.gray[100],
                       }}
                     >
                       <span className="sr-only">
-                        {localPreferences[category.id] ? 'Disable' : 'Enable'} {category.name}
+                        {localPreferences[category.id] ? 'Disable' : 'Enable'}{' '}
+                        {category.name}
                       </span>
                       <span
                         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${animation.duration.fast}`}
                         style={{
-                          transform: localPreferences[category.id] 
-                            ? 'translateX(24px)' 
+                          transform: localPreferences[category.id]
+                            ? 'translateX(24px)'
                             : 'translateX(4px)',
                           transitionTimingFunction: animation.easing.easeOut,
                         }}
@@ -238,29 +258,17 @@ export function ConsentPreferences() {
           </div>
 
           {/* Footer */}
-          <div 
+          <div
             className="px-6 py-4 border-t flex flex-col sm:flex-row gap-3 sm:justify-end"
             style={{ borderColor: colors.anthracite.gray[100] }}
           >
-            <Button
-              variant="ghost"
-              size="md"
-              onClick={rejectAll}
-            >
+            <Button variant="ghost" size="md" onClick={rejectAll}>
               Reject all
             </Button>
-            <Button
-              variant="secondary"
-              size="md"
-              onClick={acceptAll}
-            >
+            <Button variant="secondary" size="md" onClick={acceptAll}>
               Accept all
             </Button>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleSave}
-            >
+            <Button variant="primary" size="md" onClick={handleSave}>
               Save preferences
             </Button>
           </div>

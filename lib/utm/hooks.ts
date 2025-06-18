@@ -33,10 +33,10 @@ export function useUTMValidation(): UTMValidationState {
     loading: true,
     valid: false,
   })
-  
+
   useEffect(() => {
     const utm = searchParams.get('utm')
-    
+
     if (!utm) {
       setState({
         loading: false,
@@ -45,13 +45,15 @@ export function useUTMValidation(): UTMValidationState {
       })
       return
     }
-    
+
     // Validate UTM
     const validateUTM = async () => {
       try {
-        const response = await fetch(`/api/validate-utm?utm=${encodeURIComponent(utm)}`)
+        const response = await fetch(
+          `/api/validate-utm?utm=${encodeURIComponent(utm)}`
+        )
         const data: ValidateUTMResponse = await response.json()
-        
+
         if (data.valid) {
           setState({
             loading: false,
@@ -75,44 +77,50 @@ export function useUTMValidation(): UTMValidationState {
         })
       }
     }
-    
+
     validateUTM()
   }, [searchParams])
-  
+
   return state
 }
 
 // Hook to check if we're in purchase mode
 export function usePurchaseMode(): boolean {
   const [isPurchaseMode, setIsPurchaseMode] = useState(false)
-  
+
   useEffect(() => {
     // Check cookies on client side
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=')
-      acc[key] = value
-      return acc
-    }, {} as Record<string, string>)
-    
+    const cookies = document.cookie.split(';').reduce(
+      (acc, cookie) => {
+        const [key, value] = cookie.trim().split('=')
+        acc[key] = value
+        return acc
+      },
+      {} as Record<string, string>
+    )
+
     setIsPurchaseMode(cookies.site_mode === 'purchase')
   }, [])
-  
+
   return isPurchaseMode
 }
 
 // Hook to get business ID from cookie
 export function useBusinessId(): string | null {
   const [businessId, setBusinessId] = useState<string | null>(null)
-  
+
   useEffect(() => {
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=')
-      acc[key] = value
-      return acc
-    }, {} as Record<string, string>)
-    
+    const cookies = document.cookie.split(';').reduce(
+      (acc, cookie) => {
+        const [key, value] = cookie.trim().split('=')
+        acc[key] = value
+        return acc
+      },
+      {} as Record<string, string>
+    )
+
     setBusinessId(cookies.business_id || null)
   }, [])
-  
+
   return businessId
 }

@@ -37,7 +37,7 @@ Object.defineProperty(document, 'cookie', {
       const cookieName = value.split('=')[0]
       mockCookies = mockCookies
         .split(';')
-        .filter(c => !c.trim().startsWith(cookieName))
+        .filter((c) => !c.trim().startsWith(cookieName))
         .join(';')
     } else {
       mockCookies = value
@@ -54,12 +54,14 @@ describe('consent-loader', () => {
     delete (window as any).gtag
     delete (window as any).dataLayer
     delete (window as any).posthog
-    delete (window as any)[`ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`]
+    delete (window as any)[
+      `ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`
+    ]
   })
 
   it('should not load analytics when preferences is null', () => {
     initializeAnalytics(null)
-    
+
     expect(mockAppendChild).not.toHaveBeenCalled()
     expect(window.gtag).toBeUndefined()
     expect(window.posthog).toBeUndefined()
@@ -71,13 +73,13 @@ describe('consent-loader', () => {
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(preferences)
-    
+
     // Should create scripts for GA and PostHog
     expect(mockCreateElement).toHaveBeenCalledWith('script')
     expect(mockAppendChild).toHaveBeenCalled()
-    
+
     // Check GA initialization
     expect(window.dataLayer).toBeDefined()
     expect(window.gtag).toBeDefined()
@@ -90,39 +92,39 @@ describe('consent-loader', () => {
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(preferences)
-    
+
     expect(mockAppendChild).not.toHaveBeenCalled()
   })
 
   it('should clear analytics cookies when consent is revoked', () => {
     // Set some mock cookies
     mockCookies = '_ga=GA1.1.123; _gid=GA1.1.456; ph_test=value; other=keep'
-    
+
     // First give consent
     const consentGiven: ConsentPreferences = {
       analytics: true,
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(consentGiven)
-    
+
     // Simulate script load
     if (mockScript.onload) {
       mockScript.onload()
     }
-    
+
     // Then revoke consent
     const consentRevoked: ConsentPreferences = {
       analytics: false,
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(consentRevoked)
-    
+
     // Analytics cookies should be cleared
     expect(mockCookies).not.toContain('_ga')
     expect(mockCookies).not.toContain('_gid')
@@ -137,58 +139,60 @@ describe('consent-loader', () => {
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(consentGiven)
-    
+
     // Then revoke
     const consentRevoked: ConsentPreferences = {
       analytics: false,
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(consentRevoked)
-    
+
     // GA should be disabled
-    expect((window as any)[`ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`]).toBe(true)
+    expect(
+      (window as any)[`ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`]
+    ).toBe(true)
   })
 
   it('should handle missing GA measurement ID', () => {
     const originalId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
     delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-    
+
     const preferences: ConsentPreferences = {
       analytics: true,
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(preferences)
-    
+
     // Should still try to load PostHog
     expect(mockCreateElement).toHaveBeenCalled()
-    
+
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = originalId
   })
 
   it('should handle script loading errors', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
-    
+
     const preferences: ConsentPreferences = {
       analytics: true,
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(preferences)
-    
+
     // Simulate script error
     if (mockScript.onerror) {
       mockScript.onerror()
     }
-    
+
     expect(consoleSpy).toHaveBeenCalledWith('Failed to load Google Analytics')
-    
+
     consoleSpy.mockRestore()
   })
 
@@ -198,25 +202,28 @@ describe('consent-loader', () => {
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     // Dispatch custom event
-    window.dispatchEvent(new CustomEvent('consentUpdated', { detail: preferences }))
-    
+    window.dispatchEvent(
+      new CustomEvent('consentUpdated', { detail: preferences })
+    )
+
     // Should trigger analytics initialization
     expect(mockCreateElement).toHaveBeenCalled()
   })
 
   it('should clear cookies with wildcard patterns', () => {
-    mockCookies = '_ga_ABC123=value1; _ga_XYZ789=value2; _gat_tracker=value3; regular_cookie=keep'
-    
+    mockCookies =
+      '_ga_ABC123=value1; _ga_XYZ789=value2; _gat_tracker=value3; regular_cookie=keep'
+
     const consentRevoked: ConsentPreferences = {
       analytics: false,
       functional: true,
       timestamp: new Date().toISOString(),
     }
-    
+
     initializeAnalytics(consentRevoked)
-    
+
     // All GA-related cookies should be cleared
     expect(mockCookies).not.toContain('_ga_')
     expect(mockCookies).not.toContain('_gat_')

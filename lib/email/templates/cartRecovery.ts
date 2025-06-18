@@ -9,8 +9,10 @@ export interface CartRecoveryEmailData {
 }
 
 export const cartRecoveryEmail = (data: CartRecoveryEmailData) => {
-  const expiresIn = Math.ceil((data.expiresAt.getTime() - Date.now()) / (1000 * 60 * 60))
-  
+  const expiresIn = Math.ceil(
+    (data.expiresAt.getTime() - Date.now()) / (1000 * 60 * 60)
+  )
+
   const content = `
     <h2 style="margin: 0 0 20px 0; color: #1a202c; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 700;">
       Complete Your Purchase
@@ -72,6 +74,6 @@ export const cartRecoveryEmail = (data: CartRecoveryEmailData) => {
       If you're no longer interested, you can safely ignore this email. We won't send another reminder.
     </p>
   `
-  
+
   return baseTemplate(content)
 }

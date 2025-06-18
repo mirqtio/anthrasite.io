@@ -4,17 +4,19 @@ import { validateUTMToken } from '@/lib/utm/crypto'
 import { createCheckoutSession as createStripeSession } from '@/lib/stripe/checkout'
 import { headers } from 'next/headers'
 import { AbandonedCartService } from '@/lib/abandoned-cart/service'
-import { 
-  fetchBusinessByUTMDev, 
-  createCheckoutSessionDev, 
+import {
+  fetchBusinessByUTMDev,
+  createCheckoutSessionDev,
   markUTMAsUsedDev,
-  getReportPreviewDev 
+  getReportPreviewDev,
 } from './purchase-service-dev'
 
 // Check if we're in development mode and should use mock data
 const isDevelopmentMode = () => {
-  return process.env.NODE_ENV === 'development' && 
-         process.env.NEXT_PUBLIC_USE_MOCK_PURCHASE === 'true'
+  return (
+    process.env.NODE_ENV === 'development' &&
+    process.env.NEXT_PUBLIC_USE_MOCK_PURCHASE === 'true'
+  )
 }
 
 export interface PurchasePageData {
@@ -32,41 +34,43 @@ export interface CheckoutSession {
 /**
  * Fetches business data based on UTM token
  */
-export async function fetchBusinessByUTM(utm: string): Promise<PurchasePageData | null> {
+export async function fetchBusinessByUTM(
+  utm: string
+): Promise<PurchasePageData | null> {
   // Use mock data in development mode
   if (isDevelopmentMode()) {
     return fetchBusinessByUTMDev(utm)
   }
-  
+
   try {
     // Validate the UTM token
     const validation = await validateUTMToken(utm)
-    
+
     if (!validation.valid || !validation.payload) {
       return null
     }
-    
+
     // Fetch business data
     const business = await prisma.business.findUnique({
       where: {
         id: validation.payload.businessId,
       },
     })
-    
+
     if (!business) {
       return null
     }
-    
+
     // Check if UTM token has been used
     const utmToken = await prisma.utmToken.findUnique({
       where: {
         nonce: validation.payload.nonce,
       },
     })
-    
+
     // If token exists and has been used, still allow viewing but don't allow purchase
     const isValid = !utmToken?.usedAt
-    
+
     return {
       business,
       utm,
@@ -89,29 +93,29 @@ export async function createCheckoutSession(
   if (isDevelopmentMode()) {
     return createCheckoutSessionDev(businessId, utm)
   }
-  
+
   try {
     // Get the request headers to build the base URL
     const headersList = await headers()
     const host = headersList.get('host') || 'localhost:3000'
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
     const baseUrl = `${protocol}://${host}`
-    
+
     // Validate UTM token first
     const validation = await validateUTMToken(utm)
     if (!validation.valid || !validation.payload) {
       throw new Error('Invalid UTM token')
     }
-    
+
     // Get business details for customer email
     const business = await prisma.business.findUnique({
       where: { id: businessId },
     })
-    
+
     if (!business) {
       throw new Error('Business not found')
     }
-    
+
     // Create Stripe checkout session
     const session = await createStripeSession({
       businessId,
@@ -119,7 +123,7 @@ export async function createCheckoutSession(
       customerEmail: business.email || undefined,
       baseUrl,
     })
-    
+
     // Track abandoned cart
     const abandonedCartService = new AbandonedCartService({ baseUrl })
     await abandonedCartService.trackAbandonedSession({
@@ -127,7 +131,7 @@ export async function createCheckoutSession(
       businessId,
       utmToken: utm,
     })
-    
+
     return {
       id: session.id,
       url: session.url!,
@@ -147,14 +151,14 @@ export async function markUTMAsUsed(utm: string): Promise<boolean> {
   if (isDevelopmentMode()) {
     return markUTMAsUsedDev(utm)
   }
-  
+
   try {
     const validation = await validateUTMToken(utm)
-    
+
     if (!validation.valid || !validation.payload) {
       return false
     }
-    
+
     await prisma.utmToken.update({
       where: {
         nonce: validation.payload.nonce,
@@ -163,7 +167,7 @@ export async function markUTMAsUsed(utm: string): Promise<boolean> {
         usedAt: new Date(),
       },
     })
-    
+
     return true
   } catch (error) {
     console.error('Error marking UTM as used:', error)
@@ -191,12 +195,12 @@ export function getReportPreview(business: Business): ReportPreviewData {
   if (isDevelopmentMode()) {
     return getReportPreviewDev(business)
   }
-  
+
   // Generate preview data based on business domain
   // In production, this would use actual analysis data
-  
+
   const domain = business.domain
-  
+
   // Mock scores for now
   const scores = {
     performanceScore: Math.floor(Math.random() * 30) + 60, // 60-90
@@ -204,7 +208,7 @@ export function getReportPreview(business: Business): ReportPreviewData {
     securityScore: Math.floor(Math.random() * 20) + 75, // 75-95
     accessibilityScore: Math.floor(Math.random() * 30) + 65, // 65-95
   }
-  
+
   const improvements = [
     'Optimize image loading for 40% faster page speed',
     'Fix 15 critical SEO issues affecting search rankings',
@@ -212,12 +216,12 @@ export function getReportPreview(business: Business): ReportPreviewData {
     'Improve accessibility for 20% more potential customers',
     'Reduce JavaScript bundle size by 35%',
   ]
-  
+
   // Shuffle and take 3 improvements
   const selectedImprovements = improvements
     .sort(() => Math.random() - 0.5)
     .slice(0, 3)
-  
+
   return {
     domain,
     metrics: scores,
