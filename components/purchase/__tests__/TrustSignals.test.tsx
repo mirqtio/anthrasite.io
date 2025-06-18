@@ -72,8 +72,8 @@ describe('TrustSignals', () => {
   it('renders 5-star ratings for all testimonials', () => {
     const { container } = render(<TrustSignals />)
 
-    // Each testimonial has 5 stars, so we should have star icons with fill-yellow-400 class
-    const stars = container.querySelectorAll('svg.fill-yellow-400')
+    // Each testimonial has 5 stars, so we should have star icons with fill-accent class
+    const stars = container.querySelectorAll('svg.fill-accent')
 
     // We have 3 testimonials with 5 stars each = 15 stars
     expect(stars.length).toBe(15)

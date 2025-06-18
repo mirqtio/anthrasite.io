@@ -1,150 +1,137 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import RecoverPage from '../page'
-import { getAbandonedCartByToken } from '@/lib/abandoned-cart/tracker'
-import { AbandonedCartService } from '@/lib/abandoned-cart/service'
-import { retrieveSession } from '@/lib/stripe/checkout'
-import { redirect } from 'next/navigation'
 
-// Mock dependencies
-jest.mock('@/lib/abandoned-cart/tracker')
-jest.mock('@/lib/abandoned-cart/service')
-jest.mock('@/lib/stripe/checkout')
-jest.mock('next/navigation')
+// Mock Next.js navigation
+const mockPush = jest.fn()
+const mockReplace = jest.fn()
+const mockSearchParams = new Map()
 
-// Mock Suspense to render children immediately
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  Suspense: ({ children }: { children: React.ReactNode }) => children,
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+    replace: mockReplace,
+  }),
+  useSearchParams: () => ({
+    get: (key: string) => mockSearchParams.get(key),
+  }),
+  redirect: jest.fn(),
 }))
+
+// Mock analytics
+jest.mock('@/lib/analytics/analytics-client', () => ({
+  trackEvent: jest.fn(),
+}))
+
+// Mock global fetch
+global.fetch = jest.fn()
 
 describe('RecoverPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockSearchParams.clear()
+    ;(global.fetch as jest.Mock).mockReset()
   })
 
   it('should redirect to homepage if no token provided', async () => {
-    const searchParams = Promise.resolve({})
+    // Don't set any search params (no utm)
+    render(<RecoverPage />)
 
-    await RecoverPage({ searchParams })
-
-    expect(redirect).toHaveBeenCalledWith('/')
+    await waitFor(() => {
+      expect(screen.getByText('Invalid Recovery Link')).toBeInTheDocument()
+    })
   })
 
   it('should show invalid recovery link message for invalid token', async () => {
-    ;(getAbandonedCartByToken as jest.Mock).mockResolvedValue(null)
+    mockSearchParams.set('utm', 'invalid-token')
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: 'Invalid recovery token' }),
+    })
 
-    const searchParams = Promise.resolve({ token: 'invalid-token' })
+    render(<RecoverPage />)
 
-    const result = await RecoverPage({ searchParams })
+    await waitFor(() => {
+      expect(screen.getByText('Recovery Failed')).toBeInTheDocument()
+    })
 
-    // Since we're testing the server component, we need to render the result
-    const { container } = render(result as React.ReactElement)
-
-    expect(screen.getByText('Invalid Recovery Link')).toBeInTheDocument()
-    expect(
-      screen.getByText(/This recovery link is invalid or has expired/)
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'Go to Homepage' })
-    ).toHaveAttribute('href', '/')
+    expect(screen.getByText(/Invalid recovery token/)).toBeInTheDocument()
   })
 
   it('should show already recovered message for recovered carts', async () => {
-    const mockCart = {
-      id: 'cart-123',
-      recovered: true,
-      sessionExpiresAt: new Date(Date.now() + 86400000),
-    }
+    mockSearchParams.set('utm', 'recovery-token')
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: 'Session already recovered' }),
+    })
 
-    ;(getAbandonedCartByToken as jest.Mock).mockResolvedValue(mockCart)
+    render(<RecoverPage />)
 
-    const searchParams = Promise.resolve({ token: 'recovery-token' })
+    await waitFor(() => {
+      expect(screen.getByText('Recovery Failed')).toBeInTheDocument()
+    })
 
-    const result = await RecoverPage({ searchParams })
-    const { container } = render(result as React.ReactElement)
-
-    expect(screen.getByText('Already Recovered')).toBeInTheDocument()
-    expect(
-      screen.getByText(/This cart has already been recovered/)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Session already recovered/)).toBeInTheDocument()
   })
 
   it('should show session expired message for expired sessions', async () => {
-    const mockCart = {
-      id: 'cart-123',
-      recovered: false,
-      sessionExpiresAt: new Date(Date.now() - 3600000), // 1 hour ago
-      utmToken: 'utm-123',
-    }
+    mockSearchParams.set('utm', 'recovery-token')
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: 'Session expired' }),
+    })
 
-    ;(getAbandonedCartByToken as jest.Mock).mockResolvedValue(mockCart)
+    render(<RecoverPage />)
 
-    const searchParams = Promise.resolve({ token: 'recovery-token' })
+    await waitFor(() => {
+      expect(screen.getByText('Recovery Failed')).toBeInTheDocument()
+    })
 
-    const result = await RecoverPage({ searchParams })
-    const { container } = render(result as React.ReactElement)
-
-    expect(screen.getByText('Session Expired')).toBeInTheDocument()
-    expect(
-      screen.getByText(/Your checkout session has expired/)
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'Start New Purchase' })
-    ).toHaveAttribute('href', '/purchase?utm=utm-123')
+    expect(screen.getByText(/Session expired/)).toBeInTheDocument()
   })
 
   it('should show session not found message when Stripe session is missing', async () => {
-    const mockCart = {
-      id: 'cart-123',
-      recovered: false,
-      sessionExpiresAt: new Date(Date.now() + 86400000),
-      stripeSessionId: 'cs_test_123',
-      utmToken: 'utm-123',
-    }
+    mockSearchParams.set('utm', 'recovery-token')
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: 'Session not found' }),
+    })
 
-    ;(getAbandonedCartByToken as jest.Mock).mockResolvedValue(mockCart)
-    ;(retrieveSession as jest.Mock).mockResolvedValue(null)
+    render(<RecoverPage />)
 
-    const searchParams = Promise.resolve({ token: 'recovery-token' })
+    await waitFor(() => {
+      expect(screen.getByText('Recovery Failed')).toBeInTheDocument()
+    })
 
-    const result = await RecoverPage({ searchParams })
-    const { container } = render(result as React.ReactElement)
-
-    expect(screen.getByText('Session Not Found')).toBeInTheDocument()
-    expect(
-      screen.getByText(/We couldn't find your checkout session/)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Session not found/)).toBeInTheDocument()
   })
 
   it('should redirect to Stripe checkout for valid recovery', async () => {
-    const mockCart = {
-      id: 'cart-123',
-      recovered: false,
-      sessionExpiresAt: new Date(Date.now() + 86400000),
-      stripeSessionId: 'cs_test_123',
-      utmToken: 'utm-123',
-    }
+    // Mock setTimeout to prevent actual redirect
+    jest.useFakeTimers()
 
-    const mockStripeSession = {
-      id: 'cs_test_123',
-      url: 'https://checkout.stripe.com/pay/cs_test_123',
-    }
+    mockSearchParams.set('utm', 'recovery-token')
+    mockSearchParams.set('session', 'cs_test_123')
+    ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        success: true,
+        sessionUrl: 'https://checkout.stripe.com/pay/cs_test_123',
+        sessionId: 'cs_test_123',
+      }),
+    })
 
-    const mockMarkRecovered = jest.fn().mockResolvedValue({ success: true })
+    render(<RecoverPage />)
 
-    ;(getAbandonedCartByToken as jest.Mock).mockResolvedValue(mockCart)
-    ;(retrieveSession as jest.Mock).mockResolvedValue(mockStripeSession)
-    ;(AbandonedCartService as jest.Mock).mockImplementation(() => ({
-      markRecovered: mockMarkRecovered,
-    }))
+    await waitFor(() => {
+      expect(
+        screen.getByText('Redirecting you to checkout...')
+      ).toBeInTheDocument()
+    })
 
-    const searchParams = Promise.resolve({ token: 'recovery-token' })
+    // Verify success state is shown
+    expect(screen.getByText('Session Recovered!')).toBeInTheDocument()
 
-    await RecoverPage({ searchParams })
-
-    expect(mockMarkRecovered).toHaveBeenCalledWith('recovery-token')
-    expect(redirect).toHaveBeenCalledWith(
-      'https://checkout.stripe.com/pay/cs_test_123'
-    )
+    // Cleanup timers
+    jest.useRealTimers()
   })
 })

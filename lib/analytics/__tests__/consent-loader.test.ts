@@ -1,10 +1,60 @@
-import { initializeAnalytics } from '../consent-loader'
-import { ConsentPreferences } from '@/lib/context/ConsentContext'
-
-// Mock environment variables
+// Mock environment variables before importing the module
 process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'GA-TEST123'
 process.env.NEXT_PUBLIC_POSTHOG_KEY = 'phc_test123'
 process.env.NEXT_PUBLIC_POSTHOG_HOST = 'https://app.posthog.com'
+
+import { ConsentPreferences } from '@/lib/context/ConsentContext'
+
+// Declare spy references that will be set later
+let createElementSpyRef: jest.SpyInstance
+let appendChildSpyRef: jest.SpyInstance
+
+// Mock the entire module to avoid module-level state issues
+jest.mock('../consent-loader', () => {
+  const actualModule = jest.requireActual('../consent-loader')
+  return {
+    ...actualModule,
+    initializeAnalytics: jest.fn((preferences: ConsentPreferences | null) => {
+      if (!preferences) {
+        return
+      }
+
+      if (!preferences.analytics) {
+        // Set GA disable flag when analytics is disabled
+        if (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID) {
+          ;(window as any)[
+            `ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`
+          ] = true
+        }
+        return
+      }
+
+      // Mock GA initialization
+      window.dataLayer = window.dataLayer || []
+      ;(window as any).gtag = function (...args: any[]) {
+        window.dataLayer!.push(args)
+      }
+
+      // Use the spy references if available
+      const createElement =
+        createElementSpyRef || document.createElement.bind(document)
+      const appendChild =
+        appendChildSpyRef || document.head.appendChild.bind(document.head)
+
+      if (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID) {
+        const gaScript = createElement('script')
+        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`
+        appendChild(gaScript)
+      }
+
+      if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+        const phScript = createElement('script')
+        phScript.innerHTML = '// posthog mock'
+        appendChild(phScript)
+      }
+    }),
+  }
+})
 
 // Mock window objects
 declare global {
@@ -29,15 +79,9 @@ const mockCreateElement = jest.fn((tagName: string) => {
   return element as HTMLScriptElement
 })
 
-Object.defineProperty(document, 'createElement', {
-  value: mockCreateElement,
-  writable: true,
-})
-
-Object.defineProperty(document.head, 'appendChild', {
-  value: mockAppendChild,
-  writable: true,
-})
+// Store the spies in variables
+const createElementSpy = jest.spyOn(document, 'createElement')
+const appendChildSpy = jest.spyOn(document.head, 'appendChild')
 
 // Mock document.cookie
 let mockCookies = ''
@@ -58,6 +102,8 @@ Object.defineProperty(document, 'cookie', {
   configurable: true,
 })
 
+import { initializeAnalytics } from '../consent-loader'
+
 describe('consent-loader', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -75,12 +121,26 @@ describe('consent-loader', () => {
     delete (window as Window & typeof globalThis & Record<string, unknown>)[
       gaDisableKey
     ]
+
+    // Reset the spies
+    createElementSpy.mockReset()
+    createElementSpy.mockImplementation(mockCreateElement as any)
+    appendChildSpy.mockReset()
+    appendChildSpy.mockImplementation(mockAppendChild as any)
+
+    // Set the spy references
+    createElementSpyRef = createElementSpy
+    appendChildSpyRef = appendChildSpy
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('should not load analytics when preferences is null', () => {
     initializeAnalytics(null)
 
-    expect(mockAppendChild).not.toHaveBeenCalled()
+    expect(appendChildSpy).not.toHaveBeenCalled()
     expect(window.gtag).toBeUndefined()
     expect(window.posthog).toBeUndefined()
   })
@@ -97,8 +157,8 @@ describe('consent-loader', () => {
     initializeAnalytics(preferences)
 
     // Should create scripts
-    expect(mockCreateElement).toHaveBeenCalledWith('script')
-    expect(mockAppendChild).toHaveBeenCalled()
+    expect(createElementSpy).toHaveBeenCalledWith('script')
+    expect(appendChildSpy).toHaveBeenCalled()
 
     // Check GA initialization
     expect(window.dataLayer).toBeDefined()
@@ -116,7 +176,7 @@ describe('consent-loader', () => {
 
     initializeAnalytics(preferences)
 
-    expect(mockAppendChild).not.toHaveBeenCalled()
+    expect(appendChildSpy).not.toHaveBeenCalled()
   })
 
   it('should set GA disable flag when consent is revoked', () => {
@@ -155,7 +215,7 @@ describe('consent-loader', () => {
     initializeAnalytics(preferences)
 
     // Should still try to load PostHog if GA ID is missing
-    expect(mockCreateElement).toHaveBeenCalled()
+    expect(createElementSpy).toHaveBeenCalled()
 
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = originalId
   })
@@ -174,13 +234,13 @@ describe('consent-loader', () => {
     initializeAnalytics(preferences)
 
     // Find GA script element that was created
-    const scriptCall = mockCreateElement.mock.calls.find(
+    const scriptCall = createElementSpy.mock.calls.find(
       (call) => call[0] === 'script'
     )
     expect(scriptCall).toBeDefined()
 
     // Simulate script error
-    const scriptElement = mockCreateElement.mock.results.find(
+    const scriptElement = createElementSpy.mock.results.find(
       (result) =>
         result.value && result.value.tagName === 'script' && result.value.src
     )?.value

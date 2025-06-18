@@ -17,7 +17,9 @@ jest.mock('next/server', () => ({
     }
 
     async json() {
-      return typeof this._body === 'string' ? JSON.parse(this._body) : this._body
+      return typeof this._body === 'string'
+        ? JSON.parse(this._body)
+        : this._body
     }
 
     async text() {
@@ -116,3 +118,23 @@ if (typeof global.Response === 'undefined') {
     }
   }
 }
+
+// Add TextEncoder and TextDecoder to jsdom environment
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder } = require('util')
+  global.TextEncoder = TextEncoder
+}
+
+if (typeof global.TextDecoder === 'undefined') {
+  const { TextDecoder } = require('util')
+  global.TextDecoder = TextDecoder
+}
+
+// Add crypto.subtle for Web Crypto API
+const { webcrypto } = require('crypto')
+Object.defineProperty(global, 'crypto', {
+  value: webcrypto,
+  writable: true,
+  configurable: true,
+  enumerable: true,
+})

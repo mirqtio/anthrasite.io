@@ -1,3 +1,15 @@
+// Mock lru-cache before importing the route
+jest.mock('lru-cache', () => {
+  const mockCacheInstance = {
+    get: jest.fn(),
+    set: jest.fn(),
+  }
+  return {
+    LRUCache: jest.fn().mockImplementation(() => mockCacheInstance),
+    __getMockInstance: () => mockCacheInstance,
+  }
+})
+
 import { POST } from '../route'
 import { NextRequest } from 'next/server'
 import { stripe } from '@/lib/stripe/config'
@@ -19,11 +31,15 @@ jest.mock('@/lib/db', () => ({
       create: jest.fn(),
       findFirst: jest.fn(),
       update: jest.fn(),
+      count: jest.fn(),
     },
     utmToken: {
       update: jest.fn(),
     },
     abandonedCheckout: {
+      deleteMany: jest.fn(),
+    },
+    abandonedCart: {
       deleteMany: jest.fn(),
     },
     business: {
@@ -55,17 +71,6 @@ jest.mock('next/headers', () => ({
   ),
 }))
 
-jest.mock('lru-cache', () => {
-  const mockInstance = {
-    get: jest.fn(),
-    set: jest.fn(),
-  }
-  return {
-    LRUCache: jest.fn().mockImplementation(() => mockInstance),
-    __getMockInstance: () => mockInstance,
-  }
-})
-
 describe('Stripe Webhook Handler', () => {
   let mockCacheInstance: any
 
@@ -74,8 +79,11 @@ describe('Stripe Webhook Handler', () => {
     // Get the mock instance
     const lruCache = require('lru-cache')
     mockCacheInstance = lruCache.__getMockInstance()
+    // Clear the cache mock functions
     mockCacheInstance.get.mockClear()
     mockCacheInstance.set.mockClear()
+    // Default to not cached
+    mockCacheInstance.get.mockReturnValue(false)
   })
 
   describe('POST /api/stripe/webhook', () => {
@@ -112,6 +120,7 @@ describe('Stripe Webhook Handler', () => {
         name: 'Test Business',
         domain: 'example.com',
       })
+      ;(prisma.purchase.count as jest.Mock).mockResolvedValue(1) // Not a first-time customer
 
       const request = new NextRequest(
         'http://localhost:3000/api/stripe/webhook',
@@ -122,14 +131,14 @@ describe('Stripe Webhook Handler', () => {
       )
 
       const response = await POST(request)
-      
+
       // Debug output
       if (response.status !== 200) {
         const errorData = await response.json()
         console.log('Response status:', response.status)
         console.log('Response data:', errorData)
       }
-      
+
       expect(response.status).toBe(200)
       const data = await response.json()
       expect(data).toEqual({ received: true })
@@ -239,12 +248,12 @@ describe('Stripe Webhook Handler', () => {
 
     it('should return 500 for processing errors', async () => {
       const mockEvent = {
-        id: 'evt_test_123',
+        id: 'evt_test_500',
         type: 'checkout.session.completed',
         data: {
           object: {
-            id: 'cs_test_123',
-            payment_intent: 'pi_test_123',
+            id: 'cs_test_500',
+            payment_intent: 'pi_test_500',
             amount_total: 9900,
             currency: 'usd',
             customer_details: {
@@ -259,6 +268,8 @@ describe('Stripe Webhook Handler', () => {
         },
       }
 
+      // Ensure cache returns false for this event
+      mockCacheInstance.get.mockReturnValue(false)
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
       ;(prisma.purchase.create as jest.Mock).mockRejectedValue(
         new Error('Database error')
@@ -293,6 +304,8 @@ describe('Stripe Webhook Handler', () => {
         },
       }
 
+      // Ensure cache returns false for this event
+      mockCacheInstance.get.mockReturnValue(false)
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
       ;(prisma.purchase.findFirst as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
@@ -312,6 +325,14 @@ describe('Stripe Webhook Handler', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(200)
+
+      // Wait for any async operations
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      // Verify the update was called
+      expect(prisma.purchase.findFirst).toHaveBeenCalledWith({
+        where: { stripePaymentIntentId: 'pi_test_123' },
+      })
       expect(prisma.purchase.update).toHaveBeenCalledWith({
         where: { id: 'purchase-123' },
         data: {

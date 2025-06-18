@@ -74,7 +74,9 @@ describe('WaitlistForm', () => {
     await userEvent.type(input, 'invalid')
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid domain format')).toBeInTheDocument()
+      expect(
+        screen.getByText('Invalid domain format', { selector: 'span' })
+      ).toBeInTheDocument()
     })
 
     // Continue button should be disabled
@@ -325,10 +327,15 @@ describe('WaitlistForm', () => {
     // Should show error below email input
     await waitFor(
       () => {
-        const errorElement = screen.getByText(
+        // There might be multiple error elements (in Input component and form)
+        const errorElements = screen.getAllByText(
           'Unable to add to waitlist. Please try again.'
         )
-        expect(errorElement).toBeInTheDocument()
+        expect(errorElements.length).toBeGreaterThan(0)
+        // Verify it's in the email step
+        expect(
+          screen.getByPlaceholderText('you@example.com')
+        ).toBeInTheDocument()
       },
       { timeout: 3000 }
     )

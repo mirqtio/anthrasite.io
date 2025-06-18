@@ -10,6 +10,13 @@ import {
 } from '../variant-assignment'
 import { Experiment, ExperimentVariant } from '../types'
 
+// Polyfill for TextEncoder/TextDecoder if not available
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util')
+  global.TextEncoder = TextEncoder
+  global.TextDecoder = TextDecoder
+}
+
 describe('Variant Assignment', () => {
   const mockExperiment: Experiment = {
     id: 'test-experiment',
@@ -23,24 +30,27 @@ describe('Variant Assignment', () => {
   }
 
   describe('getVariantAssignment', () => {
-    it('should return consistent assignments for the same user', () => {
+    it('should return consistent assignments for the same user', async () => {
       const userId = 'user-123'
 
       // Call multiple times
-      const assignment1 = getVariantAssignment(userId, mockExperiment)
-      const assignment2 = getVariantAssignment(userId, mockExperiment)
-      const assignment3 = getVariantAssignment(userId, mockExperiment)
+      const assignment1 = await getVariantAssignment(userId, mockExperiment)
+      const assignment2 = await getVariantAssignment(userId, mockExperiment)
+      const assignment3 = await getVariantAssignment(userId, mockExperiment)
 
       expect(assignment1?.variantId).toBe(assignment2?.variantId)
       expect(assignment2?.variantId).toBe(assignment3?.variantId)
     })
 
-    it('should return different assignments for different users', () => {
+    it('should return different assignments for different users', async () => {
       const assignments = new Set<string>()
 
       // Test with multiple users
       for (let i = 0; i < 100; i++) {
-        const assignment = getVariantAssignment(`user-${i}`, mockExperiment)
+        const assignment = await getVariantAssignment(
+          `user-${i}`,
+          mockExperiment
+        )
         if (assignment) {
           assignments.add(assignment.variantId)
         }
@@ -50,7 +60,7 @@ describe('Variant Assignment', () => {
       expect(assignments.size).toBeGreaterThan(1)
     })
 
-    it('should respect variant weights distribution', () => {
+    it('should respect variant weights distribution', async () => {
       const variantCounts: Record<string, number> = {
         control: 0,
         'variant-a': 0,
@@ -60,7 +70,10 @@ describe('Variant Assignment', () => {
       // Test with large sample
       const sampleSize = 10000
       for (let i = 0; i < sampleSize; i++) {
-        const assignment = getVariantAssignment(`user-${i}`, mockExperiment)
+        const assignment = await getVariantAssignment(
+          `user-${i}`,
+          mockExperiment
+        )
         if (assignment) {
           variantCounts[assignment.variantId]++
         }
@@ -72,23 +85,29 @@ describe('Variant Assignment', () => {
       expect(variantCounts['variant-b'] / sampleSize).toBeCloseTo(0.2, 1)
     })
 
-    it('should return null for inactive experiments', () => {
+    it('should return null for inactive experiments', async () => {
       const inactiveExperiment: Experiment = {
         ...mockExperiment,
         status: 'paused',
       }
 
-      const assignment = getVariantAssignment('user-123', inactiveExperiment)
+      const assignment = await getVariantAssignment(
+        'user-123',
+        inactiveExperiment
+      )
       expect(assignment).toBeNull()
     })
 
-    it('should respect date constraints', () => {
+    it('should respect date constraints', async () => {
       const futureExperiment: Experiment = {
         ...mockExperiment,
         startDate: new Date(Date.now() + 86400000), // Tomorrow
       }
 
-      const assignment = getVariantAssignment('user-123', futureExperiment)
+      const assignment = await getVariantAssignment(
+        'user-123',
+        futureExperiment
+      )
       expect(assignment).toBeNull()
 
       const expiredExperiment: Experiment = {
@@ -96,11 +115,14 @@ describe('Variant Assignment', () => {
         endDate: new Date(Date.now() - 86400000), // Yesterday
       }
 
-      const assignment2 = getVariantAssignment('user-123', expiredExperiment)
+      const assignment2 = await getVariantAssignment(
+        'user-123',
+        expiredExperiment
+      )
       expect(assignment2).toBeNull()
     })
 
-    it('should handle invalid variant weights', () => {
+    it('should handle invalid variant weights', async () => {
       const invalidExperiment: Experiment = {
         ...mockExperiment,
         variants: [
@@ -111,7 +133,10 @@ describe('Variant Assignment', () => {
       }
 
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
-      const assignment = getVariantAssignment('user-123', invalidExperiment)
+      const assignment = await getVariantAssignment(
+        'user-123',
+        invalidExperiment
+      )
 
       expect(assignment).toBeNull()
       expect(consoleSpy).toHaveBeenCalled()
@@ -121,7 +146,7 @@ describe('Variant Assignment', () => {
   })
 
   describe('batchAssignVariants', () => {
-    it('should assign variants for multiple experiments', () => {
+    it('should assign variants for multiple experiments', async () => {
       const experiments = new Map<string, Experiment>([
         ['exp1', mockExperiment],
         [
@@ -137,20 +162,20 @@ describe('Variant Assignment', () => {
         ],
       ])
 
-      const assignments = batchAssignVariants('user-123', experiments)
+      const assignments = await batchAssignVariants('user-123', experiments)
 
       expect(assignments.size).toBe(2)
       expect(assignments.has('exp1')).toBe(true)
       expect(assignments.has('exp2')).toBe(true)
     })
 
-    it('should skip inactive experiments', () => {
+    it('should skip inactive experiments', async () => {
       const experiments = new Map<string, Experiment>([
         ['exp1', mockExperiment],
         ['exp2', { ...mockExperiment, id: 'exp2', status: 'paused' }],
       ])
 
-      const assignments = batchAssignVariants('user-123', experiments)
+      const assignments = await batchAssignVariants('user-123', experiments)
 
       expect(assignments.size).toBe(1)
       expect(assignments.has('exp1')).toBe(true)
@@ -159,12 +184,12 @@ describe('Variant Assignment', () => {
   })
 
   describe('evaluateTargeting', () => {
-    it('should return true when no targeting rules exist', () => {
+    it('should return true when no targeting rules exist', async () => {
       const result = evaluateTargeting(mockExperiment, {})
       expect(result).toBe(true)
     })
 
-    it('should evaluate equals operator', () => {
+    it('should evaluate equals operator', async () => {
       const experimentWithTargeting: Experiment = {
         ...mockExperiment,
         targetingRules: [{ type: 'url', operator: 'equals', value: '/home' }],
@@ -178,7 +203,7 @@ describe('Variant Assignment', () => {
       ).toBe(false)
     })
 
-    it('should evaluate contains operator', () => {
+    it('should evaluate contains operator', async () => {
       const experimentWithTargeting: Experiment = {
         ...mockExperiment,
         targetingRules: [
@@ -197,7 +222,7 @@ describe('Variant Assignment', () => {
       )
     })
 
-    it('should evaluate multiple rules with AND logic', () => {
+    it('should evaluate multiple rules with AND logic', async () => {
       const experimentWithTargeting: Experiment = {
         ...mockExperiment,
         targetingRules: [
@@ -221,7 +246,7 @@ describe('Variant Assignment', () => {
       ).toBe(false)
     })
 
-    it('should handle regex operator', () => {
+    it('should handle regex operator', async () => {
       const experimentWithTargeting: Experiment = {
         ...mockExperiment,
         targetingRules: [
@@ -239,7 +264,7 @@ describe('Variant Assignment', () => {
   })
 
   describe('calculateSampleSize', () => {
-    it('should calculate correct sample size for typical parameters', () => {
+    it('should calculate correct sample size for typical parameters', async () => {
       // 10% baseline rate, want to detect 20% relative change
       const sampleSize = calculateSampleSize(0.1, 0.2)
 
@@ -248,14 +273,14 @@ describe('Variant Assignment', () => {
       expect(sampleSize).toBeLessThan(4000)
     })
 
-    it('should increase sample size for smaller effects', () => {
+    it('should increase sample size for smaller effects', async () => {
       const largeEffect = calculateSampleSize(0.1, 0.5) // 50% change
       const smallEffect = calculateSampleSize(0.1, 0.1) // 10% change
 
       expect(smallEffect).toBeGreaterThan(largeEffect)
     })
 
-    it('should handle custom power and alpha', () => {
+    it('should handle custom power and alpha', async () => {
       const defaultSize = calculateSampleSize(0.1, 0.2, 0.8, 0.05)
       const higherPower = calculateSampleSize(0.1, 0.2, 0.99, 0.05)
       const lowerAlpha = calculateSampleSize(0.1, 0.2, 0.8, 0.01)
