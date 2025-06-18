@@ -21,14 +21,12 @@ const customJestConfig = {
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
-  // Temporarily lowered coverage thresholds to match current coverage levels
-  // TODO: Incrementally improve coverage back to 80%
   coverageThreshold: {
     global: {
-      branches: 40,
-      functions: 40,
-      lines: 45,
-      statements: 45,
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
   },
 }
