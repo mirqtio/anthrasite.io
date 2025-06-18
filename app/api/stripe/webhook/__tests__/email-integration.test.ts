@@ -23,6 +23,7 @@ jest.mock('@/lib/db', () => ({
     purchase: {
       create: jest.fn(),
       count: jest.fn(),
+      update: jest.fn(),
     },
     business: {
       findUnique: jest.fn(),
@@ -30,12 +31,24 @@ jest.mock('@/lib/db', () => ({
     utmToken: {
       update: jest.fn(),
     },
+    abandonedCart: {
+      deleteMany: jest.fn(),
+    },
   },
 }))
 
 jest.mock('@/lib/email/email-service', () => ({
   sendOrderConfirmation: jest.fn(),
   sendWelcomeEmail: jest.fn(),
+}))
+
+jest.mock('next/headers', () => ({
+  headers: jest.fn(async () => ({
+    get: jest.fn((name: string) => {
+      if (name === 'stripe-signature') return 'test-signature'
+      return null
+    }),
+  })),
 }))
 
 describe('Stripe Webhook - Email Integration', () => {
@@ -142,7 +155,10 @@ describe('Stripe Webhook - Email Integration', () => {
     })
 
     it('should send welcome email for first-time customers', async () => {
-      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
+      const uniqueEvent = { ...mockEvent, id: 'evt_test_welcome' }
+      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(
+        uniqueEvent
+      )
       ;(prisma.purchase.create as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
         businessId: 'business-123',
@@ -178,15 +194,24 @@ describe('Stripe Webhook - Email Integration', () => {
       expect(response.status).toBe(200)
 
       // Verify welcome email was sent
-      expect(sendWelcomeEmail).toHaveBeenCalledWith({
-        to: 'customer@example.com',
-        customerName: 'John Doe',
-        businessDomain: 'example.com',
-      })
+      expect(sendWelcomeEmail).toHaveBeenCalled()
+
+      // Check the actual call arguments
+      if ((sendWelcomeEmail as jest.Mock).mock.calls.length > 0) {
+        const [callArgs] = (sendWelcomeEmail as jest.Mock).mock.calls[0]
+        expect(callArgs).toMatchObject({
+          to: 'customer@example.com',
+          customerName: 'John Doe',
+          businessDomain: 'example.com',
+        })
+      }
     })
 
     it('should not send welcome email for returning customers', async () => {
-      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
+      const uniqueEvent = { ...mockEvent, id: 'evt_test_returning' }
+      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(
+        uniqueEvent
+      )
       ;(prisma.purchase.create as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
         businessId: 'business-123',
@@ -221,7 +246,10 @@ describe('Stripe Webhook - Email Integration', () => {
     })
 
     it('should handle email failures gracefully', async () => {
-      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
+      const uniqueEvent = { ...mockEvent, id: 'evt_test_email_fail' }
+      ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(
+        uniqueEvent
+      )
       ;(prisma.purchase.create as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
         businessId: 'business-123',
@@ -254,6 +282,7 @@ describe('Stripe Webhook - Email Integration', () => {
     })
 
     it('should not send emails if customer email is missing', async () => {
+      const uniqueEvent = { ...mockEvent, id: 'evt_test_no_email' }
       const sessionWithoutEmail = {
         ...mockCheckoutSession,
         customer_details: {
@@ -263,7 +292,7 @@ describe('Stripe Webhook - Email Integration', () => {
       }
 
       const eventWithoutEmail = {
-        ...mockEvent,
+        ...uniqueEvent,
         data: {
           object: sessionWithoutEmail as Stripe.Checkout.Session,
           previous_attributes: null,

@@ -10,14 +10,32 @@ import {
   retryStripeOperation,
 } from '../utils'
 
+// Mock Stripe error constructor
+class MockStripeError extends Error {
+  type: string
+  code?: string
+
+  constructor(options: { message: string; type: string; code?: string }) {
+    super(options.message)
+    this.type = options.type
+    this.code = options.code
+    Object.setPrototypeOf(this, MockStripeError.prototype)
+  }
+}
+// Make MockStripeError look like Stripe.errors.StripeError
+Object.setPrototypeOf(
+  MockStripeError.prototype,
+  Stripe.errors.StripeError.prototype
+)
+
 describe('Stripe Utils', () => {
   describe('handleStripeError', () => {
     it('should handle StripeError correctly', () => {
-      const error = new Stripe.errors.StripeError({
+      const error = new MockStripeError({
         message: 'Card declined',
         type: 'card_error',
         code: 'card_declined',
-      } as any)
+      })
 
       const result = handleStripeError(error)
 
@@ -48,10 +66,11 @@ describe('Stripe Utils', () => {
 
   describe('getStripeErrorMessage', () => {
     it('should return user-friendly message for card_declined', () => {
-      const error = new Stripe.errors.StripeError({
+      const error = new MockStripeError({
+        message: 'Card declined',
         type: 'card_error',
         code: 'card_declined',
-      } as any)
+      })
 
       const message = getStripeErrorMessage(error)
       expect(message).toBe(
@@ -60,10 +79,11 @@ describe('Stripe Utils', () => {
     })
 
     it('should return user-friendly message for insufficient_funds', () => {
-      const error = new Stripe.errors.StripeError({
+      const error = new MockStripeError({
+        message: 'Insufficient funds',
         type: 'card_error',
         code: 'insufficient_funds',
-      } as any)
+      })
 
       const message = getStripeErrorMessage(error)
       expect(message).toBe(
@@ -72,9 +92,10 @@ describe('Stripe Utils', () => {
     })
 
     it('should return generic message for api_error', () => {
-      const error = new Stripe.errors.StripeError({
+      const error = new MockStripeError({
+        message: 'API error',
         type: 'api_error',
-      } as any)
+      })
 
       const message = getStripeErrorMessage(error)
       expect(message).toBe(
@@ -126,7 +147,13 @@ describe('Stripe Utils', () => {
   })
 
   describe('retryStripeOperation', () => {
-    jest.useFakeTimers()
+    beforeEach(() => {
+      jest.useFakeTimers()
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
 
     it('should succeed on first attempt', async () => {
       const operation = jest.fn().mockResolvedValue('success')
@@ -151,12 +178,8 @@ describe('Stripe Utils', () => {
         backoffFactor: 2,
       })
 
-      // Fast-forward through delays
-      jest.advanceTimersByTime(100) // First retry delay
-      await Promise.resolve()
-      jest.advanceTimersByTime(200) // Second retry delay
-      await Promise.resolve()
-
+      // Run all timers as the promise progresses
+      await jest.runAllTimersAsync()
       const result = await promise
 
       expect(result).toBe('success')
@@ -164,9 +187,11 @@ describe('Stripe Utils', () => {
     })
 
     it('should not retry card errors', async () => {
-      const cardError = new Stripe.errors.StripeError({
+      const cardError = new MockStripeError({
+        message: 'Card declined',
         type: 'card_error',
-      } as any)
+        code: 'card_declined',
+      })
 
       const operation = jest.fn().mockRejectedValue(cardError)
 
@@ -185,18 +210,13 @@ describe('Stripe Utils', () => {
         backoffFactor: 2,
       })
 
-      // Fast-forward through all retry delays
-      jest.advanceTimersByTime(100)
-      await Promise.resolve()
-      jest.advanceTimersByTime(200)
-      await Promise.resolve()
+      // Advance timers while the promise executes
+      const runPromise = promise.catch((e) => e)
+      await jest.runAllTimersAsync()
+      const result = await runPromise
 
-      await expect(promise).rejects.toThrow(error)
+      expect(result).toBe(error)
       expect(operation).toHaveBeenCalledTimes(3) // Initial + 2 retries
-    })
-
-    afterEach(() => {
-      jest.useRealTimers()
     })
   })
 })
