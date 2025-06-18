@@ -75,11 +75,21 @@ export async function fetchExperiments(
   }
 
   try {
+    // Skip Edge Config in test environments if not configured
+    if (process.env.NODE_ENV === 'test' && !process.env.EDGE_CONFIG) {
+      if (process.env.NODE_ENV !== 'test') {
+        console.warn('Using fallback experiments - Edge Config not configured')
+      }
+      return new Map(Object.entries(FALLBACK_EXPERIMENTS))
+    }
+
     // Fetch from Edge Config
     const configData = await get<EdgeConfigExperiment>('ab-experiments')
 
     if (!configData) {
-      console.warn('No experiment configuration found in Edge Config')
+      if (process.env.NODE_ENV !== 'test') {
+        console.warn('No experiment configuration found in Edge Config')
+      }
       return new Map(Object.entries(FALLBACK_EXPERIMENTS))
     }
 
@@ -91,18 +101,26 @@ export async function fetchExperiments(
       timestamp: Date.now(),
     }
 
-    console.log(`Loaded ${experiments.size} experiments from Edge Config`)
+    if (process.env.NODE_ENV !== 'test') {
+      console.log(`Loaded ${experiments.size} experiments from Edge Config`)
+    }
     return experiments
   } catch (error) {
-    console.error('Failed to fetch experiments from Edge Config:', error)
+    if (process.env.NODE_ENV !== 'test') {
+      console.error('Failed to fetch experiments from Edge Config:', error)
+    }
 
     // Return cached data if available, otherwise fallback
     if (experimentCache) {
-      console.warn('Using stale cached experiments due to fetch error')
+      if (process.env.NODE_ENV !== 'test') {
+        console.warn('Using stale cached experiments due to fetch error')
+      }
       return experimentCache.data
     }
 
-    console.warn('Using fallback experiments')
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('Using fallback experiments')
+    }
     return new Map(Object.entries(FALLBACK_EXPERIMENTS))
   }
 }
