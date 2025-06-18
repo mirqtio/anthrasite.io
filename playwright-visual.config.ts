@@ -151,7 +151,8 @@ export default defineConfig({
       SKIP_ENV_VALIDATION: 'true',
       SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1',
       ...(process.env.CI && {
-        DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
+        DATABASE_URL:
+          'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
       }),
     },
   },
