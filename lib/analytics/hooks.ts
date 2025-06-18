@@ -1,4 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import { usePathname } from 'next/navigation'
+import { onCLS, onFID, onFCP, onLCP, onTTFB, onINP } from 'web-vitals'
+import {
+  trackEvent,
+  trackPageView,
+  identifyUser,
+  resetUser,
+} from './analytics-client'
 import { useConsent } from '@/lib/context/ConsentContext'
 
 /**
@@ -58,4 +66,119 @@ export function useConsentStatus() {
     functional: preferences?.functional ?? false,
     timestamp: preferences?.timestamp,
   }
+}
+
+/**
+ * Main analytics hook that provides all tracking functions
+ */
+export function useAnalytics() {
+  const track = useCallback(
+    (eventName: string, properties?: Record<string, any>) => {
+      trackEvent(eventName, properties)
+    },
+    []
+  )
+
+  const page = useCallback((properties?: Record<string, any>) => {
+    trackPageView(properties)
+  }, [])
+
+  const identify = useCallback(
+    (userId: string, traits?: Record<string, any>) => {
+      identifyUser(userId, traits)
+    },
+    []
+  )
+
+  const reset = useCallback(() => {
+    resetUser()
+  }, [])
+
+  return {
+    track,
+    page,
+    identify,
+    reset,
+  }
+}
+
+/**
+ * Hook to track page views automatically
+ */
+export function usePageTracking() {
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (!pathname) return
+
+    trackPageView({
+      path: pathname,
+      title: typeof document !== 'undefined' ? document.title : '',
+    })
+  }, [pathname])
+}
+
+/**
+ * Hook to get a memoized event tracking function
+ */
+export function useEventTracking() {
+  return useCallback((eventName: string, properties?: Record<string, any>) => {
+    trackEvent(eventName, properties)
+  }, [])
+}
+
+/**
+ * Hook to track web vitals metrics
+ */
+export function useWebVitals() {
+  useEffect(() => {
+    // Track Core Web Vitals
+    onCLS((metric) => {
+      trackEvent('web_vitals', {
+        metric_name: metric.name,
+        metric_value: metric.value,
+        metric_id: metric.id,
+      })
+    })
+
+    onLCP((metric) => {
+      trackEvent('web_vitals', {
+        metric_name: metric.name,
+        metric_value: metric.value,
+        metric_id: metric.id,
+      })
+    })
+
+    onFID((metric) => {
+      trackEvent('web_vitals', {
+        metric_name: metric.name,
+        metric_value: metric.value,
+        metric_id: metric.id,
+      })
+    })
+
+    onFCP((metric) => {
+      trackEvent('web_vitals', {
+        metric_name: metric.name,
+        metric_value: metric.value,
+        metric_id: metric.id,
+      })
+    })
+
+    onTTFB((metric) => {
+      trackEvent('web_vitals', {
+        metric_name: metric.name,
+        metric_value: metric.value,
+        metric_id: metric.id,
+      })
+    })
+
+    onINP((metric) => {
+      trackEvent('web_vitals', {
+        metric_name: metric.name,
+        metric_value: metric.value,
+        metric_id: metric.id,
+      })
+    })
+  }, [])
 }

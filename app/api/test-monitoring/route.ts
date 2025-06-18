@@ -1,66 +1,115 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import * as Sentry from '@sentry/nextjs'
 import { getAnalytics } from '@/lib/analytics/analytics-manager'
 import { captureError, trackEvent } from '@/lib/monitoring'
 
 export async function GET() {
-  const results = {
-    sentry: false,
-    analytics: false,
-    datadog: false,
-    timestamp: new Date().toISOString(),
+  return NextResponse.json({
+    message: 'Monitoring test endpoints',
+    endpoints: [
+      {
+        method: 'POST',
+        path: '/api/test-monitoring',
+        description: 'Test monitoring tools with different error types',
+        parameters: {
+          type: 'error | warning | info | custom',
+          data: 'optional custom data object',
+        },
+      },
+    ],
+  })
+}
+
+export async function POST(request: NextRequest) {
+  // Only allow in development mode
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'This endpoint is only available in development mode' },
+      { status: 404 }
+    )
   }
 
   try {
-    // Test Sentry
+    let body: any
     try {
-      Sentry.captureMessage('Test message from monitoring API', 'info')
-      Sentry.captureException(new Error('Test error from monitoring API'))
-      results.sentry = true
-    } catch (e) {
-      console.error('Sentry test failed:', e)
+      body = await request.json()
+    } catch (jsonError) {
+      return NextResponse.json(
+        { error: 'Invalid test type. Use: error, warning, info, or custom' },
+        { status: 400 }
+      )
     }
 
-    // Test Analytics (GA4 & PostHog)
-    try {
-      const analytics = getAnalytics()
-      if (analytics) {
-        analytics.track('test_monitoring_api', {
-          test: true,
-          source: 'api',
-        })
-        results.analytics = true
-      }
-    } catch (e) {
-      console.error('Analytics test failed:', e)
+    const { type, data } = body
+
+    if (!type) {
+      return NextResponse.json(
+        { error: 'Invalid test type. Use: error, warning, info, or custom' },
+        { status: 400 }
+      )
     }
 
-    // Test Datadog via monitoring wrapper
-    try {
-      trackEvent('test_monitoring_api', { test: true })
-      captureError(new Error('Test error for Datadog'), { source: 'api' })
-      results.datadog = true
-    } catch (e) {
-      console.error('Datadog test failed:', e)
+    const responseData: any = { success: true }
+
+    switch (type) {
+      case 'error':
+        try {
+          Sentry.captureException(new Error('Test error'))
+          console.error('Test error:', new Error('Test error'))
+          responseData.message = 'Error captured and sent to monitoring'
+        } catch (e) {
+          console.error('Error monitoring test failed:', e)
+          responseData.message = 'Error test completed with issues'
+        }
+        break
+
+      case 'warning':
+        try {
+          Sentry.captureMessage('Test warning message', 'warning')
+          console.log('Test warning logged')
+          responseData.message = 'Warning sent to monitoring'
+        } catch (e) {
+          console.error('Warning monitoring test failed:', e)
+          responseData.message = 'Warning test completed with issues'
+        }
+        break
+
+      case 'info':
+        try {
+          Sentry.captureMessage('Test info event', 'info')
+          console.log('Test info logged')
+          responseData.message = 'Info event sent to monitoring'
+        } catch (e) {
+          console.error('Info monitoring test failed:', e)
+          responseData.message = 'Info test completed with issues'
+        }
+        break
+
+      case 'custom':
+        try {
+          const customData = body.customData || {}
+          console.log('Custom monitoring event:', customData)
+          responseData.message = 'Custom event sent to monitoring'
+          responseData.customData = customData
+        } catch (e) {
+          console.error('Custom monitoring test failed:', e)
+          responseData.message = 'Custom test completed with issues'
+        }
+        break
+
+      default:
+        return NextResponse.json(
+          { error: 'Invalid test type. Use: error, warning, info, or custom' },
+          { status: 400 }
+        )
     }
 
-    return NextResponse.json({
-      success: true,
-      results,
-      environment: {
-        sentry_dsn: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
-        ga4_id: !!process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID,
-        posthog_key: !!process.env.NEXT_PUBLIC_POSTHOG_KEY,
-        datadog_app_id: !!process.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID,
-        datadog_client_token: !!process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN,
-      },
-    })
+    return NextResponse.json(responseData)
   } catch (error) {
     return NextResponse.json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        results,
       },
       { status: 500 }
     )
