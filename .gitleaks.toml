@@ -2,20 +2,12 @@
 
 [allowlist]
 description = "Global allowlist"
-
-# Allow example/mock keys
-[[allowlist.regexes]]
-regex = '''mock-hash-\d+'''
-
-[[allowlist.regexes]]
-regex = '''cs_test_'''
-
-# Allow environment variable references
-[[allowlist.regexes]]
-regex = '''process\.env\.[A-Z_]+'''
-
-[[allowlist.regexes]]
-regex = '''NEXT_PUBLIC_[A-Z_]+'''
+regexes = [
+  '''mock-hash-\d+''',
+  '''cs_test_''',
+  '''process\.env\.[A-Z_]+''',
+  '''NEXT_PUBLIC_[A-Z_]+'''
+]
 
 # Custom rules for common API keys
 [[rules]]
