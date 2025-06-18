@@ -172,7 +172,9 @@ describe('AbandonedCartService', () => {
         businessName: 'Test Business',
         amount: '99.00',
         currency: 'USD',
-        recoveryUrl: expect.stringContaining('/purchase/recover?token=recovery-123'),
+        recoveryUrl: expect.stringContaining(
+          '/purchase/recover?token=recovery-123'
+        ),
         expiresAt: expect.any(Date),
       })
 

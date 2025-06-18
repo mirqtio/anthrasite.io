@@ -217,13 +217,13 @@ describe('Domain Validation', () => {
       // First call - should hit DNS
       const result1 = await validateDomain('cached.com')
       expect(result1.isValid).toBe(true)
-      
+
       const firstCallCount = mockFetch.mock.calls.length
 
       // Second call - should use cache
       const result2 = await validateDomain('cached.com')
       expect(result2.isValid).toBe(true)
-      
+
       // Should not make additional DNS calls
       expect(mockFetch.mock.calls.length).toBe(firstCallCount)
     })
