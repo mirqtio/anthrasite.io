@@ -1,0 +1,2526 @@
+
+> anthrasite.io@1.0.0 dev
+> next dev -p 3333
+
+  ▲ Next.js 14.2.30
+  - Local:        http://localhost:3333
+  - Environments: .env.local, .env
+  - Experiments (use with caution):
+    · instrumentationHook
+
+ ✓ Starting...
+warn  - It seems like you don't have a global error handler set up. It is recommended that you add a global-error.js file with Sentry instrumentation so that React rendering errors are reported to Sentry. Read more: https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#react-render-errors-in-app-router (you can suppress this warning by setting SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1 as environment variable)
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+ ○ Compiling /instrumentation ...
+ ✓ Compiled /instrumentation in 2s (2118 modules)
+ ✓ Ready in 4.2s
+ ✓ Compiled /middleware in 178ms (469 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling / ...
+ ✓ Compiled / in 7.5s (7819 modules)
+ GET / 200 in 8510ms
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (253kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 107ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /purchase ...
+ ✓ Compiled /purchase in 2.4s (8202 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 75ms
+ GET /purchase?utm=mock-hash-123 200 in 3486ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /design-test ...
+ ✓ Compiled /design-test in 1043ms (8194 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /design-test 200 in 1460ms
+ ✓ Compiled in 824ms (1272 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 61ms
+ GET /?_rsc=r3yhw 200 in 119ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 606ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 150ms
+ GET / 200 in 153ms
+ GET / 200 in 153ms
+ GET / 200 in 153ms
+ GET / 200 in 164ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 24ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 204ms
+ GET /?mock=true 200 in 210ms
+ GET / 200 in 225ms
+ GET /purchase?utm=mock-hash-123 200 in 638ms
+ GET /purchase?utm=mock-hash-123 200 in 670ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-456 200 in 539ms
+ ✓ Compiled in 616ms (1272 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 224ms
+ ✓ Compiled in 268ms (1272 modules)
+ GET /?_rsc=r3yhw 200 in 120ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 42ms
+ GET /?_rsc=r3yhw 200 in 34ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 725ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 537ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 17ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 519ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 42ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 16ms
+ ✓ Compiled in 2s (8208 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 533ms
+ GET /?_rsc=r3yhw 200 in 532ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1044ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 396ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 536ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 45ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 51ms
+ GET /?mock=true 200 in 53ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 39ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 30ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test 200 in 78ms
+ ✓ Compiled in 700ms (1272 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled in 293ms (1272 modules)
+ GET /?_rsc=r3yhw 200 in 255ms
+ GET /design-test?_rsc=yp7pq 200 in 257ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 57ms
+ GET /design-test?_rsc=yp7pq 200 in 58ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 767ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 553ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test 200 in 32ms
+ ✓ Compiled in 2.2s (8208 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 316ms
+ GET /design-test?_rsc=yp7pq 200 in 317ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 803ms
+ ✓ Compiled in 1596ms (8208 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 221ms
+ GET /?_rsc=r3yhw 200 in 221ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 725ms
+ ✓ Compiled in 1208ms (8208 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 124ms
+ GET /design-test?_rsc=yp7pq 200 in 136ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 623ms
+ ✓ Compiled in 1138ms (8208 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 68ms
+ GET /?_rsc=r3yhw 200 in 118ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 622ms
+ ✓ Compiled in 787ms (8208 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 82ms
+ GET /?_rsc=r3yhw 200 in 83ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 585ms
+ ✓ Compiled in 2s (8208 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 161ms
+ GET /design-test?_rsc=yp7pq 200 in 165ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 668ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /design-test 200 in 416ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 77ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 569ms
+ ○ Compiling /api/waitlist ...
+ ✓ Compiled /api/waitlist in 3.2s (7228 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ POST /api/waitlist 400 in 3632ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⨯ app/purchase/page.tsx (75:13) @ $$ACTION_0
+ ⨯ Error: NEXT_REDIRECT
+    at $$ACTION_0 (./app/purchase/page.tsx:138:15)
+digest: "2582380762"
+[0m [90m 73 |[39m       }[0m
+[0m [90m 74 |[39m       [0m
+[0m[31m[1m>[22m[39m[90m 75 |[39m       [36mthrow[39m [36mnew[39m [33mError[39m([0m
+[0m [90m    |[39m             [31m[1m^[22m[39m[0m
+[0m [90m 76 |[39m         error[33m.[39mmessage [33m||[39m [32m'Unable to process checkout. Please try again or contact support.'[39m[0m
+[0m [90m 77 |[39m       )[0m
+[0m [90m 78 |[39m     }[0m
+ POST /purchase?utm=mock-hash-123 500 in 2126ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /test-purchase/checkout-simulator ...
+ ✓ Compiled /test-purchase/checkout-simulator in 2.2s (8506 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator 200 in 2652ms
+ GET /design-test?_rsc=yp7pq 200 in 158ms
+ GET /?_rsc=r3yhw 200 in 163ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 648ms
+ ✓ Compiled in 5.1s (8214 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 928ms
+ GET /design-test?_rsc=yp7pq 200 in 943ms
+ GET /?_rsc=r3yhw 200 in 971ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1432ms
+ ✓ Compiled in 2.2s (8214 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 273ms
+ GET /?_rsc=r3yhw 200 in 274ms
+ GET /design-test?_rsc=yp7pq 200 in 274ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 776ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled in 3.1s (8683 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test?_rsc=yp7pq 200 in 2837ms
+ GET /?_rsc=r3yhw 200 in 2838ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 2838ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 3348ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 661ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator 200 in 682ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /?_rsc=r3yhw 200 in 203ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 167ms
+ GET /design-test?_rsc=yp7pq 200 in 118ms
+ GET /design-test 200 in 94ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 30ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 563ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /carbon-test ...
+ ✓ Compiled /carbon-test in 3.5s (8220 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test 200 in 3834ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 135ms
+ GET /design-test?_rsc=yp7pq 200 in 142ms
+ GET /?_rsc=r3yhw 200 in 141ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 635ms
+ ✓ Compiled in 8s (8220 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 639ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 640ms
+ GET /design-test?_rsc=yp7pq 200 in 640ms
+ GET /?_rsc=r3yhw 200 in 641ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1150ms
+ ✓ Compiled in 2s (8220 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 246ms
+ GET /design-test?_rsc=yp7pq 200 in 245ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 244ms
+ GET /?_rsc=r3yhw 200 in 244ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 751ms
+ ✓ Compiled in 1330ms (8220 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 143ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 146ms
+ GET /design-test?_rsc=yp7pq 200 in 148ms
+ GET /?_rsc=r3yhw 200 in 149ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 701ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 442ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 606ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 668ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /design-test 200 in 290ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test 200 in 60ms
+ ✓ Compiled in 3.8s (8220 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 1225ms
+ GET /?_rsc=r3yhw 200 in 1234ms
+ GET /carbon-test?_rsc=fqagw 200 in 1216ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 21ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1699ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled in 3.4s (8689 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 3124ms
+ GET /?_rsc=r3yhw 200 in 3130ms
+ GET /carbon-test?_rsc=fqagw 200 in 3131ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 3618ms
+ GET /test-purchase/checkout-simulator 200 in 699ms
+ GET / 200 in 711ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /carbon-test?_rsc=fqagw 200 in 95ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 53ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test 200 in 79ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /carbon-test?_rsc=fqagw 200 in 65ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test 200 in 85ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 364ms
+ GET /purchase?utm=mock-hash-123 200 in 534ms
+ ✓ Compiled in 2.5s (8220 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 916ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 919ms
+ GET /?_rsc=r3yhw 200 in 918ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 74ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1418ms
+ ✓ Compiled in 2.3s (8220 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 519ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 522ms
+ GET /?_rsc=r3yhw 200 in 524ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 53ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1028ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /refined-test ...
+ ✓ Compiled /refined-test in 1754ms (8226 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /refined-test 200 in 2101ms
+ GET /carbon-test?_rsc=fqagw 200 in 138ms
+ GET /?_rsc=r3yhw 200 in 142ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 146ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /carbon-test?_rsc=fqagw 200 in 33ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 638ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 598ms
+ ✓ Compiled in 5s (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /refined-test?_rsc=1p1fk 200 in 1050ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 1065ms
+ GET /?_rsc=r3yhw 200 in 1029ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1452ms
+ ✓ Compiled in 1625ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 381ms
+ GET /refined-test?_rsc=1p1fk 200 in 381ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 381ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 869ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /refined-test 200 in 668ms
+ ✓ Compiled in 1288ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 130ms
+ GET /?_rsc=r3yhw 200 in 137ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 640ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /refined-test 200 in 84ms
+ ✓ Compiled in 1483ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 123ms
+ GET /refined-test?_rsc=1p1fk 200 in 124ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 124ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 627ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 89ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 63ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 72ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 24ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 21ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 20ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 25ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 31ms
+ ✓ Compiled in 3.2s (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 442ms
+ GET /refined-test?_rsc=1p1fk 200 in 444ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 445ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 74ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 976ms
+ ✓ Compiled in 1561ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 183ms
+ GET /refined-test?_rsc=1p1fk 200 in 191ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 191ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 50ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 684ms
+ ✓ Compiled in 1413ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 171ms
+ GET /refined-test?_rsc=1p1fk 200 in 175ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 179ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 36ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 673ms
+ ✓ Compiled in 1575ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 316ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 420ms
+ GET /refined-test?_rsc=1p1fk 200 in 452ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 882ms
+ GET /?_rsc=r3yhw 200 in 148ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 465ms
+ ✓ Compiled in 2.5s (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 1718ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 1743ms
+ GET /refined-test?_rsc=1p1fk 200 in 1743ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 104ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 43ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2205ms
+ ✓ Compiled in 1312ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 148ms
+ GET /?_rsc=r3yhw 200 in 153ms
+ GET /refined-test?_rsc=1p1fk 200 in 155ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 35ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 11ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 643ms
+ ✓ Compiled in 1256ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 135ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 136ms
+ GET /refined-test?_rsc=1p1fk 200 in 136ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 55ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 14ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 635ms
+ ✓ Compiled in 1299ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 205ms
+ GET /refined-test?_rsc=1p1fk 200 in 227ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 227ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 54ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 26ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 690ms
+ ✓ Compiled in 2.3s (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 353ms
+ GET /?_rsc=r3yhw 200 in 356ms
+ GET /refined-test?_rsc=1p1fk 200 in 356ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 43ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 14ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 865ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 1696ms
+ ✓ Compiled in 5.1s (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 413ms
+ GET /?_rsc=r3yhw 200 in 403ms
+ GET /refined-test?_rsc=1p1fk 200 in 407ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 50ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 9ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 907ms
+ ✓ Compiled in 1441ms (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 177ms
+ GET /?_rsc=r3yhw 200 in 178ms
+ GET /refined-test?_rsc=1p1fk 200 in 179ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 70ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 14ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 680ms
+ ✓ Compiled in 2.5s (8222 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 92ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 92ms
+ GET /refined-test?_rsc=1p1fk 200 in 93ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 54ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 22ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 595ms
+ ✓ Compiled in 459ms (1278 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled in 260ms (1278 modules)
+ GET /?_rsc=r3yhw 200 in 130ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 131ms
+ GET /refined-test?_rsc=1p1fk 200 in 131ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 35ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 46ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /refined-test?_rsc=1p1fk 200 in 47ms
+ GET /?_rsc=r3yhw 200 in 50ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 12ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 20ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 23ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 629ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 550ms
+ ✓ Compiled in 4.9s (8224 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 235ms
+ GET /refined-test?_rsc=1p1fk 200 in 242ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 243ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 355ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 19ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 728ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled in 5.8s (8719 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 4793ms
+ GET /refined-test?_rsc=1p1fk 200 in 4794ms
+ GET /?_rsc=r3yhw 200 in 4794ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator 200 in 396ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /refined-test 200 in 451ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /?_rsc=r3yhw 200 in 126ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 5288ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 123ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 35ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 59ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 39ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 255ms
+ ○ Compiling /icon.svg ...
+ GET /purchase?utm=mock-hash-123 200 in 606ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled /icon.svg in 1147ms (7003 modules)
+ GET /icon.svg?0bd0418f5cf8884d 200 in 1239ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 343ms
+ ✓ Compiled in 2.5s (8282 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 260ms
+ GET /refined-test?_rsc=1p1fk 200 in 281ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 287ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 54ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 13ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1536ms
+ ✓ Compiled in 5.8s (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled in 1235ms (1278 modules)
+ GET /refined-test?_rsc=1p1fk 200 in 625ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 636ms
+ GET /?_rsc=r3yhw 200 in 635ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 89ms
+ GET /refined-test?_rsc=1p1fk 200 in 106ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 80ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 55ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 9ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 39ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 24ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1129ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 581ms
+ ✓ Compiled in 1498ms (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 291ms
+ GET /refined-test?_rsc=1p1fk 200 in 291ms
+ GET /?_rsc=r3yhw 200 in 290ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 90ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 15ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 802ms
+ ✓ Compiled in 1372ms (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /refined-test?_rsc=1p1fk 200 in 140ms
+ GET /?_rsc=r3yhw 200 in 146ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 146ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 34ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 43ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 649ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 1068ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 134ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled /icon.svg in 3.4s (7002 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /icon.svg?0bd0418f5cf8884d 200 in 5137ms
+ GET / 200 in 2456ms
+ ✓ Compiled in 3.9s (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled in 725ms (1278 modules)
+ GET /?_rsc=r3yhw 200 in 743ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 748ms
+ GET /refined-test?_rsc=1p1fk 200 in 749ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 77ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 117ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /refined-test?_rsc=1p1fk 200 in 133ms
+ GET /?_rsc=r3yhw 200 in 122ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 33ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 15ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 32ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 12ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1248ms
+ GET /?_rsc=r3yhw 200 in 32ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 612ms
+ ✓ Compiled in 1442ms (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 147ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 156ms
+ GET /refined-test?_rsc=1p1fk 200 in 156ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 61ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 777ms
+ ✓ Compiled /icon.svg in 859ms (7002 modules)
+ GET /?_rsc=r3yhw 200 in 1779ms
+ GET /icon.svg?784ce192f7e33333 200 in 1786ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 110ms
+ GET /icon.svg?784ce192f7e33333 200 in 96ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 9ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 18ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 8ms
+ ✓ Compiled in 1657ms (8280 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 151ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 152ms
+ GET /refined-test?_rsc=1p1fk 200 in 152ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 26ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 20ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 24ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 625ms
+ ✓ Compiled in 2.1s (8280 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 154ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 154ms
+ GET /refined-test?_rsc=1p1fk 200 in 155ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 79ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 27ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 25ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 607ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 993ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 25ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 573ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 32ms
+ ✓ Compiled in 10.7s (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 681ms
+ GET /?_rsc=r3yhw 200 in 683ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1187ms
+ ✓ Compiled in 495ms (1278 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 122ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 122ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 618ms
+ ✓ Compiled in 4.7s (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 438ms
+ GET /?_rsc=r3yhw 200 in 438ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 941ms
+ ✓ Compiled in 1780ms (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 203ms
+ GET /?_rsc=r3yhw 200 in 203ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 708ms
+ ✓ Compiled in 2.6s (8248 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 84ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 84ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 587ms
+ ✓ Compiled in 3.6s (8246 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 351ms
+ GET /?_rsc=r3yhw 200 in 351ms
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 855ms
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+ ○ Compiling /_error ...
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 500 in 34ms
+ GET /test-purchase/checkout-simulator 500 in 36ms
+ GET /purchase?utm=mock-hash-123 500 in 155ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/cache/webpack/client-development-fallback/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/cache/webpack/client-development-fallback/0.pack.gz'
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 5064ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 36ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 23ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /test-purchase/checkout-simulator 200 in 55ms
+ GET /purchase?utm=mock-hash-123 500 in 61ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 500 in 92ms
+ GET /test-purchase/checkout-simulator 500 in 81ms
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 2228ms
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 2ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 15ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /purchase?utm=mock-hash-123 200 in 25ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 500 in 26ms
+ GET /test-purchase/checkout-simulator 500 in 41ms
+ GET /purchase?utm=mock-hash-123 500 in 40ms
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 2753ms
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 2ms
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 2ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 200 in 10ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 500 in 29ms
+ GET /purchase?utm=mock-hash-123 500 in 35ms
+ GET /test-purchase/checkout-simulator 500 in 35ms
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 2413ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 543ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 17ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 500 in 339ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator 500 in 153ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 500 in 64ms
+ GET / 500 in 32ms
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 5498ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 21ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 9ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /purchase?utm=mock-hash-123 500 in 35ms
+ GET /test-purchase/checkout-simulator 500 in 37ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 500 in 60ms
+ GET /purchase?utm=mock-hash-123 500 in 77ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⨯ ./components/purchase/TrustSignals.tsx
+Error: 
+  [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/charlieirwin/Documents/GitHub/anthrasite.io/components/purchase/TrustSignals.tsx[0m:38:1]
+ [2m38[0m | 
+ [2m39[0m | export function TrustSignals() {
+ [2m40[0m |   return (
+ [2m41[0m |     <section className="py-16 md:py-24">
+    : [31;1m     ^^^^^^^[0m
+ [2m42[0m |       <div className="px-10 max-w-[1200px] mx-auto">
+ [2m43[0m |           {/* Trust Badges */}
+ [2m44[0m |           <motion.div
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/purchase/TrustSignals.tsx
+./components/purchase/index.ts
+./app/purchase/page.tsx
+ GET / 500 in 3637ms
+ GET / 500 in 1274ms
+ GET /purchase?utm=mock-hash-123 500 in 1273ms
+ GET /test-purchase/checkout-simulator 500 in 1273ms
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 15626ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 500 in 9ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator 500 in 33ms
+ ✓ Compiled /_not-found in 5.1s (8730 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ ✓ Compiled (8716 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/88e2b6275ea29049.webpack.hot-update.json 404 in 6801ms
+ GET / 200 in 1252ms
+ GET /test-purchase/checkout-simulator 200 in 1254ms
+ GET /purchase?utm=mock-hash-123 200 in 1648ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 32ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 845ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /purchase?utm=mock-hash-123 200 in 536ms
+ ✓ Compiled in 5.2s (8727 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 574ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 573ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750205943446_c9qd6io9o&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206785031%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:49:01 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:49:01 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2373ms
+ ✓ Compiled in 1818ms (8727 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 104ms
+ GET /?_rsc=r3yhw 200 in 105ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750205948525_w0f6fgkv3&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:49:06 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:49:06 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206785031%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1788ms
+ ✓ Compiled in 1610ms (8727 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 207ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 211ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750205957542_p5d0pujmu&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:49:15 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:49:15 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206851791%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1896ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 420ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 3.7s (8759 modules)
+ GET /icon.svg?784ce192f7e33333 200 in 3723ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 104ms
+ GET /?_rsc=r3yhw 200 in 106ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750205968256_k30ens0ym&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206862718%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:49:26 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:49:26 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1925ms
+ ✓ Compiled in 1830ms (8762 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 134ms
+ GET /?_rsc=r3yhw 200 in 135ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750205979942_rk0evkq3v&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:49:38 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:49:38 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206875721%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1938ms
+ ✓ Compiled in 439ms (1717 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 242ms
+ GET /?_rsc=r3yhw 200 in 244ms
+ ✓ Compiled in 378ms (1717 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 45ms
+ GET /?_rsc=r3yhw 200 in 40ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206006219_xyhufrumr&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206875721%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:50:04 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:50:04 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1969ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206006315_1cq4j1sic&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206875721%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:50:04 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:50:04 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1803ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ HEAD /purchase?utm=mock-hash-123 200 in 224ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206020565_ey4petq1k&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(3) {
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'ab_user_id=edge_1750206018766_w2tpt6j7r; Path=/; Expires=Thu, 18 Jun 2026 00:20:18 GMT; HttpOnly; SameSite=lax, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:50:18 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:50:18 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ ✓ Compiled in 1590ms (1717 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 284ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 285ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206069561_9vpi9r11p&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750206922719%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:51:07 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:51:07 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2227ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206145593_vj86ahyol&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:52:23 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:52:23 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207041471%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123 200 in 2126ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 36ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled in 9.7s (8762 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /test-purchase/checkout-simulator 200 in 9869ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 572ms
+ GET /?_rsc=r3yhw 200 in 597ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 21ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206162953_sb6sd1k0b&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:52:40 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:52:40 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207055689%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2384ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 42ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 21ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET / 200 in 46ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 24ms
+ ✓ Compiled in 5.3s (8730 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 752ms
+ ✓ Compiled in 818ms (1717 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 111ms
+ GET /?_rsc=r3yhw 200 in 903ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 25ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206509830_cc3na8s95&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207363560%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:58:27 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:58:27 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2568ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206509954_odul6i1vq&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207363560%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:58:28 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:58:28 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1865ms
+ ✓ Compiled in 1588ms (8730 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 137ms
+ GET /?_rsc=r3yhw 200 in 138ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206519415_1ehozmls0&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207363560%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:58:37 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:58:37 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1936ms
+ ✓ Compiled in 7.4s (8730 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 140ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 152ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206539867_5meliifvn&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 00:58:57 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 00:58:57 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207428306%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2863ms
+ ✓ Compiled in 3.9s (8730 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled in 643ms (1717 modules)
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 417ms
+ GET /?_rsc=r3yhw 200 in 417ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 39ms
+ GET /?_rsc=r3yhw 200 in 38ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206630507_499j9mbp7&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 01:00:28 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 01:00:28 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207428306%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2126ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206630580_ew87xp5m1&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207428306%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 01:00:28 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 01:00:28 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 1768ms
+ ✓ Compiled in 7.6s (8739 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=r3yhw 200 in 475ms
+ GET /test-purchase/checkout-simulator?_rsc=1h9iy 200 in 476ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750206754488_hekpn0d77&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object],
+      '_dd_s' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 01:02:32 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 01:02:32 GMT; HttpOnly; SameSite=lax, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750207428306%26logs%3D1; Path=/'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2272ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 748ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 2.7s (7045 modules)
+ GET /icon.svg?784ce192f7e33333 200 in 2745ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /test-purchase/checkout-simulator 200 in 1993ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?784ce192f7e33333 200 in 34ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled in 8.8s (8730 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /?_rsc=2jq1z 200 in 388ms
+ GET /?_rsc=r3yhw 200 in 388ms
+Failed to create checkout session: Error: NEXT_REDIRECT
+    at getRedirectError (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:49:19)
+    at redirect (webpack-internal:///(rsc)/./node_modules/next/dist/client/components/redirect.js:60:11)
+    at PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:67:74)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  digest: 'NEXT_REDIRECT;replace;/test-purchase/checkout-simulator?session=cs_test_1750207857033_j5x0bjmfz&business=mock-business-1;307;',
+  mutableCookies: p {
+    _parsed: Map(18) {
+      'rl_page_init_referrer' => [Object],
+      'rl_page_init_referring_domain' => [Object],
+      'rl_anonymous_id' => [Object],
+      'rl_user_id' => [Object],
+      'rl_trait' => [Object],
+      'rl_session' => [Object],
+      'ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog' => [Object],
+      'ajs_anonymous_id' => [Object],
+      '_streamlit_xsrf' => [Object],
+      '__next_hmr_refresh_hash__' => [Object],
+      'metabase.DEVICE' => [Object],
+      'metabase.SESSION' => [Object],
+      'grafana_session' => [Object],
+      'grafana_session_expiry' => [Object],
+      'ab_user_id' => [Object],
+      '_dd_s' => [Object],
+      'site_mode' => [Object],
+      'business_id' => [Object]
+    },
+    _headers: Headers {
+      'set-cookie': 'rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2FCsihGpsYpVRVVBvbihHremT8F8%2Fj2GCQ%3D; Path=/, rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BQzXRulYXH6ydOll4QWarfa%2BfxCj%2Fq1L8%3D; Path=/, rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BfY8dcQgPSqitmEGYjgD90viC0ohbo6bfPQu62ZpjRbYkEzqpPQc8eRfX1LFTJxX%2FtphIjuKWwXA%3D%3D; Path=/, rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2FMd4aZz9kTiuBhfBqPFx%2FPw1wkuxkMVNJ9acz3QqK8h%2BuZ9d170EPN7bJiEkuFBhNTZ0bHU4QXpJcx3p8%2FDdB8ngggoftr28amEaInScCZ1YYxi0V6%2FPXEfgjkOScj2a%2ByzeS78i6VKiVH%2FgfVQhGTb8dIPG39Bc4%3D; Path=/, rl_trait=RudderEncrypt%3AU2FsdGVkX19RsLnaMnG%2Fyps%2F0FPZE5J6x6wi6rWebWbuqVx5jXrxdwetmfj3khvRF7cIrtB3C5u%2F391FW4nA3l1abW9VpsjG%2Fj78HFDKlyh0Hs1EGMr5xvYyJ8uJ%2BR50G3Pv%2BAOuqbxCNfKmKxNoGg%3D%3D; Path=/, rl_session=RudderEncrypt%3AU2FsdGVkX1%2BgG0wRVstVT4ccsQVx71r%2FLkRx9938E42cGKhtLBkoMpUhAIfwNYkbl3qhKZy%2BcaRvvyzVDqhBSC%2FUBix72xpbsLBxed3TdDpS2%2FxC%2Bwhsr4KDo%2B0ruP3gI%2F%2B7YG0RePhh9q3ZVV8mWA%3D%3D; Path=/, ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22b660bb03e92c16b9fb4c167c979d69b49b57edc72348f66a49885458e522ce3e%23909a9626-9783-4a07-a607-7d82161cdfe6%22%2C%22%24sesid%22%3A%5B1743015250713%2C%220195d3ce-0b19-7791-b93b-c9d450199ea3%22%2C1743015250713%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A5678%2Fhome%2Fworkflows%22%7D%7D; Path=/, ajs_anonymous_id=40b5b278-b374-4a08-8008-82d6c5405888; Path=/, _streamlit_xsrf=2%7C8cdfd901%7C3ace06c568080881050f592210a37866%7C1745966482; Path=/, __next_hmr_refresh_hash__=12; Path=/, metabase.DEVICE=e16c07f6-f770-4c07-a222-0e72527ca612; Path=/, metabase.SESSION=180236fa-3bb3-4653-8aeb-7dc0cf1b07fb; Path=/, grafana_session=c78d085cdd9d33a65bf274147f7686ab; Path=/, grafana_session_expiry=1749750269; Path=/, ab_user_id=edge_1750150971153_dwa4sz9yy; Path=/, _dd_s=aid%3Ddd948ff0-7f6b-46ff-a0b7-f59aa5671e62%26rum%3D2%26id%3D0da46c2d-d5f3-4e31-ab1e-94c1d8d6f4b0%26created%3D1750204433586%26expire%3D1750208556435%26logs%3D1; Path=/, site_mode=purchase; Path=/; Expires=Wed, 18 Jun 2025 01:20:54 GMT; HttpOnly; SameSite=lax, business_id=mock-business-1; Path=/; Expires=Wed, 18 Jun 2025 01:20:54 GMT; HttpOnly; SameSite=lax'
+    }
+  }
+}
+ GET /purchase?utm=mock-hash-123&_rsc=8z6ue 200 in 2215ms

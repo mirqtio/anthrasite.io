@@ -1,3 +1,51 @@
-node_modules/
-.next/
-.env.local
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+/playwright-report
+/playwright-visual-report
+/test-results
+/visual-test-results.json
+/visual-tests/**/*-actual.png
+/visual-tests/**/*-diff.png
+/visual-tests/**/*-expected.png
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# prisma
+prisma/migrations/dev/
+/lib/generated/prisma
+node_modules
+
+*storybook.log
+storybook-static
