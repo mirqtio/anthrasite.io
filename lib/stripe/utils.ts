@@ -32,10 +32,10 @@ export function handleStripeError(error: unknown): {
  */
 export function getStripeErrorMessage(error: unknown): string {
   if (error instanceof Stripe.errors.StripeError) {
-    const { code, type } = error
+    const { code } = error
 
     // Card errors
-    if (type === 'card_error') {
+    if (error instanceof Stripe.errors.StripeCardError) {
       switch (code) {
         case 'card_declined':
           return 'Your card was declined. Please try a different payment method.'
@@ -51,12 +51,12 @@ export function getStripeErrorMessage(error: unknown): string {
     }
 
     // API errors
-    if (type === 'api_error') {
+    if (error instanceof Stripe.errors.StripeAPIError) {
       return "We're experiencing technical difficulties. Please try again later."
     }
 
     // Validation errors
-    if (type === 'validation_error') {
+    if (error instanceof Stripe.errors.StripeInvalidRequestError) {
       return 'Please check your payment information and try again.'
     }
   }
