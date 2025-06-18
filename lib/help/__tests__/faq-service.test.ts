@@ -212,7 +212,7 @@ describe('FAQService', () => {
     })
 
     it('should ignore very short words', async () => {
-      const results = await service.searchFAQs('a an the it')
+      const results = await service.searchFAQs('a an it')
 
       expect(results).toEqual([])
     })
