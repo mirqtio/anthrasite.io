@@ -68,8 +68,12 @@ SENSITIVE_FILES=(
 
 for file in "${SENSITIVE_FILES[@]}"; do
   if [ -f "$file" ]; then
-    echo -e "${RED}❌ Found sensitive file: $file${NC}"
-    FOUND_SECRETS=1
+    # Check if file is in git (not ignored)
+    git ls-files --error-unmatch "$file" 2>/dev/null
+    if [ $? -eq 0 ]; then
+      echo -e "${RED}❌ Found sensitive file in git: $file${NC}"
+      FOUND_SECRETS=1
+    fi
   fi
 done
 
