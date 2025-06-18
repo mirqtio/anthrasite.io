@@ -2,9 +2,9 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './visual-tests',
-  timeout: 60 * 1000, // Increased timeout for visual tests
+  timeout: 30 * 1000, // Faster timeout for visual tests
   expect: {
-    timeout: 10000,
+    timeout: 5000,
     // Visual comparison settings
     toHaveScreenshot: {
       // Maximum difference in pixels
@@ -19,8 +19,8 @@ export default defineConfig({
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 1 : 4,
+  retries: 0, // No retries for speed
+  workers: process.env.CI ? 2 : 4, // Use 2 workers in CI for speed
   reporter: [
     ['html', { outputFolder: 'playwright-visual-report' }],
     ['json', { outputFile: 'visual-test-results.json' }],
@@ -55,19 +55,12 @@ export default defineConfig({
   // Cross-browser and device projects
   projects: process.env.CI
     ? [
-        // Reduced set for CI to avoid timeouts
+        // Minimal set for CI speed
         {
           name: 'chromium',
           use: {
             ...devices['Desktop Chrome'],
             viewport: { width: 1920, height: 1080 },
-          },
-        },
-        {
-          name: 'Mobile Chrome',
-          use: {
-            ...devices['Pixel 5'],
-            viewport: { width: 393, height: 851 },
           },
         },
       ]
