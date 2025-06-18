@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generateUTMToken } from '@/lib/utm/crypto'
+import { generateUTMToken, createUTMParameter } from '@/lib/utm/crypto'
 import { getBusinessByDomain } from '@/lib/db/queries'
 
 export async function GET(request: NextRequest) {
@@ -61,20 +61,23 @@ export async function POST(request: NextRequest) {
     // Calculate value as 5x price
     const value = price * 5
 
-    // Generate UTM token with business data
-    const result = await generateUTMToken({
-      businessId: business.id,
-      businessName: business.name,
-      domain: business.domain,
-      price,
-      value,
-    })
+    // Generate UTM token with business ID
+    const utmToken = await generateUTMToken(business.id)
+    const utmParameter = createUTMParameter(utmToken)
+
+    // Create purchase URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const purchaseUrl = `${baseUrl}/purchase?utm=${utmParameter}`
 
     return NextResponse.json({
       success: true,
-      token: result.token,
-      url: result.url,
-      business,
+      token: utmParameter,
+      url: purchaseUrl,
+      business: {
+        ...business,
+        price,
+        value,
+      },
     })
   } catch (error) {
     return NextResponse.json(
