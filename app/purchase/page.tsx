@@ -16,6 +16,8 @@ import { StripeErrorBoundary } from '@/components/purchase/StripeErrorBoundary'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { trackEvent } from '@/lib/analytics/analytics-server'
 
+export const dynamic = 'force-dynamic'
+
 interface PurchasePageProps {
   searchParams: {
     utm?: string
