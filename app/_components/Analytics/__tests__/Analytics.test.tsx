@@ -117,9 +117,19 @@ describe('Analytics Component', () => {
   it('should track page view on route change', () => {
     const mockUsePathname = usePathname as jest.Mock
     const mockUseSearchParams = useSearchParams as jest.Mock
+    const mockGetCookieConsent = getCookieConsent as jest.Mock
 
     // Clear and reset mocks for this test
     jest.clearAllMocks()
+
+    // Re-mock consent after clearing
+    mockGetCookieConsent.mockReturnValue({
+      analytics: true,
+      marketing: true,
+      performance: true,
+      functional: true,
+    })
+
     mockUsePathname.mockReturnValue('/test-page')
     mockUseSearchParams.mockReturnValue(new URLSearchParams('?utm=test'))
 

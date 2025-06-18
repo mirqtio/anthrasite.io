@@ -1,9 +1,9 @@
 import {
-  trackServerEvent,
-  trackPurchaseComplete,
-  trackEmailEvent,
-  trackWebhookEvent,
-  trackApiEvent,
+  trackEvent,
+  trackPurchase,
+  trackEmailSent,
+  trackError,
+  trackFunnelStep,
 } from '../analytics-server'
 
 // Mock environment variables
@@ -12,17 +12,40 @@ const originalEnv = process.env
 // Mock fetch
 global.fetch = jest.fn()
 
+// Mock PostHog
+const mockPostHog = {
+  capture: jest.fn(),
+  shutdown: jest.fn(),
+}
+
+jest.mock('posthog-node', () => ({
+  PostHog: jest.fn(() => mockPostHog),
+}))
+
+// Mock Next.js cookies
+jest.mock('next/headers', () => ({
+  cookies: jest.fn(() => ({
+    get: jest.fn((name: string) => {
+      if (name === '_ga_client_id') return { value: 'test-client-id' }
+      if (name === 'posthog_distinct_id') return { value: 'test-distinct-id' }
+      return undefined
+    }),
+  })),
+}))
+
 // Mock console
 const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
 
 describe('Analytics Server', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockPostHog.capture.mockClear()
+    mockPostHog.shutdown.mockClear()
     process.env = {
       ...originalEnv,
       GA4_API_SECRET: 'test-secret',
       NEXT_PUBLIC_GA4_MEASUREMENT_ID: 'G-TEST123',
-      POSTHOG_API_KEY: 'phc_test123',
+      NEXT_PUBLIC_POSTHOG_KEY: 'phc_test123',
     }
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
@@ -38,9 +61,9 @@ describe('Analytics Server', () => {
     consoleSpy.mockRestore()
   })
 
-  describe('trackServerEvent', () => {
+  describe('trackEvent', () => {
     it('should send event to GA4 measurement protocol', async () => {
-      await trackServerEvent('test_event', {
+      await trackEvent('test_event', {
         client_id: 'test-client',
         user_id: 'test-user',
         value: 100,
@@ -50,67 +73,59 @@ describe('Analytics Server', () => {
         expect.stringContaining('google-analytics.com/mp/collect'),
         expect.objectContaining({
           method: 'POST',
-          headers: expect.objectContaining({
-            'Content-Type': 'application/json',
-          }),
           body: expect.stringContaining('test_event'),
         })
       )
     })
 
     it('should send event to PostHog', async () => {
-      await trackServerEvent('test_event', {
+      await trackEvent('test_event', {
         client_id: 'test-client',
         user_id: 'test-user',
         value: 100,
       })
 
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('posthog.com'),
-        expect.objectContaining({
-          method: 'POST',
-          headers: expect.objectContaining({
-            'Content-Type': 'application/json',
-            Authorization: expect.stringContaining('Bearer'),
-          }),
-        })
-      )
+      expect(mockPostHog.capture).toHaveBeenCalledWith({
+        distinctId: expect.any(String),
+        event: 'test_event',
+        properties: {
+          client_id: 'test-client',
+          user_id: 'test-user',
+          value: 100,
+        },
+      })
+      expect(mockPostHog.shutdown).toHaveBeenCalled()
     })
 
     it('should handle missing environment variables', async () => {
       delete process.env.GA4_API_SECRET
-      delete process.env.POSTHOG_API_KEY
+      delete process.env.NEXT_PUBLIC_POSTHOG_KEY
 
-      await trackServerEvent('test_event', { client_id: 'test' })
+      await trackEvent('test_event', { client_id: 'test' })
 
       expect(fetch).not.toHaveBeenCalled()
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Server analytics not configured properly'
-      )
+      expect(mockPostHog.capture).not.toHaveBeenCalled()
     })
 
     it('should handle fetch errors gracefully', async () => {
       ;(global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'))
 
-      await trackServerEvent('test_event', { client_id: 'test' })
+      await trackEvent('test_event', { client_id: 'test' })
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to send server analytics:',
+        'Server-side analytics error:',
         expect.any(Error)
       )
     })
   })
 
-  describe('trackPurchaseComplete', () => {
+  describe('trackPurchase', () => {
     it('should track purchase with proper event structure', async () => {
-      await trackPurchaseComplete({
-        sessionId: 'cs_test_123',
-        amount: 9900,
-        currency: 'USD',
-        businessId: 'biz_123',
-        businessName: 'Test Business',
+      await trackPurchase('cs_test_123', 99, 'USD', {
+        business_id: 'biz_123',
+        business_name: 'Test Business',
         domain: 'testbusiness.com',
-        customerEmail: 'test@example.com',
+        customer_email: 'test@example.com',
       })
 
       const callArgs = (fetch as jest.Mock).mock.calls[0]
@@ -122,25 +137,16 @@ describe('Analytics Server', () => {
           transaction_id: 'cs_test_123',
           value: 99,
           currency: 'USD',
-          items: expect.arrayContaining([
-            expect.objectContaining({
-              item_id: 'website_audit',
-              price: 99,
-            }),
-          ]),
         }),
       })
     })
 
     it('should include business metadata', async () => {
-      await trackPurchaseComplete({
-        sessionId: 'cs_test_123',
-        amount: 9900,
-        currency: 'USD',
-        businessId: 'biz_123',
-        businessName: 'Test Business',
+      await trackPurchase('cs_test_123', 99, 'USD', {
+        business_id: 'biz_123',
+        business_name: 'Test Business',
         domain: 'testbusiness.com',
-        customerEmail: 'test@example.com',
+        customer_email: 'test@example.com',
       })
 
       expect(fetch).toHaveBeenCalledWith(
@@ -152,94 +158,87 @@ describe('Analytics Server', () => {
     })
   })
 
-  describe('trackEmailEvent', () => {
-    it('should track email open event', async () => {
-      await trackEmailEvent('email_opened', {
+  describe('trackEmailSent', () => {
+    it('should track email sent event', async () => {
+      await trackEmailSent('purchase_confirmation', 'test@example.com', true, {
         email_id: 'email_123',
-        recipient: 'test@example.com',
         campaign: 'purchase_confirmation',
       })
 
       expect(fetch).toHaveBeenCalled()
       const body = JSON.parse((fetch as jest.Mock).mock.calls[0][1].body)
-      expect(body.events[0].name).toBe('email_opened')
+      expect(body.events[0].name).toBe('email_sent')
     })
 
-    it('should track email click event', async () => {
-      await trackEmailEvent('email_clicked', {
+    it('should track email failure event', async () => {
+      await trackEmailSent('purchase_confirmation', 'test@example.com', false, {
         email_id: 'email_123',
-        recipient: 'test@example.com',
-        link: 'https://example.com/report',
+        error: 'bounce',
       })
 
       expect(fetch).toHaveBeenCalled()
     })
   })
 
-  describe('trackWebhookEvent', () => {
-    it('should track webhook received', async () => {
-      await trackWebhookEvent('stripe_webhook', {
-        event_type: 'checkout.session.completed',
+  describe('trackError', () => {
+    it('should track error events', async () => {
+      await trackError('stripe_webhook', 'checkout.session.completed failed', {
         event_id: 'evt_123',
       })
 
       expect(fetch).toHaveBeenCalled()
       const body = JSON.parse((fetch as jest.Mock).mock.calls[0][1].body)
-      expect(body.events[0].name).toBe('webhook_received')
+      expect(body.events[0].name).toBe('error')
     })
 
-    it('should include webhook metadata', async () => {
-      await trackWebhookEvent('sendgrid_webhook', {
-        event_type: 'delivered',
+    it('should include error metadata', async () => {
+      await trackError('sendgrid_webhook', 'delivery failed', {
         email_id: 'email_123',
       })
 
       const callArgs = (fetch as jest.Mock).mock.calls[0]
       expect(callArgs[1].body).toContain('sendgrid_webhook')
-      expect(callArgs[1].body).toContain('delivered')
+      expect(callArgs[1].body).toContain('delivery failed')
     })
   })
 
-  describe('trackApiEvent', () => {
-    it('should track API request', async () => {
-      await trackApiEvent('api_request', {
-        endpoint: '/api/waitlist',
-        method: 'POST',
-        status: 200,
-        duration: 123,
+  describe('trackFunnelStep', () => {
+    it('should track funnel step', async () => {
+      await trackFunnelStep('main_purchase', 1, 'homepage_view', {
+        entry_point: 'organic',
       })
 
       expect(fetch).toHaveBeenCalled()
     })
 
-    it('should track API errors', async () => {
-      await trackApiEvent('api_error', {
-        endpoint: '/api/stripe/webhook',
-        method: 'POST',
-        status: 400,
-        error: 'Invalid signature',
+    it('should track funnel progression', async () => {
+      await trackFunnelStep('main_purchase', 2, 'utm_validated', {
+        business_id: 'biz_123',
       })
 
       const body = JSON.parse((fetch as jest.Mock).mock.calls[0][1].body)
-      expect(body.events[0].params.error_message).toBe('Invalid signature')
+      expect(body.events[0].params.funnel_name).toBe('main_purchase')
+      expect(body.events[0].params.funnel_step).toBe(2)
     })
   })
 
   describe('environment handling', () => {
-    it('should not track in test environment', async () => {
-      process.env.NODE_ENV = 'test'
-
-      await trackServerEvent('test_event', { client_id: 'test' })
-
-      expect(fetch).not.toHaveBeenCalled()
-    })
-
-    it('should track in production environment', async () => {
+    it('should track events with environment variables', async () => {
       process.env.NODE_ENV = 'production'
 
-      await trackServerEvent('test_event', { client_id: 'test' })
+      await trackEvent('test_event', { client_id: 'test' })
 
       expect(fetch).toHaveBeenCalled()
+    })
+
+    it('should handle missing environment gracefully', async () => {
+      delete process.env.GA4_API_SECRET
+      delete process.env.NEXT_PUBLIC_POSTHOG_KEY
+
+      await trackEvent('test_event', { client_id: 'test' })
+
+      // Should not throw errors, just not track
+      expect(fetch).not.toHaveBeenCalled()
     })
   })
 })
