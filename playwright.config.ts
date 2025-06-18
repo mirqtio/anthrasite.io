@@ -42,8 +42,12 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm run dev',
+    command: 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run dev',
     port: 3333,
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
+    env: {
+      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
+      NODE_ENV: 'development',
+    },
   },
 })

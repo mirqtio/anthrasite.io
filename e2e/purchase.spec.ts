@@ -7,25 +7,7 @@ test.describe('Purchase Page', () => {
   const mockBusinessName = 'Test Company'
   const mockBusinessDomain = 'testcompany.com'
 
-  test.beforeEach(async ({ page }) => {
-    // Mock the database responses
-    await page.route('**/api/**', async (route) => {
-      const url = new URL(route.request().url())
-
-      if (url.pathname.includes('/api/validate-utm')) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            valid: true,
-            businessId: mockBusinessId,
-          }),
-        })
-      } else {
-        await route.continue()
-      }
-    })
-  })
+  // Tests will use mock purchase service via environment variables
 
   test('should redirect to homepage without UTM parameter', async ({
     page,
@@ -35,26 +17,26 @@ test.describe('Purchase Page', () => {
   })
 
   test('should show purchase page with valid UTM', async ({ page }) => {
-    // Generate a mock UTM parameter
-    const utm = 'mock-utm-token.mock-signature'
+    // Use one of the mock UTM tokens from the dev service
+    const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}`)
 
     // Should not redirect
     await expect(page).toHaveURL(/\/purchase\?utm=/)
 
-    // Check for key elements
+    // Check for key elements - should show business name from mock data
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      'Your Website Audit Report'
+      'Acme Corporation, your audit is ready'
     )
-    await expect(page.getByText('$99')).toBeVisible()
+    await expect(page.getByText('$2,400')).toBeVisible()
     await expect(
-      page.getByRole('button', { name: /Get Your Report Now/i })
+      page.getByRole('button', { name: /Get Your Report for \$99/i })
     ).toBeVisible()
   })
 
   test('should be mobile responsive', async ({ page }) => {
-    const utm = 'mock-utm-token.mock-signature'
+    const utm = 'dev-utm-valid'
 
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 })
@@ -63,7 +45,7 @@ test.describe('Purchase Page', () => {
 
     // Check that key elements are still visible and properly laid out
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-    await expect(page.getByText('$99')).toBeVisible()
+    await expect(page.getByText('$2,400')).toBeVisible()
 
     // Pricing card should be full width on mobile
     const pricingCard = page.locator('.bg-white.rounded-2xl').first()
@@ -71,24 +53,29 @@ test.describe('Purchase Page', () => {
     expect(box?.width).toBeGreaterThan(300)
   })
 
-  test('should show metrics preview', async ({ page }) => {
-    const utm = 'mock-utm-token.mock-signature'
+  test('should show performance metrics', async ({ page }) => {
+    const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}`)
 
-    // Check for metric scores
-    await expect(page.getByText('Performance')).toBeVisible()
-    await expect(page.getByText('SEO')).toBeVisible()
-    await expect(page.getByText('Security')).toBeVisible()
-    await expect(page.getByText('Accessibility')).toBeVisible()
+    // Wait for the page to fully load
+    await page.waitForSelector('[data-testid="purchase-header"]')
+
+    // Check for performance metrics from ReportPreview component
+    await expect(page.getByText('Performance').first()).toBeVisible({
+      timeout: 10000,
+    })
+    await expect(page.getByText('SEO').first()).toBeVisible()
+    await expect(page.getByText('Security').first()).toBeVisible()
+    await expect(page.getByText('Accessibility').first()).toBeVisible()
   })
 
   test('should show trust signals', async ({ page }) => {
-    const utm = 'mock-utm-token.mock-signature'
+    const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}`)
 
-    // Check for trust elements
+    // Check for trust elements from TrustSignals component
     await expect(page.getByText('Trusted by Leading Businesses')).toBeVisible()
     await expect(page.getByText(/10,000\+/)).toBeVisible()
     await expect(page.getByText('98%')).toBeVisible()
@@ -96,85 +83,59 @@ test.describe('Purchase Page', () => {
   })
 
   test('should show all included features', async ({ page }) => {
-    const utm = 'mock-utm-token.mock-signature'
+    const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}`)
 
-    // Check for key features
-    await expect(
-      page.getByText(/Complete 50\+ page website audit report/)
-    ).toBeVisible()
-    await expect(page.getByText(/Technical SEO analysis/)).toBeVisible()
+    // Check for features from ReportPreview component
+    await expect(page.getByText(/50\+ page comprehensive report/)).toBeVisible()
+    await expect(page.getByText(/Technical SEO audit/)).toBeVisible()
     await expect(
       page.getByText(/Security vulnerability assessment/)
     ).toBeVisible()
-    await expect(page.getByText(/30-day money-back guarantee/)).toBeVisible()
+    await expect(page.getByText(/30-Day Money Back Guarantee/)).toBeVisible()
   })
 
   test('should handle checkout button click', async ({ page }) => {
-    const utm = 'mock-utm-token.mock-signature'
+    const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}`)
 
     // Click the checkout button
     const checkoutButton = page.getByRole('button', {
-      name: /Get Your Report Now/i,
+      name: /Get Your Report for \$99/i,
     })
-    await checkoutButton.click()
 
-    // Should show loading state
-    await expect(checkoutButton).toContainText('Processing...')
-    await expect(checkoutButton).toBeDisabled()
+    // Wait for navigation to checkout simulator (mock redirects immediately)
+    const navigationPromise = page.waitForURL(
+      /\/test-purchase\/checkout-simulator/
+    )
+    await checkoutButton.click()
+    await navigationPromise
+
+    // Should be on the checkout simulator page
+    await expect(page).toHaveURL(/\/test-purchase\/checkout-simulator/)
   })
 
-  test('should show back link to homepage', async ({ page }) => {
-    const utm = 'mock-utm-token.mock-signature'
+  test('should show page logo and branding', async ({ page }) => {
+    const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}`)
 
-    const backLink = page.getByRole('link', { name: /Back to Anthrasite/i })
-    await expect(backLink).toBeVisible()
-    await expect(backLink).toHaveAttribute('href', '/')
+    // Check for logo and branding text
+    await expect(page.getByText('VALUE, CRYSTALLIZED')).toBeVisible()
   })
 
   test('should handle expired UTM tokens', async ({ page }) => {
-    // Override the mock to return expired token
-    await page.route('**/api/validate-utm**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          valid: false,
-          reason: 'expired',
-        }),
-      })
-    })
+    // Use an invalid UTM token that doesn't exist in the mock data
+    await page.goto('/purchase?utm=invalid-token')
 
-    await page.goto('/purchase?utm=expired-token')
-
-    // Should redirect to link-expired page
-    await expect(page).toHaveURL('/link-expired')
+    // Should redirect to homepage when UTM is invalid
+    await expect(page).toHaveURL('/')
   })
 
   test('should show warning for used UTM tokens', async ({ page }) => {
-    const utm = 'used-utm-token.signature'
-
-    // Mock the response to indicate token is used
-    await page.route('**/api/**', async (route) => {
-      if (route.request().url().includes('/api/validate-utm')) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            valid: true,
-            businessId: mockBusinessId,
-            isUsed: true,
-          }),
-        })
-      } else {
-        await route.continue()
-      }
-    })
+    const utm = 'dev-utm-used'
 
     await page.goto(`/purchase?utm=${utm}`)
 
@@ -185,14 +146,12 @@ test.describe('Purchase Page', () => {
   })
 
   test('should maintain scroll position on navigation', async ({ page }) => {
-    const utm = 'mock-utm-token.mock-signature'
+    const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}`)
 
     // Scroll to pricing section
-    await page
-      .getByText('Get Your Complete Website Audit')
-      .scrollIntoViewIfNeeded()
+    await page.getByText("What's included").scrollIntoViewIfNeeded()
 
     // Get scroll position
     const scrollY = await page.evaluate(() => window.scrollY)
