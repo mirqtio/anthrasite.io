@@ -114,7 +114,7 @@ describe('HelpWidget', () => {
 
       const helpButton = screen.getByLabelText('Open help menu')
       expect(helpButton).toBeInTheDocument()
-      expect(helpButton).toHaveClass('bg-blue-600')
+      expect(helpButton).toHaveClass('bg-anthracite-blue')
     })
 
     it('should open the help panel when button is clicked', async () => {
@@ -125,7 +125,7 @@ describe('HelpWidget', () => {
 
       await waitFor(() => {
         expect(screen.getByRole('dialog')).toBeInTheDocument()
-        expect(screen.getByText('How can we help?')).toBeInTheDocument()
+        expect(screen.getByText('Quick Help')).toBeInTheDocument()
       })
     })
 
@@ -241,7 +241,7 @@ describe('HelpWidget', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText('How can we help?')).toBeInTheDocument()
+        expect(screen.getByText('Quick Help')).toBeInTheDocument()
         expect(screen.queryByText('Test Answer 1')).not.toBeInTheDocument()
       })
     })
