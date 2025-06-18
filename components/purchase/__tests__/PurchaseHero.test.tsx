@@ -24,15 +24,15 @@ describe('PurchaseHero', () => {
     render(<PurchaseHero {...defaultProps} />)
 
     const heading = screen.getByRole('heading', { level: 1 })
-    expect(heading).toHaveTextContent(
-      'Test Company, your audit is ready'
-    )
+    expect(heading).toHaveTextContent('Test Company, your audit is ready')
   })
 
   it('renders subheading', () => {
     render(<PurchaseHero {...defaultProps} />)
 
-    expect(screen.getByText("We've identified opportunities worth thousands")).toBeInTheDocument()
+    expect(
+      screen.getByText("We've identified opportunities worth thousands")
+    ).toBeInTheDocument()
   })
 
   it('renders tagline', () => {

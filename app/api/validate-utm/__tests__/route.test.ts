@@ -22,7 +22,7 @@ jest.mock('next/server', () => ({
       this.nextUrl = url
       this.method = init?.method || 'GET'
       this.headers = new Map()
-      
+
       if (init?.headers) {
         Object.entries(init.headers).forEach(([key, value]) => {
           this.headers.set(key, value as string)

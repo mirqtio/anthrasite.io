@@ -103,7 +103,7 @@ describe('ReportPreview', () => {
       )
     ).toBeInTheDocument()
   })
-  
+
   it('renders the main header', () => {
     render(<ReportPreview preview={mockPreview} />)
 

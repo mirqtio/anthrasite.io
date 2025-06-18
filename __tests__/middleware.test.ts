@@ -10,30 +10,30 @@ jest.mock('@/lib/utm/crypto')
 // Mock NextRequest and NextResponse for node environment
 jest.mock('next/server', () => {
   const originalModule = jest.requireActual('next/server')
-  
+
   class MockNextRequest {
     url: string
     method: string
     headers: Map<string, string>
     cookies: any
     nextUrl: URL
-    
+
     constructor(input: string | URL, init?: any) {
       const url = typeof input === 'string' ? new URL(input) : input
       this.url = url.toString()
       this.nextUrl = url
       this.method = init?.method || 'GET'
       this.headers = new Map()
-      
+
       // Create cookies object with methods
       const cookieStore = new Map()
       this.cookies = {
         get: (name: string) => cookieStore.get(name),
         set: (name: string, value: string) => {
           cookieStore.set(name, { value })
-        }
+        },
       }
-      
+
       if (init?.headers) {
         Object.entries(init.headers).forEach(([key, value]) => {
           this.headers.set(key, value as string)
@@ -41,7 +41,7 @@ jest.mock('next/server', () => {
       }
     }
   }
-  
+
   return {
     ...originalModule,
     NextRequest: MockNextRequest,
@@ -55,15 +55,19 @@ jest.mock('next/server', () => {
             cookieStore.set(name, { value, ...options })
           },
           get: (name: string) => cookieStore.get(name),
-          getAll: () => Array.from(cookieStore.entries()).map(([name, data]) => ({ name, ...data })),
-          delete: (name: string) => cookieStore.set(name, { value: '' })
+          getAll: () =>
+            Array.from(cookieStore.entries()).map(([name, data]) => ({
+              name,
+              ...data,
+            })),
+          delete: (name: string) => cookieStore.set(name, { value: '' }),
         }
         return response
       },
       redirect: (url: string | URL, status = 307) => {
         const response: any = new Response(null, {
           status,
-          headers: { Location: url.toString() }
+          headers: { Location: url.toString() },
         })
         const cookieStore = new Map()
         response.cookies = {
@@ -71,12 +75,16 @@ jest.mock('next/server', () => {
             cookieStore.set(name, { value, ...options })
           },
           get: (name: string) => cookieStore.get(name),
-          getAll: () => Array.from(cookieStore.entries()).map(([name, data]) => ({ name, ...data })),
-          delete: (name: string) => cookieStore.set(name, { value: '' })
+          getAll: () =>
+            Array.from(cookieStore.entries()).map(([name, data]) => ({
+              name,
+              ...data,
+            })),
+          delete: (name: string) => cookieStore.set(name, { value: '' }),
         }
         return response
-      }
-    }
+      },
+    },
   }
 })
 

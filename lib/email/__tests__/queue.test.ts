@@ -123,22 +123,34 @@ describe('Email Queue', () => {
       const initialDelay = emailConfig.retry.initialDelay
 
       // Add multiple items with different attempt counts
-      const id1 = emailQueue.add('orderConfirmation', { to: 'test1@example.com' }, metadata)
-      const id2 = emailQueue.add('orderConfirmation', { to: 'test2@example.com' }, metadata)
-      const id3 = emailQueue.add('orderConfirmation', { to: 'test3@example.com' }, metadata)
+      const id1 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test1@example.com' },
+        metadata
+      )
+      const id2 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test2@example.com' },
+        metadata
+      )
+      const id3 = emailQueue.add(
+        'orderConfirmation',
+        { to: 'test3@example.com' },
+        metadata
+      )
 
       // Update each with failures
       emailQueue.updateAfterAttempt(id1, false)
-      const item1 = emailQueue.getAllItems().find(i => i.id === id1)
-      
+      const item1 = emailQueue.getAllItems().find((i) => i.id === id1)
+
       emailQueue.updateAfterAttempt(id2, false)
       emailQueue.updateAfterAttempt(id2, false)
-      const item2 = emailQueue.getAllItems().find(i => i.id === id2)
-      
+      const item2 = emailQueue.getAllItems().find((i) => i.id === id2)
+
       emailQueue.updateAfterAttempt(id3, false)
       emailQueue.updateAfterAttempt(id3, false)
       emailQueue.updateAfterAttempt(id3, false)
-      const item3 = emailQueue.getAllItems().find(i => i.id === id3)
+      const item3 = emailQueue.getAllItems().find((i) => i.id === id3)
 
       // Verify attempts are tracked correctly
       expect(item1?.attempts).toBe(1)
