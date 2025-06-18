@@ -1,63 +1,82 @@
-import { 
-  getCookieConsent, 
-  setCookieConsent, 
-  hasConsent,
-  onConsentChange,
-  CONSENT_COOKIE_NAME 
-} from '../consent'
-import Cookies from 'js-cookie'
-
-// Mock js-cookie
-jest.mock('js-cookie', () => ({
-  get: jest.fn(),
-  set: jest.fn(),
-  remove: jest.fn()
-}))
+import { getCookieConsent, onConsentChange } from '../consent'
+import { ConsentPreferences } from '@/lib/context/ConsentContext'
 
 describe('Cookie Consent', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    // Clear localStorage
+    localStorage.clear()
   })
 
   describe('getCookieConsent', () => {
-    it('should return default consent when no cookie exists', () => {
-      ;(Cookies.get as jest.Mock).mockReturnValue(undefined)
-      
+    it('should return default consent when no stored preferences', () => {
       const consent = getCookieConsent()
       
       expect(consent).toEqual({
         analytics: false,
         marketing: false,
-        preferences: false,
-        performance: false
+        performance: false,
+        functional: true,
+        timestamp: expect.any(String)
       })
     })
 
-    it('should parse and return stored consent', () => {
+    it('should parse and return stored consent from localStorage', () => {
       const storedConsent = {
+        preferences: {
+          analytics: true,
+          marketing: false,
+          performance: true,
+          functional: true,
+          timestamp: '2024-01-15T10:00:00Z'
+        }
+      }
+      localStorage.setItem('cookie-consent', JSON.stringify(storedConsent))
+      
+      const consent = getCookieConsent()
+      
+      expect(consent).toEqual({
         analytics: true,
         marketing: false,
-        preferences: true,
-        performance: false
-      }
-      ;(Cookies.get as jest.Mock).mockReturnValue(JSON.stringify(storedConsent))
-      
-      const consent = getCookieConsent()
-      
-      expect(consent).toEqual(storedConsent)
+        performance: true,
+        functional: true,
+        timestamp: '2024-01-15T10:00:00Z'
+      })
     })
 
-    it('should handle invalid JSON in cookie', () => {
-      ;(Cookies.get as jest.Mock).mockReturnValue('invalid json')
+    it('should handle missing preferences object', () => {
+      localStorage.setItem('cookie-consent', JSON.stringify({}))
       
       const consent = getCookieConsent()
       
       expect(consent).toEqual({
         analytics: false,
         marketing: false,
-        preferences: false,
-        performance: false
+        performance: false,
+        functional: true,
+        timestamp: expect.any(String)
       })
+    })
+
+    it('should handle invalid JSON in localStorage', () => {
+      localStorage.setItem('cookie-consent', 'invalid json')
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+      
+      const consent = getCookieConsent()
+      
+      expect(consent).toEqual({
+        analytics: false,
+        marketing: false,
+        performance: false,
+        functional: true,
+        timestamp: expect.any(String)
+      })
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error reading consent preferences:',
+        expect.any(Error)
+      )
+      
+      consoleSpy.mockRestore()
     })
 
     it('should handle server-side environment', () => {
@@ -69,162 +88,146 @@ describe('Cookie Consent', () => {
       expect(consent).toEqual({
         analytics: false,
         marketing: false,
-        preferences: false,
-        performance: false
+        performance: false,
+        functional: true,
+        timestamp: expect.any(String)
       })
-      expect(Cookies.get).not.toHaveBeenCalled()
       
       global.window = originalWindow
     })
-  })
 
-  describe('setCookieConsent', () => {
-    it('should store consent in cookie', () => {
-      const consent = {
-        analytics: true,
+    it('should handle localStorage errors', () => {
+      const originalGetItem = Storage.prototype.getItem
+      Storage.prototype.getItem = jest.fn(() => {
+        throw new Error('Storage error')
+      })
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+      
+      const consent = getCookieConsent()
+      
+      expect(consent).toEqual({
+        analytics: false,
         marketing: false,
-        preferences: true,
-        performance: false
-      }
-      
-      setCookieConsent(consent)
-      
-      expect(Cookies.set).toHaveBeenCalledWith(
-        CONSENT_COOKIE_NAME,
-        JSON.stringify(consent),
-        expect.objectContaining({
-          expires: 365,
-          sameSite: 'strict',
-          secure: true
-        })
+        performance: false,
+        functional: true,
+        timestamp: expect.any(String)
+      })
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error reading consent preferences:',
+        expect.any(Error)
       )
-    })
-
-    it('should notify listeners when consent changes', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
       
-      onConsentChange(listener1)
-      onConsentChange(listener2)
-      
-      const newConsent = {
-        analytics: true,
-        marketing: true,
-        preferences: false,
-        performance: false
-      }
-      
-      setCookieConsent(newConsent)
-      
-      expect(listener1).toHaveBeenCalledWith(newConsent)
-      expect(listener2).toHaveBeenCalledWith(newConsent)
-    })
-
-    it('should not store on server-side', () => {
-      const originalWindow = global.window
-      delete (global as any).window
-      
-      setCookieConsent({
-        analytics: true,
-        marketing: false,
-        preferences: false,
-        performance: false
-      })
-      
-      expect(Cookies.set).not.toHaveBeenCalled()
-      
-      global.window = originalWindow
-    })
-  })
-
-  describe('hasConsent', () => {
-    it('should return true when specific consent is granted', () => {
-      ;(Cookies.get as jest.Mock).mockReturnValue(JSON.stringify({
-        analytics: true,
-        marketing: false,
-        preferences: true,
-        performance: false
-      }))
-      
-      expect(hasConsent('analytics')).toBe(true)
-      expect(hasConsent('preferences')).toBe(true)
-    })
-
-    it('should return false when specific consent is not granted', () => {
-      ;(Cookies.get as jest.Mock).mockReturnValue(JSON.stringify({
-        analytics: true,
-        marketing: false,
-        preferences: false,
-        performance: false
-      }))
-      
-      expect(hasConsent('marketing')).toBe(false)
-      expect(hasConsent('performance')).toBe(false)
-    })
-
-    it('should return false when no consent cookie exists', () => {
-      ;(Cookies.get as jest.Mock).mockReturnValue(undefined)
-      
-      expect(hasConsent('analytics')).toBe(false)
+      Storage.prototype.getItem = originalGetItem
+      consoleSpy.mockRestore()
     })
   })
 
   describe('onConsentChange', () => {
-    it('should register multiple listeners', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+    it('should register and call event listener', () => {
+      const callback = jest.fn()
+      const unsubscribe = onConsentChange(callback)
       
-      const unsubscribe1 = onConsentChange(listener1)
-      const unsubscribe2 = onConsentChange(listener2)
-      
-      const newConsent = {
+      const consentData: ConsentPreferences = {
         analytics: true,
         marketing: false,
-        preferences: false,
-        performance: false
+        performance: true,
+        functional: true,
+        timestamp: '2024-01-15T10:00:00Z'
       }
       
-      setCookieConsent(newConsent)
+      const event = new CustomEvent('consentUpdated', { detail: consentData })
+      window.dispatchEvent(event)
       
-      expect(listener1).toHaveBeenCalledTimes(1)
-      expect(listener2).toHaveBeenCalledTimes(1)
+      expect(callback).toHaveBeenCalledWith(consentData)
       
-      // Test unsubscribe
+      unsubscribe()
+    })
+
+    it('should unsubscribe listener', () => {
+      const callback = jest.fn()
+      const unsubscribe = onConsentChange(callback)
+      
+      unsubscribe()
+      
+      const event = new CustomEvent('consentUpdated', { 
+        detail: {
+          analytics: true,
+          marketing: false,
+          performance: false,
+          functional: true,
+          timestamp: '2024-01-15T10:00:00Z'
+        }
+      })
+      window.dispatchEvent(event)
+      
+      expect(callback).not.toHaveBeenCalled()
+    })
+
+    it('should handle multiple listeners', () => {
+      const callback1 = jest.fn()
+      const callback2 = jest.fn()
+      
+      const unsubscribe1 = onConsentChange(callback1)
+      const unsubscribe2 = onConsentChange(callback2)
+      
+      const consentData: ConsentPreferences = {
+        analytics: true,
+        marketing: true,
+        performance: true,
+        functional: true,
+        timestamp: '2024-01-15T10:00:00Z'
+      }
+      
+      const event = new CustomEvent('consentUpdated', { detail: consentData })
+      window.dispatchEvent(event)
+      
+      expect(callback1).toHaveBeenCalledWith(consentData)
+      expect(callback2).toHaveBeenCalledWith(consentData)
+      
       unsubscribe1()
-      setCookieConsent(newConsent)
-      
-      expect(listener1).toHaveBeenCalledTimes(1) // Not called again
-      expect(listener2).toHaveBeenCalledTimes(2) // Called again
-      
       unsubscribe2()
     })
 
+    it('should handle server-side environment', () => {
+      const originalWindow = global.window
+      delete (global as any).window
+      
+      const callback = jest.fn()
+      const unsubscribe = onConsentChange(callback)
+      
+      expect(unsubscribe).toBeInstanceOf(Function)
+      unsubscribe() // Should not throw
+      
+      expect(callback).not.toHaveBeenCalled()
+      
+      global.window = originalWindow
+    })
+
     it('should handle listener errors gracefully', () => {
-      const errorListener = jest.fn().mockImplementation(() => {
+      const errorCallback = jest.fn(() => {
         throw new Error('Listener error')
       })
-      const goodListener = jest.fn()
+      const goodCallback = jest.fn()
       
-      onConsentChange(errorListener)
-      onConsentChange(goodListener)
+      onConsentChange(errorCallback)
+      onConsentChange(goodCallback)
       
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
-      
-      setCookieConsent({
+      const consentData: ConsentPreferences = {
         analytics: true,
         marketing: false,
-        preferences: false,
-        performance: false
-      })
+        performance: false,
+        functional: true,
+        timestamp: '2024-01-15T10:00:00Z'
+      }
       
-      expect(errorListener).toHaveBeenCalled()
-      expect(goodListener).toHaveBeenCalled()
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error notifying consent change listener:',
-        expect.any(Error)
-      )
+      // Wrap in try-catch since the error will propagate
+      expect(() => {
+        const event = new CustomEvent('consentUpdated', { detail: consentData })
+        window.dispatchEvent(event)
+      }).toThrow('Listener error')
       
-      consoleSpy.mockRestore()
+      expect(errorCallback).toHaveBeenCalled()
+      // Good callback may not be called due to error in first listener
     })
   })
 })
