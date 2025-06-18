@@ -65,8 +65,8 @@ function loadGoogleAnalytics() {
 
   // Create gtag function
   window.dataLayer = window.dataLayer || []
-  ;(window as any).gtag = function () {
-    window.dataLayer!.push(arguments)
+  ;(window as any).gtag = function (...args: any[]) {
+    window.dataLayer!.push(args)
   }
   ;(window as any).gtag('js', new Date())
   ;(window as any).gtag('config', GA_MEASUREMENT_ID, {
