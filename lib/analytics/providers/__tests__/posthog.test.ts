@@ -60,17 +60,15 @@ describe('PostHogProvider', () => {
       }
     })
 
-    // Mock window object for tests
-    if (typeof window === 'undefined') {
-      ;(global as any).window = {
-        location: { href: 'http://localhost:3000' },
-        navigator: { userAgent: 'test' },
-        localStorage: {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
-          removeItem: jest.fn(),
-        },
-      }
+    // Ensure window object is available for tests - critical for CI
+    ;(global as any).window = {
+      location: { href: 'http://localhost:3000' },
+      navigator: { userAgent: 'test' },
+      localStorage: {
+        getItem: jest.fn().mockReturnValue(null),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+      },
     }
 
     // Create fresh provider instance for each test to avoid state pollution
@@ -96,6 +94,11 @@ describe('PostHogProvider', () => {
         persistence: 'localStorage+cookie',
         loaded: expect.any(Function),
       })
+
+      // Verify that the provider is actually initialized (important for CI)
+      // We can test this by trying to track an event and seeing if the mock is called
+      provider.track('test_event')
+      expect(mockPostHog.capture).toHaveBeenCalledWith('test_event', {})
     })
 
     it('should not initialize twice', async () => {
