@@ -11,9 +11,12 @@ const buttonVariants = cva(
           'bg-anthracite-blue text-white hover:bg-anthracite-blue/90 hover:scale-[1.02]',
         secondary:
           'bg-anthracite-gray-100 text-anthracite-black hover:bg-anthracite-gray-200',
-        ghost: 'bg-transparent hover:bg-anthracite-gray-50 text-anthracite-black',
-        destructive: 'bg-anthracite-error text-white hover:bg-anthracite-error/90',
-        outline: 'border border-anthracite-gray-200 bg-transparent text-anthracite-black hover:bg-anthracite-gray-50',
+        ghost:
+          'bg-transparent hover:bg-anthracite-gray-50 text-anthracite-black',
+        destructive:
+          'bg-anthracite-error text-white hover:bg-anthracite-error/90',
+        outline:
+          'border border-anthracite-gray-200 bg-transparent text-anthracite-black hover:bg-anthracite-gray-50',
       },
       size: {
         sm: 'h-8 px-3 text-sm',
@@ -39,7 +42,20 @@ export interface ButtonProps
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, fullWidth, loading, icon, children, disabled, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      fullWidth,
+      loading,
+      icon,
+      children,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <button
         className={cn(buttonVariants({ variant, size, fullWidth, className }))}

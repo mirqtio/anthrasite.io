@@ -11,17 +11,18 @@ export async function GET(request: NextRequest) {
 
   // Generate a new mock UTM token
   const mockToken = `dev-utm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-  
+
   // Available business IDs from mock data
   const businessIds = ['dev-business-1', 'dev-business-2', 'dev-business-3']
-  const randomBusinessId = businessIds[Math.floor(Math.random() * businessIds.length)]
+  const randomBusinessId =
+    businessIds[Math.floor(Math.random() * businessIds.length)]
 
   return NextResponse.json({
     token: mockToken,
     businessId: randomBusinessId,
     purchaseUrl: `/purchase?utm=${mockToken}`,
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
-    note: 'This is a development-only mock UTM token. It will only work with NEXT_PUBLIC_USE_MOCK_PURCHASE=true'
+    note: 'This is a development-only mock UTM token. It will only work with NEXT_PUBLIC_USE_MOCK_PURCHASE=true',
   })
 }
 
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
       businessId,
       purchaseUrl: `/purchase?utm=${mockToken}`,
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      note: 'Custom development UTM token generated'
+      note: 'Custom development UTM token generated',
     })
   } catch (error) {
     return NextResponse.json(

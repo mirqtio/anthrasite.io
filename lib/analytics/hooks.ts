@@ -22,21 +22,21 @@ export function useFunctionalConsent() {
  */
 export function useAnalyticsEvent() {
   const hasConsent = useAnalyticsConsent()
-  
+
   const trackEvent = (eventName: string, properties?: Record<string, any>) => {
     if (!hasConsent) return
-    
+
     // Track with Google Analytics
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', eventName, properties)
     }
-    
+
     // Track with PostHog
     if (typeof window !== 'undefined' && window.posthog) {
       window.posthog.capture(eventName, properties)
     }
   }
-  
+
   return trackEvent
 }
 
@@ -46,11 +46,11 @@ export function useAnalyticsEvent() {
 export function useConsentStatus() {
   const { preferences, hasConsented } = useConsent()
   const [isLoading, setIsLoading] = useState(true)
-  
+
   useEffect(() => {
     setIsLoading(false)
   }, [])
-  
+
   return {
     hasConsented,
     isLoading,

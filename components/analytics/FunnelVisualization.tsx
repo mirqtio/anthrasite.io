@@ -16,21 +16,30 @@ interface FunnelVisualizationProps {
   className?: string
 }
 
-export function FunnelVisualization({ title, steps, className = '' }: FunnelVisualizationProps) {
-  const maxCount = Math.max(...steps.map(s => s.count))
+export function FunnelVisualization({
+  title,
+  steps,
+  className = '',
+}: FunnelVisualizationProps) {
+  const maxCount = Math.max(...steps.map((s) => s.count))
 
   return (
     <Card className={`p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-anthracite-black mb-6">{title}</h3>
-      
+      <h3 className="text-lg font-semibold text-anthracite-black mb-6">
+        {title}
+      </h3>
+
       <div className="space-y-6">
         {steps.map((step, index) => {
           const isFirst = index === 0
           const previousStep = index > 0 ? steps[index - 1] : null
-          const dropoffRate = previousStep 
-            ? ((previousStep.count - step.count) / previousStep.count * 100).toFixed(1)
+          const dropoffRate = previousStep
+            ? (
+                ((previousStep.count - step.count) / previousStep.count) *
+                100
+              ).toFixed(1)
             : '0'
-          
+
           return (
             <div key={step.name} className="relative">
               {/* Dropoff indicator */}
@@ -39,7 +48,7 @@ export function FunnelVisualization({ title, steps, className = '' }: FunnelVisu
                   -{dropoffRate}%
                 </div>
               )}
-              
+
               {/* Funnel step */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -61,10 +70,12 @@ export function FunnelVisualization({ title, steps, className = '' }: FunnelVisu
                     </span>
                   </motion.div>
                 </div>
-                
+
                 {/* Step details */}
                 <div className="mt-2 flex justify-between items-center">
-                  <span className="text-sm text-anthracite-gray">{step.name}</span>
+                  <span className="text-sm text-anthracite-gray">
+                    {step.name}
+                  </span>
                   <span className="text-sm font-medium text-anthracite-black">
                     {step.percentage.toFixed(1)}%
                   </span>
@@ -74,7 +85,7 @@ export function FunnelVisualization({ title, steps, className = '' }: FunnelVisu
           )
         })}
       </div>
-      
+
       {/* Summary stats */}
       <div className="mt-8 pt-6 border-t border-gray-200">
         <div className="grid grid-cols-2 gap-4">

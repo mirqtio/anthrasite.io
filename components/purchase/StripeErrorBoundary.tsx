@@ -12,7 +12,10 @@ interface StripeErrorFallbackProps {
   error: Error
 }
 
-function StripeErrorFallback({ resetErrorBoundary, error }: StripeErrorFallbackProps) {
+function StripeErrorFallback({
+  resetErrorBoundary,
+  error,
+}: StripeErrorFallbackProps) {
   React.useEffect(() => {
     // Track Stripe errors
     trackEvent('stripe_error', {
@@ -24,7 +27,7 @@ function StripeErrorFallback({ resetErrorBoundary, error }: StripeErrorFallbackP
   // Determine if it's a specific Stripe error
   const isNetworkError = error.message.toLowerCase().includes('network')
   const isRateLimitError = error.message.toLowerCase().includes('rate limit')
-  
+
   return (
     <div className="py-12">
       <Card className="max-w-md mx-auto p-8 text-center">
@@ -43,34 +46,31 @@ function StripeErrorFallback({ resetErrorBoundary, error }: StripeErrorFallbackP
             />
           </svg>
         </div>
-        
+
         <h3 className="text-xl font-semibold text-anthracite-black mb-2">
           Payment System Unavailable
         </h3>
-        
+
         <p className="text-anthracite-gray mb-6">
           {isNetworkError
             ? "We're having trouble connecting to our payment system. Please check your internet connection and try again."
             : isRateLimitError
-            ? "Too many payment attempts. Please wait a moment before trying again."
-            : "We're unable to process payments at the moment. Please try again in a few minutes."}
+              ? 'Too many payment attempts. Please wait a moment before trying again.'
+              : "We're unable to process payments at the moment. Please try again in a few minutes."}
         </p>
-        
+
         <div className="space-y-3">
           <Button onClick={resetErrorBoundary} variant="primary" fullWidth>
             Try Again
           </Button>
-          
+
           <Link href="/contact" className="w-full">
-            <Button 
-              variant="secondary"
-              fullWidth
-            >
+            <Button variant="secondary" fullWidth>
               Contact Support
             </Button>
           </Link>
         </div>
-        
+
         <p className="mt-4 text-sm text-anthracite-gray">
           Your purchase link remains valid for 24 hours.
         </p>
@@ -99,7 +99,7 @@ class StripeErrorBoundaryInner extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Stripe Error:', error, errorInfo)
-    
+
     // Track error in analytics
     if (typeof window !== 'undefined') {
       trackEvent('stripe_error', {
@@ -110,7 +110,7 @@ class StripeErrorBoundaryInner extends React.Component<
           component: 'stripe_error_boundary',
         },
       })
-      
+
       // Log to monitoring
       if (window.Sentry) {
         window.Sentry.captureException(error, {

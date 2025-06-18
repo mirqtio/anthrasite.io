@@ -1,7 +1,15 @@
-import { sendOrderConfirmation, sendReportReady, sendWelcomeEmail } from '../email-service'
+import {
+  sendOrderConfirmation,
+  sendReportReady,
+  sendWelcomeEmail,
+} from '../email-service'
 import { sgMail } from '../config'
 import { emailQueue } from '../queue'
-import type { OrderConfirmationData, ReportReadyData, WelcomeEmailData } from '../types'
+import type {
+  OrderConfirmationData,
+  ReportReadyData,
+  WelcomeEmailData,
+} from '../types'
 
 // Mock SendGrid
 jest.mock('@sendgrid/mail', () => ({

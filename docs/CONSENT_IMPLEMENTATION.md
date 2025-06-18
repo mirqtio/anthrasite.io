@@ -16,21 +16,25 @@ This implementation provides a comprehensive GDPR-compliant cookie consent syste
 ### Components
 
 1. **ConsentContext** (`/lib/context/ConsentContext.tsx`)
+
    - Central state management for consent preferences
    - Handles localStorage persistence
    - Emits events for consent changes
 
 2. **ConsentBanner** (`/components/consent/ConsentBanner.tsx`)
+
    - Bottom-positioned banner with smooth animations
    - Three action buttons: Accept All, Reject All, Manage Preferences
    - Auto-hides when consent is given
 
 3. **ConsentPreferences** (`/components/consent/ConsentPreferences.tsx`)
+
    - Modal dialog for granular cookie control
    - Toggle switches for each cookie category
    - Clear descriptions of cookie usage
 
 4. **ConsentManager** (`/components/consent/ConsentManager.tsx`)
+
    - Wrapper component that combines banner and preferences
    - Initializes analytics based on consent
 
@@ -41,6 +45,7 @@ This implementation provides a comprehensive GDPR-compliant cookie consent syste
 ### Analytics Integration
 
 **consent-loader.ts** (`/lib/analytics/consent-loader.ts`)
+
 - Dynamically loads GA4 and PostHog scripts
 - Clears analytics cookies when consent is revoked
 - Handles script loading errors gracefully
@@ -48,11 +53,13 @@ This implementation provides a comprehensive GDPR-compliant cookie consent syste
 ## Cookie Categories
 
 1. **Essential Cookies** (Always enabled)
+
    - Required for basic site functionality
    - Security and authentication
    - User preferences (excluding analytics)
 
 2. **Functional Cookies** (Optional)
+
    - Site preferences and settings
    - Enhanced user experience features
    - Language and theme preferences
@@ -84,8 +91,7 @@ Place in footer or settings page:
 
 ```tsx
 import { CookieSettingsButton } from '@/components/consent'
-
-<CookieSettingsButton variant="ghost" size="small" />
+;<CookieSettingsButton variant="ghost" size="small" />
 ```
 
 ### Checking Consent in Components
@@ -93,18 +99,17 @@ import { CookieSettingsButton } from '@/components/consent'
 Use the provided hooks:
 
 ```tsx
-import { useAnalyticsConsent, useFunctionalConsent } from '@/lib/analytics/hooks'
+import {
+  useAnalyticsConsent,
+  useFunctionalConsent,
+} from '@/lib/analytics/hooks'
 
 function MyComponent() {
   const hasAnalytics = useAnalyticsConsent()
   const hasFunctional = useFunctionalConsent()
-  
+
   // Conditionally render features based on consent
-  return (
-    <>
-      {hasFunctional && <EnhancedFeature />}
-    </>
-  )
+  return <>{hasFunctional && <EnhancedFeature />}</>
 }
 ```
 
@@ -115,12 +120,12 @@ import { useAnalyticsEvent } from '@/lib/analytics/hooks'
 
 function MyComponent() {
   const trackEvent = useAnalyticsEvent()
-  
+
   const handleClick = () => {
     // Only tracks if user consented to analytics
     trackEvent('button_clicked', {
       button_name: 'cta',
-      page: 'home'
+      page: 'home',
     })
   }
 }
@@ -142,11 +147,13 @@ NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 ## Testing
 
 ### Unit Tests
+
 ```bash
 npm test -- consent
 ```
 
 ### E2E Tests
+
 ```bash
 npm run test:e2e -- consent.spec.ts
 ```
@@ -182,7 +189,7 @@ Currently bottom-positioned. To change to top:
 
 ```tsx
 // In ConsentBanner.tsx
-className="fixed top-0 left-0 right-0 z-50"
+className = 'fixed top-0 left-0 right-0 z-50'
 ```
 
 ## Browser Support

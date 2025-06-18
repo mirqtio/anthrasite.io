@@ -58,9 +58,7 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <ABTestProvider>
-          {children}
-        </ABTestProvider>
+        <ABTestProvider>{children}</ABTestProvider>
       </body>
     </html>
   )
@@ -76,11 +74,11 @@ import { useExperiment } from '@/lib/ab-testing/hooks'
 
 function MyComponent() {
   const variant = useExperiment('homepage-headline')
-  
+
   if (variant === 'variant-a') {
     return <h1>New Headline</h1>
   }
-  
+
   return <h1>Original Headline</h1>
 }
 ```
@@ -92,11 +90,11 @@ import { useVariant } from '@/lib/ab-testing/hooks'
 
 function FeatureComponent() {
   const showNewFeature = useVariant('feature-test', 'enabled')
-  
+
   if (!showNewFeature) {
     return null
   }
-  
+
   return <NewFeature />
 }
 ```
@@ -108,15 +106,15 @@ import { useExperimentTracking } from '@/lib/ab-testing/hooks'
 
 function CTAButton() {
   const { trackEvent, trackConversion } = useExperimentTracking('cta-test')
-  
+
   const handleClick = () => {
     trackEvent('button_clicked', { location: 'hero' })
   }
-  
+
   const handlePurchase = (amount: number) => {
     trackConversion(amount, { product: 'premium' })
   }
-  
+
   return <button onClick={handleClick}>Get Started</button>
 }
 ```
@@ -132,11 +130,11 @@ function ContentSection() {
     {
       cards: () => <CardLayout />,
       list: () => <ListLayout />,
-      grid: () => <GridLayout />
+      grid: () => <GridLayout />,
     },
     () => <DefaultLayout /> // Fallback
   )
-  
+
   return content
 }
 ```
@@ -151,7 +149,7 @@ import { getAssignmentsFromHeaders } from '@/lib/ab-testing/middleware'
 export default function ServerComponent() {
   const assignments = getAssignmentsFromHeaders(headers())
   const variant = assignments['experiment-id']
-  
+
   return <div>Variant: {variant}</div>
 }
 ```
@@ -206,6 +204,7 @@ The framework automatically tracks:
 - **Conversions**: Via `trackConversion()`
 
 Events are sent to:
+
 - PostHog (if configured)
 - Google Analytics (if `window.analytics` exists)
 - Any custom handler via `onExposure` prop

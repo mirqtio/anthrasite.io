@@ -21,14 +21,18 @@ describe('Cart Recovery Email Template', () => {
     const html = cartRecoveryEmail(baseData)
 
     expect(html).toContain('Test Business Inc.')
-    expect(html).toContain('interested in purchasing an Anthrasite Business Intelligence Report for <strong>Test Business Inc.</strong>')
+    expect(html).toContain(
+      'interested in purchasing an Anthrasite Business Intelligence Report for <strong>Test Business Inc.</strong>'
+    )
   })
 
   it('should include price information', () => {
     const html = cartRecoveryEmail(baseData)
 
     expect(html).toContain('USD 99.00')
-    expect(html).toContain('Your comprehensive report is still available for <strong>USD 99.00</strong>')
+    expect(html).toContain(
+      'Your comprehensive report is still available for <strong>USD 99.00</strong>'
+    )
   })
 
   it('should include recovery URL', () => {
@@ -70,7 +74,7 @@ describe('Cart Recovery Email Template', () => {
       'Actionable recommendations for improvement',
     ]
 
-    features.forEach(feature => {
+    features.forEach((feature) => {
       expect(html).toContain(feature)
     })
   })
@@ -100,7 +104,7 @@ describe('Cart Recovery Email Template', () => {
   it('should handle different currencies', () => {
     const currencies = ['USD', 'EUR', 'GBP', 'CAD']
 
-    currencies.forEach(currency => {
+    currencies.forEach((currency) => {
       const html = cartRecoveryEmail({ ...baseData, currency })
       expect(html).toContain(`${currency} 99.00`)
     })

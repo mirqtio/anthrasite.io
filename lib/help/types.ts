@@ -6,12 +6,12 @@
  * FAQ Item structure
  */
 export interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
-  category: FAQCategory;
-  tags?: string[];
-  relatedQuestions?: string[]; // IDs of related FAQs
+  id: string
+  question: string
+  answer: string
+  category: FAQCategory
+  tags?: string[]
+  relatedQuestions?: string[] // IDs of related FAQs
 }
 
 /**
@@ -30,9 +30,9 @@ export enum FAQCategory {
  * Help context based on current page
  */
 export interface HelpContext {
-  page: PageContext;
-  searchQuery?: string;
-  userState?: UserState;
+  page: PageContext
+  searchQuery?: string
+  userState?: UserState
 }
 
 /**
@@ -53,35 +53,35 @@ export enum PageContext {
  * User state for personalized help
  */
 export interface UserState {
-  hasPurchased?: boolean;
-  isReturningVisitor?: boolean;
-  hasOpenCart?: boolean;
+  hasPurchased?: boolean
+  isReturningVisitor?: boolean
+  hasOpenCart?: boolean
 }
 
 /**
  * Search result for FAQ items
  */
 export interface FAQSearchResult {
-  item: FAQItem;
-  score: number;
+  item: FAQItem
+  score: number
   highlights?: {
-    question?: string;
-    answer?: string;
-  };
+    question?: string
+    answer?: string
+  }
 }
 
 /**
  * Help widget state
  */
 export interface HelpWidgetState {
-  isOpen: boolean;
-  isMinimized: boolean;
-  activeTab: HelpTab;
-  searchQuery: string;
-  searchResults: FAQSearchResult[];
-  isSearching: boolean;
-  selectedFAQ?: FAQItem;
-  hasUnreadNotifications: boolean;
+  isOpen: boolean
+  isMinimized: boolean
+  activeTab: HelpTab
+  searchQuery: string
+  searchResults: FAQSearchResult[]
+  isSearching: boolean
+  selectedFAQ?: FAQItem
+  hasUnreadNotifications: boolean
 }
 
 /**
@@ -97,25 +97,25 @@ export enum HelpTab {
  * Animation variants for framer-motion
  */
 export interface AnimationVariants {
-  hidden: any;
-  visible: any;
-  exit?: any;
+  hidden: any
+  visible: any
+  exit?: any
 }
 
 /**
  * Help widget configuration
  */
 export interface HelpWidgetConfig {
-  position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
   offset: {
-    x: number;
-    y: number;
-  };
-  enableKeyboardShortcuts: boolean;
-  enableSearch: boolean;
-  enableContactForm: boolean;
-  maxSearchResults: number;
-  animationDuration: number;
+    x: number
+    y: number
+  }
+  enableKeyboardShortcuts: boolean
+  enableSearch: boolean
+  enableContactForm: boolean
+  maxSearchResults: number
+  animationDuration: number
 }
 
 /**
@@ -132,7 +132,7 @@ export const DEFAULT_HELP_CONFIG: HelpWidgetConfig = {
   enableContactForm: false, // Start with FAQ only
   maxSearchResults: 10,
   animationDuration: 0.3,
-};
+}
 
 /**
  * Keyboard shortcuts
@@ -141,7 +141,7 @@ export const KEYBOARD_SHORTCUTS = {
   TOGGLE_HELP: '?',
   CLOSE: 'Escape',
   SEARCH: '/',
-} as const;
+} as const
 
 /**
  * ARIA labels for accessibility
@@ -154,4 +154,4 @@ export const ARIA_LABELS = {
   FAQ_ITEM: 'FAQ item',
   MINIMIZE_BUTTON: 'Minimize help menu',
   EXPAND_BUTTON: 'Expand help menu',
-} as const;
+} as const

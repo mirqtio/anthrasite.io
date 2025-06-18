@@ -37,7 +37,11 @@ SENDGRID_SANDBOX_MODE=true  # Set to false to send real emails in dev
 ### Sending Emails
 
 ```typescript
-import { sendOrderConfirmation, sendReportReady, sendWelcomeEmail } from '@/lib/email'
+import {
+  sendOrderConfirmation,
+  sendReportReady,
+  sendWelcomeEmail,
+} from '@/lib/email'
 
 // Send order confirmation
 await sendOrderConfirmation({
@@ -89,10 +93,12 @@ await processRetryQueue()
 ### Available Templates
 
 1. **Order Confirmation** (`orderConfirmation`)
+
    - Sent immediately after successful payment
    - Includes order details and next steps
 
 2. **Report Ready** (`reportReady`)
+
    - Sent when the business report is ready
    - Includes download link with expiration warning
 
@@ -103,6 +109,7 @@ await processRetryQueue()
 ### Template Structure
 
 All templates use a consistent base template with:
+
 - Responsive design (mobile-friendly)
 - Dark mode support
 - Consistent header/footer
@@ -114,11 +121,13 @@ All templates use a consistent base template with:
 ### SendGrid Events
 
 Configure SendGrid to send events to:
+
 ```
 https://your-domain.com/api/sendgrid/webhook
 ```
 
 The webhook processes these events:
+
 - `delivered`: Email successfully delivered
 - `bounce`: Email bounced (hard/soft)
 - `complaint`: Spam complaint
@@ -135,21 +144,21 @@ Email events update the purchase record metadata:
   // Delivery status
   emailDelivered: boolean
   emailDeliveredAt: string
-  
+
   // Bounce information
   emailBounced: boolean
   emailBouncedAt: string
   emailBounceReason: string
   emailBounceType: 'hard' | 'soft'
-  
+
   // Engagement metrics
   emailOpened: boolean
   emailOpenCount: number
   emailLastOpenedAt: string
   emailClicked: boolean
-  emailClicks: Array<{ url: string, timestamp: string }>
+  emailClicks: Array<{ url: string; timestamp: string }>
   emailLastClickedAt: string
-  
+
   // Complaints
   emailComplaint: boolean
   emailComplaintAt: string

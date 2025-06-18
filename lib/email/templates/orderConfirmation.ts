@@ -1,7 +1,9 @@
 import { baseTemplate, emailButton, emailDivider } from './base-template'
 import type { OrderConfirmationData } from '../types'
 
-export const orderConfirmationTemplate = (data: OrderConfirmationData): string => {
+export const orderConfirmationTemplate = (
+  data: OrderConfirmationData
+): string => {
   const {
     customerName,
     orderId,

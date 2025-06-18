@@ -2,13 +2,7 @@ import { baseTemplate, emailButton, emailDivider } from './base-template'
 import type { ReportReadyData } from '../types'
 
 export const reportReadyTemplate = (data: ReportReadyData): string => {
-  const {
-    customerName,
-    orderId,
-    businessDomain,
-    reportUrl,
-    expiresAt,
-  } = data
+  const { customerName, orderId, businessDomain, reportUrl, expiresAt } = data
 
   // Format expiration date
   const formattedExpiration = new Intl.DateTimeFormat('en-US', {

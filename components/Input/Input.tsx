@@ -1,7 +1,8 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
   error?: string
   icon?: React.ReactNode
@@ -9,7 +10,20 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, icon, showCount, maxLength, value, defaultValue, ...props }, ref) => {
+  (
+    {
+      className,
+      label,
+      error,
+      icon,
+      showCount,
+      maxLength,
+      value,
+      defaultValue,
+      ...props
+    },
+    ref
+  ) => {
     const [internalValue, setInternalValue] = React.useState(defaultValue || '')
     const displayValue = value !== undefined ? value : internalValue
     const valueLength = displayValue ? String(displayValue).length : 0
@@ -38,7 +52,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               'h-12 w-full rounded-lg border bg-white px-4 text-base text-anthracite-black transition-all duration-200 placeholder:text-anthracite-black/40',
               'focus:border-anthracite-blue focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20',
               'disabled:cursor-not-allowed disabled:bg-anthracite-gray-50 disabled:opacity-50',
-              error && 'border-anthracite-error focus:border-anthracite-error focus:ring-[#FF3B30]/20',
+              error &&
+                'border-anthracite-error focus:border-anthracite-error focus:ring-[#FF3B30]/20',
               !error && 'border-anthracite-gray-100',
               icon && 'pl-10',
               className

@@ -26,18 +26,26 @@ const ANIMATION_SELECTORS = [
  */
 export async function waitForAnimations(page: Page, timeout = 5000) {
   // Wait for CSS animations and transitions
-  await page.waitForFunction(() => {
-    const animations = document.getAnimations()
-    return animations.length === 0 || animations.every(animation => animation.playState === 'finished')
-  }, { timeout })
+  await page.waitForFunction(
+    () => {
+      const animations = document.getAnimations()
+      return (
+        animations.length === 0 ||
+        animations.every((animation) => animation.playState === 'finished')
+      )
+    },
+    { timeout }
+  )
 
   // Wait for any animation classes to stabilize
   for (const selector of ANIMATION_SELECTORS) {
     try {
-      await page.waitForSelector(selector, { 
-        state: 'attached', 
-        timeout: 1000 
-      }).catch(() => {})
+      await page
+        .waitForSelector(selector, {
+          state: 'attached',
+          timeout: 1000,
+        })
+        .catch(() => {})
     } catch {
       // Ignore if selector not found
     }
@@ -51,19 +59,25 @@ export async function waitForAnimations(page: Page, timeout = 5000) {
  * Wait for all images to load
  */
 export async function waitForImages(page: Page, timeout = 10000) {
-  await page.waitForFunction(() => {
-    const images = Array.from(document.querySelectorAll('img'))
-    return images.every(img => img.complete && img.naturalHeight !== 0)
-  }, { timeout })
+  await page.waitForFunction(
+    () => {
+      const images = Array.from(document.querySelectorAll('img'))
+      return images.every((img) => img.complete && img.naturalHeight !== 0)
+    },
+    { timeout }
+  )
 }
 
 /**
  * Wait for all fonts to load
  */
 export async function waitForFonts(page: Page, timeout = 5000) {
-  await page.waitForFunction(() => {
-    return document.fonts.ready.then(() => true)
-  }, { timeout })
+  await page.waitForFunction(
+    () => {
+      return document.fonts.ready.then(() => true)
+    },
+    { timeout }
+  )
 }
 
 /**
@@ -110,7 +124,7 @@ export async function hideDynamicContent(page: Page) {
         width: 0 !important;
         height: 0 !important;
       }
-    `
+    `,
   })
 }
 
@@ -120,20 +134,20 @@ export async function hideDynamicContent(page: Page) {
 export async function preparePageForScreenshot(page: Page) {
   // Wait for network to be idle
   await page.waitForLoadState('networkidle')
-  
+
   // Wait for all content to load
   await Promise.all([
     waitForFonts(page),
     waitForImages(page),
     waitForAnimations(page),
   ])
-  
+
   // Hide dynamic content
   await hideDynamicContent(page)
-  
+
   // Scroll to top to ensure consistent positioning
   await page.evaluate(() => window.scrollTo(0, 0))
-  
+
   // Final stabilization wait
   await page.waitForTimeout(500)
 }
@@ -209,22 +223,27 @@ export async function setupVisualTestContext(context: BrowserContext) {
     // Mock date to ensure consistent timestamps
     const constantDate = new Date('2025-01-01T12:00:00Z')
     const OriginalDate = Date
-    Date = class extends OriginalDate {
-      constructor(...args: any[]) {
-        if (args.length === 0) {
-          super(constantDate.getTime())
-        } else {
-          // @ts-ignore
-          super(...args)
+    // Use Object.defineProperty to avoid modifying global
+    Object.defineProperty(window, 'Date', {
+      configurable: true,
+      writable: true,
+      value: class extends OriginalDate {
+        constructor(...args: any[]) {
+          if (args.length === 0) {
+            super(constantDate.getTime())
+          } else {
+            // @ts-expect-error - spreading arguments into parent constructor
+            super(...args)
+          }
         }
-      }
-      
-      static now() {
-        return constantDate.getTime()
-      }
-    } as any
+
+        static now() {
+          return constantDate.getTime()
+        }
+      } as any
+    })
   })
-  
+
   // Disable smooth scrolling
   await context.addInitScript(() => {
     window.scrollTo = ((xOrOptions: any, y?: number) => {
@@ -264,9 +283,9 @@ export function describeVisualTests(
   } = {}
 ) {
   const { browsers = ['chromium', 'firefox', 'webkit'], skip = [] } = options
-  
+
   test.describe(title, () => {
-    browsers.forEach(browser => {
+    browsers.forEach((browser) => {
       if (!skip.includes(browser)) {
         test.describe(browser, () => {
           test.use({ browserName: browser as any })

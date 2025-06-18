@@ -20,7 +20,7 @@ describe('Stripe Utils', () => {
       } as any)
 
       const result = handleStripeError(error)
-      
+
       expect(result).toEqual({
         message: 'Card declined',
         code: 'card_declined',
@@ -31,7 +31,7 @@ describe('Stripe Utils', () => {
     it('should handle regular Error', () => {
       const error = new Error('Something went wrong')
       const result = handleStripeError(error)
-      
+
       expect(result).toEqual({
         message: 'Something went wrong',
       })
@@ -39,7 +39,7 @@ describe('Stripe Utils', () => {
 
     it('should handle unknown errors', () => {
       const result = handleStripeError('Unknown error')
-      
+
       expect(result).toEqual({
         message: 'An unexpected error occurred',
       })
@@ -54,7 +54,9 @@ describe('Stripe Utils', () => {
       } as any)
 
       const message = getStripeErrorMessage(error)
-      expect(message).toBe('Your card was declined. Please try a different payment method.')
+      expect(message).toBe(
+        'Your card was declined. Please try a different payment method.'
+      )
     })
 
     it('should return user-friendly message for insufficient_funds', () => {
@@ -64,7 +66,9 @@ describe('Stripe Utils', () => {
       } as any)
 
       const message = getStripeErrorMessage(error)
-      expect(message).toBe('Your card has insufficient funds. Please try a different payment method.')
+      expect(message).toBe(
+        'Your card has insufficient funds. Please try a different payment method.'
+      )
     })
 
     it('should return generic message for api_error', () => {
@@ -73,7 +77,9 @@ describe('Stripe Utils', () => {
       } as any)
 
       const message = getStripeErrorMessage(error)
-      expect(message).toBe('We\'re experiencing technical difficulties. Please try again later.')
+      expect(message).toBe(
+        "We're experiencing technical difficulties. Please try again later."
+      )
     })
   })
 
@@ -103,7 +109,9 @@ describe('Stripe Utils', () => {
 
   describe('Metadata Extractors', () => {
     it('should extract businessId from metadata', () => {
-      expect(extractBusinessId({ businessId: 'business-123' })).toBe('business-123')
+      expect(extractBusinessId({ businessId: 'business-123' })).toBe(
+        'business-123'
+      )
       expect(extractBusinessId({})).toBeNull()
       expect(extractBusinessId(null)).toBeNull()
       expect(extractBusinessId(undefined)).toBeNull()
@@ -122,15 +130,16 @@ describe('Stripe Utils', () => {
 
     it('should succeed on first attempt', async () => {
       const operation = jest.fn().mockResolvedValue('success')
-      
+
       const result = await retryStripeOperation(operation)
-      
+
       expect(result).toBe('success')
       expect(operation).toHaveBeenCalledTimes(1)
     })
 
     it('should retry on failure and eventually succeed', async () => {
-      const operation = jest.fn()
+      const operation = jest
+        .fn()
         .mockRejectedValueOnce(new Error('Temporary failure'))
         .mockRejectedValueOnce(new Error('Another failure'))
         .mockResolvedValue('success')
@@ -158,7 +167,7 @@ describe('Stripe Utils', () => {
       const cardError = new Stripe.errors.StripeError({
         type: 'card_error',
       } as any)
-      
+
       const operation = jest.fn().mockRejectedValue(cardError)
 
       await expect(retryStripeOperation(operation)).rejects.toThrow(cardError)

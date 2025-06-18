@@ -2,31 +2,28 @@ import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-const cardVariants = cva(
-  'rounded-lg transition-all duration-200',
-  {
-    variants: {
-      variant: {
-        default: 'bg-white shadow-md',
-        bordered: 'bg-white border border-anthracite-gray-200',
-        elevated: 'bg-white shadow-lg',
-        flat: 'bg-transparent',
-      },
-      padding: {
-        sm: 'p-4',
-        md: 'p-6',
-        lg: 'p-8',
-      },
-      hover: {
-        true: 'hover:shadow-lg hover:scale-[1.02]',
-      },
+const cardVariants = cva('rounded-lg transition-all duration-200', {
+  variants: {
+    variant: {
+      default: 'bg-white shadow-md',
+      bordered: 'bg-white border border-anthracite-gray-200',
+      elevated: 'bg-white shadow-lg',
+      flat: 'bg-transparent',
     },
-    defaultVariants: {
-      variant: 'default',
-      padding: 'md',
+    padding: {
+      sm: 'p-4',
+      md: 'p-6',
+      lg: 'p-8',
     },
-  }
-)
+    hover: {
+      true: 'hover:shadow-lg hover:scale-[1.02]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    padding: 'md',
+  },
+})
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -35,7 +32,18 @@ export interface CardProps
 }
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant, padding, hover, as: Component = 'div', children, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      padding,
+      hover,
+      as: Component = 'div',
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <Component
         ref={ref}

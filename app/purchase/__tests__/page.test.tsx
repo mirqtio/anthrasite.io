@@ -4,7 +4,7 @@
  * 1. Unit tests for the purchase service (lib/purchase/__tests__/purchase-service.test.ts)
  * 2. Component tests for all purchase components (components/purchase/__tests__/*)
  * 3. E2E tests for the full purchase flow (e2e/purchase.spec.ts)
- * 
+ *
  * This test file focuses on the basic routing logic that can be tested.
  */
 
@@ -46,22 +46,22 @@ describe('PurchasePage - Routing Logic', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
-  
+
   it('redirects to homepage when no UTM parameter is provided', async () => {
     const searchParams = {}
-    
+
     // The page should redirect before rendering
     await PurchasePage({ searchParams })
-    
+
     expect(redirect).toHaveBeenCalledWith('/')
   })
-  
+
   it('attempts to render when UTM parameter is provided', async () => {
     const searchParams = { utm: 'test-utm-token' }
-    
+
     // The page should not redirect when UTM is provided
     await PurchasePage({ searchParams })
-    
+
     expect(redirect).not.toHaveBeenCalledWith('/')
   })
 })

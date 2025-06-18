@@ -22,7 +22,4 @@ export {
   getTopAbandonedBusinesses,
 } from './analytics'
 
-export type {
-  AbandonmentMetrics,
-  AbandonmentBreakdown,
-} from './analytics'
+export type { AbandonmentMetrics, AbandonmentBreakdown } from './analytics'

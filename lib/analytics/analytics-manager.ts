@@ -1,6 +1,11 @@
 import { GoogleAnalytics4Provider } from './providers/ga4'
 import { PostHogProvider } from './providers/posthog'
-import { AnalyticsProvider, EventProperties, AnalyticsConfig, ConsentStatus } from './types'
+import {
+  AnalyticsProvider,
+  EventProperties,
+  AnalyticsConfig,
+  ConsentStatus,
+} from './types'
 import { getCookieConsent, onConsentChange } from '@/lib/cookies/consent'
 import { validateEventSchema } from './event-schemas'
 
@@ -77,7 +82,10 @@ export class AnalyticsManager {
       try {
         provider.track(eventName, enrichedProperties)
       } catch (error) {
-        console.error(`Failed to track event ${eventName} with provider:`, error)
+        console.error(
+          `Failed to track event ${eventName} with provider:`,
+          error
+        )
       }
     })
   }
@@ -112,7 +120,7 @@ export class AnalyticsManager {
         console.error('Failed to reset provider:', error)
       }
     })
-    
+
     // Generate new session ID
     this.sessionId = this.generateSessionId()
   }
@@ -133,7 +141,12 @@ export class AnalyticsManager {
   }
 
   // Funnel tracking
-  trackFunnelStep(funnelName: string, step: number, stepName: string, properties?: EventProperties): void {
+  trackFunnelStep(
+    funnelName: string,
+    step: number,
+    stepName: string,
+    properties?: EventProperties
+  ): void {
     this.track('funnel_step', {
       funnel_name: funnelName,
       funnel_step: step,
@@ -143,7 +156,12 @@ export class AnalyticsManager {
   }
 
   // E-commerce tracking
-  trackPurchase(orderId: string, amount: number, currency: string = 'USD', properties?: EventProperties): void {
+  trackPurchase(
+    orderId: string,
+    amount: number,
+    currency: string = 'USD',
+    properties?: EventProperties
+  ): void {
     this.track('purchase', {
       transaction_id: orderId,
       value: amount,
@@ -153,7 +171,11 @@ export class AnalyticsManager {
   }
 
   // Performance tracking
-  trackPerformance(metric: string, value: number, properties?: EventProperties): void {
+  trackPerformance(
+    metric: string,
+    value: number,
+    properties?: EventProperties
+  ): void {
     this.track('performance_metric', {
       metric_name: metric,
       metric_value: value,
@@ -167,7 +189,8 @@ export class AnalyticsManager {
       ...properties,
       session_id: this.sessionId,
       timestamp: new Date().toISOString(),
-      page_path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      page_path:
+        typeof window !== 'undefined' ? window.location.pathname : undefined,
       page_title: typeof document !== 'undefined' ? document.title : undefined,
       referrer: typeof document !== 'undefined' ? document.referrer : undefined,
     }

@@ -18,7 +18,7 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
   try {
     // Extract UTM parameter from query string
     const utm = req.nextUrl.searchParams.get('utm')
-    
+
     if (!utm) {
       trackEvent('utm.validation.missing_parameter')
       return NextResponse.json<ValidateUTMResponse>(
@@ -26,15 +26,15 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
         { status: 400 }
       )
     }
-    
+
     // Validate the token cryptographically
     const validation = await validateUTMToken(utm)
-    
+
     if (!validation.valid) {
       trackEvent('utm.validation.failed', {
         reason: validation.reason,
       })
-      
+
       // Different error messages for different failure reasons
       const errorMessages = {
         invalid_format: 'Invalid UTM format',
@@ -42,21 +42,21 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
         expired: 'This link has expired. Please request a new one.',
         invalid_payload: 'Corrupted UTM data',
       }
-      
+
       return NextResponse.json<ValidateUTMResponse>(
-        { 
-          valid: false, 
-          error: errorMessages[validation.reason!] || 'Invalid UTM'
+        {
+          valid: false,
+          error: errorMessages[validation.reason!] || 'Invalid UTM',
         },
         { status: 400 }
       )
     }
-    
+
     const payload = validation.payload!
-    
+
     // Check if token has been used (one-time use enforcement)
     const storedToken = await getUTMToken(payload.nonce)
-    
+
     if (!storedToken) {
       trackEvent('utm.validation.token_not_found', {
         nonce: payload.nonce,
@@ -66,7 +66,7 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
         { status: 400 }
       )
     }
-    
+
     if (storedToken.usedAt) {
       trackEvent('utm.validation.token_already_used', {
         nonce: payload.nonce,
@@ -77,7 +77,7 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
         { status: 400 }
       )
     }
-    
+
     // Mark token as used
     const marked = await markTokenUsed(payload.nonce)
     if (!marked) {
@@ -90,7 +90,7 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
         { status: 400 }
       )
     }
-    
+
     // Fetch business data
     const business = await prisma.business.findUnique({
       where: { id: payload.businessId },
@@ -101,7 +101,7 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
         reportData: true,
       },
     })
-    
+
     if (!business) {
       sendAlert(AlertType.UTM_VALIDATION_FAILED, {
         reason: 'business_not_found',
@@ -112,13 +112,13 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
         { status: 404 }
       )
     }
-    
+
     // Track successful validation
     trackEvent('utm.validation.success', {
       businessId: business.id,
       domain: business.domain,
     })
-    
+
     // Return business data for purchase page
     return NextResponse.json<ValidateUTMResponse>({
       valid: true,
@@ -126,12 +126,11 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
       businessName: business.name,
       reportData: business.reportData,
     })
-    
   } catch (error) {
     sendAlert(AlertType.UTM_VALIDATION_FAILED, {
       error: (error as Error).message,
     })
-    
+
     return NextResponse.json<ValidateUTMResponse>(
       { valid: false, error: 'Internal server error' },
       { status: 500 }

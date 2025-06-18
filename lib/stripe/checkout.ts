@@ -26,7 +26,7 @@ export async function createCheckoutSession({
 }: CreateCheckoutSessionParams): Promise<Stripe.Checkout.Session> {
   try {
     const urls = getStripeUrls(baseUrl)
-    
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -55,12 +55,12 @@ export async function createCheckoutSession({
       billing_address_collection: 'auto',
       submit_type: 'pay',
       // Expire after 24 hours
-      expires_at: Math.floor(Date.now() / 1000) + (24 * 60 * 60),
+      expires_at: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
     })
-    
+
     // Cache the session for recovery
     sessionCache.set(session.id, session)
-    
+
     return session
   } catch (error) {
     console.error('Failed to create checkout session:', error)
@@ -71,22 +71,24 @@ export async function createCheckoutSession({
 /**
  * Retrieves a checkout session by ID
  */
-export async function retrieveSession(sessionId: string): Promise<Stripe.Checkout.Session | null> {
+export async function retrieveSession(
+  sessionId: string
+): Promise<Stripe.Checkout.Session | null> {
   try {
     // Check cache first
     const cached = sessionCache.get(sessionId)
     if (cached) {
       return cached
     }
-    
+
     // Fetch from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['payment_intent', 'customer'],
     })
-    
+
     // Update cache
     sessionCache.set(sessionId, session)
-    
+
     return session
   } catch (error) {
     console.error('Failed to retrieve session:', error)
@@ -97,12 +99,14 @@ export async function retrieveSession(sessionId: string): Promise<Stripe.Checkou
 /**
  * Retrieves session with line items (for order confirmation)
  */
-export async function retrieveSessionWithLineItems(sessionId: string): Promise<Stripe.Checkout.Session | null> {
+export async function retrieveSessionWithLineItems(
+  sessionId: string
+): Promise<Stripe.Checkout.Session | null> {
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['line_items', 'payment_intent', 'customer'],
     })
-    
+
     return session
   } catch (error) {
     console.error('Failed to retrieve session with line items:', error)
@@ -120,14 +124,16 @@ export function isSessionPaid(session: Stripe.Checkout.Session): boolean {
 /**
  * Gets customer email from session
  */
-export function getCustomerEmail(session: Stripe.Checkout.Session): string | null {
+export function getCustomerEmail(
+  session: Stripe.Checkout.Session
+): string | null {
   if (session.customer_details?.email) {
     return session.customer_details.email
   }
-  
+
   if (typeof session.customer === 'string') {
     return null // Would need to fetch customer object
   }
-  
+
   return (session.customer as Stripe.Customer)?.email || null
 }

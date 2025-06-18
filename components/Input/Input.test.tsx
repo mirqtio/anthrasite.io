@@ -10,10 +10,10 @@ describe('Input', () => {
   it('handles value changes', () => {
     const handleChange = jest.fn()
     render(<Input onChange={handleChange} />)
-    
+
     const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: 'test' } })
-    
+
     expect(handleChange).toHaveBeenCalled()
   })
 
@@ -40,7 +40,10 @@ describe('Input', () => {
 
   it('renders password type', () => {
     render(<Input type="password" data-testid="password-input" />)
-    expect(screen.getByTestId('password-input')).toHaveAttribute('type', 'password')
+    expect(screen.getByTestId('password-input')).toHaveAttribute(
+      'type',
+      'password'
+    )
   })
 
   it('renders with icon', () => {

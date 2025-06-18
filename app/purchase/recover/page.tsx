@@ -7,7 +7,7 @@ import { Card } from '@/components/Card'
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 
-type RecoveryState = 
+type RecoveryState =
   | { status: 'loading' }
   | { status: 'success'; sessionUrl: string }
   | { status: 'error'; message: string }
@@ -18,32 +18,32 @@ export default function RecoverPage() {
   const searchParams = useSearchParams()
   const utm = searchParams.get('utm')
   const sessionId = searchParams.get('session')
-  
+
   const [state, setState] = useState<RecoveryState>({ status: 'loading' })
   const [retryCount, setRetryCount] = useState(0)
-  
+
   useEffect(() => {
     if (!utm) {
       setState({ status: 'invalid' })
       return
     }
-    
+
     recoverSession()
   }, [utm, sessionId])
-  
+
   const recoverSession = async () => {
     if (!utm) return
-    
+
     try {
       setState({ status: 'loading' })
-      
+
       // Track recovery attempt
       trackEvent('checkout_recovery_page_view', {
         utm_token: utm,
         has_session_id: !!sessionId,
         retry_count: retryCount,
       })
-      
+
       const response = await fetch('/api/stripe/recover-session', {
         method: 'POST',
         headers: {
@@ -54,23 +54,23 @@ export default function RecoverPage() {
           sessionId,
         }),
       })
-      
+
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to recover session')
       }
-      
+
       const data = await response.json()
-      
+
       if (data.success && data.sessionUrl) {
         setState({ status: 'success', sessionUrl: data.sessionUrl })
-        
+
         // Track successful recovery
         trackEvent('checkout_recovery_success', {
           utm_token: utm,
           session_id: data.sessionId,
         })
-        
+
         // Redirect after short delay to show success state
         setTimeout(() => {
           window.location.href = data.sessionUrl
@@ -80,26 +80,26 @@ export default function RecoverPage() {
       }
     } catch (error: any) {
       console.error('Recovery error:', error)
-      
+
       // Track recovery failure
       trackEvent('checkout_recovery_failed', {
         utm_token: utm,
         error: error.message,
         retry_count: retryCount,
       })
-      
-      setState({ 
-        status: 'error', 
-        message: error.message || 'Unable to recover your checkout session' 
+
+      setState({
+        status: 'error',
+        message: error.message || 'Unable to recover your checkout session',
       })
-      setRetryCount(prev => prev + 1)
+      setRetryCount((prev) => prev + 1)
     }
   }
-  
+
   const handleRetry = () => {
     recoverSession()
   }
-  
+
   const handleStartNew = () => {
     if (utm) {
       router.push(`/purchase?utm=${utm}`)
@@ -107,7 +107,7 @@ export default function RecoverPage() {
       router.push('/')
     }
   }
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <Card className="max-w-md w-full p-8">
@@ -122,7 +122,7 @@ export default function RecoverPage() {
             </p>
           </div>
         )}
-        
+
         {state.status === 'success' && (
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
@@ -141,7 +141,7 @@ export default function RecoverPage() {
             </div>
           </div>
         )}
-        
+
         {state.status === 'error' && (
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
@@ -150,16 +150,10 @@ export default function RecoverPage() {
             <h2 className="text-xl font-semibold text-anthracite-black mb-2">
               Recovery Failed
             </h2>
-            <p className="text-anthracite-gray mb-6">
-              {state.message}
-            </p>
+            <p className="text-anthracite-gray mb-6">{state.message}</p>
             <div className="space-y-3">
               {retryCount < 3 && (
-                <Button
-                  onClick={handleRetry}
-                  variant="primary"
-                  fullWidth
-                >
+                <Button onClick={handleRetry} variant="primary" fullWidth>
                   Try Again
                 </Button>
               )}
@@ -173,7 +167,7 @@ export default function RecoverPage() {
             </div>
           </div>
         )}
-        
+
         {state.status === 'invalid' && (
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
@@ -195,7 +189,7 @@ export default function RecoverPage() {
           </div>
         )}
       </Card>
-      
+
       <style jsx>{`
         @keyframes slide {
           from {

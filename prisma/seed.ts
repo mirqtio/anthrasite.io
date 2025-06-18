@@ -130,8 +130,12 @@ async function main() {
     { eventName: 'page_view', page: '/', referrer: 'google.com' },
     { eventName: 'waitlist_signup', domain: 'example.com', variant: 'A' },
     { eventName: 'utm_validated', businessId: businesses[0].id },
-    { eventName: 'checkout_started', value: 199.00 },
-    { eventName: 'purchase_completed', value: 199.00, businessId: businesses[0].id },
+    { eventName: 'checkout_started', value: 199.0 },
+    {
+      eventName: 'purchase_completed',
+      value: 199.0,
+      businessId: businesses[0].id,
+    },
   ]
 
   await Promise.all(

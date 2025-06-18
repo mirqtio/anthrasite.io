@@ -122,7 +122,6 @@ describe('Abandoned Cart Cron Route', () => {
       ;(AbandonedCartService as jest.Mock).mockImplementation(() => ({
         checkAbandoned: mockCheckAbandoned,
       }))
-
       ;(prisma.analyticsEvent.create as jest.Mock).mockResolvedValue({})
 
       const response = await GET(mockRequest)
@@ -148,12 +147,13 @@ describe('Abandoned Cart Cron Route', () => {
     })
 
     it('should handle service errors gracefully', async () => {
-      const mockCheckAbandoned = jest.fn().mockRejectedValue(new Error('Service error'))
+      const mockCheckAbandoned = jest
+        .fn()
+        .mockRejectedValue(new Error('Service error'))
 
       ;(AbandonedCartService as jest.Mock).mockImplementation(() => ({
         checkAbandoned: mockCheckAbandoned,
       }))
-
       ;(prisma.analyticsEvent.create as jest.Mock).mockResolvedValue({})
 
       const response = await GET(mockRequest)
@@ -181,8 +181,9 @@ describe('Abandoned Cart Cron Route', () => {
       ;(AbandonedCartService as jest.Mock).mockImplementation(() => ({
         checkAbandoned: mockCheckAbandoned,
       }))
-
-      ;(prisma.analyticsEvent.create as jest.Mock).mockRejectedValue(new Error('DB error'))
+      ;(prisma.analyticsEvent.create as jest.Mock).mockRejectedValue(
+        new Error('DB error')
+      )
 
       const response = await GET(mockRequest)
       const data = await response.json()

@@ -5,10 +5,10 @@ test.describe('Visual Test Setup Verification', () => {
   test('example visual test', async ({ page }) => {
     // Navigate to homepage
     await page.goto('/')
-    
+
     // Wait for page to be ready
     await preparePageForScreenshot(page)
-    
+
     // Take and compare screenshot
     await compareScreenshots(page, 'example-homepage.png')
   })
@@ -54,7 +54,7 @@ test.describe('Visual Test Setup Verification', () => {
         </body>
       </html>
     `)
-    
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'example-component.png')
   })

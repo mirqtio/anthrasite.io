@@ -5,7 +5,10 @@ import { EventProperties } from './types'
 import { ANALYTICS_EVENTS } from './event-schemas'
 
 // Client-side analytics functions
-export function trackEvent(eventName: string, properties?: EventProperties): void {
+export function trackEvent(
+  eventName: string,
+  properties?: EventProperties
+): void {
   const analytics = getAnalytics()
   if (!analytics) {
     console.warn('Analytics not initialized')
@@ -46,7 +49,12 @@ export function resetUser(): void {
 }
 
 // Funnel tracking helpers
-export function trackFunnelStep(funnelName: string, step: number, stepName: string, properties?: EventProperties): void {
+export function trackFunnelStep(
+  funnelName: string,
+  step: number,
+  stepName: string,
+  properties?: EventProperties
+): void {
   const analytics = getAnalytics()
   if (!analytics) {
     console.warn('Analytics not initialized')
@@ -57,7 +65,12 @@ export function trackFunnelStep(funnelName: string, step: number, stepName: stri
 }
 
 // E-commerce tracking helpers
-export function trackPurchase(orderId: string, amount: number, currency: string = 'USD', properties?: EventProperties): void {
+export function trackPurchase(
+  orderId: string,
+  amount: number,
+  currency: string = 'USD',
+  properties?: EventProperties
+): void {
   const analytics = getAnalytics()
   if (!analytics) {
     console.warn('Analytics not initialized')

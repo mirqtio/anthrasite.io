@@ -29,9 +29,12 @@ export const Default: Story = {
   args: {
     children: (
       <div>
-        <h3 className="text-lg font-semibold text-anthracite-black mb-2">Card Title</h3>
+        <h3 className="text-lg font-semibold text-anthracite-black mb-2">
+          Card Title
+        </h3>
         <p className="text-anthracite-black/60">
-          This is a default card with some content inside. It can contain any React components.
+          This is a default card with some content inside. It can contain any
+          React components.
         </p>
       </div>
     ),
@@ -43,7 +46,9 @@ export const Bordered: Story = {
     variant: 'bordered',
     children: (
       <div>
-        <h3 className="text-lg font-semibold text-anthracite-black mb-2">Bordered Card</h3>
+        <h3 className="text-lg font-semibold text-anthracite-black mb-2">
+          Bordered Card
+        </h3>
         <p className="text-anthracite-black/60">
           This card has a border around it instead of a background color.
         </p>
@@ -57,7 +62,9 @@ export const Elevated: Story = {
     variant: 'elevated',
     children: (
       <div>
-        <h3 className="text-lg font-semibold text-anthracite-black mb-2">Elevated Card</h3>
+        <h3 className="text-lg font-semibold text-anthracite-black mb-2">
+          Elevated Card
+        </h3>
         <p className="text-anthracite-black/60">
           This card has a shadow to give it an elevated appearance.
         </p>
@@ -71,7 +78,9 @@ export const Hoverable: Story = {
     hover: true,
     children: (
       <div>
-        <h3 className="text-lg font-semibold text-anthracite-black mb-2">Hoverable Card</h3>
+        <h3 className="text-lg font-semibold text-anthracite-black mb-2">
+          Hoverable Card
+        </h3>
         <p className="text-anthracite-black/60">
           Hover over this card to see the interactive hover effect.
         </p>
@@ -86,7 +95,9 @@ export const Clickable: Story = {
     className: 'cursor-pointer',
     children: (
       <div>
-        <h3 className="text-lg font-semibold text-anthracite-black mb-2">Clickable Card</h3>
+        <h3 className="text-lg font-semibold text-anthracite-black mb-2">
+          Clickable Card
+        </h3>
         <p className="text-anthracite-black/60">
           Click this card to trigger an action. Notice the cursor changes.
         </p>
@@ -100,10 +111,13 @@ export const WithButton: Story = {
     variant: 'elevated',
     children: (
       <div>
-        <h3 className="text-xl font-semibold text-anthracite-black mb-2">Premium Plan</h3>
+        <h3 className="text-xl font-semibold text-anthracite-black mb-2">
+          Premium Plan
+        </h3>
         <p className="text-3xl font-bold text-anthracite-black mb-4">$199</p>
         <p className="text-anthracite-black/60 mb-6">
-          Get comprehensive website audits with detailed insights and recommendations.
+          Get comprehensive website audits with detailed insights and
+          recommendations.
         </p>
         <Button fullWidth>Get Started</Button>
       </div>
@@ -118,24 +132,26 @@ export const DifferentPadding: Story = {
         <div className="p-4 border-b border-anthracite-gray-100">
           <h4 className="font-semibold">No padding</h4>
         </div>
-        <div className="p-4">
-          Content needs its own padding
-        </div>
+        <div className="p-4">Content needs its own padding</div>
       </Card>
-      
+
       <Card padding="sm">
         <h4 className="font-semibold">Small padding</h4>
         <p className="text-sm text-anthracite-black/60">Compact content area</p>
       </Card>
-      
+
       <Card padding="md">
         <h4 className="font-semibold">Medium padding (default)</h4>
-        <p className="text-sm text-anthracite-black/60">Standard content area</p>
+        <p className="text-sm text-anthracite-black/60">
+          Standard content area
+        </p>
       </Card>
-      
+
       <Card padding="lg">
         <h4 className="font-semibold">Large padding</h4>
-        <p className="text-sm text-anthracite-black/60">Spacious content area</p>
+        <p className="text-sm text-anthracite-black/60">
+          Spacious content area
+        </p>
       </Card>
     </div>
   ),

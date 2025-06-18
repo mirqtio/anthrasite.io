@@ -24,10 +24,12 @@ When customers click the CTA button in their email, they are taken directly to S
 ### Example Email CTA:
 
 ```html
-<a href="https://anthrasite.io/purchase?utm=eyJidXNpbmVzc19pZCI6MTIzLCJwcmljZSI6OTkwMCwiZXhwaXJlcyI6MTcwMDAwMDAwMH0..."
-   style="background: #0066FF; color: white; padding: 16px 32px; 
+<a
+  href="https://anthrasite.io/purchase?utm=eyJidXNpbmVzc19pZCI6MTIzLCJwcmljZSI6OTkwMCwiZXhwaXJlcyI6MTcwMDAwMDAwMH0..."
+  style="background: #0066FF; color: white; padding: 16px 32px; 
           text-decoration: none; border-radius: 8px; 
-          font-size: 18px; display: inline-block;">
+          font-size: 18px; display: inline-block;"
+>
   Get Your Report for $99 →
 </a>
 ```
@@ -42,6 +44,7 @@ When customers click the CTA button in their email, they are taken directly to S
 ### Fallback Behavior:
 
 If the direct redirect fails or the UTM token is invalid/expired, customers see the interstitial page with:
+
 - Personalized message
 - Report preview
 - Manual checkout button
@@ -50,6 +53,7 @@ If the direct redirect fails or the UTM token is invalid/expired, customers see 
 ### Testing:
 
 To test the interstitial page without going to Stripe:
+
 ```
 https://anthrasite.io/purchase?utm=HASH&preview=true
 ```

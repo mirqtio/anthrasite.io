@@ -1,15 +1,15 @@
 import { Suspense } from 'react'
 import { notFound, redirect } from 'next/navigation'
-import { 
-  PurchaseHero, 
-  ReportPreview, 
-  TrustSignals, 
-  PricingCard 
+import {
+  PurchaseHero,
+  ReportPreview,
+  TrustSignals,
+  PricingCard,
 } from '@/components/purchase'
-import { 
-  fetchBusinessByUTM, 
+import {
+  fetchBusinessByUTM,
   getReportPreview,
-  createCheckoutSession
+  createCheckoutSession,
 } from '@/lib/purchase/purchase-service'
 import { Skeleton } from '@/components/Skeleton'
 import { StripeErrorBoundary } from '@/components/purchase/StripeErrorBoundary'
@@ -19,23 +19,29 @@ import { trackEvent } from '@/lib/analytics/analytics-server'
 interface PurchasePageProps {
   searchParams: {
     utm?: string
-    preview?: string  // Optional param to show interstitial page
+    preview?: string // Optional param to show interstitial page
   }
 }
 
-async function PurchaseContent({ utm, preview }: { utm: string; preview?: string }) {
+async function PurchaseContent({
+  utm,
+  preview,
+}: {
+  utm: string
+  preview?: string
+}) {
   // Fetch business data
   const purchaseData = await fetchBusinessByUTM(utm)
-  
+
   if (!purchaseData) {
     notFound()
   }
-  
+
   const { business, isValid } = purchaseData
-  
+
   // Check if we should show interstitial page (preview param, or invalid token)
   const showInterstitial = preview === 'true' || !isValid
-  
+
   // If valid and no override, go directly to Stripe
   if (!showInterstitial) {
     try {
@@ -45,9 +51,9 @@ async function PurchaseContent({ utm, preview }: { utm: string; preview?: string
         domain: business.domain,
         utm_token: utm,
       })
-      
+
       const session = await createCheckoutSession(business.id, utm)
-      
+
       if (session) {
         // Track successful session creation
         await trackEvent('checkout_session_created', {
@@ -56,7 +62,7 @@ async function PurchaseContent({ utm, preview }: { utm: string; preview?: string
           amount_cents: session.amountCents,
           flow_type: 'direct',
         })
-        
+
         // Redirect directly to Stripe Checkout
         redirect(session.url)
       }
@@ -65,14 +71,14 @@ async function PurchaseContent({ utm, preview }: { utm: string; preview?: string
       // Fall through to show the interstitial page on error
     }
   }
-  
+
   // Show interstitial page for invalid tokens or if checkout failed
   const reportPreview = getReportPreview(business)
-  
+
   // Server action for manual checkout (if they end up on the page)
   async function handleCheckout() {
     'use server'
-    
+
     try {
       // Track manual checkout attempt
       await trackEvent('manual_checkout_attempt', {
@@ -80,9 +86,9 @@ async function PurchaseContent({ utm, preview }: { utm: string; preview?: string
         domain: business.domain,
         utm_token: utm,
       })
-      
+
       const session = await createCheckoutSession(business.id, utm)
-      
+
       if (session) {
         // Track successful session creation
         await trackEvent('checkout_session_created', {
@@ -91,7 +97,7 @@ async function PurchaseContent({ utm, preview }: { utm: string; preview?: string
           amount_cents: session.amountCents,
           flow_type: 'manual',
         })
-        
+
         // Redirect to Stripe Checkout
         redirect(session.url)
       } else {
@@ -100,7 +106,7 @@ async function PurchaseContent({ utm, preview }: { utm: string; preview?: string
           business_id: business.id,
           utm_token: utm,
         })
-        
+
         throw new Error('Failed to create checkout session. Please try again.')
       }
     } catch (error: any) {
@@ -108,35 +114,34 @@ async function PurchaseContent({ utm, preview }: { utm: string; preview?: string
       if (error.message.includes('redirect')) {
         throw error // Let Next.js handle the redirect
       }
-      
+
       throw new Error(
-        error.message || 'Unable to process checkout. Please try again or contact support.'
+        error.message ||
+          'Unable to process checkout. Please try again or contact support.'
       )
     }
   }
-  
+
   return (
     <StripeErrorBoundary>
-      <PurchaseHero 
-        businessName={business.name} 
-        domain={business.domain} 
-      />
-      
+      <PurchaseHero businessName={business.name} domain={business.domain} />
+
       <ReportPreview preview={reportPreview} />
-      
+
       <TrustSignals />
-      
-      <PricingCard 
+
+      <PricingCard
         businessName={business.name}
         utm={utm}
         onCheckout={handleCheckout}
       />
-      
+
       {/* Warning if UTM has been used */}
       {!isValid && (
         <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-accent/10 border border-accent/20 rounded-lg p-4 shadow-lg backdrop-blur-sm">
           <p className="text-sm text-accent">
-            This purchase link has already been used. If you need assistance, please contact support.
+            This purchase link has already been used. If you need assistance,
+            please contact support.
           </p>
         </div>
       )}
@@ -157,7 +162,7 @@ function PurchasePageSkeleton() {
           </div>
         </div>
       </section>
-      
+
       {/* Content Skeleton */}
       <section className="py-16">
         <div className="container mx-auto px-4">
@@ -175,14 +180,16 @@ function PurchasePageSkeleton() {
   )
 }
 
-export default async function PurchasePage({ searchParams }: PurchasePageProps) {
+export default async function PurchasePage({
+  searchParams,
+}: PurchasePageProps) {
   const utm = searchParams.utm
   const preview = searchParams.preview
-  
+
   if (!utm) {
     redirect('/')
   }
-  
+
   return (
     <main className="min-h-screen bg-carbon text-white">
       <Suspense fallback={<PurchasePageSkeleton />}>

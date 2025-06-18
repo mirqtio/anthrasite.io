@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo)
     this.setState({ errorInfo })
-    
+
     // Call custom error handler if provided
     this.props.onError?.(error, errorInfo)
   }
@@ -63,29 +63,30 @@ export class ErrorBoundary extends Component<Props, State> {
                 />
               </svg>
             </div>
-            
+
             <h2 className="text-2xl font-semibold text-anthracite-black mb-2">
               Something went wrong
             </h2>
-            
+
             <p className="text-anthracite-gray mb-6">
-              We encountered an unexpected error. Please try again or contact support if the problem persists.
+              We encountered an unexpected error. Please try again or contact
+              support if the problem persists.
             </p>
-            
+
             <div className="space-y-3">
               <Button onClick={this.handleReset} variant="primary" fullWidth>
                 Try Again
               </Button>
-              
-              <Button 
-                onClick={() => window.location.reload()} 
-                variant="secondary" 
+
+              <Button
+                onClick={() => window.location.reload()}
+                variant="secondary"
                 fullWidth
               >
                 Refresh Page
               </Button>
             </div>
-            
+
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-6 text-left">
                 <summary className="text-sm font-medium text-anthracite-gray cursor-pointer">

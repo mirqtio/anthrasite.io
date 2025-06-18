@@ -5,6 +5,7 @@ Automated website audits that uncover untapped potential.
 ## Environment Setup
 
 ### Prerequisites
+
 - Node.js 18.x or 20.x
 - PostgreSQL 15+
 - Redis 7+
@@ -13,33 +14,39 @@ Automated website audits that uncover untapped potential.
 ### Local Development
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/mirqtio/anthrasite.io.git
 cd anthrasite.io
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Copy environment variables
+
 ```bash
 cp .env.example .env
 ```
 
 4. Start local services
+
 ```bash
 docker-compose up -d
 ```
 
 5. Initialize the database
+
 ```bash
 npx prisma generate
 npx prisma db push
 ```
 
 6. Run the development server
+
 ```bash
 npm run dev
 ```
@@ -73,6 +80,7 @@ npm run test:e2e:ui
 ## Deployment
 
 The application automatically deploys to Vercel:
+
 - Pull requests create preview deployments
 - Merges to `main` deploy to production
 

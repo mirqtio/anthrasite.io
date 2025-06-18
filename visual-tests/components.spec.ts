@@ -13,7 +13,8 @@ test.beforeEach(async ({ page, context }) => {
 
 // Create a test page with isolated components
 async function createComponentTestPage(page: any, componentHTML: string) {
-  await page.setContent(`
+  await page.setContent(
+    `
     <!DOCTYPE html>
     <html>
       <head>
@@ -51,12 +52,16 @@ async function createComponentTestPage(page: any, componentHTML: string) {
         </div>
       </body>
     </html>
-  `, { waitUntil: 'networkidle' })
+  `,
+    { waitUntil: 'networkidle' }
+  )
 }
 
 test.describe('Button Component Visual Tests', () => {
   test('all button variants', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <h2>Button Variants</h2>
         
@@ -97,48 +102,57 @@ test.describe('Button Component Visual Tests', () => {
           </button>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-buttons-all.png')
   })
 
   test('button hover states', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="btn btn-primary" id="hover-primary">Primary Hover</button>
         <button class="btn btn-secondary" id="hover-secondary">Secondary Hover</button>
         <button class="btn btn-outline" id="hover-outline">Outline Hover</button>
       </div>
-    `)
-    
+    `
+    )
+
     // Capture hover states
     await page.hover('#hover-primary')
     await page.waitForTimeout(100)
-    
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-buttons-hover.png')
   })
 
   test('button focus states', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="btn btn-primary" id="focus-primary">Primary Focus</button>
         <button class="btn btn-secondary" id="focus-secondary">Secondary Focus</button>
         <button class="btn btn-outline" id="focus-outline">Outline Focus</button>
       </div>
-    `)
-    
+    `
+    )
+
     // Focus first button
     await page.focus('#focus-primary')
-    
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-buttons-focus.png')
   })
 
   test('buttons dark mode', async ({ page }) => {
     await setupDarkMode(page)
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button class="btn btn-primary">Primary</button>
@@ -147,8 +161,9 @@ test.describe('Button Component Visual Tests', () => {
           <button class="btn btn-ghost">Ghost</button>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-buttons-dark.png')
   })
@@ -156,7 +171,9 @@ test.describe('Button Component Visual Tests', () => {
 
 test.describe('Card Component Visual Tests', () => {
   test('all card variants', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <h2>Card Variants</h2>
         
@@ -201,32 +218,38 @@ test.describe('Card Component Visual Tests', () => {
           </div>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-cards-all.png')
   })
 
   test('card hover states', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div class="card card-interactive" id="hover-card">
         <div class="card-body">
           <h3 class="card-title">Hover Card</h3>
           <p>Hover over this card to see the effect.</p>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await page.hover('#hover-card')
     await page.waitForTimeout(100)
-    
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-card-hover.png')
   })
 
   test('cards dark mode', async ({ page }) => {
     await setupDarkMode(page)
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <div class="card">
           <div class="card-body">
@@ -242,8 +265,9 @@ test.describe('Card Component Visual Tests', () => {
           </div>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-cards-dark.png')
   })
@@ -251,7 +275,9 @@ test.describe('Card Component Visual Tests', () => {
 
 test.describe('Input Component Visual Tests', () => {
   test('all input variants', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <h2>Input Variants</h2>
         
@@ -310,36 +336,43 @@ test.describe('Input Component Visual Tests', () => {
           </select>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-inputs-all.png')
   })
 
   test('input focus states', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <input type="text" id="focus-input" class="input" placeholder="Click to focus">
         <textarea id="focus-textarea" class="input" placeholder="Click to focus"></textarea>
       </div>
-    `)
-    
+    `
+    )
+
     await page.focus('#focus-input')
-    
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-inputs-focus.png')
   })
 
   test('inputs dark mode', async ({ page }) => {
     await setupDarkMode(page)
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <input type="text" class="input" placeholder="Dark mode input">
         <input type="text" class="input input-error" value="Error in dark mode">
         <textarea class="input" placeholder="Dark mode textarea"></textarea>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-inputs-dark.png')
   })
@@ -347,7 +380,9 @@ test.describe('Input Component Visual Tests', () => {
 
 test.describe('Skeleton Component Visual Tests', () => {
   test('all skeleton variants', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <h2>Skeleton Variants</h2>
         
@@ -387,22 +422,26 @@ test.describe('Skeleton Component Visual Tests', () => {
           <div class="skeleton skeleton-button"></div>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-skeletons-all.png')
   })
 
   test('skeletons dark mode', async ({ page }) => {
     await setupDarkMode(page)
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <div class="skeleton skeleton-text"></div>
         <div class="skeleton skeleton-heading"></div>
         <div class="skeleton skeleton-avatar"></div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-skeletons-dark.png')
   })
@@ -410,7 +449,9 @@ test.describe('Skeleton Component Visual Tests', () => {
 
 test.describe('Badge Component Visual Tests', () => {
   test('all badge variants', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <h2>Badge Variants</h2>
         
@@ -447,8 +488,9 @@ test.describe('Badge Component Visual Tests', () => {
           </span>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-badges-all.png')
   })
@@ -456,7 +498,9 @@ test.describe('Badge Component Visual Tests', () => {
 
 test.describe('Alert Component Visual Tests', () => {
   test('all alert variants', async ({ page }) => {
-    await createComponentTestPage(page, `
+    await createComponentTestPage(
+      page,
+      `
       <div style="display: flex; flex-direction: column; gap: 20px;">
         <h2>Alert Variants</h2>
         
@@ -485,8 +529,9 @@ test.describe('Alert Component Visual Tests', () => {
           <button class="alert-close" aria-label="Close">×</button>
         </div>
       </div>
-    `)
-    
+    `
+    )
+
     await preparePageForScreenshot(page)
     await compareScreenshots(page, 'components-alerts-all.png')
   })

@@ -28,12 +28,14 @@ jest.mock('@/lib/db', () => ({
 }))
 
 jest.mock('next/headers', () => ({
-  headers: jest.fn(() => Promise.resolve({
-    get: jest.fn((name) => {
-      if (name === 'stripe-signature') return 'test_signature'
-      return null
-    }),
-  })),
+  headers: jest.fn(() =>
+    Promise.resolve({
+      get: jest.fn((name) => {
+        if (name === 'stripe-signature') return 'test_signature'
+        return null
+      }),
+    })
+  ),
 }))
 
 jest.mock('lru-cache', () => ({
@@ -85,10 +87,13 @@ describe('Stripe Webhook Handler', () => {
       })
       ;(prisma.utmToken.update as jest.Mock).mockResolvedValue({})
 
-      const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-        method: 'POST',
-        body: JSON.stringify(mockEvent),
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/stripe/webhook',
+        {
+          method: 'POST',
+          body: JSON.stringify(mockEvent),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -121,7 +126,10 @@ describe('Stripe Webhook Handler', () => {
         },
       })
 
-      expect(mockCache.set).toHaveBeenCalledWith('evt_test_123-checkout.session.completed', true)
+      expect(mockCache.set).toHaveBeenCalledWith(
+        'evt_test_123-checkout.session.completed',
+        true
+      )
     })
 
     it('should skip already processed events (idempotency)', async () => {
@@ -134,10 +142,13 @@ describe('Stripe Webhook Handler', () => {
       mockCache.get.mockReturnValue(true) // Event already processed
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
 
-      const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-        method: 'POST',
-        body: JSON.stringify(mockEvent),
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/stripe/webhook',
+        {
+          method: 'POST',
+          body: JSON.stringify(mockEvent),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -150,16 +161,21 @@ describe('Stripe Webhook Handler', () => {
     it('should return 400 for missing signature', async () => {
       jest.resetModules()
       jest.doMock('next/headers', () => ({
-        headers: jest.fn(() => Promise.resolve({
-          get: jest.fn(() => null),
-        })),
+        headers: jest.fn(() =>
+          Promise.resolve({
+            get: jest.fn(() => null),
+          })
+        ),
       }))
 
       const { POST } = require('../route')
-      const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-        method: 'POST',
-        body: '{}',
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/stripe/webhook',
+        {
+          method: 'POST',
+          body: '{}',
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -173,10 +189,13 @@ describe('Stripe Webhook Handler', () => {
         throw new Error('Invalid signature')
       })
 
-      const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-        method: 'POST',
-        body: '{}',
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/stripe/webhook',
+        {
+          method: 'POST',
+          body: '{}',
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -200,12 +219,17 @@ describe('Stripe Webhook Handler', () => {
       }
 
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
-      ;(prisma.purchase.create as jest.Mock).mockRejectedValue(new Error('Database error'))
+      ;(prisma.purchase.create as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
-      const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-        method: 'POST',
-        body: JSON.stringify(mockEvent),
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/stripe/webhook',
+        {
+          method: 'POST',
+          body: JSON.stringify(mockEvent),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -235,10 +259,13 @@ describe('Stripe Webhook Handler', () => {
       })
       ;(prisma.purchase.update as jest.Mock).mockResolvedValue({})
 
-      const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-        method: 'POST',
-        body: JSON.stringify(mockEvent),
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/stripe/webhook',
+        {
+          method: 'POST',
+          body: JSON.stringify(mockEvent),
+        }
+      )
 
       const response = await POST(request)
 
@@ -263,10 +290,13 @@ describe('Stripe Webhook Handler', () => {
 
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
 
-      const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-        method: 'POST',
-        body: JSON.stringify(mockEvent),
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/stripe/webhook',
+        {
+          method: 'POST',
+          body: JSON.stringify(mockEvent),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
