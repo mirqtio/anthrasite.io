@@ -50,8 +50,15 @@ describe('PostHogProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    // Reset the mock implementation for init
-    mockPostHog.init.mockReset()
+    // Reset all mock implementations thoroughly
+    Object.keys(mockPostHog).forEach((key) => {
+      if (
+        typeof mockPostHog[key] === 'function' &&
+        mockPostHog[key].mockReset
+      ) {
+        mockPostHog[key].mockReset()
+      }
+    })
 
     // Mock window object for tests
     if (typeof window === 'undefined') {
@@ -66,6 +73,7 @@ describe('PostHogProvider', () => {
       }
     }
 
+    // Create fresh provider instance for each test to avoid state pollution
     provider = new PostHogProvider(apiKey)
   })
 
@@ -78,22 +86,6 @@ describe('PostHogProvider', () => {
 
   describe('initialize', () => {
     it('should initialize PostHog with correct config', async () => {
-      // Ensure fresh mock state and window object
-      jest.clearAllMocks()
-
-      // Ensure window exists in test environment
-      if (typeof (global as any).window === 'undefined') {
-        ;(global as any).window = {
-          location: { href: 'http://localhost:3000' },
-          navigator: { userAgent: 'test' },
-          localStorage: {
-            getItem: jest.fn(),
-            setItem: jest.fn(),
-            removeItem: jest.fn(),
-          },
-        }
-      }
-
       await provider.initialize()
 
       expect(mockPostHog.init).toHaveBeenCalledTimes(1)
