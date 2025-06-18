@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { generateUTMToken } from '@/lib/utm/crypto'
+import { getBusinessByDomain } from '@/lib/db/queries'
 
 export async function GET(request: NextRequest) {
   // Only allow in development mode
@@ -31,34 +33,52 @@ export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV !== 'development') {
     return NextResponse.json(
       { error: 'This endpoint is only available in development mode' },
-      { status: 403 }
+      { status: 404 }
     )
   }
 
   try {
-    const body = await request.json()
-    const { businessId } = body
-
-    if (!businessId) {
-      return NextResponse.json(
-        { error: 'businessId is required' },
-        { status: 400 }
-      )
+    let body: any
+    try {
+      body = await request.json()
+    } catch (jsonError) {
+      return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
     }
 
-    // Generate a custom mock UTM token for specific business
-    const mockToken = `dev-utm-custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    const { domain, price = 19900 } = body
+
+    if (!domain) {
+      return NextResponse.json({ error: 'Domain is required' }, { status: 400 })
+    }
+
+    // Lookup business by domain
+    const business = await getBusinessByDomain(domain)
+
+    if (!business) {
+      return NextResponse.json({ error: 'Business not found' }, { status: 404 })
+    }
+
+    // Calculate value as 5x price
+    const value = price * 5
+
+    // Generate UTM token with business data
+    const result = await generateUTMToken({
+      businessId: business.id,
+      businessName: business.name,
+      domain: business.domain,
+      price,
+      value,
+    })
 
     return NextResponse.json({
-      token: mockToken,
-      businessId,
-      purchaseUrl: `/purchase?utm=${mockToken}`,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      note: 'Custom development UTM token generated',
+      success: true,
+      token: result.token,
+      url: result.url,
+      business,
     })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to generate custom UTM token' },
+      { error: 'Failed to generate UTM token' },
       { status: 500 }
     )
   }
