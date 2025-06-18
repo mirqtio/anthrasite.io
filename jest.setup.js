@@ -9,8 +9,18 @@ if (typeof global.fetch === 'undefined') {
 if (typeof global.Request === 'undefined') {
   global.Request = class Request {
     constructor(input, init) {
-      this.url = typeof input === 'string' ? input : input.url
-      this.method = init?.method || 'GET'
+      Object.defineProperty(this, 'url', {
+        value: typeof input === 'string' ? input : input.url,
+        writable: false,
+        enumerable: true,
+        configurable: true
+      })
+      Object.defineProperty(this, 'method', {
+        value: init?.method || 'GET',
+        writable: false,
+        enumerable: true,
+        configurable: true
+      })
       this.headers = new Map()
       if (init?.headers) {
         Object.entries(init.headers).forEach(([key, value]) => {
