@@ -74,11 +74,10 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run E2E tests
-        run: npm run test:e2e || true
+        run: npm run test:e2e
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
         timeout-minutes: 10
-        continue-on-error: true
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
@@ -108,6 +107,16 @@ jobs:
         run: npm run build
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+
+      - name: Check build output size
+        run: |
+          # Check that the .next directory exists and is reasonable size (under 2GB)
+          NEXT_SIZE=$(du -sm .next | cut -f1)
+          echo "Build output size: ${NEXT_SIZE}MB"
+          if [ "$NEXT_SIZE" -gt 2048 ]; then
+            echo "Build output exceeds 2GB limit"
+            exit 1
+          fi
 
   security:
     runs-on: ubuntu-latest
