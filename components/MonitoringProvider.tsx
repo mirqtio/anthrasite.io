@@ -23,8 +23,18 @@ export function MonitoringProvider({
 
   // Initialize monitoring services
   useEffect(() => {
-    initMonitoring()
-    setMounted(true)
+    const init = async () => {
+      try {
+        // Skip monitoring in test environment
+        if (process.env.NODE_ENV !== 'test') {
+          await initMonitoring()
+        }
+      } catch (error) {
+        console.error('Failed to initialize monitoring:', error)
+      }
+      setMounted(true)
+    }
+    init()
   }, [])
 
   // Don't track anything during SSR

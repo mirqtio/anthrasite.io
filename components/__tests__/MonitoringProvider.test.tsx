@@ -2,11 +2,19 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { MonitoringProvider } from '../MonitoringProvider'
-import { initializeMonitoring } from '@/lib/monitoring'
+import { initMonitoring } from '@/lib/monitoring'
 
 // Mock monitoring library
 jest.mock('@/lib/monitoring', () => ({
-  initializeMonitoring: jest.fn(),
+  initMonitoring: jest.fn(),
+  trackEvent: jest.fn(),
+  captureError: jest.fn(),
+}))
+
+// Mock monitoring hooks
+jest.mock('@/lib/monitoring/hooks', () => ({
+  usePageTracking: jest.fn(),
+  usePerformanceObserver: jest.fn(),
 }))
 
 // Mock console methods
@@ -38,6 +46,9 @@ describe('MonitoringProvider', () => {
   })
 
   it('should initialize monitoring on mount', async () => {
+    const originalEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'development'
+
     render(
       <MonitoringProvider>
         <div>Test</div>
@@ -45,11 +56,16 @@ describe('MonitoringProvider', () => {
     )
 
     await waitFor(() => {
-      expect(initializeMonitoring).toHaveBeenCalled()
+      expect(initMonitoring).toHaveBeenCalled()
     })
+
+    process.env.NODE_ENV = originalEnv
   })
 
   it('should only initialize monitoring once', async () => {
+    const originalEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'development'
+
     const { rerender } = render(
       <MonitoringProvider>
         <div>Test</div>
@@ -57,7 +73,7 @@ describe('MonitoringProvider', () => {
     )
 
     await waitFor(() => {
-      expect(initializeMonitoring).toHaveBeenCalledTimes(1)
+      expect(initMonitoring).toHaveBeenCalledTimes(1)
     })
 
     // Re-render with different children
@@ -68,13 +84,15 @@ describe('MonitoringProvider', () => {
     )
 
     // Should still only be called once
-    expect(initializeMonitoring).toHaveBeenCalledTimes(1)
+    expect(initMonitoring).toHaveBeenCalledTimes(1)
+
+    process.env.NODE_ENV = originalEnv
   })
 
   it('should handle monitoring initialization errors', async () => {
-    ;(initializeMonitoring as jest.Mock).mockRejectedValue(
-      new Error('Init failed')
-    )
+    const originalEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'development'
+    ;(initMonitoring as jest.Mock).mockRejectedValue(new Error('Init failed'))
 
     render(
       <MonitoringProvider>
@@ -88,6 +106,8 @@ describe('MonitoringProvider', () => {
         expect.any(Error)
       )
     })
+
+    process.env.NODE_ENV = originalEnv
   })
 
   it('should not initialize in test environment', () => {
@@ -100,7 +120,7 @@ describe('MonitoringProvider', () => {
       </MonitoringProvider>
     )
 
-    expect(initializeMonitoring).not.toHaveBeenCalled()
+    expect(initMonitoring).not.toHaveBeenCalled()
 
     process.env.NODE_ENV = originalEnv
   })
@@ -116,7 +136,7 @@ describe('MonitoringProvider', () => {
     )
 
     await waitFor(() => {
-      expect(initializeMonitoring).toHaveBeenCalled()
+      expect(initMonitoring).toHaveBeenCalled()
     })
 
     process.env.NODE_ENV = originalEnv
@@ -133,7 +153,7 @@ describe('MonitoringProvider', () => {
     )
 
     await waitFor(() => {
-      expect(initializeMonitoring).toHaveBeenCalled()
+      expect(initMonitoring).toHaveBeenCalled()
     })
 
     process.env.NODE_ENV = originalEnv
