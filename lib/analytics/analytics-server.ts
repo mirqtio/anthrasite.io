@@ -126,3 +126,6 @@ function generateClientId(): string {
 
 // Export event names for consistency
 export { ANALYTICS_EVENTS }
+
+// Alias for backward compatibility with tests
+export { trackEvent as trackServerEvent }

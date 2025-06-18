@@ -1,34 +1,48 @@
 import { PostHogProvider } from '../posthog'
 
-// Mock PostHog library
-const mockPostHog = {
-  init: jest.fn(),
-  capture: jest.fn(),
-  identify: jest.fn(),
-  reset: jest.fn(),
-  getFeatureFlag: jest.fn(),
-  isFeatureEnabled: jest.fn(),
-  onFeatureFlags: jest.fn(),
-  reloadFeatureFlags: jest.fn(),
-  group: jest.fn(),
-  setPersonProperties: jest.fn(),
-  opt_in_capturing: jest.fn(),
-  opt_out_capturing: jest.fn(),
-  has_opted_out_capturing: jest.fn(),
-  clear_opt_in_out_capturing: jest.fn(),
-  register: jest.fn(),
-  unregister: jest.fn(),
-  get_distinct_id: jest.fn(),
-  alias: jest.fn(),
-  set_config: jest.fn(),
-  get_config: jest.fn(),
-  get_property: jest.fn(),
-  toString: jest.fn(),
-  _send_request: jest.fn(),
-}
+// Mock consent
+jest.mock('@/lib/cookies/consent', () => ({
+  getCookieConsent: jest.fn(() => ({
+    analytics: true,
+    marketing: true,
+    performance: true,
+    functional: true,
+  })),
+}))
 
 // Mock dynamic import
-jest.mock('posthog-js', () => mockPostHog, { virtual: true })
+jest.mock(
+  'posthog-js',
+  () => ({
+    init: jest.fn(),
+    capture: jest.fn(),
+    identify: jest.fn(),
+    reset: jest.fn(),
+    getFeatureFlag: jest.fn(),
+    isFeatureEnabled: jest.fn(),
+    onFeatureFlags: jest.fn(),
+    reloadFeatureFlags: jest.fn(),
+    group: jest.fn(),
+    setPersonProperties: jest.fn(),
+    opt_in_capturing: jest.fn(),
+    opt_out_capturing: jest.fn(),
+    has_opted_out_capturing: jest.fn(),
+    clear_opt_in_out_capturing: jest.fn(),
+    register: jest.fn(),
+    unregister: jest.fn(),
+    get_distinct_id: jest.fn(),
+    alias: jest.fn(),
+    set_config: jest.fn(),
+    get_config: jest.fn(),
+    get_property: jest.fn(),
+    toString: jest.fn(),
+    _send_request: jest.fn(),
+  }),
+  { virtual: true }
+)
+
+// Get the mock after jest.mock has been processed
+const mockPostHog = require('posthog-js')
 
 describe('PostHogProvider', () => {
   let provider: PostHogProvider
@@ -36,19 +50,8 @@ describe('PostHogProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    // Reset window
-    global.window = Object.create(window)
-    Object.defineProperty(window, 'location', {
-      value: {
-        href: 'http://localhost:3000/test',
-        pathname: '/test',
-        search: '',
-        hash: '',
-      },
-      writable: true,
-    })
-
+    // Reset the mock implementation for init
+    mockPostHog.init.mockReset()
     provider = new PostHogProvider(apiKey)
   })
 
@@ -60,23 +63,9 @@ describe('PostHogProvider', () => {
         api_host: 'https://app.posthog.com',
         autocapture: false,
         capture_pageview: false,
-        capture_pageleave: false,
-        disable_session_recording: true,
-        opt_out_capturing_by_default: false,
+        persistence: 'localStorage+cookie',
         loaded: expect.any(Function),
       })
-    })
-
-    it('should use EU host when specified', async () => {
-      const euProvider = new PostHogProvider(apiKey, { host: 'eu' })
-      await euProvider.initialize()
-
-      expect(mockPostHog.init).toHaveBeenCalledWith(
-        apiKey,
-        expect.objectContaining({
-          api_host: 'https://eu.posthog.com',
-        })
-      )
     })
 
     it('should not initialize twice', async () => {

@@ -5,9 +5,13 @@ import { trackServerEvent } from '@/lib/analytics/analytics-server'
 // Mock dependencies
 jest.mock('@/lib/analytics/analytics-server')
 
+const mockTrackServerEvent = trackServerEvent as jest.Mock
+
 describe('Analytics Track API', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    // Set up default successful mock
+    mockTrackServerEvent.mockResolvedValue(undefined)
   })
 
   it('should track event successfully', async () => {
@@ -72,9 +76,7 @@ describe('Analytics Track API', () => {
   })
 
   it('should handle tracking errors', async () => {
-    ;(trackServerEvent as jest.Mock).mockRejectedValue(
-      new Error('Tracking failed')
-    )
+    mockTrackServerEvent.mockRejectedValue(new Error('Tracking failed'))
 
     const request = new NextRequest(
       'http://localhost:3000/api/analytics/track',

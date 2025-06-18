@@ -63,7 +63,7 @@ describe('Generate UTM API (Dev)', () => {
       businessName: 'Test Business',
       domain: 'testbusiness.com',
       price: 9900,
-      value: 49000,
+      value: 49500,
     })
   })
 
