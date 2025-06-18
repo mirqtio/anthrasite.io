@@ -1,23 +1,23 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import PurchaseSuccessPage from '../page'
+import PurchaseSuccessPage from '../client-page'
 import { useSearchParams } from 'next/navigation'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
-  useSearchParams: jest.fn()
+  useSearchParams: jest.fn(),
 }))
 
 jest.mock('@/lib/analytics/analytics-client', () => ({
-  trackEvent: jest.fn()
+  trackEvent: jest.fn(),
 }))
 
 jest.mock('@/lib/stripe/client', () => ({
   loadStripe: jest.fn().mockResolvedValue({
-    redirectToCheckout: jest.fn()
-  })
+    redirectToCheckout: jest.fn(),
+  }),
 }))
 
 // Mock fetch
@@ -31,55 +31,57 @@ describe('PurchaseSuccessPage', () => {
     domain: 'testbusiness.com',
     email: 'test@example.com',
     amount: 9900,
-    reportUrl: 'https://example.com/report.pdf'
+    reportUrl: 'https://example.com/report.pdf',
   }
 
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Setup default search params
     const searchParams = new URLSearchParams()
     searchParams.set('session_id', mockSessionId)
     ;(useSearchParams as jest.Mock).mockReturnValue(searchParams)
-    
+
     // Mock successful purchase data fetch
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: async () => mockPurchaseData
+      json: async () => mockPurchaseData,
     })
   })
 
   it('should render loading state initially', () => {
     render(<PurchaseSuccessPage />)
-    
+
     expect(screen.getByText(/finalizing your purchase/i)).toBeInTheDocument()
   })
 
   it('should fetch and display purchase details on success', async () => {
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/purchase successful/i)).toBeInTheDocument()
     })
-    
+
     expect(screen.getByText(/test business/i)).toBeInTheDocument()
     expect(screen.getByText(/testbusiness\.com/i)).toBeInTheDocument()
     expect(screen.getByText(/test@example\.com/i)).toBeInTheDocument()
     expect(screen.getByText(/\$99\.00/i)).toBeInTheDocument()
-    
+
     // Check analytics tracking
     expect(trackEvent).toHaveBeenCalledWith('purchase_success_viewed', {
       session_id: mockSessionId,
       amount: 9900,
-      domain: 'testbusiness.com'
+      domain: 'testbusiness.com',
     })
   })
 
   it('should show download button when report URL is available', async () => {
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
-      const downloadButton = screen.getByRole('link', { name: /download your report/i })
+      const downloadButton = screen.getByRole('link', {
+        name: /download your report/i,
+      })
       expect(downloadButton).toBeInTheDocument()
       expect(downloadButton).toHaveAttribute('href', mockPurchaseData.reportUrl)
     })
@@ -90,38 +92,42 @@ describe('PurchaseSuccessPage', () => {
       ok: true,
       json: async () => ({
         ...mockPurchaseData,
-        reportUrl: null
-      })
+        reportUrl: null,
+      }),
     })
-    
+
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
-      expect(screen.getByText(/your report is being generated/i)).toBeInTheDocument()
-      expect(screen.getByText(/we'll email it to you shortly/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(/your report is being generated/i)
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/we'll email it to you shortly/i)
+      ).toBeInTheDocument()
     })
   })
 
   it('should handle missing session ID', async () => {
     ;(useSearchParams as jest.Mock).mockReturnValue(new URLSearchParams())
-    
+
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/missing session id/i)).toBeInTheDocument()
     })
-    
+
     expect(fetch).not.toHaveBeenCalled()
   })
 
   it('should handle failed purchase verification', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: async () => ({ success: false, error: 'Payment not found' })
+      json: async () => ({ success: false, error: 'Payment not found' }),
     })
-    
+
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/payment not found/i)).toBeInTheDocument()
     })
@@ -129,11 +135,13 @@ describe('PurchaseSuccessPage', () => {
 
   it('should handle network errors gracefully', async () => {
     ;(global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'))
-    
+
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
-      expect(screen.getByText(/unable to verify your purchase/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(/unable to verify your purchase/i)
+      ).toBeInTheDocument()
       expect(screen.getByText(/please check your email/i)).toBeInTheDocument()
     })
   })
@@ -142,19 +150,21 @@ describe('PurchaseSuccessPage', () => {
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: false,
       status: 500,
-      statusText: 'Internal Server Error'
+      statusText: 'Internal Server Error',
     })
-    
+
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
-      expect(screen.getByText(/unable to verify your purchase/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(/unable to verify your purchase/i)
+      ).toBeInTheDocument()
     })
   })
 
   it('should make correct API call', async () => {
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
         `/api/stripe/recover-session?session_id=${mockSessionId}`
@@ -164,7 +174,7 @@ describe('PurchaseSuccessPage', () => {
 
   it('should show what happens next section', async () => {
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/what happens next/i)).toBeInTheDocument()
       expect(screen.getByText(/check your email/i)).toBeInTheDocument()
@@ -175,7 +185,7 @@ describe('PurchaseSuccessPage', () => {
 
   it('should show contact support message', async () => {
     render(<PurchaseSuccessPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/if you have any questions/i)).toBeInTheDocument()
       expect(screen.getByText(/support@anthrasite\.io/i)).toBeInTheDocument()

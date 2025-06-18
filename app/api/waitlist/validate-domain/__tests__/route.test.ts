@@ -5,10 +5,10 @@ import { validateDomain } from '@/lib/waitlist/domain-validation'
 // Mock dependencies
 jest.mock('@/lib/waitlist/domain-validation')
 jest.mock('@/lib/utm/rate-limit', () => ({
-  withRateLimit: (handler: any) => handler
+  withRateLimit: (handler: any) => handler,
 }))
 jest.mock('@/lib/monitoring/api-middleware', () => ({
-  withMonitoring: (handler: any) => handler
+  withMonitoring: (handler: any) => handler,
 }))
 
 describe('Validate Domain API', () => {
@@ -22,13 +22,16 @@ describe('Validate Domain API', () => {
       isValid: true,
       normalizedDomain: 'example.com',
       hasActiveSite: true,
-      technologies: ['WordPress', 'Cloudflare']
+      technologies: ['WordPress', 'Cloudflare'],
     })
 
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -38,7 +41,7 @@ describe('Validate Domain API', () => {
       valid: true,
       normalized: 'example.com',
       hasActiveSite: true,
-      technologies: ['WordPress', 'Cloudflare']
+      technologies: ['WordPress', 'Cloudflare'],
     })
     expect(validateDomain).toHaveBeenCalledWith(domain)
   })
@@ -48,13 +51,16 @@ describe('Validate Domain API', () => {
     ;(validateDomain as jest.Mock).mockResolvedValue({
       isValid: false,
       error: 'Invalid domain format',
-      suggestion: 'invalid-domain.com'
+      suggestion: 'invalid-domain.com',
     })
 
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -63,71 +69,85 @@ describe('Validate Domain API', () => {
     expect(data).toEqual({
       valid: false,
       error: 'Invalid domain format',
-      suggestion: 'invalid-domain.com'
+      suggestion: 'invalid-domain.com',
     })
   })
 
   it('should handle missing domain parameter', async () => {
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({}),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({}),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(400)
     expect(data).toEqual({
-      error: 'Domain is required'
+      error: 'Domain is required',
     })
     expect(validateDomain).not.toHaveBeenCalled()
   })
 
   it('should handle empty domain string', async () => {
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain: '' }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain: '' }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(400)
     expect(data).toEqual({
-      error: 'Domain is required'
+      error: 'Domain is required',
     })
   })
 
   it('should handle domain validation errors', async () => {
     const domain = 'example.com'
-    ;(validateDomain as jest.Mock).mockRejectedValue(new Error('DNS lookup failed'))
+    ;(validateDomain as jest.Mock).mockRejectedValue(
+      new Error('DNS lookup failed')
+    )
 
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(500)
     expect(data).toEqual({
-      error: 'Failed to validate domain'
+      error: 'Failed to validate domain',
     })
   })
 
   it('should handle invalid JSON in request body', async () => {
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: 'invalid json',
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: 'invalid json',
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(400)
     expect(data).toEqual({
-      error: 'Invalid request'
+      error: 'Invalid request',
     })
   })
 
@@ -136,13 +156,16 @@ describe('Validate Domain API', () => {
     ;(validateDomain as jest.Mock).mockResolvedValue({
       isValid: true,
       normalizedDomain: 'example.com',
-      hasActiveSite: true
+      hasActiveSite: true,
     })
 
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -155,13 +178,16 @@ describe('Validate Domain API', () => {
     ;(validateDomain as jest.Mock).mockResolvedValue({
       isValid: true,
       normalizedDomain: 'example.com',
-      hasActiveSite: true
+      hasActiveSite: true,
     })
 
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain }),
+      }
+    )
 
     await POST(request)
 
@@ -173,13 +199,16 @@ describe('Validate Domain API', () => {
     ;(validateDomain as jest.Mock).mockResolvedValue({
       isValid: true,
       normalizedDomain: 'xn--e1aybc.com',
-      hasActiveSite: true
+      hasActiveSite: true,
     })
 
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -198,14 +227,17 @@ describe('Validate Domain API', () => {
       technologies: ['WordPress', 'WooCommerce'],
       sslEnabled: true,
       wwwRedirect: false,
-      estimatedTraffic: 'Medium'
+      estimatedTraffic: 'Medium',
     }
     ;(validateDomain as jest.Mock).mockResolvedValue(validationResult)
 
-    const request = new NextRequest('http://localhost:3000/api/waitlist/validate-domain', {
-      method: 'POST',
-      body: JSON.stringify({ domain }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/waitlist/validate-domain',
+      {
+        method: 'POST',
+        body: JSON.stringify({ domain }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -217,7 +249,7 @@ describe('Validate Domain API', () => {
       technologies: ['WordPress', 'WooCommerce'],
       sslEnabled: true,
       wwwRedirect: false,
-      estimatedTraffic: 'Medium'
+      estimatedTraffic: 'Medium',
     })
   })
 })

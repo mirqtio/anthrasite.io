@@ -18,7 +18,7 @@ describe('ABTestResults', () => {
         name: 'Control',
         visitors: 1000,
         conversions: 50,
-        conversionRate: 5.0
+        conversionRate: 5.0,
       },
       {
         id: 'variant_a',
@@ -27,16 +27,16 @@ describe('ABTestResults', () => {
         conversions: 75,
         conversionRate: 7.5,
         improvement: 50,
-        significance: 95
-      }
-    ]
+        significance: 95,
+      },
+    ],
   }
 
   beforeEach(() => {
     jest.clearAllMocks()
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: async () => ({ tests: [mockTestData] })
+      json: async () => ({ tests: [mockTestData] }),
     })
   })
 
@@ -88,12 +88,12 @@ describe('ABTestResults', () => {
     const completedTest = {
       ...mockTestData,
       status: 'completed',
-      winner: 'variant_a'
+      winner: 'variant_a',
     }
 
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: async () => ({ tests: [completedTest] })
+      json: async () => ({ tests: [completedTest] }),
     })
 
     render(<ABTestResults />)
@@ -107,12 +107,12 @@ describe('ABTestResults', () => {
     const completedTest = {
       ...mockTestData,
       status: 'completed',
-      winner: 'variant_a'
+      winner: 'variant_a',
     }
 
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: async () => ({ tests: [completedTest] })
+      json: async () => ({ tests: [completedTest] }),
     })
 
     render(<ABTestResults />)
@@ -128,7 +128,7 @@ describe('ABTestResults', () => {
       '/api/ab-tests/deploy',
       expect.objectContaining({
         method: 'POST',
-        body: expect.stringContaining('variant_a')
+        body: expect.stringContaining('variant_a'),
       })
     )
   })
@@ -149,7 +149,7 @@ describe('ABTestResults', () => {
   it('should handle empty results', async () => {
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: async () => ({ tests: [] })
+      json: async () => ({ tests: [] }),
     })
 
     render(<ABTestResults />)
@@ -166,7 +166,9 @@ describe('ABTestResults', () => {
     render(<ABTestResults />)
 
     await waitFor(() => {
-      expect(screen.getByText('Failed to load test results')).toBeInTheDocument()
+      expect(
+        screen.getByText('Failed to load test results')
+      ).toBeInTheDocument()
     })
 
     consoleSpy.mockRestore()

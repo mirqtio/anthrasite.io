@@ -1,9 +1,9 @@
-import { 
-  trackServerEvent, 
+import {
+  trackServerEvent,
   trackPurchaseComplete,
   trackEmailEvent,
   trackWebhookEvent,
-  trackApiEvent
+  trackApiEvent,
 } from '../analytics-server'
 
 // Mock environment variables
@@ -22,11 +22,11 @@ describe('Analytics Server', () => {
       ...originalEnv,
       GA4_API_SECRET: 'test-secret',
       NEXT_PUBLIC_GA4_MEASUREMENT_ID: 'G-TEST123',
-      POSTHOG_API_KEY: 'phc_test123'
+      POSTHOG_API_KEY: 'phc_test123',
     }
     ;(global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      status: 204
+      status: 204,
     })
   })
 
@@ -43,7 +43,7 @@ describe('Analytics Server', () => {
       await trackServerEvent('test_event', {
         client_id: 'test-client',
         user_id: 'test-user',
-        value: 100
+        value: 100,
       })
 
       expect(fetch).toHaveBeenCalledWith(
@@ -51,9 +51,9 @@ describe('Analytics Server', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           }),
-          body: expect.stringContaining('test_event')
+          body: expect.stringContaining('test_event'),
         })
       )
     })
@@ -62,7 +62,7 @@ describe('Analytics Server', () => {
       await trackServerEvent('test_event', {
         client_id: 'test-client',
         user_id: 'test-user',
-        value: 100
+        value: 100,
       })
 
       expect(fetch).toHaveBeenCalledWith(
@@ -71,8 +71,8 @@ describe('Analytics Server', () => {
           method: 'POST',
           headers: expect.objectContaining({
             'Content-Type': 'application/json',
-            'Authorization': expect.stringContaining('Bearer')
-          })
+            Authorization: expect.stringContaining('Bearer'),
+          }),
         })
       )
     })
@@ -110,7 +110,7 @@ describe('Analytics Server', () => {
         businessId: 'biz_123',
         businessName: 'Test Business',
         domain: 'testbusiness.com',
-        customerEmail: 'test@example.com'
+        customerEmail: 'test@example.com',
       })
 
       const callArgs = (fetch as jest.Mock).mock.calls[0]
@@ -125,10 +125,10 @@ describe('Analytics Server', () => {
           items: expect.arrayContaining([
             expect.objectContaining({
               item_id: 'website_audit',
-              price: 99
-            })
-          ])
-        })
+              price: 99,
+            }),
+          ]),
+        }),
       })
     })
 
@@ -140,13 +140,13 @@ describe('Analytics Server', () => {
         businessId: 'biz_123',
         businessName: 'Test Business',
         domain: 'testbusiness.com',
-        customerEmail: 'test@example.com'
+        customerEmail: 'test@example.com',
       })
 
       expect(fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: expect.stringContaining('Test Business')
+          body: expect.stringContaining('Test Business'),
         })
       )
     })
@@ -157,7 +157,7 @@ describe('Analytics Server', () => {
       await trackEmailEvent('email_opened', {
         email_id: 'email_123',
         recipient: 'test@example.com',
-        campaign: 'purchase_confirmation'
+        campaign: 'purchase_confirmation',
       })
 
       expect(fetch).toHaveBeenCalled()
@@ -169,7 +169,7 @@ describe('Analytics Server', () => {
       await trackEmailEvent('email_clicked', {
         email_id: 'email_123',
         recipient: 'test@example.com',
-        link: 'https://example.com/report'
+        link: 'https://example.com/report',
       })
 
       expect(fetch).toHaveBeenCalled()
@@ -180,7 +180,7 @@ describe('Analytics Server', () => {
     it('should track webhook received', async () => {
       await trackWebhookEvent('stripe_webhook', {
         event_type: 'checkout.session.completed',
-        event_id: 'evt_123'
+        event_id: 'evt_123',
       })
 
       expect(fetch).toHaveBeenCalled()
@@ -191,7 +191,7 @@ describe('Analytics Server', () => {
     it('should include webhook metadata', async () => {
       await trackWebhookEvent('sendgrid_webhook', {
         event_type: 'delivered',
-        email_id: 'email_123'
+        email_id: 'email_123',
       })
 
       const callArgs = (fetch as jest.Mock).mock.calls[0]
@@ -206,7 +206,7 @@ describe('Analytics Server', () => {
         endpoint: '/api/waitlist',
         method: 'POST',
         status: 200,
-        duration: 123
+        duration: 123,
       })
 
       expect(fetch).toHaveBeenCalled()
@@ -217,7 +217,7 @@ describe('Analytics Server', () => {
         endpoint: '/api/stripe/webhook',
         method: 'POST',
         status: 400,
-        error: 'Invalid signature'
+        error: 'Invalid signature',
       })
 
       const body = JSON.parse((fetch as jest.Mock).mock.calls[0][1].body)

@@ -5,13 +5,13 @@ import * as Sentry from '@sentry/nextjs'
 // Mock Sentry
 jest.mock('@sentry/nextjs', () => ({
   captureException: jest.fn(),
-  captureMessage: jest.fn()
+  captureMessage: jest.fn(),
 }))
 
 // Mock console
 const originalConsole = {
   log: console.log,
-  error: console.error
+  error: console.error,
 }
 
 describe('Test Monitoring API', () => {
@@ -30,7 +30,9 @@ describe('Test Monitoring API', () => {
 
   describe('GET', () => {
     it('should return monitoring tools status', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring')
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring'
+      )
       const response = await GET(request)
       const data = await response.json()
 
@@ -39,7 +41,10 @@ describe('Test Monitoring API', () => {
       expect(data).toHaveProperty('endpoints')
       expect(data.endpoints).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({ method: 'POST', path: '/api/test-monitoring' })
+          expect.objectContaining({
+            method: 'POST',
+            path: '/api/test-monitoring',
+          }),
         ])
       )
     })
@@ -47,10 +52,13 @@ describe('Test Monitoring API', () => {
 
   describe('POST', () => {
     it('should handle error test type', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: JSON.stringify({ type: 'error' })
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: JSON.stringify({ type: 'error' }),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -58,18 +66,24 @@ describe('Test Monitoring API', () => {
       expect(response.status).toBe(200)
       expect(data).toEqual({
         success: true,
-        message: 'Error captured and sent to monitoring'
+        message: 'Error captured and sent to monitoring',
       })
-      
+
       expect(Sentry.captureException).toHaveBeenCalled()
-      expect(console.error).toHaveBeenCalledWith('Test error:', expect.any(Error))
+      expect(console.error).toHaveBeenCalledWith(
+        'Test error:',
+        expect.any(Error)
+      )
     })
 
     it('should handle warning test type', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: JSON.stringify({ type: 'warning' })
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: JSON.stringify({ type: 'warning' }),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -77,18 +91,24 @@ describe('Test Monitoring API', () => {
       expect(response.status).toBe(200)
       expect(data).toEqual({
         success: true,
-        message: 'Warning sent to monitoring'
+        message: 'Warning sent to monitoring',
       })
-      
-      expect(Sentry.captureMessage).toHaveBeenCalledWith('Test warning message', 'warning')
+
+      expect(Sentry.captureMessage).toHaveBeenCalledWith(
+        'Test warning message',
+        'warning'
+      )
       expect(console.log).toHaveBeenCalledWith('Test warning logged')
     })
 
     it('should handle info test type', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: JSON.stringify({ type: 'info' })
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: JSON.stringify({ type: 'info' }),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -96,10 +116,13 @@ describe('Test Monitoring API', () => {
       expect(response.status).toBe(200)
       expect(data).toEqual({
         success: true,
-        message: 'Info event sent to monitoring'
+        message: 'Info event sent to monitoring',
       })
-      
-      expect(Sentry.captureMessage).toHaveBeenCalledWith('Test info event', 'info')
+
+      expect(Sentry.captureMessage).toHaveBeenCalledWith(
+        'Test info event',
+        'info'
+      )
       expect(console.log).toHaveBeenCalledWith('Test info logged')
     })
 
@@ -107,16 +130,19 @@ describe('Test Monitoring API', () => {
       const customData = {
         userId: 'test-user-123',
         action: 'test-action',
-        metadata: { foo: 'bar' }
+        metadata: { foo: 'bar' },
       }
 
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: JSON.stringify({ 
-          type: 'custom',
-          customData 
-        })
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            type: 'custom',
+            customData,
+          }),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
@@ -125,49 +151,61 @@ describe('Test Monitoring API', () => {
       expect(data).toEqual({
         success: true,
         message: 'Custom event sent to monitoring',
-        customData
+        customData,
       })
-      
-      expect(console.log).toHaveBeenCalledWith('Custom monitoring event:', customData)
+
+      expect(console.log).toHaveBeenCalledWith(
+        'Custom monitoring event:',
+        customData
+      )
     })
 
     it('should handle invalid test type', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: JSON.stringify({ type: 'invalid' })
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: JSON.stringify({ type: 'invalid' }),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
 
       expect(response.status).toBe(400)
       expect(data).toEqual({
-        error: 'Invalid test type. Use: error, warning, info, or custom'
+        error: 'Invalid test type. Use: error, warning, info, or custom',
       })
     })
 
     it('should handle missing test type', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: JSON.stringify({})
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: JSON.stringify({}),
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
 
       expect(response.status).toBe(400)
       expect(data).toEqual({
-        error: 'Invalid test type. Use: error, warning, info, or custom'
+        error: 'Invalid test type. Use: error, warning, info, or custom',
       })
     })
 
     it('should return 404 in production', async () => {
       process.env.NODE_ENV = 'production'
 
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: JSON.stringify({ type: 'error' })
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: JSON.stringify({ type: 'error' }),
+        }
+      )
 
       const response = await POST(request)
 
@@ -175,17 +213,20 @@ describe('Test Monitoring API', () => {
     })
 
     it('should handle invalid JSON', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test-monitoring', {
-        method: 'POST',
-        body: 'invalid json'
-      })
+      const request = new NextRequest(
+        'http://localhost:3000/api/test-monitoring',
+        {
+          method: 'POST',
+          body: 'invalid json',
+        }
+      )
 
       const response = await POST(request)
       const data = await response.json()
 
       expect(response.status).toBe(400)
       expect(data).toEqual({
-        error: 'Invalid test type. Use: error, warning, info, or custom'
+        error: 'Invalid test type. Use: error, warning, info, or custom',
       })
     })
   })
