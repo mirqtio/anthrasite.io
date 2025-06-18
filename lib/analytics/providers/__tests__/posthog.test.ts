@@ -52,7 +52,28 @@ describe('PostHogProvider', () => {
     jest.clearAllMocks()
     // Reset the mock implementation for init
     mockPostHog.init.mockReset()
+
+    // Mock window object for tests
+    if (typeof window === 'undefined') {
+      ;(global as any).window = {
+        location: { href: 'http://localhost:3000' },
+        navigator: { userAgent: 'test' },
+        localStorage: {
+          getItem: jest.fn(),
+          setItem: jest.fn(),
+          removeItem: jest.fn(),
+        },
+      }
+    }
+
     provider = new PostHogProvider(apiKey)
+  })
+
+  afterEach(() => {
+    // Clean up window mock
+    if (typeof (global as any).window !== 'undefined') {
+      delete (global as any).window
+    }
   })
 
   describe('initialize', () => {

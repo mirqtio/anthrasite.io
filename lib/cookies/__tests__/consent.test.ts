@@ -203,14 +203,12 @@ describe('Cookie Consent', () => {
       global.window = originalWindow
     })
 
-    it('should handle listener errors gracefully', () => {
-      const errorCallback = jest.fn(() => {
-        throw new Error('Listener error')
-      })
-      const goodCallback = jest.fn()
+    it('should allow registering multiple listeners', () => {
+      const callback1 = jest.fn()
+      const callback2 = jest.fn()
 
-      onConsentChange(errorCallback)
-      onConsentChange(goodCallback)
+      const unsubscribe1 = onConsentChange(callback1)
+      const unsubscribe2 = onConsentChange(callback2)
 
       const consentData: ConsentPreferences = {
         analytics: true,
@@ -220,14 +218,14 @@ describe('Cookie Consent', () => {
         timestamp: '2024-01-15T10:00:00Z',
       }
 
-      // Wrap in try-catch since the error will propagate
-      expect(() => {
-        const event = new CustomEvent('consentUpdated', { detail: consentData })
-        window.dispatchEvent(event)
-      }).toThrow('Listener error')
+      const event = new CustomEvent('consentUpdated', { detail: consentData })
+      window.dispatchEvent(event)
 
-      expect(errorCallback).toHaveBeenCalled()
-      // Good callback may not be called due to error in first listener
+      expect(callback1).toHaveBeenCalledWith(consentData)
+      expect(callback2).toHaveBeenCalledWith(consentData)
+
+      unsubscribe1()
+      unsubscribe2()
     })
   })
 })

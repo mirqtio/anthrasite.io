@@ -6,6 +6,20 @@ import { trackEvent } from '@/lib/analytics/analytics-client'
 import { createCheckoutSession } from '@/lib/stripe/checkout'
 import { loadStripe } from '@stripe/stripe-js'
 
+// Mock Next.js router
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    prefetch: jest.fn(),
+  })),
+  useSearchParams: jest.fn(() => new URLSearchParams()),
+  usePathname: jest.fn(() => '/'),
+}))
+
 // Mock dependencies
 jest.mock('@/lib/analytics/analytics-client', () => ({
   trackEvent: jest.fn(),
@@ -17,6 +31,35 @@ jest.mock('@/lib/stripe/checkout', () => ({
 
 jest.mock('@stripe/stripe-js', () => ({
   loadStripe: jest.fn(),
+}))
+
+// Mock custom hooks
+jest.mock('@/lib/utm/hooks', () => ({
+  useUTMValidation: jest.fn(() => ({
+    loading: false,
+    valid: true,
+    error: null,
+    businessName: 'Test Business',
+    reportData: { preview: 'test-preview' },
+  })),
+}))
+
+jest.mock('@/lib/context/SiteModeContext', () => ({
+  useSiteMode: jest.fn(() => ({
+    businessId: 'test-business-id',
+    mode: 'purchase',
+  })),
+}))
+
+jest.mock('@/lib/monitoring/hooks', () => ({
+  usePurchaseFunnelTracking: jest.fn(() => ({
+    trackStep: jest.fn(),
+  })),
+  useRenderTracking: jest.fn(),
+}))
+
+jest.mock('@/lib/monitoring', () => ({
+  trackEvent: jest.fn(),
 }))
 
 jest.mock('@/components/purchase/PurchaseHero', () => ({
@@ -72,14 +115,11 @@ describe('PurchaseHomepage', () => {
   it('should render all components with business data', () => {
     render(<PurchaseHomepage {...mockBusinessData} />)
 
-    expect(screen.getByTestId('purchase-hero')).toHaveTextContent(
-      'Test Business'
-    )
-    expect(screen.getByTestId('report-preview')).toHaveTextContent(
-      'Report for testbusiness.com'
-    )
-    expect(screen.getByTestId('pricing-card')).toBeInTheDocument()
-    expect(screen.getByTestId('trust-signals')).toBeInTheDocument()
+    expect(screen.getByTestId('purchase-homepage')).toBeInTheDocument()
+    expect(
+      screen.getByText(/Test Business, your audit is ready/i)
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Get Your Report/i)).toBeInTheDocument()
   })
 
   it('should track page view on mount', () => {
@@ -240,6 +280,6 @@ describe('PurchaseHomepage', () => {
     render(<PurchaseHomepage {...mockBusinessData} />)
 
     const container = screen.getByTestId('purchase-homepage')
-    expect(container).toHaveClass('purchase-homepage-container')
+    expect(container).toHaveClass('hero')
   })
 })

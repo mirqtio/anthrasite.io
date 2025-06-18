@@ -114,22 +114,22 @@ describe('Abandonment Analytics', () => {
     it('should calculate breakdown by dimensions', async () => {
       const mockCarts = [
         {
-          createdAt: new Date('2024-01-15T10:00:00'), // Tuesday, 10am
+          createdAt: new Date('2024-01-16T10:00:00'), // Tuesday, 10am (actual Tuesday)
           amount: 5500,
           recovered: true,
-          recoveredAt: new Date('2024-01-15T14:00:00'), // 4 hours later
+          recoveredAt: new Date('2024-01-16T14:00:00'), // 4 hours later
         },
         {
-          createdAt: new Date('2024-01-15T10:00:00'), // Tuesday, 10am
+          createdAt: new Date('2024-01-16T10:00:00'), // Tuesday, 10am (same day)
           amount: 15000,
           recovered: false,
           recoveredAt: null,
         },
         {
-          createdAt: new Date('2024-01-14T20:00:00'), // Monday, 8pm
+          createdAt: new Date('2024-01-15T20:00:00'), // Monday, 8pm (actual Monday)
           amount: 25000,
           recovered: true,
-          recoveredAt: new Date('2024-01-16T08:00:00'), // 36 hours later
+          recoveredAt: new Date('2024-01-17T08:00:00'), // 36 hours later
         },
       ]
 
@@ -142,8 +142,8 @@ describe('Abandonment Analytics', () => {
       expect(breakdown.byHour[20].count).toBe(1) // 1 cart at 8pm
 
       // Check daily breakdown
-      expect(breakdown.byDay[1].count).toBe(1) // Monday
-      expect(breakdown.byDay[2].count).toBe(2) // Tuesday
+      expect(breakdown.byDay[1].count).toBe(1) // Monday (2024-01-15)
+      expect(breakdown.byDay[2].count).toBe(2) // Tuesday (2024-01-16)
 
       // Check amount breakdown
       expect(breakdown.byAmount).toContainEqual({ range: '$50-100', count: 1 })
