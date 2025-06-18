@@ -7,10 +7,10 @@ import { addToWaitlist, getWaitlistPosition } from '@/lib/waitlist/service'
 jest.mock('@/lib/waitlist/domain-validation')
 jest.mock('@/lib/waitlist/service')
 jest.mock('@/lib/utm/rate-limit', () => ({
-  withRateLimit: (handler: any) => handler
+  withRateLimit: (handler: any) => handler,
 }))
 jest.mock('@/lib/monitoring/api-middleware', () => ({
-  withMonitoring: (handler: any) => handler
+  withMonitoring: (handler: any) => handler,
 }))
 
 describe('Waitlist API', () => {
@@ -23,20 +23,20 @@ describe('Waitlist API', () => {
       const requestData = {
         domain: 'example.com',
         email: 'test@example.com',
-        referralSource: 'organic'
+        referralSource: 'organic',
       }
 
       // Mock validations
       ;(validateEmail as jest.Mock).mockReturnValue(true)
       ;(validateDomain as jest.Mock).mockResolvedValue({
         isValid: true,
-        normalizedDomain: 'example.com'
+        normalizedDomain: 'example.com',
       })
-      
+
       // Mock successful addition
       ;(addToWaitlist as jest.Mock).mockResolvedValue({
         success: true,
-        position: 100
+        position: 100,
       })
 
       const request = new NextRequest('http://localhost:3000/api/waitlist', {
@@ -51,7 +51,7 @@ describe('Waitlist API', () => {
       expect(data).toEqual({
         success: true,
         position: 100,
-        normalizedDomain: 'example.com'
+        normalizedDomain: 'example.com',
       })
 
       expect(validateEmail).toHaveBeenCalledWith('test@example.com')
@@ -59,7 +59,7 @@ describe('Waitlist API', () => {
       expect(addToWaitlist).toHaveBeenCalledWith({
         domain: 'example.com',
         email: 'test@example.com',
-        referralSource: 'organic'
+        referralSource: 'organic',
       })
     })
 
@@ -77,7 +77,7 @@ describe('Waitlist API', () => {
 
       expect(response.status).toBe(400)
       expect(data).toEqual({
-        error: 'Domain and email are required'
+        error: 'Domain and email are required',
       })
     })
 
@@ -88,7 +88,7 @@ describe('Waitlist API', () => {
         method: 'POST',
         body: JSON.stringify({
           domain: 'example.com',
-          email: 'invalid-email'
+          email: 'invalid-email',
         }),
       })
 
@@ -97,7 +97,7 @@ describe('Waitlist API', () => {
 
       expect(response.status).toBe(400)
       expect(data).toEqual({
-        error: 'Invalid email format'
+        error: 'Invalid email format',
       })
     })
 
@@ -106,14 +106,14 @@ describe('Waitlist API', () => {
       ;(validateDomain as jest.Mock).mockResolvedValue({
         isValid: false,
         error: 'Domain not found',
-        suggestion: 'example.com'
+        suggestion: 'example.com',
       })
 
       const request = new NextRequest('http://localhost:3000/api/waitlist', {
         method: 'POST',
         body: JSON.stringify({
           domain: 'exampl.com',
-          email: 'test@example.com'
+          email: 'test@example.com',
         }),
       })
 
@@ -123,7 +123,7 @@ describe('Waitlist API', () => {
       expect(response.status).toBe(400)
       expect(data).toEqual({
         error: 'Domain not found',
-        suggestion: 'example.com'
+        suggestion: 'example.com',
       })
     })
 
@@ -131,18 +131,18 @@ describe('Waitlist API', () => {
       ;(validateEmail as jest.Mock).mockReturnValue(true)
       ;(validateDomain as jest.Mock).mockResolvedValue({
         isValid: true,
-        normalizedDomain: 'example.com'
+        normalizedDomain: 'example.com',
       })
       ;(addToWaitlist as jest.Mock).mockResolvedValue({
         success: false,
-        error: 'Database error'
+        error: 'Database error',
       })
 
       const request = new NextRequest('http://localhost:3000/api/waitlist', {
         method: 'POST',
         body: JSON.stringify({
           domain: 'example.com',
-          email: 'test@example.com'
+          email: 'test@example.com',
         }),
       })
 
@@ -151,7 +151,7 @@ describe('Waitlist API', () => {
 
       expect(response.status).toBe(500)
       expect(data).toEqual({
-        error: 'Database error'
+        error: 'Database error',
       })
     })
 
@@ -166,7 +166,7 @@ describe('Waitlist API', () => {
 
       expect(response.status).toBe(500)
       expect(data).toEqual({
-        error: 'Internal server error'
+        error: 'Internal server error',
       })
     })
   })
@@ -175,14 +175,16 @@ describe('Waitlist API', () => {
     it('should return position for existing domain', async () => {
       ;(getWaitlistPosition as jest.Mock).mockResolvedValue(50)
 
-      const request = new NextRequest('http://localhost:3000/api/waitlist?domain=example.com')
+      const request = new NextRequest(
+        'http://localhost:3000/api/waitlist?domain=example.com'
+      )
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
       expect(data).toEqual({
         success: true,
-        position: 50
+        position: 50,
       })
       expect(getWaitlistPosition).toHaveBeenCalledWith('example.com')
     })
@@ -194,33 +196,39 @@ describe('Waitlist API', () => {
 
       expect(response.status).toBe(400)
       expect(data).toEqual({
-        error: 'Domain is required'
+        error: 'Domain is required',
       })
     })
 
     it('should return 404 when domain not found', async () => {
       ;(getWaitlistPosition as jest.Mock).mockResolvedValue(null)
 
-      const request = new NextRequest('http://localhost:3000/api/waitlist?domain=notfound.com')
+      const request = new NextRequest(
+        'http://localhost:3000/api/waitlist?domain=notfound.com'
+      )
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(404)
       expect(data).toEqual({
-        error: 'Domain not found in waitlist'
+        error: 'Domain not found in waitlist',
       })
     })
 
     it('should handle service errors', async () => {
-      ;(getWaitlistPosition as jest.Mock).mockRejectedValue(new Error('Database error'))
+      ;(getWaitlistPosition as jest.Mock).mockRejectedValue(
+        new Error('Database error')
+      )
 
-      const request = new NextRequest('http://localhost:3000/api/waitlist?domain=example.com')
+      const request = new NextRequest(
+        'http://localhost:3000/api/waitlist?domain=example.com'
+      )
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(500)
       expect(data).toEqual({
-        error: 'Internal server error'
+        error: 'Internal server error',
       })
     })
   })

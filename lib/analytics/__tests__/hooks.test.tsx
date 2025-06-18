@@ -1,9 +1,9 @@
 import { renderHook, act } from '@testing-library/react'
-import { 
-  useAnalytics, 
-  usePageTracking, 
+import {
+  useAnalytics,
+  usePageTracking,
   useEventTracking,
-  useWebVitals
+  useWebVitals,
 } from '../hooks'
 import { trackEvent, trackPageView } from '../analytics-client'
 import { usePathname } from 'next/navigation'
@@ -13,11 +13,11 @@ jest.mock('../analytics-client', () => ({
   trackEvent: jest.fn(),
   trackPageView: jest.fn(),
   identifyUser: jest.fn(),
-  resetUser: jest.fn()
+  resetUser: jest.fn(),
 }))
 
 jest.mock('next/navigation', () => ({
-  usePathname: jest.fn()
+  usePathname: jest.fn(),
 }))
 
 // Mock web-vitals
@@ -27,7 +27,7 @@ jest.mock('web-vitals', () => ({
   onFCP: jest.fn(),
   onLCP: jest.fn(),
   onTTFB: jest.fn(),
-  onINP: jest.fn()
+  onINP: jest.fn(),
 }))
 
 describe('Analytics Hooks', () => {
@@ -74,7 +74,7 @@ describe('Analytics Hooks', () => {
 
       expect(trackPageView).toHaveBeenCalledWith({
         path: '/test-page',
-        title: expect.any(String)
+        title: expect.any(String),
       })
     })
 
@@ -93,7 +93,7 @@ describe('Analytics Hooks', () => {
       expect(trackPageView).toHaveBeenCalledTimes(2)
       expect(trackPageView).toHaveBeenLastCalledWith({
         path: '/new-page',
-        title: expect.any(String)
+        title: expect.any(String),
       })
     })
 
@@ -120,7 +120,9 @@ describe('Analytics Hooks', () => {
         result.current('button_click', { button_id: 'submit' })
       })
 
-      expect(trackEvent).toHaveBeenCalledWith('button_click', { button_id: 'submit' })
+      expect(trackEvent).toHaveBeenCalledWith('button_click', {
+        button_id: 'submit',
+      })
     })
 
     it('should memoize track function', () => {
@@ -170,7 +172,7 @@ describe('Analytics Hooks', () => {
       expect(trackEvent).toHaveBeenCalledWith('web_vitals', {
         metric_name: 'CLS',
         metric_value: 0.1,
-        metric_id: 'cls-1'
+        metric_id: 'cls-1',
       })
     })
 
@@ -178,7 +180,7 @@ describe('Analytics Hooks', () => {
       const webVitals = require('web-vitals')
       const callbacks: Record<string, any> = {}
 
-      Object.keys(webVitals).forEach(key => {
+      Object.keys(webVitals).forEach((key) => {
         if (key.startsWith('on')) {
           webVitals[key].mockImplementation((cb: any) => {
             callbacks[key] = cb
@@ -195,15 +197,15 @@ describe('Analytics Hooks', () => {
         { fn: 'onFID', name: 'FID', value: 100 },
         { fn: 'onFCP', name: 'FCP', value: 1800 },
         { fn: 'onTTFB', name: 'TTFB', value: 800 },
-        { fn: 'onINP', name: 'INP', value: 200 }
+        { fn: 'onINP', name: 'INP', value: 200 },
       ]
 
-      metrics.forEach(metric => {
+      metrics.forEach((metric) => {
         act(() => {
-          callbacks[metric.fn]({ 
-            name: metric.name, 
-            value: metric.value, 
-            id: `${metric.name}-1` 
+          callbacks[metric.fn]({
+            name: metric.name,
+            value: metric.value,
+            id: `${metric.name}-1`,
           })
         })
       })

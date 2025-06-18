@@ -15,40 +15,40 @@ describe('AnalyticsManager', () => {
   let manager: AnalyticsManager
   let mockGA4: jest.Mocked<GoogleAnalytics4Provider>
   let mockPostHog: jest.Mocked<PostHogProvider>
-  
+
   const mockConfig: AnalyticsConfig = {
     ga4: {
       measurementId: 'G-TEST123',
-      apiSecret: 'test-secret'
+      apiSecret: 'test-secret',
     },
     posthog: {
-      apiKey: 'phc_test123'
-    }
+      apiKey: 'phc_test123',
+    },
   }
 
   beforeEach(() => {
     // Clear all mocks
     jest.clearAllMocks()
-    
+
     // Setup default mocks
     ;(validateEventSchema as jest.Mock).mockReturnValue(true)
     ;(getCookieConsent as jest.Mock).mockReturnValue({
       analytics: true,
       marketing: true,
       preferences: false,
-      performance: false
+      performance: false,
     })
     ;(onConsentChange as jest.Mock).mockImplementation(() => {})
-    
+
     // Create mock provider instances
     mockGA4 = {
       initialize: jest.fn().mockResolvedValue(undefined),
       track: jest.fn(),
       page: jest.fn(),
       identify: jest.fn(),
-      reset: jest.fn()
+      reset: jest.fn(),
     } as any
-    
+
     mockPostHog = {
       initialize: jest.fn().mockResolvedValue(undefined),
       track: jest.fn(),
@@ -56,13 +56,13 @@ describe('AnalyticsManager', () => {
       identify: jest.fn(),
       reset: jest.fn(),
       getFeatureFlag: jest.fn(),
-      isFeatureEnabled: jest.fn()
+      isFeatureEnabled: jest.fn(),
     } as any
-    
+
     // Mock the constructors
     ;(GoogleAnalytics4Provider as jest.Mock).mockImplementation(() => mockGA4)
     ;(PostHogProvider as jest.Mock).mockImplementation(() => mockPostHog)
-    
+
     // Create manager instance
     manager = new AnalyticsManager(mockConfig)
   })
@@ -85,7 +85,7 @@ describe('AnalyticsManager', () => {
         analytics: false,
         marketing: false,
         preferences: false,
-        performance: false
+        performance: false,
       })
 
       await manager.initialize()
@@ -121,7 +121,7 @@ describe('AnalyticsManager', () => {
         analytics: false,
         marketing: false,
         preferences: false,
-        performance: false
+        performance: false,
       })
 
       expect(mockGA4.reset).toHaveBeenCalled()
@@ -146,7 +146,7 @@ describe('AnalyticsManager', () => {
         expect.objectContaining({
           value: 100,
           session_id: expect.any(String),
-          timestamp: expect.any(String)
+          timestamp: expect.any(String),
         })
       )
       expect(mockPostHog.track).toHaveBeenCalledWith(
@@ -154,7 +154,7 @@ describe('AnalyticsManager', () => {
         expect.objectContaining({
           value: 100,
           session_id: expect.any(String),
-          timestamp: expect.any(String)
+          timestamp: expect.any(String),
         })
       )
     })
@@ -196,13 +196,13 @@ describe('AnalyticsManager', () => {
       expect(mockGA4.page).toHaveBeenCalledWith(
         expect.objectContaining({
           path: '/test',
-          session_id: expect.any(String)
+          session_id: expect.any(String),
         })
       )
       expect(mockPostHog.page).toHaveBeenCalledWith(
         expect.objectContaining({
           path: '/test',
-          session_id: expect.any(String)
+          session_id: expect.any(String),
         })
       )
     })
@@ -231,12 +231,12 @@ describe('AnalyticsManager', () => {
 
     it('should reset all providers', () => {
       const originalSessionId = (manager as any).sessionId
-      
+
       manager.reset()
 
       expect(mockGA4.reset).toHaveBeenCalled()
       expect(mockPostHog.reset).toHaveBeenCalled()
-      
+
       // Should generate new session ID
       const newSessionId = (manager as any).sessionId
       expect(newSessionId).not.toBe(originalSessionId)
@@ -284,12 +284,13 @@ describe('AnalyticsManager', () => {
     it('should track funnel steps', () => {
       manager.trackFunnelStep('checkout', 2, 'payment', { value: 99 })
 
-      expect(mockGA4.track).toHaveBeenCalledWith('funnel_step', 
+      expect(mockGA4.track).toHaveBeenCalledWith(
+        'funnel_step',
         expect.objectContaining({
           funnel_name: 'checkout',
           funnel_step: 2,
           step_name: 'payment',
-          value: 99
+          value: 99,
         })
       )
     })
@@ -297,12 +298,13 @@ describe('AnalyticsManager', () => {
     it('should track purchases', () => {
       manager.trackPurchase('order-123', 99.99, 'USD', { product: 'audit' })
 
-      expect(mockGA4.track).toHaveBeenCalledWith('purchase',
+      expect(mockGA4.track).toHaveBeenCalledWith(
+        'purchase',
         expect.objectContaining({
           transaction_id: 'order-123',
           value: 99.99,
           currency: 'USD',
-          product: 'audit'
+          product: 'audit',
         })
       )
     })
@@ -310,11 +312,12 @@ describe('AnalyticsManager', () => {
     it('should track performance metrics', () => {
       manager.trackPerformance('page_load', 1234, { page: '/home' })
 
-      expect(mockGA4.track).toHaveBeenCalledWith('performance_metric',
+      expect(mockGA4.track).toHaveBeenCalledWith(
+        'performance_metric',
         expect.objectContaining({
           metric_name: 'page_load',
           metric_value: 1234,
-          page: '/home'
+          page: '/home',
         })
       )
     })

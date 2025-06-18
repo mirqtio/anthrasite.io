@@ -1,7 +1,7 @@
-import { 
-  getAbandonmentMetrics, 
+import {
+  getAbandonmentMetrics,
   getAbandonmentBreakdown,
-  getTopAbandonedBusinesses
+  getTopAbandonedBusinesses,
 } from '../analytics'
 import { prisma } from '@/lib/db'
 
@@ -12,15 +12,15 @@ jest.mock('@/lib/db', () => ({
       count: jest.fn(),
       aggregate: jest.fn(),
       findMany: jest.fn(),
-      groupBy: jest.fn()
+      groupBy: jest.fn(),
     },
     purchase: {
-      count: jest.fn()
+      count: jest.fn(),
     },
     business: {
-      findMany: jest.fn()
-    }
-  }
+      findMany: jest.fn(),
+    },
+  },
 }))
 
 describe('Abandonment Analytics', () => {
@@ -36,33 +36,31 @@ describe('Abandonment Analytics', () => {
       // Mock current period data
       ;(prisma.abandonedCart.count as jest.Mock)
         .mockResolvedValueOnce(100) // total abandoned
-        .mockResolvedValueOnce(20)  // recovered
-        .mockResolvedValueOnce(80)  // emails sent
-      
+        .mockResolvedValueOnce(20) // recovered
+        .mockResolvedValueOnce(80) // emails sent
       ;(prisma.abandonedCart.aggregate as jest.Mock)
         .mockResolvedValueOnce({ _sum: { amount: 800000 } }) // revenue lost
         .mockResolvedValueOnce({ _sum: { amount: 200000 } }) // revenue recovered
-      
       ;(prisma.purchase.count as jest.Mock).mockResolvedValue(150) // completed purchases
 
       // Mock previous period data for trends
       ;(prisma.abandonedCart.count as jest.Mock)
-        .mockResolvedValueOnce(90)  // previous abandoned
-        .mockResolvedValueOnce(15)  // previous recovered
-      
-      ;(prisma.abandonedCart.aggregate as jest.Mock)
-        .mockResolvedValueOnce({ _sum: { amount: 150000 } }) // previous revenue
+        .mockResolvedValueOnce(90) // previous abandoned
+        .mockResolvedValueOnce(15) // previous recovered
+      ;(prisma.abandonedCart.aggregate as jest.Mock).mockResolvedValueOnce({
+        _sum: { amount: 150000 },
+      }) // previous revenue
 
       // Mock recovery times
       ;(prisma.abandonedCart.findMany as jest.Mock).mockResolvedValue([
         {
           createdAt: new Date('2024-01-14T10:00:00'),
-          recoveredAt: new Date('2024-01-14T16:00:00') // 6 hours
+          recoveredAt: new Date('2024-01-14T16:00:00'), // 6 hours
         },
         {
           createdAt: new Date('2024-01-13T10:00:00'),
-          recoveredAt: new Date('2024-01-13T22:00:00') // 12 hours
-        }
+          recoveredAt: new Date('2024-01-13T22:00:00'), // 12 hours
+        },
       ])
 
       const metrics = await getAbandonmentMetrics(30)
@@ -80,7 +78,7 @@ describe('Abandonment Analytics', () => {
         averageTimeToRecovery: 9, // (6+12)/2
         abandonmentTrend: 11.1, // (100-90)/90 * 100
         recoveryTrend: 33.3, // (20-15)/15 * 100
-        revenueTrend: 33.3 // (2000-1500)/1500 * 100
+        revenueTrend: 33.3, // (2000-1500)/1500 * 100
       })
 
       jest.useRealTimers()
@@ -89,7 +87,9 @@ describe('Abandonment Analytics', () => {
     it('should handle zero values gracefully', async () => {
       // Mock all zeros
       ;(prisma.abandonedCart.count as jest.Mock).mockResolvedValue(0)
-      ;(prisma.abandonedCart.aggregate as jest.Mock).mockResolvedValue({ _sum: { amount: null } })
+      ;(prisma.abandonedCart.aggregate as jest.Mock).mockResolvedValue({
+        _sum: { amount: null },
+      })
       ;(prisma.purchase.count as jest.Mock).mockResolvedValue(0)
       ;(prisma.abandonedCart.findMany as jest.Mock).mockResolvedValue([])
 
@@ -102,8 +102,10 @@ describe('Abandonment Analytics', () => {
     })
 
     it('should handle errors', async () => {
-      ;(prisma.abandonedCart.count as jest.Mock).mockRejectedValue(new Error('DB error'))
-      
+      ;(prisma.abandonedCart.count as jest.Mock).mockRejectedValue(
+        new Error('DB error')
+      )
+
       await expect(getAbandonmentMetrics(30)).rejects.toThrow('DB error')
     })
   })
@@ -115,20 +117,20 @@ describe('Abandonment Analytics', () => {
           createdAt: new Date('2024-01-15T10:00:00'), // Tuesday, 10am
           amount: 5500,
           recovered: true,
-          recoveredAt: new Date('2024-01-15T14:00:00') // 4 hours later
+          recoveredAt: new Date('2024-01-15T14:00:00'), // 4 hours later
         },
         {
           createdAt: new Date('2024-01-15T10:00:00'), // Tuesday, 10am
           amount: 15000,
           recovered: false,
-          recoveredAt: null
+          recoveredAt: null,
         },
         {
           createdAt: new Date('2024-01-14T20:00:00'), // Monday, 8pm
           amount: 25000,
           recovered: true,
-          recoveredAt: new Date('2024-01-16T08:00:00') // 36 hours later
-        }
+          recoveredAt: new Date('2024-01-16T08:00:00'), // 36 hours later
+        },
       ]
 
       ;(prisma.abandonedCart.findMany as jest.Mock).mockResolvedValue(mockCarts)
@@ -149,8 +151,14 @@ describe('Abandonment Analytics', () => {
       expect(breakdown.byAmount).toContainEqual({ range: '$200+', count: 1 })
 
       // Check recovery time breakdown
-      expect(breakdown.byRecoveryTime).toContainEqual({ hours: '0-6h', count: 1 })
-      expect(breakdown.byRecoveryTime).toContainEqual({ hours: '24h+', count: 1 })
+      expect(breakdown.byRecoveryTime).toContainEqual({
+        hours: '0-6h',
+        count: 1,
+      })
+      expect(breakdown.byRecoveryTime).toContainEqual({
+        hours: '24h+',
+        count: 1,
+      })
     })
 
     it('should handle empty data', async () => {
@@ -158,10 +166,10 @@ describe('Abandonment Analytics', () => {
 
       const breakdown = await getAbandonmentBreakdown(30)
 
-      expect(breakdown.byHour.every(h => h.count === 0)).toBe(true)
-      expect(breakdown.byDay.every(d => d.count === 0)).toBe(true)
-      expect(breakdown.byAmount.every(a => a.count === 0)).toBe(true)
-      expect(breakdown.byRecoveryTime.every(r => r.count === 0)).toBe(true)
+      expect(breakdown.byHour.every((h) => h.count === 0)).toBe(true)
+      expect(breakdown.byDay.every((d) => d.count === 0)).toBe(true)
+      expect(breakdown.byAmount.every((a) => a.count === 0)).toBe(true)
+      expect(breakdown.byRecoveryTime.every((r) => r.count === 0)).toBe(true)
     })
   })
 
@@ -170,16 +178,18 @@ describe('Abandonment Analytics', () => {
       const mockGroupBy = [
         { businessId: 'biz1', _count: { id: 10 }, _sum: { amount: 100000 } },
         { businessId: 'biz2', _count: { id: 5 }, _sum: { amount: 50000 } },
-        { businessId: 'biz3', _count: { id: 3 }, _sum: { amount: 30000 } }
+        { businessId: 'biz3', _count: { id: 3 }, _sum: { amount: 30000 } },
       ]
 
       const mockBusinesses = [
         { id: 'biz1', name: 'Business 1', domain: 'biz1.com' },
         { id: 'biz2', name: 'Business 2', domain: 'biz2.com' },
-        { id: 'biz3', name: 'Business 3', domain: 'biz3.com' }
+        { id: 'biz3', name: 'Business 3', domain: 'biz3.com' },
       ]
 
-      ;(prisma.abandonedCart.groupBy as jest.Mock).mockResolvedValue(mockGroupBy)
+      ;(prisma.abandonedCart.groupBy as jest.Mock).mockResolvedValue(
+        mockGroupBy
+      )
       ;(prisma.business.findMany as jest.Mock).mockResolvedValue(mockBusinesses)
 
       const result = await getTopAbandonedBusinesses(10)
@@ -188,25 +198,25 @@ describe('Abandonment Analytics', () => {
       expect(result[0]).toEqual({
         business: { id: 'biz1', name: 'Business 1', domain: 'biz1.com' },
         abandonedCount: 10,
-        totalRevenueLost: 1000 // 100000/100
+        totalRevenueLost: 1000, // 100000/100
       })
-      
+
       expect(prisma.abandonedCart.groupBy).toHaveBeenCalledWith({
         by: ['businessId'],
         _count: { id: true },
         _sum: { amount: true },
         where: {
           recovered: false,
-          createdAt: { gte: expect.any(Date) }
+          createdAt: { gte: expect.any(Date) },
         },
         orderBy: { _count: { id: 'desc' } },
-        take: 10
+        take: 10,
       })
     })
 
     it('should handle missing business data', async () => {
       ;(prisma.abandonedCart.groupBy as jest.Mock).mockResolvedValue([
-        { businessId: 'biz1', _count: { id: 5 }, _sum: { amount: 50000 } }
+        { businessId: 'biz1', _count: { id: 5 }, _sum: { amount: 50000 } },
       ])
       ;(prisma.business.findMany as jest.Mock).mockResolvedValue([])
 

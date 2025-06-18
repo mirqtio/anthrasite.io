@@ -15,28 +15,37 @@ describe('Analytics Track API', () => {
       event: 'test_event',
       properties: {
         value: 100,
-        category: 'test'
-      }
+        category: 'test',
+      },
     }
 
-    const request = new NextRequest('http://localhost:3000/api/analytics/track', {
-      method: 'POST',
-      body: JSON.stringify(eventData)
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/analytics/track',
+      {
+        method: 'POST',
+        body: JSON.stringify(eventData),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(200)
     expect(data).toEqual({ success: true })
-    expect(trackServerEvent).toHaveBeenCalledWith('test_event', { value: 100, category: 'test' })
+    expect(trackServerEvent).toHaveBeenCalledWith('test_event', {
+      value: 100,
+      category: 'test',
+    })
   })
 
   it('should handle missing event name', async () => {
-    const request = new NextRequest('http://localhost:3000/api/analytics/track', {
-      method: 'POST',
-      body: JSON.stringify({ properties: { value: 100 } })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/analytics/track',
+      {
+        method: 'POST',
+        body: JSON.stringify({ properties: { value: 100 } }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -47,10 +56,13 @@ describe('Analytics Track API', () => {
   })
 
   it('should handle invalid JSON', async () => {
-    const request = new NextRequest('http://localhost:3000/api/analytics/track', {
-      method: 'POST',
-      body: 'invalid json'
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/analytics/track',
+      {
+        method: 'POST',
+        body: 'invalid json',
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -60,12 +72,17 @@ describe('Analytics Track API', () => {
   })
 
   it('should handle tracking errors', async () => {
-    ;(trackServerEvent as jest.Mock).mockRejectedValue(new Error('Tracking failed'))
+    ;(trackServerEvent as jest.Mock).mockRejectedValue(
+      new Error('Tracking failed')
+    )
 
-    const request = new NextRequest('http://localhost:3000/api/analytics/track', {
-      method: 'POST',
-      body: JSON.stringify({ event: 'test_event' })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/analytics/track',
+      {
+        method: 'POST',
+        body: JSON.stringify({ event: 'test_event' }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -75,10 +92,13 @@ describe('Analytics Track API', () => {
   })
 
   it('should accept events without properties', async () => {
-    const request = new NextRequest('http://localhost:3000/api/analytics/track', {
-      method: 'POST',
-      body: JSON.stringify({ event: 'simple_event' })
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/analytics/track',
+      {
+        method: 'POST',
+        body: JSON.stringify({ event: 'simple_event' }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()

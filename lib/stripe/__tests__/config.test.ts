@@ -1,4 +1,9 @@
-import { getStripe, validateStripeConfig, REPORT_PRICE, getStripeUrls } from '../config'
+import {
+  getStripe,
+  validateStripeConfig,
+  REPORT_PRICE,
+  getStripeUrls,
+} from '../config'
 
 // Mock stripe
 jest.mock('stripe', () => {
@@ -22,10 +27,10 @@ describe('Stripe Configuration', () => {
   describe('getStripe', () => {
     it('should create and return stripe instance when secret key is available', () => {
       process.env.STRIPE_SECRET_KEY = 'sk_test_123'
-      
+
       const stripe = getStripe()
       expect(stripe).toBeDefined()
-      
+
       // Should return the same instance on subsequent calls
       const stripe2 = getStripe()
       expect(stripe2).toBe(stripe)
@@ -33,7 +38,7 @@ describe('Stripe Configuration', () => {
 
     it('should throw error when STRIPE_SECRET_KEY is not defined', () => {
       delete process.env.STRIPE_SECRET_KEY
-      
+
       expect(() => getStripe()).toThrow('STRIPE_SECRET_KEY is not defined')
     })
   })
@@ -44,7 +49,9 @@ describe('Stripe Configuration', () => {
         amount: 9900,
         currency: 'usd',
         productName: 'Website Audit Report',
-        productDescription: expect.stringContaining('Comprehensive 50+ page website audit report')
+        productDescription: expect.stringContaining(
+          'Comprehensive 50+ page website audit report'
+        ),
       })
     })
   })
@@ -53,11 +60,12 @@ describe('Stripe Configuration', () => {
     it('should return correct URLs for given base URL', () => {
       const baseUrl = 'https://example.com'
       const urls = getStripeUrls(baseUrl)
-      
+
       expect(urls).toEqual({
-        successUrl: 'https://example.com/purchase/success?session_id={CHECKOUT_SESSION_ID}',
+        successUrl:
+          'https://example.com/purchase/success?session_id={CHECKOUT_SESSION_ID}',
         cancelUrl: 'https://example.com/purchase/cancel',
-        webhookUrl: 'https://example.com/api/stripe/webhook'
+        webhookUrl: 'https://example.com/api/stripe/webhook',
       })
     })
   })
@@ -76,7 +84,9 @@ describe('Stripe Configuration', () => {
       process.env.STRIPE_WEBHOOK_SECRET = 'whsec_123'
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123'
 
-      expect(() => validateStripeConfig()).toThrow('Missing required Stripe environment variables: STRIPE_SECRET_KEY')
+      expect(() => validateStripeConfig()).toThrow(
+        'Missing required Stripe environment variables: STRIPE_SECRET_KEY'
+      )
     })
 
     it('should throw when STRIPE_WEBHOOK_SECRET is missing', () => {
@@ -84,7 +94,9 @@ describe('Stripe Configuration', () => {
       delete process.env.STRIPE_WEBHOOK_SECRET
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123'
 
-      expect(() => validateStripeConfig()).toThrow('Missing required Stripe environment variables: STRIPE_WEBHOOK_SECRET')
+      expect(() => validateStripeConfig()).toThrow(
+        'Missing required Stripe environment variables: STRIPE_WEBHOOK_SECRET'
+      )
     })
 
     it('should throw when NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is missing', () => {
@@ -92,7 +104,9 @@ describe('Stripe Configuration', () => {
       process.env.STRIPE_WEBHOOK_SECRET = 'whsec_123'
       delete process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
-      expect(() => validateStripeConfig()).toThrow('Missing required Stripe environment variables: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY')
+      expect(() => validateStripeConfig()).toThrow(
+        'Missing required Stripe environment variables: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'
+      )
     })
 
     it('should throw when multiple keys are missing', () => {
@@ -100,7 +114,9 @@ describe('Stripe Configuration', () => {
       delete process.env.STRIPE_WEBHOOK_SECRET
       delete process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
-      expect(() => validateStripeConfig()).toThrow('Missing required Stripe environment variables: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY')
+      expect(() => validateStripeConfig()).toThrow(
+        'Missing required Stripe environment variables: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'
+      )
     })
   })
 })

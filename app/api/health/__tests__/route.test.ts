@@ -38,12 +38,16 @@ describe('Health Check API', () => {
       database: 'healthy',
       version: 'test-version',
     })
-    expect(prisma.$queryRaw).toHaveBeenCalledWith(expect.arrayContaining(['SELECT 1']))
+    expect(prisma.$queryRaw).toHaveBeenCalledWith(
+      expect.arrayContaining(['SELECT 1'])
+    )
   })
 
   it('should return unhealthy status when database is not accessible', async () => {
     // Mock database error
-    ;(prisma.$queryRaw as jest.Mock).mockRejectedValue(new Error('Connection refused'))
+    ;(prisma.$queryRaw as jest.Mock).mockRejectedValue(
+      new Error('Connection refused')
+    )
 
     const request = new NextRequest('http://localhost:3000/api/health')
     const response = await GET(request)
@@ -88,6 +92,9 @@ describe('Health Check API', () => {
     const request = new NextRequest('http://localhost:3000/api/health')
     await GET(request)
 
-    expect(monitorDbQuery).toHaveBeenCalledWith('health_check', expect.any(Function))
+    expect(monitorDbQuery).toHaveBeenCalledWith(
+      'health_check',
+      expect.any(Function)
+    )
   })
 })
