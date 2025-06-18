@@ -75,19 +75,12 @@ export async function fetchExperiments(
   }
 
   try {
-    // Skip Edge Config in test environments if not configured
-    if (process.env.NODE_ENV === 'test' && !process.env.EDGE_CONFIG) {
-      if (process.env.NODE_ENV !== 'test') {
-        console.warn('Using fallback experiments - Edge Config not configured')
-      }
-      return new Map(Object.entries(FALLBACK_EXPERIMENTS))
-    }
-
     // Fetch from Edge Config
     const configData = await get<EdgeConfigExperiment>('ab-experiments')
 
     if (!configData) {
-      if (process.env.NODE_ENV !== 'test') {
+      // Log warnings in Jest tests, suppress in E2E environments only
+      if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
         console.warn('No experiment configuration found in Edge Config')
       }
       return new Map(Object.entries(FALLBACK_EXPERIMENTS))
@@ -101,24 +94,26 @@ export async function fetchExperiments(
       timestamp: Date.now(),
     }
 
-    if (process.env.NODE_ENV !== 'test') {
+    // Log success in Jest tests, suppress in E2E environments only
+    if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
       console.log(`Loaded ${experiments.size} experiments from Edge Config`)
     }
     return experiments
   } catch (error) {
-    if (process.env.NODE_ENV !== 'test') {
+    // Always log errors in Jest tests, suppress in E2E environments only
+    if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
       console.error('Failed to fetch experiments from Edge Config:', error)
     }
 
     // Return cached data if available, otherwise fallback
     if (experimentCache) {
-      if (process.env.NODE_ENV !== 'test') {
+      if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
         console.warn('Using stale cached experiments due to fetch error')
       }
       return experimentCache.data
     }
 
-    if (process.env.NODE_ENV !== 'test') {
+    if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
       console.warn('Using fallback experiments')
     }
     return new Map(Object.entries(FALLBACK_EXPERIMENTS))
