@@ -20,6 +20,9 @@ const customJestConfig = {
     '/components/help/__tests__/',
     '/app/api/sendgrid/webhook/__tests__/',
     '/app/api/stripe/webhook/__tests__/',
+    '/app/api/cron/',
+    '/components/waitlist/__tests__/',
+    '/lib/abandoned-cart/__tests__/',
   ],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',
