@@ -240,7 +240,7 @@ export async function setupVisualTestContext(context: BrowserContext) {
         static now() {
           return constantDate.getTime()
         }
-      } as any
+      } as any,
     })
   })
 
