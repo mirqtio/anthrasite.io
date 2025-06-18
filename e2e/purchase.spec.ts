@@ -17,10 +17,10 @@ test.describe('Purchase Page', () => {
   })
 
   test('should show purchase page with valid UTM', async ({ page }) => {
-    // Use one of the mock UTM tokens from the dev service
+    // Use one of the mock UTM tokens from the dev service with preview=true to show content
     const utm = 'dev-utm-valid'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Should not redirect
     await expect(page).toHaveURL(/\/purchase\?utm=/)
@@ -41,7 +41,7 @@ test.describe('Purchase Page', () => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 })
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Check that key elements are still visible and properly laid out
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
@@ -56,7 +56,7 @@ test.describe('Purchase Page', () => {
   test('should show performance metrics', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Wait for the page to fully load
     await page.waitForSelector('[data-testid="purchase-header"]')
@@ -73,7 +73,7 @@ test.describe('Purchase Page', () => {
   test('should show trust signals', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Check for trust elements from TrustSignals component
     await expect(page.getByText('Trusted by Leading Businesses')).toBeVisible()
@@ -85,7 +85,7 @@ test.describe('Purchase Page', () => {
   test('should show all included features', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Check for features from ReportPreview component
     await expect(page.getByText(/50\+ page comprehensive report/)).toBeVisible()
@@ -99,7 +99,7 @@ test.describe('Purchase Page', () => {
   test('should handle checkout button click', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Click the checkout button
     const checkoutButton = page.getByRole('button', {
@@ -120,7 +120,7 @@ test.describe('Purchase Page', () => {
   test('should show page logo and branding', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Check for logo and branding text
     await expect(page.getByText('VALUE, CRYSTALLIZED')).toBeVisible()
@@ -137,7 +137,7 @@ test.describe('Purchase Page', () => {
   test('should show warning for used UTM tokens', async ({ page }) => {
     const utm = 'dev-utm-used'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Should show warning message
     await expect(
@@ -148,7 +148,7 @@ test.describe('Purchase Page', () => {
   test('should maintain scroll position on navigation', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
-    await page.goto(`/purchase?utm=${utm}`)
+    await page.goto(`/purchase?utm=${utm}&preview=true`)
 
     // Scroll to pricing section
     await page.getByText("What's included").scrollIntoViewIfNeeded()
