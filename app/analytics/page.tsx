@@ -4,10 +4,7 @@ import {
   FunnelVisualization,
   FunnelStep,
 } from '@/components/analytics/FunnelVisualization'
-import {
-  ABTestResults,
-  ABTestResult,
-} from '@/components/analytics/ABTestResults'
+import { ABTestResults } from '@/components/analytics/ABTestResults'
 import { Card } from '@/components/Card'
 
 // Mock data for demonstration
@@ -18,41 +15,6 @@ const mockFunnelData: FunnelStep[] = [
   { name: 'Checkout Started', count: 3000, percentage: 30 },
   { name: 'Payment Completed', count: 1500, percentage: 15 },
 ]
-
-const mockABTest: ABTestResult = {
-  id: 'homepage-cta-test',
-  name: 'Homepage CTA Button Test',
-  status: 'completed',
-  startDate: new Date('2024-01-01'),
-  variants: [
-    {
-      id: 'control',
-      name: 'Get Started (Control)',
-      visitors: 5000,
-      conversions: 150,
-      conversionRate: 3.0,
-      confidence: 100,
-      isControl: true,
-    },
-    {
-      id: 'variant-a',
-      name: 'Start Free Trial',
-      visitors: 4950,
-      conversions: 178,
-      conversionRate: 3.6,
-      confidence: 96.5,
-      isWinner: true,
-    },
-    {
-      id: 'variant-b',
-      name: 'Get Your Audit',
-      visitors: 5050,
-      conversions: 162,
-      conversionRate: 3.2,
-      confidence: 78.3,
-    },
-  ],
-}
 
 export default function AnalyticsPage() {
   const handleDeployVariant = (variantId: string) => {
@@ -129,7 +91,7 @@ export default function AnalyticsPage() {
               A/B Test Results
             </h2>
 
-            <ABTestResults test={mockABTest} onDeploy={handleDeployVariant} />
+            <ABTestResults onDeploy={handleDeployVariant} />
           </div>
 
           {/* Additional sections could include:
