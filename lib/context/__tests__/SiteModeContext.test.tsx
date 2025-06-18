@@ -3,33 +3,18 @@ import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { SiteModeProvider, useSiteMode } from '../SiteModeContext'
 
-// Mock window.location with jest.spyOn
-const mockLocation = {
-  search: '',
-  href: 'http://localhost',
-  protocol: 'http:',
-  host: 'localhost',
-  hostname: 'localhost',
-  port: '',
-  pathname: '/',
-  hash: '',
-  origin: 'http://localhost',
-  assign: jest.fn(),
-  reload: jest.fn(),
-  replace: jest.fn(),
-}
-
-// Use jest.spyOn to avoid JSDOM issues
-let locationSpy: jest.SpyInstance
+// Mock URLSearchParams to control URL parameters
+const originalURLSearchParams = global.URLSearchParams
+let mockSearchParams: Record<string, string> = {}
 
 beforeAll(() => {
-  locationSpy = jest
-    .spyOn(window, 'location', 'get')
-    .mockReturnValue(mockLocation as any)
+  global.URLSearchParams = jest.fn().mockImplementation(() => ({
+    get: (key: string) => mockSearchParams[key] || null,
+  })) as jest.MockedClass<typeof URLSearchParams>
 })
 
 afterAll(() => {
-  locationSpy.mockRestore()
+  global.URLSearchParams = originalURLSearchParams
 })
 
 // Test component to access context
@@ -47,15 +32,11 @@ const TestComponent = () => {
 describe('SiteModeContext', () => {
   beforeEach(() => {
     // Reset mocks
-    mockLocation.search = ''
+    mockSearchParams = {}
     Object.defineProperty(document, 'cookie', {
       value: '',
       writable: true,
     })
-  })
-
-  afterAll(() => {
-    locationSpy.mockRestore()
   })
 
   it('should provide organic mode by default', async () => {
@@ -74,7 +55,7 @@ describe('SiteModeContext', () => {
   })
 
   it('should detect purchase mode from UTM parameter', async () => {
-    mockLocation.search = '?utm=test_utm_token'
+    mockSearchParams = { utm: 'test_utm_token' }
 
     render(
       <SiteModeProvider>
@@ -117,14 +98,35 @@ describe('SiteModeContext', () => {
     consoleSpy.mockRestore()
   })
 
-  it('should start in loading state', () => {
+  it('should start in loading state', async () => {
+    // Create a custom test component that captures the initial state
+    let capturedInitialState: string | null = null
+
+    const InitialStateCapture = () => {
+      const { isLoading } = useSiteMode()
+      if (capturedInitialState === null) {
+        capturedInitialState = isLoading ? 'loading' : 'loaded'
+      }
+      return (
+        <div>
+          <div data-testid="loading">{isLoading ? 'loading' : 'loaded'}</div>
+        </div>
+      )
+    }
+
     render(
       <SiteModeProvider>
-        <TestComponent />
+        <InitialStateCapture />
       </SiteModeProvider>
     )
 
-    expect(screen.getByTestId('loading')).toHaveTextContent('loading')
+    // Should have captured the initial loading state
+    expect(capturedInitialState).toBe('loading')
+
+    // And eventually should be loaded
+    await waitFor(() => {
+      expect(screen.getByTestId('loading')).toHaveTextContent('loaded')
+    })
   })
 
   it('should handle initial props', async () => {
@@ -139,7 +141,7 @@ describe('SiteModeContext', () => {
   })
 
   it('should prioritize UTM parameter over cookies', async () => {
-    mockLocation.search = '?utm=test_utm_token'
+    mockSearchParams = { utm: 'test_utm_token' }
     document.cookie = 'site_mode=organic; business_id=biz_123'
 
     render(

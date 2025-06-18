@@ -18,6 +18,8 @@ describe('Stripe Configuration', () => {
   beforeEach(() => {
     jest.resetModules()
     process.env = { ...originalEnv }
+    // Clear the require cache to ensure fresh module state
+    delete require.cache[require.resolve('../config')]
   })
 
   afterAll(() => {
@@ -38,6 +40,9 @@ describe('Stripe Configuration', () => {
 
     it('should throw error when STRIPE_SECRET_KEY is not defined', () => {
       delete process.env.STRIPE_SECRET_KEY
+
+      // Re-import the module to get fresh state
+      const { getStripe } = require('../config')
 
       expect(() => getStripe()).toThrow('STRIPE_SECRET_KEY is not defined')
     })

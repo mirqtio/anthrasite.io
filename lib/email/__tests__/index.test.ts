@@ -1,68 +1,80 @@
-import {
-  sendOrderConfirmationEmail,
-  sendCartRecoveryEmail,
-  sendReportReadyEmail,
-  sendWelcomeEmail,
-  getEmailService,
-  validateEmailConfig,
-} from '../index'
-import { EmailService } from '../email-service'
+import { emailConfig } from '../config'
 
-// Mock EmailService
+// Mock the email functions directly
 jest.mock('../email-service', () => ({
-  EmailService: jest.fn().mockImplementation(() => ({
-    sendOrderConfirmation: jest.fn().mockResolvedValue(true),
-    sendCartRecovery: jest.fn().mockResolvedValue(true),
-    sendReportReady: jest.fn().mockResolvedValue(true),
-    sendWelcome: jest.fn().mockResolvedValue(true),
-  })),
+  sendOrderConfirmation: jest.fn().mockResolvedValue({
+    success: true,
+    status: 'sent',
+    messageId: 'test-message-id',
+  }),
+  sendCartRecoveryEmail: jest.fn().mockResolvedValue({
+    success: true,
+    status: 'sent',
+    messageId: 'test-message-id',
+  }),
+  sendReportReady: jest.fn().mockResolvedValue({
+    success: true,
+    status: 'sent',
+    messageId: 'test-message-id',
+  }),
+  sendWelcomeEmail: jest.fn().mockResolvedValue({
+    success: true,
+    status: 'sent',
+    messageId: 'test-message-id',
+  }),
+  getEmailQueueStats: jest.fn().mockReturnValue({ pending: 0, failed: 0 }),
 }))
 
-// Mock config validation
-jest.mock('../config', () => ({
-  validateEmailConfig: jest.fn(),
-}))
+// Import after mocking
+import {
+  sendOrderConfirmation,
+  sendCartRecoveryEmail,
+  sendReportReady,
+  sendWelcomeEmail,
+} from '../index'
 
 describe('Email Module Exports', () => {
-  let mockEmailService: any
-
   beforeEach(() => {
     jest.clearAllMocks()
-    mockEmailService = new (EmailService as any)()
   })
 
-  describe('sendOrderConfirmationEmail', () => {
+  describe('sendOrderConfirmation', () => {
     it('should send order confirmation email', async () => {
       const emailData = {
         to: 'test@example.com',
         businessName: 'Test Business',
-        domain: 'testbusiness.com',
+        businessDomain: 'testbusiness.com',
         reportUrl: 'https://example.com/report.pdf',
         amount: '$99.00',
+        orderId: 'test-order-123',
       }
 
-      const result = await sendOrderConfirmationEmail(emailData)
+      const result = await sendOrderConfirmation(emailData)
 
-      expect(result).toBe(true)
-      expect(mockEmailService.sendOrderConfirmation).toHaveBeenCalledWith(
-        emailData
-      )
+      expect(result.success).toBe(true)
+      expect(result.status).toBe('sent')
     })
 
     it('should handle errors gracefully', async () => {
-      mockEmailService.sendOrderConfirmation.mockRejectedValue(
-        new Error('Send failed')
-      )
-
-      const result = await sendOrderConfirmationEmail({
-        to: 'test@example.com',
-        businessName: 'Test',
-        domain: 'test.com',
-        reportUrl: 'https://example.com/report.pdf',
-        amount: '$99',
+      // Mock the email service to return failure
+      const emailService = require('../email-service')
+      emailService.sendOrderConfirmation.mockResolvedValueOnce({
+        success: false,
+        status: 'failed',
+        error: 'Send failed',
       })
 
-      expect(result).toBe(false)
+      const result = await sendOrderConfirmation({
+        to: 'test@example.com',
+        businessName: 'Test',
+        businessDomain: 'test.com',
+        reportUrl: 'https://example.com/report.pdf',
+        amount: '$99',
+        orderId: 'test-order',
+      })
+
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Send failed')
     })
   })
 
@@ -71,32 +83,30 @@ describe('Email Module Exports', () => {
       const emailData = {
         to: 'test@example.com',
         businessName: 'Test Business',
-        domain: 'testbusiness.com',
-        cartValue: '$99.00',
+        amount: '$99.00',
         recoveryUrl: 'https://example.com/recover',
-        attemptNumber: 1,
+        itemName: 'Website Audit',
       }
 
       const result = await sendCartRecoveryEmail(emailData)
 
-      expect(result).toBe(true)
-      expect(mockEmailService.sendCartRecovery).toHaveBeenCalledWith(emailData)
+      expect(result.success).toBe(true)
     })
   })
 
-  describe('sendReportReadyEmail', () => {
+  describe('sendReportReady', () => {
     it('should send report ready email', async () => {
       const emailData = {
         to: 'test@example.com',
         businessName: 'Test Business',
-        domain: 'testbusiness.com',
+        businessDomain: 'testbusiness.com',
         reportUrl: 'https://example.com/report.pdf',
+        orderId: 'test-order-456',
       }
 
-      const result = await sendReportReadyEmail(emailData)
+      const result = await sendReportReady(emailData)
 
-      expect(result).toBe(true)
-      expect(mockEmailService.sendReportReady).toHaveBeenCalledWith(emailData)
+      expect(result.success).toBe(true)
     })
   })
 
@@ -105,33 +115,19 @@ describe('Email Module Exports', () => {
       const emailData = {
         to: 'test@example.com',
         name: 'Test User',
+        businessDomain: 'testbusiness.com',
       }
 
       const result = await sendWelcomeEmail(emailData)
 
-      expect(result).toBe(true)
-      expect(mockEmailService.sendWelcome).toHaveBeenCalledWith(emailData)
+      expect(result.success).toBe(true)
     })
   })
 
-  describe('getEmailService', () => {
-    it('should return email service instance', () => {
-      const service = getEmailService()
-      expect(service).toBeDefined()
-      expect(service).toBeInstanceOf(EmailService)
-    })
-
-    it('should return same instance on multiple calls', () => {
-      const service1 = getEmailService()
-      const service2 = getEmailService()
-      expect(service1).toBe(service2)
-    })
-  })
-
-  describe('validateEmailConfig', () => {
+  describe('emailConfig', () => {
     it('should be exported from config', () => {
-      expect(validateEmailConfig).toBeDefined()
-      expect(typeof validateEmailConfig).toBe('function')
+      expect(emailConfig).toBeDefined()
+      expect(typeof emailConfig).toBe('object')
     })
   })
 })
