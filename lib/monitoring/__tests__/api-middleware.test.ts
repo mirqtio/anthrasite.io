@@ -1,6 +1,13 @@
 /**
  * @jest-environment node
  */
+
+// Mock NextResponse before importing modules that use it
+jest.mock('next/server', () => ({
+  NextResponse: undefined,
+  NextRequest: jest.fn(),
+}))
+
 import {
   withMonitoring,
   withDbMonitoring,

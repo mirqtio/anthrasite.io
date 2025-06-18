@@ -1,7 +1,57 @@
 import '@testing-library/jest-dom'
 
+// Mock Next.js NextRequest and NextResponse
+// eslint-disable-next-line no-undef
+jest.mock('next/server', () => ({
+  NextRequest: class NextRequest {
+    constructor(input, init) {
+      this.url = typeof input === 'string' ? input : input.url
+      this.method = init?.method || 'GET'
+      this.headers = new Map()
+      if (init?.headers) {
+        Object.entries(init.headers).forEach(([key, value]) => {
+          this.headers.set(key, value)
+        })
+      }
+      this._body = init?.body
+    }
+
+    async json() {
+      return typeof this._body === 'string' ? JSON.parse(this._body) : this._body
+    }
+
+    async text() {
+      return typeof this._body === 'string'
+        ? this._body
+        : JSON.stringify(this._body)
+    }
+  },
+  NextResponse: {
+    json: (data, init) => {
+      const response = {
+        _body: data,
+        status: init?.status || 200,
+        headers: new Map(),
+        async json() {
+          return this._body
+        },
+        async text() {
+          return JSON.stringify(this._body)
+        },
+      }
+      if (init?.headers) {
+        Object.entries(init.headers).forEach(([key, value]) => {
+          response.headers.set(key, value)
+        })
+      }
+      return response
+    },
+  },
+}))
+
 // Add fetch polyfill for Node.js environment
 if (typeof global.fetch === 'undefined') {
+  // eslint-disable-next-line no-undef
   global.fetch = jest.fn()
 }
 

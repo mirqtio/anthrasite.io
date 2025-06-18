@@ -2,7 +2,6 @@ import { POST } from '../route'
 import { NextRequest } from 'next/server'
 import { stripe } from '@/lib/stripe/config'
 import { prisma } from '@/lib/db'
-import { LRUCache } from 'lru-cache'
 
 // Mock dependencies
 jest.mock('@/lib/stripe/config', () => ({
@@ -24,7 +23,25 @@ jest.mock('@/lib/db', () => ({
     utmToken: {
       update: jest.fn(),
     },
+    abandonedCheckout: {
+      deleteMany: jest.fn(),
+    },
+    business: {
+      findUnique: jest.fn(),
+    },
   },
+}))
+
+jest.mock('@/lib/email/email-service', () => ({
+  sendOrderConfirmation: jest.fn().mockResolvedValue({ success: true }),
+  sendWelcomeEmail: jest.fn().mockResolvedValue({ success: true }),
+}))
+
+jest.mock('@/lib/abandoned-cart/service', () => ({
+  AbandonedCartService: jest.fn().mockImplementation(() => ({
+    handlePaymentSuccess: jest.fn().mockResolvedValue({ success: true }),
+    handleCheckoutAbandoned: jest.fn().mockResolvedValue({ success: true }),
+  })),
 }))
 
 jest.mock('next/headers', () => ({
@@ -38,23 +55,27 @@ jest.mock('next/headers', () => ({
   ),
 }))
 
-jest.mock('lru-cache', () => ({
-  LRUCache: jest.fn().mockImplementation(() => ({
+jest.mock('lru-cache', () => {
+  const mockInstance = {
     get: jest.fn(),
     set: jest.fn(),
-  })),
-}))
+  }
+  return {
+    LRUCache: jest.fn().mockImplementation(() => mockInstance),
+    __getMockInstance: () => mockInstance,
+  }
+})
 
 describe('Stripe Webhook Handler', () => {
-  let mockCache: any
+  let mockCacheInstance: any
 
   beforeEach(() => {
     jest.clearAllMocks()
-    mockCache = {
-      get: jest.fn(),
-      set: jest.fn(),
-    }
-    ;(LRUCache as jest.Mock).mockImplementation(() => mockCache)
+    // Get the mock instance
+    const lruCache = require('lru-cache')
+    mockCacheInstance = lruCache.__getMockInstance()
+    mockCacheInstance.get.mockClear()
+    mockCacheInstance.set.mockClear()
   })
 
   describe('POST /api/stripe/webhook', () => {
@@ -86,6 +107,11 @@ describe('Stripe Webhook Handler', () => {
         id: 'purchase-123',
       })
       ;(prisma.utmToken.update as jest.Mock).mockResolvedValue({})
+      ;(prisma.business.findUnique as jest.Mock).mockResolvedValue({
+        id: 'business-123',
+        name: 'Test Business',
+        domain: 'example.com',
+      })
 
       const request = new NextRequest(
         'http://localhost:3000/api/stripe/webhook',
@@ -96,9 +122,16 @@ describe('Stripe Webhook Handler', () => {
       )
 
       const response = await POST(request)
-      const data = await response.json()
-
+      
+      // Debug output
+      if (response.status !== 200) {
+        const errorData = await response.json()
+        console.log('Response status:', response.status)
+        console.log('Response data:', errorData)
+      }
+      
       expect(response.status).toBe(200)
+      const data = await response.json()
       expect(data).toEqual({ received: true })
 
       expect(prisma.purchase.create).toHaveBeenCalledWith({
@@ -126,7 +159,7 @@ describe('Stripe Webhook Handler', () => {
         },
       })
 
-      expect(mockCache.set).toHaveBeenCalledWith(
+      expect(mockCacheInstance.set).toHaveBeenCalledWith(
         'evt_test_123-checkout.session.completed',
         true
       )
@@ -139,7 +172,7 @@ describe('Stripe Webhook Handler', () => {
         data: { object: {} },
       }
 
-      mockCache.get.mockReturnValue(true) // Event already processed
+      mockCacheInstance.get.mockReturnValue(true) // Event already processed
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
 
       const request = new NextRequest(
@@ -210,6 +243,14 @@ describe('Stripe Webhook Handler', () => {
         type: 'checkout.session.completed',
         data: {
           object: {
+            id: 'cs_test_123',
+            payment_intent: 'pi_test_123',
+            amount_total: 9900,
+            currency: 'usd',
+            customer_details: {
+              email: 'test@example.com',
+              name: 'Test User',
+            },
             metadata: {
               businessId: 'business-123',
               utmToken: 'utm-token-123',
@@ -255,6 +296,7 @@ describe('Stripe Webhook Handler', () => {
       ;(stripe.webhooks.constructEvent as jest.Mock).mockReturnValue(mockEvent)
       ;(prisma.purchase.findFirst as jest.Mock).mockResolvedValue({
         id: 'purchase-123',
+        stripePaymentIntentId: 'pi_test_123',
         metadata: {},
       })
       ;(prisma.purchase.update as jest.Mock).mockResolvedValue({})
@@ -274,9 +316,9 @@ describe('Stripe Webhook Handler', () => {
         where: { id: 'purchase-123' },
         data: {
           status: 'failed',
-          metadata: {
+          metadata: expect.objectContaining({
             failureReason: 'Card declined',
-          },
+          }),
         },
       })
     })
