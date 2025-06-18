@@ -64,7 +64,7 @@ export async function waitForImages(page: Page, timeout = 10000) {
       () => {
         const images = Array.from(document.querySelectorAll('img'))
         if (images.length === 0) return true // No images to wait for
-        
+
         return images.every((img) => {
           // Consider image loaded if it has completed loading OR has an error
           return img.complete || img.naturalHeight === 0
