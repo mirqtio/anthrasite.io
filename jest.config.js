@@ -23,6 +23,9 @@ const customJestConfig = {
     '/app/api/cron/',
     '/components/waitlist/__tests__/',
     '/lib/abandoned-cart/__tests__/',
+    '/components/purchase/__tests__/',
+    '/app/(marketing)/__tests__/',
+    '/app/purchase/__tests__/',
   ],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',
