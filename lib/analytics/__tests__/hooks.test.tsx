@@ -23,7 +23,6 @@ jest.mock('next/navigation', () => ({
 // Mock web-vitals
 jest.mock('web-vitals', () => ({
   onCLS: jest.fn(),
-  onFID: jest.fn(),
   onFCP: jest.fn(),
   onLCP: jest.fn(),
   onTTFB: jest.fn(),
@@ -140,7 +139,6 @@ describe('Analytics Hooks', () => {
     it('should track web vitals on mount', () => {
       const mockOnCLS = require('web-vitals').onCLS
       const mockOnLCP = require('web-vitals').onLCP
-      const mockOnFID = require('web-vitals').onFID
       const mockOnFCP = require('web-vitals').onFCP
       const mockOnTTFB = require('web-vitals').onTTFB
       const mockOnINP = require('web-vitals').onINP
@@ -149,7 +147,6 @@ describe('Analytics Hooks', () => {
 
       expect(mockOnCLS).toHaveBeenCalled()
       expect(mockOnLCP).toHaveBeenCalled()
-      expect(mockOnFID).toHaveBeenCalled()
       expect(mockOnFCP).toHaveBeenCalled()
       expect(mockOnTTFB).toHaveBeenCalled()
       expect(mockOnINP).toHaveBeenCalled()
@@ -194,7 +191,6 @@ describe('Analytics Hooks', () => {
       const metrics = [
         { fn: 'onCLS', name: 'CLS', value: 0.1 },
         { fn: 'onLCP', name: 'LCP', value: 2500 },
-        { fn: 'onFID', name: 'FID', value: 100 },
         { fn: 'onFCP', name: 'FCP', value: 1800 },
         { fn: 'onTTFB', name: 'TTFB', value: 800 },
         { fn: 'onINP', name: 'INP', value: 200 },
@@ -210,7 +206,7 @@ describe('Analytics Hooks', () => {
         })
       })
 
-      expect(trackEvent).toHaveBeenCalledTimes(6)
+      expect(trackEvent).toHaveBeenCalledTimes(5)
     })
   })
 })
