@@ -19,13 +19,15 @@ if (typeof global.Request === 'undefined') {
       }
       this.body = init?.body
     }
-    
+
     async json() {
       return typeof this.body === 'string' ? JSON.parse(this.body) : this.body
     }
-    
+
     async text() {
-      return typeof this.body === 'string' ? this.body : JSON.stringify(this.body)
+      return typeof this.body === 'string'
+        ? this.body
+        : JSON.stringify(this.body)
     }
   }
 }
@@ -42,13 +44,15 @@ if (typeof global.Response === 'undefined') {
         })
       }
     }
-    
+
     async json() {
       return typeof this.body === 'string' ? JSON.parse(this.body) : this.body
     }
-    
+
     async text() {
-      return typeof this.body === 'string' ? this.body : JSON.stringify(this.body)
+      return typeof this.body === 'string'
+        ? this.body
+        : JSON.stringify(this.body)
     }
   }
 }
