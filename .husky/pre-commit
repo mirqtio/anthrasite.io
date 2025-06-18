@@ -1,1 +1,12 @@
+#!/bin/bash
+
+# Check for secrets first
+echo "🔍 Checking for secrets..."
+./scripts/check-secrets.sh
+if [ $? -ne 0 ]; then
+  echo "❌ Secret check failed! Please remove any hardcoded secrets."
+  exit 1
+fi
+
+# Run lint-staged
 npx lint-staged
