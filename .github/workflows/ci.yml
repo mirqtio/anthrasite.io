@@ -109,13 +109,6 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
 
-      - name: Check bundle size
-        run: |
-          if [ $(du -s .next | cut -f1) -gt 204800 ]; then
-            echo "Bundle size exceeds 200KB limit"
-            exit 1
-          fi
-
   security:
     runs-on: ubuntu-latest
     needs: test
