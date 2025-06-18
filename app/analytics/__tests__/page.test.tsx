@@ -188,7 +188,11 @@ describe('AnalyticsPage', () => {
   it('should render metric values with proper formatting', () => {
     const { container } = render(<AnalyticsPage />)
 
-    const metricValues = container.querySelectorAll('.text-3xl.font-bold')
+    // Look for metric value elements specifically (exclude headers)
+    const metricValues = Array.from(container.querySelectorAll('p')).filter(
+      (el) =>
+        el.classList.contains('text-3xl') && el.classList.contains('font-bold')
+    )
     expect(metricValues).toHaveLength(4)
 
     metricValues.forEach((value) => {
