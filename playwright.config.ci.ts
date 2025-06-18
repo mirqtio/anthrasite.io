@@ -2,21 +2,21 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 60 * 1000, // Increase timeout for CI
+  timeout: 30 * 1000, // Faster individual test timeout
   expect: {
-    timeout: 10000, // Increase expect timeout
+    timeout: 5000, // Faster expect timeout
   },
-  fullyParallel: false, // Run tests sequentially in CI
+  fullyParallel: true, // Run tests in parallel for speed
   forbidOnly: true,
-  retries: 1,
-  workers: 1,
+  retries: 0, // No retries for speed (tests should be reliable)
+  workers: 2, // Use 2 workers for parallel execution
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    actionTimeout: 10000,
+    actionTimeout: 5000, // Faster action timeout
     baseURL: 'http://localhost:3333',
-    trace: 'retain-on-failure',
+    trace: 'off', // Disable trace for speed
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'off', // Disable video for speed
   },
 
   // Only run Chrome in CI for speed
