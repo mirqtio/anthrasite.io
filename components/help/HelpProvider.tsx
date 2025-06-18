@@ -131,7 +131,7 @@ export const HelpWidgetProvider: React.FC<HelpWidgetProviderProps> = ({
 
     // Check if another instance exists
     const existingInstance = (window as any).__helpWidgetInstance
-    if (existingInstance && existingInstance !== true) {
+    if (existingInstance) {
       console.warn(
         'Multiple HelpWidgetProvider instances detected. Only one instance should be used.'
       )

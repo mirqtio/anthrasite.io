@@ -31,32 +31,34 @@ export function handleStripeError(error: unknown): {
  * User-friendly error messages for common Stripe errors
  */
 export function getStripeErrorMessage(error: unknown): string {
-  const { code, type } = handleStripeError(error)
+  if (error instanceof Stripe.errors.StripeError) {
+    const { code, type } = error
 
-  // Card errors
-  if (type === 'card_error') {
-    switch (code) {
-      case 'card_declined':
-        return 'Your card was declined. Please try a different payment method.'
-      case 'insufficient_funds':
-        return 'Your card has insufficient funds. Please try a different payment method.'
-      case 'expired_card':
-        return 'Your card has expired. Please use a different card.'
-      case 'incorrect_cvc':
-        return "Your card's security code is incorrect. Please check and try again."
-      default:
-        return 'There was an issue with your card. Please try a different payment method.'
+    // Card errors
+    if (type === 'card_error') {
+      switch (code) {
+        case 'card_declined':
+          return 'Your card was declined. Please try a different payment method.'
+        case 'insufficient_funds':
+          return 'Your card has insufficient funds. Please try a different payment method.'
+        case 'expired_card':
+          return 'Your card has expired. Please use a different card.'
+        case 'incorrect_cvc':
+          return "Your card's security code is incorrect. Please check and try again."
+        default:
+          return 'There was an issue with your card. Please try a different payment method.'
+      }
     }
-  }
 
-  // API errors
-  if (type === 'api_error') {
-    return "We're experiencing technical difficulties. Please try again later."
-  }
+    // API errors
+    if (type === 'api_error') {
+      return "We're experiencing technical difficulties. Please try again later."
+    }
 
-  // Validation errors
-  if (type === 'validation_error') {
-    return 'Please check your payment information and try again.'
+    // Validation errors
+    if (type === 'validation_error') {
+      return 'Please check your payment information and try again.'
+    }
   }
 
   return 'An unexpected error occurred. Please try again or contact support.'

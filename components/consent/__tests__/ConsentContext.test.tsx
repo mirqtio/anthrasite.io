@@ -3,13 +3,26 @@ import { ConsentProvider, useConsent } from '@/lib/context/ConsentContext'
 import { ReactNode } from 'react'
 
 // Mock localStorage
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
-}
-global.localStorage = localStorageMock as any
+const localStorageMock = (() => {
+  let store: Record<string, string> = {}
+  return {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key]
+    }),
+    clear: jest.fn(() => {
+      store = {}
+    }),
+  }
+})()
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+})
 
 // Mock window.dispatchEvent
 const dispatchEventSpy = jest.spyOn(window, 'dispatchEvent')
@@ -24,7 +37,7 @@ describe('ConsentContext', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    localStorageMock.getItem.mockReturnValue(null)
+    localStorageMock.clear()
   })
 
   it('should show banner on first visit', async () => {
@@ -51,17 +64,17 @@ describe('ConsentContext', () => {
         timestamp: '2024-01-01T00:00:00.000Z',
       },
     })
-    localStorageMock.getItem.mockReturnValue(storedConsent)
+    localStorageMock.setItem('anthrasite_cookie_consent', storedConsent)
 
     const { result } = renderHook(() => useConsent(), { wrapper })
 
-    // Wait for localStorage to be read
+    // Wait for localStorage to be read and state to update
     await waitFor(() => {
       expect(result.current.hasConsented).toBe(true)
     })
 
     expect(result.current.showBanner).toBe(false)
-    expect(result.current.hasConsented).toBe(true)
+    expect(result.current.preferences?.analytics).toBe(true)
   })
 
   it('should show banner if consent version mismatch', async () => {
@@ -75,13 +88,13 @@ describe('ConsentContext', () => {
         timestamp: '2024-01-01T00:00:00.000Z',
       },
     })
-    localStorageMock.getItem.mockReturnValue(oldConsent)
+    localStorageMock.setItem('anthrasite_cookie_consent', oldConsent)
 
     const { result } = renderHook(() => useConsent(), { wrapper })
 
-    // Wait for localStorage to be read
+    // Wait for initial render
     await waitFor(() => {
-      expect(result.current.showBanner).toBeDefined()
+      expect(result.current).toBeDefined()
     })
 
     expect(result.current.showBanner).toBe(true) // Should show banner for version mismatch
@@ -178,9 +191,12 @@ describe('ConsentContext', () => {
 
     const { result } = renderHook(() => useConsent(), { wrapper })
 
-    // In test env, doesn't try to load from localStorage
-    expect(result.current.showBanner).toBe(false)
-    expect(consoleSpy).not.toHaveBeenCalled()
+    // Should show banner when localStorage fails
+    expect(result.current.showBanner).toBe(true)
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Error loading consent preferences:',
+      expect.any(Error)
+    )
 
     consoleSpy.mockRestore()
   })

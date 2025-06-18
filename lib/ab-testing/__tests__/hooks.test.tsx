@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import {
   useExperiment,
   useVariant,
@@ -55,7 +55,7 @@ const mockExperiments = new Map<string, Experiment>([
   ],
 ])
 
-// Test wrapper component
+// Test wrapper component that waits for variants to be assigned
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ABTestProvider
     userId="test-user-123"
@@ -78,16 +78,20 @@ describe('A/B Testing Hooks', () => {
   })
 
   describe('useExperiment', () => {
-    it('should return variant ID for active experiment', () => {
+    it('should return variant ID for active experiment', async () => {
       const { result } = renderHook(() => useExperiment('test-exp'), {
         wrapper,
       })
 
-      expect(result.current).toBeTruthy()
+      // Wait for variants to be assigned
+      await waitFor(() => {
+        expect(result.current).toBeTruthy()
+      })
+
       expect(['control', 'variant-a']).toContain(result.current)
     })
 
-    it('should return consistent variant for same user', () => {
+    it('should return consistent variant for same user', async () => {
       const { result: result1 } = renderHook(() => useExperiment('test-exp'), {
         wrapper,
       })
@@ -95,10 +99,16 @@ describe('A/B Testing Hooks', () => {
         wrapper,
       })
 
+      // Wait for both hooks to get their variants
+      await waitFor(() => {
+        expect(result1.current).toBeTruthy()
+        expect(result2.current).toBeTruthy()
+      })
+
       expect(result1.current).toBe(result2.current)
     })
 
-    it('should track exposure on mount when enabled', () => {
+    it('should track exposure on mount when enabled', async () => {
       const onExposure = jest.fn()
       const CustomWrapper = ({ children }: { children: React.ReactNode }) => (
         <ABTestProvider
@@ -110,17 +120,24 @@ describe('A/B Testing Hooks', () => {
         </ABTestProvider>
       )
 
-      renderHook(() => useExperiment('test-exp', true), {
+      const { result } = renderHook(() => useExperiment('test-exp', true), {
         wrapper: CustomWrapper,
       })
 
-      expect(onExposure).toHaveBeenCalledWith(
-        'test-exp',
-        expect.any(String),
-        expect.objectContaining({
-          userId: 'test-user-123',
-        })
-      )
+      // Wait for variant assignment and exposure tracking
+      await waitFor(() => {
+        expect(result.current).toBeTruthy()
+      })
+
+      await waitFor(() => {
+        expect(onExposure).toHaveBeenCalledWith(
+          'test-exp',
+          expect.any(String),
+          expect.objectContaining({
+            userId: 'test-user-123',
+          })
+        )
+      })
     })
 
     it('should not track exposure when disabled', () => {
@@ -144,7 +161,7 @@ describe('A/B Testing Hooks', () => {
   })
 
   describe('useVariant', () => {
-    it('should return true when user is in specified variant', () => {
+    it('should return true when user is in specified variant', async () => {
       // Force a specific variant for testing
       const userId = 'user-in-control' // This should hash to control
       const CustomWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -166,21 +183,34 @@ describe('A/B Testing Hooks', () => {
         { wrapper: CustomWrapper }
       )
 
+      // Wait for variant assignment
+      await waitFor(() => {
+        expect(result.current.variant).toBeTruthy()
+      })
+
       expect(result.current.isInVariant).toBe(true)
     })
 
-    it('should return false when user is not in specified variant', () => {
+    it('should return false when user is not in specified variant', async () => {
       const { result } = renderHook(
         () => {
           const variant = useExperiment('test-exp')
           const oppositeVariant =
             variant === 'control' ? 'variant-a' : 'control'
-          return useVariant('test-exp', oppositeVariant)
+          return {
+            variant,
+            isInOpposite: useVariant('test-exp', oppositeVariant),
+          }
         },
         { wrapper }
       )
 
-      expect(result.current).toBe(false)
+      // Wait for variant assignment
+      await waitFor(() => {
+        expect(result.current.variant).toBeTruthy()
+      })
+
+      expect(result.current.isInOpposite).toBe(false)
     })
   })
 
@@ -204,7 +234,7 @@ describe('A/B Testing Hooks', () => {
   })
 
   describe('useVariantConfig', () => {
-    it('should return config for assigned variant', () => {
+    it('should return config for assigned variant', async () => {
       // Force variant-a which has config
       const userId = 'user-for-variant-a'
       const CustomWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -228,6 +258,11 @@ describe('A/B Testing Hooks', () => {
         { wrapper: CustomWrapper }
       )
 
+      // Wait for variant assignment
+      await waitFor(() => {
+        expect(result.current.variant).toBeTruthy()
+      })
+
       if (result.current.variant === 'variant-a') {
         expect(result.current.config).toEqual({
           color: 'blue',
@@ -240,20 +275,29 @@ describe('A/B Testing Hooks', () => {
   })
 
   describe('useExperimentTracking', () => {
-    it('should provide tracking functions', () => {
+    it('should provide tracking functions', async () => {
       const { result } = renderHook(() => useExperimentTracking('test-exp'), {
         wrapper,
       })
 
-      expect(result.current.variantId).toBeTruthy()
+      // Wait for variant assignment
+      await waitFor(() => {
+        expect(result.current.variantId).toBeTruthy()
+      })
+
       expect(result.current.trackEvent).toBeInstanceOf(Function)
       expect(result.current.trackConversion).toBeInstanceOf(Function)
       expect(result.current.trackExposure).toBeInstanceOf(Function)
     })
 
-    it('should track custom events with experiment context', () => {
+    it('should track custom events with experiment context', async () => {
       const { result } = renderHook(() => useExperimentTracking('test-exp'), {
         wrapper,
+      })
+
+      // Wait for variant assignment
+      await waitFor(() => {
+        expect(result.current.variantId).toBeTruthy()
       })
 
       act(() => {
@@ -267,9 +311,14 @@ describe('A/B Testing Hooks', () => {
       })
     })
 
-    it('should track conversions', () => {
+    it('should track conversions', async () => {
       const { result } = renderHook(() => useExperimentTracking('test-exp'), {
         wrapper,
+      })
+
+      // Wait for variant assignment
+      await waitFor(() => {
+        expect(result.current.variantId).toBeTruthy()
       })
 
       act(() => {
@@ -289,7 +338,7 @@ describe('A/B Testing Hooks', () => {
   })
 
   describe('useMultiVariant', () => {
-    it('should render correct content based on variant', () => {
+    it('should render correct content based on variant', async () => {
       const variants = {
         a: () => 'Content A',
         b: () => 'Content B',
@@ -301,6 +350,15 @@ describe('A/B Testing Hooks', () => {
         { wrapper }
       )
 
+      // Initially returns default while variants are being assigned
+      expect(result.current).toBe('Default')
+
+      // Wait for variant assignment
+      await waitFor(() => {
+        expect(result.current).not.toBe('Default')
+      })
+
+      // Final result should be one of the variants
       expect(['Content A', 'Content B', 'Content C']).toContain(result.current)
     })
 
@@ -320,9 +378,14 @@ describe('A/B Testing Hooks', () => {
   })
 
   describe('useActiveExperiments', () => {
-    it('should return list of active experiments', () => {
+    it('should return list of active experiments', async () => {
       const { result } = renderHook(() => useActiveExperiments(), {
         wrapper,
+      })
+
+      // Wait for variants to be assigned
+      await waitFor(() => {
+        expect(result.current.length).toBeGreaterThan(0)
       })
 
       expect(result.current).toContain('test-exp')

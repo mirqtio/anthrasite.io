@@ -119,12 +119,14 @@ export const HelpWidget: React.FC = () => {
     return { page }
   }, [])
 
-  // Load context-specific FAQs
+  // Load context-specific FAQs when widget opens
   useEffect(() => {
-    const context = getCurrentContext()
-    const faqs = faqService.getFAQsForContext(context)
-    setContextFAQs(faqs)
-  }, [getCurrentContext])
+    if (isOpen) {
+      const context = getCurrentContext()
+      const faqs = faqService.getFAQsForContext(context)
+      setContextFAQs(faqs)
+    }
+  }, [isOpen, getCurrentContext])
 
   // Keyboard shortcuts
   useEffect(() => {

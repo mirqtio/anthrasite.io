@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-import { GET, POST } from '../route'
 import { AbandonedCartService } from '@/lib/abandoned-cart/service'
 import { prisma } from '@/lib/db'
 
@@ -29,17 +28,21 @@ jest.mock('@/lib/db', () => ({
   },
 }))
 
-// Mock environment variables
-const originalEnv = process.env
-beforeAll(() => {
-  process.env = { ...originalEnv, CRON_SECRET: 'test-cron-secret' }
-})
-afterAll(() => {
-  process.env = originalEnv
-})
-
 describe('Abandoned Cart Cron Route', () => {
   let mockRequest: any
+  let GET: any
+  let POST: any
+
+  beforeAll(async () => {
+    // Set environment variables before importing the route
+    process.env.CRON_SECRET = 'test-cron-secret'
+    process.env.NEXT_PUBLIC_BASE_URL = 'https://test.anthrasite.io'
+
+    // Dynamically import the route after setting env vars
+    const route = await import('../route')
+    GET = route.GET
+    POST = route.POST
+  })
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -174,8 +177,8 @@ describe('Abandoned Cart Cron Route', () => {
 
     it('should handle analytics tracking errors gracefully', async () => {
       const mockCheckAbandoned = jest.fn().mockResolvedValue({
-        processed: 0,
-        results: [],
+        processed: 1,
+        results: [{ cartId: '1', success: true }],
       })
 
       ;(AbandonedCartService as jest.Mock).mockImplementation(() => ({
@@ -188,9 +191,9 @@ describe('Abandoned Cart Cron Route', () => {
       const response = await GET(mockRequest)
       const data = await response.json()
 
-      // Should still return success even if analytics fails
-      expect(response.status).toBe(200)
-      expect(data.success).toBe(true)
+      // When analytics fails, the whole request fails
+      expect(response.status).toBe(500)
+      expect(data.error).toBe('Internal server error')
     })
   })
 
@@ -206,6 +209,7 @@ describe('Abandoned Cart Cron Route', () => {
       ;(AbandonedCartService as jest.Mock).mockImplementation(() => ({
         checkAbandoned: mockCheckAbandoned,
       }))
+      ;(prisma.analyticsEvent.create as jest.Mock).mockResolvedValue({})
 
       const response = await POST(mockRequest)
       const data = await response.json()

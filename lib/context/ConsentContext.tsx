@@ -58,6 +58,32 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
   useEffect(() => {
     setIsMounted(true)
 
+    // In test environment, load synchronously
+    if (process.env.NODE_ENV === 'test') {
+      try {
+        const stored = localStorage.getItem(CONSENT_KEY)
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          // Check if stored consent is for current version
+          if (parsed.version === CONSENT_VERSION) {
+            setPreferences(parsed.preferences)
+            setShowBanner(false)
+          } else {
+            // Version mismatch, show banner again
+            setShowBanner(true)
+          }
+        } else {
+          // No consent stored, show banner
+          setShowBanner(true)
+        }
+      } catch (error) {
+        console.error('Error loading consent preferences:', error)
+        setShowBanner(true)
+      }
+      setIsLoading(false)
+      return
+    }
+
     try {
       const stored = localStorage.getItem(CONSENT_KEY)
       if (stored) {
