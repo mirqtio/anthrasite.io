@@ -12,13 +12,33 @@ jest.mock('framer-motion', () => {
   return {
     motion: {
       button: React.forwardRef<HTMLButtonElement, any>(
-        ({ children, whileHover, whileTap, variants, initial, animate, exit, transition, ...props }, ref) => (
-          <button ref={ref} {...props}>{children}</button>
+        (
+          {
+            children,
+            whileHover,
+            whileTap,
+            variants,
+            initial,
+            animate,
+            exit,
+            transition,
+            ...props
+          },
+          ref
+        ) => (
+          <button ref={ref} {...props}>
+            {children}
+          </button>
         )
       ),
       div: React.forwardRef<HTMLDivElement, any>(
-        ({ children, variants, initial, animate, exit, transition, ...props }, ref) => (
-          <div ref={ref} {...props}>{children}</div>
+        (
+          { children, variants, initial, animate, exit, transition, ...props },
+          ref
+        ) => (
+          <div ref={ref} {...props}>
+            {children}
+          </div>
         )
       ),
     },
