@@ -135,12 +135,18 @@ export default defineConfig({
 
   // Web server configuration
   webServer: {
-    command: process.env.CI ? 'npm run build && npm run start' : 'npm run dev',
+    command: process.env.CI 
+      ? 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start' 
+      : 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run dev',
     port: process.env.CI ? 3333 : 3000,
     reuseExistingServer: !process.env.CI,
     // Wait for server to be ready
     timeout: 180 * 1000, // 3 minutes for build + start in CI
     stdout: 'pipe',
     stderr: 'pipe',
+    env: {
+      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
+      NODE_ENV: 'development'
+    }
   },
 })

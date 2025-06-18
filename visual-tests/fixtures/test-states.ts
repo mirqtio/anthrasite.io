@@ -17,24 +17,21 @@ export async function setupOrganicMode(page: Page) {
 }
 
 export async function setupPurchaseMode(page: Page) {
-  // Navigate with valid UTM parameters
-  const params = new URLSearchParams(mockUTMParams.valid)
-  await page.goto(`/?${params.toString()}`, { waitUntil: 'networkidle' })
+  // Use mock service UTM token for purchase mode
+  await page.goto('/?utm=dev-utm-valid', { waitUntil: 'networkidle' })
 
-  // Verify purchase mode is active
-  await page.waitForSelector('[data-testid="purchase-hero"]', { timeout: 5000 })
+  // Verify purchase mode is active by checking for business name in heading
+  await page.waitForSelector('h1:has-text("Acme Corporation, your audit is ready")', { timeout: 10000 })
 }
 
 export async function setupExpiredUTM(page: Page) {
-  // Set up expired UTM state
-  const params = new URLSearchParams(mockUTMParams.expired)
-  await page.goto(`/?${params.toString()}`, { waitUntil: 'networkidle' })
+  // Use invalid UTM token to trigger expired/invalid state
+  await page.goto('/?utm=invalid-token', { waitUntil: 'networkidle' })
 }
 
 export async function setupUsedUTM(page: Page) {
-  // Set up used UTM state
-  const params = new URLSearchParams(mockUTMParams.used)
-  await page.goto(`/?${params.toString()}`, { waitUntil: 'networkidle' })
+  // Use mock service used UTM token
+  await page.goto('/?utm=dev-utm-used', { waitUntil: 'networkidle' })
 }
 
 export async function setupConsentAccepted(page: Page) {
