@@ -119,6 +119,11 @@ function loadPostHog() {
 
 // Unload Google Analytics
 function unloadGoogleAnalytics() {
+  // Always set the disable flag when called
+  if (GA_MEASUREMENT_ID) {
+    ;(window as any)[`ga-disable-${GA_MEASUREMENT_ID}`] = true
+  }
+
   if (!gaLoaded) return
 
   // Disable GA tracking
@@ -126,7 +131,6 @@ function unloadGoogleAnalytics() {
     ;(window as any).gtag('config', GA_MEASUREMENT_ID, {
       send_page_view: false,
     })
-    ;(window as any)[`ga-disable-${GA_MEASUREMENT_ID}`] = true
   }
 
   // Clear GA cookies
