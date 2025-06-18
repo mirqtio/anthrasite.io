@@ -1,3 +1,9 @@
+#!/bin/bash
+set -e
+
+echo "🔧 Fixing consent loader tests..."
+
+cat > lib/analytics/__tests__/consent-loader.test.ts << 'EOF'
 import { initializeAnalytics } from '../consent-loader'
 import { ConsentPreferences } from '@/lib/context/ConsentContext'
 
@@ -9,7 +15,7 @@ process.env.NEXT_PUBLIC_POSTHOG_HOST = 'https://app.posthog.com'
 // Mock document methods
 const mockAppendChild = jest.fn()
 const mockCreateElement = jest.fn((tagName: string) => {
-  const element: Partial<HTMLScriptElement> = {
+  const element: any = {
     tagName,
     src: '',
     async: false,
@@ -54,17 +60,11 @@ describe('consent-loader', () => {
     jest.clearAllMocks()
     mockCookies = ''
     // Reset window objects
-    delete (
-      window as Window &
-        typeof globalThis & { gtag?: (...args: unknown[]) => void }
-    ).gtag
-    delete (window as Window & typeof globalThis & { dataLayer?: unknown[] })
-      .dataLayer
-    delete (window as Window & typeof globalThis & { posthog?: unknown })
-      .posthog
-    const gaDisableKey = `ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`
-    delete (window as Window & typeof globalThis & Record<string, unknown>)[
-      gaDisableKey
+    delete (window as any).gtag
+    delete (window as any).dataLayer
+    delete (window as any).posthog
+    delete (window as any)[
+      `ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`
     ]
   })
 
@@ -123,11 +123,8 @@ describe('consent-loader', () => {
     initializeAnalytics(consentRevoked)
 
     // GA should be disabled
-    const gaDisableKey = `ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`
     expect(
-      (window as Window & typeof globalThis & Record<string, unknown>)[
-        gaDisableKey
-      ]
+      (window as any)[`ga-disable-${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`]
     ).toBe(true)
   })
 
@@ -166,14 +163,13 @@ describe('consent-loader', () => {
 
     // Find GA script element that was created
     const scriptCall = mockCreateElement.mock.calls.find(
-      (call) => call[0] === 'script'
+      call => call[0] === 'script'
     )
     expect(scriptCall).toBeDefined()
 
     // Simulate script error
     const scriptElement = mockCreateElement.mock.results.find(
-      (result) =>
-        result.value && result.value.tagName === 'script' && result.value.src
+      result => result.value && result.value.tagName === 'script' && result.value.src
     )?.value
 
     if (scriptElement && scriptElement.onerror) {
@@ -184,3 +180,6 @@ describe('consent-loader', () => {
     consoleSpy.mockRestore()
   })
 })
+EOF
+
+echo "✅ Consent loader tests fixed!"
