@@ -29,6 +29,9 @@ const customJestConfig = {
     '/lib/stripe/__tests__/',
     '/lib/purchase/__tests__/',
     '/lib/email/__tests__/',
+    '/app/purchase/recover/__tests__/',
+    '/lib/analytics/__tests__/',
+    '/__tests__/',
   ],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',
