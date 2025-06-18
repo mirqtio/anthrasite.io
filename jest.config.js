@@ -14,12 +14,12 @@ const customJestConfig = {
   },
   testMatch: ['**/__tests__/**/*.(ts|tsx|js)', '**/*.(test|spec).(ts|tsx|js)'],
   testPathIgnorePatterns: [
-    '/node_modules/', 
-    '/e2e/', 
+    '/node_modules/',
+    '/e2e/',
     '/visual-tests/',
     '/components/help/__tests__/',
     '/app/api/sendgrid/webhook/__tests__/',
-    '/app/api/stripe/webhook/__tests__/'
+    '/app/api/stripe/webhook/__tests__/',
   ],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',
