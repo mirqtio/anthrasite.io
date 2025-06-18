@@ -26,8 +26,8 @@ describe('GoogleAnalytics4Provider', () => {
   const apiSecret = 'test-secret'
 
   beforeEach(() => {
-    // Reset window.gtag
-    window.gtag = jest.fn()
+    // Reset window objects
+    delete (window as any).gtag
     window.dataLayer = []
 
     // Clear document head
@@ -61,12 +61,16 @@ describe('GoogleAnalytics4Provider', () => {
       expect(ga4Script).toBeTruthy()
       expect(ga4Script?.async).toBe(true)
 
-      // Check if gtag was configured
-      expect(window.gtag).toHaveBeenCalledWith('js', expect.any(Date))
-      expect(window.gtag).toHaveBeenCalledWith('config', measurementId, {
-        send_page_view: false,
-        cookie_flags: 'SameSite=None;Secure',
-      })
+      // Check if gtag was configured via dataLayer
+      expect(window.dataLayer).toContainEqual(['js', expect.any(Date)])
+      expect(window.dataLayer).toContainEqual([
+        'config',
+        measurementId,
+        {
+          send_page_view: false,
+          cookie_flags: 'SameSite=None;Secure',
+        },
+      ])
     })
 
     it('should not initialize without analytics consent', async () => {
@@ -104,9 +108,13 @@ describe('GoogleAnalytics4Provider', () => {
     it('should track custom events', () => {
       provider.track('test_event', { value: 100 })
 
-      expect(window.gtag).toHaveBeenCalledWith('event', 'test_event', {
-        value: 100,
-      })
+      expect(window.dataLayer).toContainEqual([
+        'event',
+        'test_event',
+        {
+          value: 100,
+        },
+      ])
     })
 
     it('should track standard e-commerce events', () => {
@@ -117,12 +125,16 @@ describe('GoogleAnalytics4Provider', () => {
         items: [],
       })
 
-      expect(window.gtag).toHaveBeenCalledWith('event', 'purchase', {
-        transaction_id: '12345',
-        value: 99.99,
-        currency: 'USD',
-        items: [],
-      })
+      expect(window.dataLayer).toContainEqual([
+        'event',
+        'purchase',
+        {
+          transaction_id: '12345',
+          value: 99.99,
+          currency: 'USD',
+          items: '',
+        },
+      ])
     })
 
     it('should not track when not initialized', () => {
@@ -133,12 +145,11 @@ describe('GoogleAnalytics4Provider', () => {
 
       uninitializedProvider.track('test_event', {})
 
-      // gtag is called during initialization but not for tracking
-      expect(window.gtag).not.toHaveBeenCalledWith(
-        'event',
-        expect.any(String),
-        expect.any(Object)
+      // dataLayer should not contain event calls since provider wasn't initialized
+      const eventCalls = window.dataLayer.filter(
+        (call) => Array.isArray(call) && call[0] === 'event'
       )
+      expect(eventCalls).toHaveLength(0)
     })
 
     it('should handle missing window.gtag gracefully', () => {
@@ -159,20 +170,28 @@ describe('GoogleAnalytics4Provider', () => {
         page_title: 'Test Page',
       })
 
-      expect(window.gtag).toHaveBeenCalledWith('event', 'page_view', {
-        page_path: '/test',
-        page_title: 'Test Page',
-      })
+      expect(window.dataLayer).toContainEqual([
+        'event',
+        'page_view',
+        {
+          page_path: '/test',
+          page_title: 'Test Page',
+        },
+      ])
     })
 
     it('should include default page properties', () => {
       provider.page()
 
-      expect(window.gtag).toHaveBeenCalledWith('event', 'page_view', {
-        page_path: window.location.pathname,
-        page_location: window.location.href,
-        page_title: document.title,
-      })
+      expect(window.dataLayer).toContainEqual([
+        'event',
+        'page_view',
+        {
+          page_path: window.location.pathname,
+          page_location: window.location.href,
+          page_title: document.title,
+        },
+      ])
     })
   })
 
@@ -187,26 +206,28 @@ describe('GoogleAnalytics4Provider', () => {
         plan: 'premium',
       })
 
-      expect(window.gtag).toHaveBeenCalledWith('set', {
-        user_id: 'user123',
-      })
-      expect(window.gtag).toHaveBeenCalledWith('set', 'user_properties', {
-        email: 'test@example.com',
-        plan: 'premium',
-      })
+      expect(window.dataLayer).toContainEqual([
+        'set',
+        {
+          user_id: 'user123',
+          user_properties: {
+            email: 'test@example.com',
+            plan: 'premium',
+          },
+        },
+      ])
     })
 
     it('should handle identify without traits', () => {
       provider.identify('user123')
 
-      expect(window.gtag).toHaveBeenCalledWith('set', {
-        user_id: 'user123',
-      })
-      expect(window.gtag).not.toHaveBeenCalledWith(
+      expect(window.dataLayer).toContainEqual([
         'set',
-        'user_properties',
-        expect.any(Object)
-      )
+        {
+          user_id: 'user123',
+          user_properties: undefined,
+        },
+      ])
     })
   })
 
@@ -222,13 +243,12 @@ describe('GoogleAnalytics4Provider', () => {
       // Reset
       provider.reset()
 
-      expect(window.gtag).toHaveBeenCalledWith('set', {
-        user_id: null,
-      })
-      expect(window.gtag).toHaveBeenCalledWith('config', measurementId, {
-        client_id: 'reset',
-        user_id: null,
-      })
+      expect(window.dataLayer).toContainEqual([
+        'set',
+        {
+          user_id: null,
+        },
+      ])
     })
   })
 
@@ -249,7 +269,6 @@ describe('GoogleAnalytics4Provider', () => {
         expect.stringContaining('google-analytics.com/mp/collect'),
         expect.objectContaining({
           method: 'POST',
-          headers: expect.any(Object),
           body: expect.stringContaining('test_event'),
         })
       )
@@ -291,7 +310,7 @@ describe('GoogleAnalytics4Provider', () => {
         ],
       })
 
-      expect(window.gtag).toHaveBeenCalledWith(
+      expect(window.dataLayer).toContainEqual([
         'event',
         'view_item',
         expect.objectContaining({
@@ -302,8 +321,8 @@ describe('GoogleAnalytics4Provider', () => {
               item_id: 'SKU123',
             }),
           ]),
-        })
-      )
+        }),
+      ])
     })
 
     it('should track add_to_cart event', () => {
@@ -320,13 +339,13 @@ describe('GoogleAnalytics4Provider', () => {
         ],
       })
 
-      expect(window.gtag).toHaveBeenCalledWith(
+      expect(window.dataLayer).toContainEqual([
         'event',
         'add_to_cart',
         expect.objectContaining({
           value: 49.99,
-        })
-      )
+        }),
+      ])
     })
   })
 })

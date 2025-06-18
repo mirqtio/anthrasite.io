@@ -55,8 +55,7 @@ describe('SiteModeContext', () => {
   })
 
   afterAll(() => {
-    // Restore original location
-    window.location = originalLocation
+    locationSpy.mockRestore()
   })
 
   it('should provide organic mode by default', async () => {
