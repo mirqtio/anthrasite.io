@@ -37,10 +37,15 @@ jest.mock('@/lib/help/faq-service', () => ({
 const mockLocation = {
   pathname: '/',
 }
-Object.defineProperty(window, 'location', {
-  value: mockLocation,
-  writable: true,
-})
+try {
+  Object.defineProperty(window, 'location', {
+    value: mockLocation,
+    writable: true,
+    configurable: true,
+  })
+} catch (e) {
+  // Location already defined, skip
+}
 
 describe('HelpWidget', () => {
   const mockFAQs: FAQItem[] = [
