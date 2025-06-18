@@ -23,8 +23,8 @@ function getCrypto(): Crypto {
     return globalThis.crypto
   }
   // Fallback for Node.js environments
-  // @ts-expect-error - crypto module has webcrypto property
-  return require('crypto').webcrypto
+  const crypto = require('crypto')
+  return crypto.webcrypto as Crypto
 }
 
 /**
