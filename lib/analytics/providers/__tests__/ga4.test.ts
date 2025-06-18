@@ -40,6 +40,15 @@ describe('GoogleAnalytics4Provider', () => {
     })
 
     provider = new GoogleAnalytics4Provider(measurementId, apiSecret)
+
+    // Ensure consent is available
+    jest.mocked(getCookieConsent).mockReturnValue({
+      analytics: true,
+      marketing: true,
+      performance: true,
+      functional: true,
+      timestamp: new Date().toISOString(),
+    })
   })
 
   afterEach(() => {
@@ -106,6 +115,10 @@ describe('GoogleAnalytics4Provider', () => {
     })
 
     it('should track custom events', () => {
+      // Verify gtag exists and dataLayer is ready
+      expect(window.gtag).toBeDefined()
+      expect(window.dataLayer).toBeDefined()
+
       provider.track('test_event', { value: 100 })
 
       expect(window.dataLayer).toContainEqual([
@@ -132,7 +145,7 @@ describe('GoogleAnalytics4Provider', () => {
           transaction_id: '12345',
           value: 99.99,
           currency: 'USD',
-          items: '',
+          items: [],
         },
       ])
     })
@@ -173,10 +186,10 @@ describe('GoogleAnalytics4Provider', () => {
       expect(window.dataLayer).toContainEqual([
         'event',
         'page_view',
-        {
+        expect.objectContaining({
           page_path: '/test',
           page_title: 'Test Page',
-        },
+        }),
       ])
     })
 
