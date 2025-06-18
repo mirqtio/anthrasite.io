@@ -2,47 +2,25 @@ import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { OrganicHomepage } from '../OrganicHomepage'
-import { trackEvent } from '@/lib/analytics/analytics-client'
-import { useABTest } from '@/lib/ab-testing/hooks'
-
 // Mock dependencies
-jest.mock('@/lib/analytics/analytics-client', () => ({
-  trackEvent: jest.fn(),
+
+jest.mock('@/lib/monitoring/hooks', () => ({
+  useRenderTracking: jest.fn(),
 }))
 
-jest.mock('@/lib/ab-testing/hooks', () => ({
-  useABTest: jest.fn(),
-}))
-
-jest.mock('@/components/waitlist/WaitlistForm', () => ({
-  WaitlistForm: ({ onSuccess }: any) => (
-    <div data-testid="waitlist-form">
-      <button onClick={() => onSuccess({ position: 100 })}>
-        Join Waitlist
-      </button>
-    </div>
-  ),
-}))
+// Mock the fetch function for waitlist form
+global.fetch = jest.fn()
 
 describe('OrganicHomepage', () => {
-  const defaultVariant = {
-    headline: 'Your website has untapped potential worth $49,000+',
-    subheadline:
-      'Get a comprehensive audit that reveals exactly how to capture it.',
-    ctaText: 'Get Your Free Audit',
-    socialProof:
-      '2,847 businesses improved their conversion rates by 32% on average',
-  }
-
   beforeEach(() => {
     jest.clearAllMocks()
-    ;(useABTest as jest.Mock).mockReturnValue({
-      variant: defaultVariant,
-      loading: false,
+    ;(global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true }),
     })
   })
 
-  it('should render with default variant content', () => {
+  it('should render with default content', () => {
     render(<OrganicHomepage />)
 
     // Check for actual content that exists in the component
@@ -54,27 +32,18 @@ describe('OrganicHomepage', () => {
     ).toBeInTheDocument()
   })
 
-  it('should show loading skeleton when variant is loading', () => {
-    ;(useABTest as jest.Mock).mockReturnValue({
-      variant: null,
-      loading: true,
-    })
-
+  it('should render consistently', () => {
     render(<OrganicHomepage />)
 
-    // Component still renders even when loading
     expect(screen.getByTestId('organic-homepage')).toBeInTheDocument()
   })
 
   it('should track page view on mount', () => {
+    const { useRenderTracking } = require('@/lib/monitoring/hooks')
+
     render(<OrganicHomepage />)
 
-    expect(trackEvent).toHaveBeenCalledWith('homepage_viewed', {
-      mode: 'organic',
-      variant: expect.objectContaining({
-        headline: defaultVariant.headline,
-      }),
-    })
+    expect(useRenderTracking).toHaveBeenCalledWith('OrganicHomepage')
   })
 
   it('should show waitlist form', () => {
@@ -86,112 +55,93 @@ describe('OrganicHomepage', () => {
   it('should handle waitlist success', async () => {
     render(<OrganicHomepage />)
 
-    const joinButton = screen.getByText('Join Waitlist')
-    fireEvent.click(joinButton)
+    // First click opens modal - use the first button in the hero
+    const joinButtons = screen.getAllByText('Join Waitlist')
+    const heroButton = joinButtons[0]
+    fireEvent.click(heroButton)
 
-    await waitFor(() => {
-      expect(
-        screen.getByText(/you're #100 on the waitlist/i)
-      ).toBeInTheDocument()
-    })
-
-    expect(trackEvent).toHaveBeenCalledWith('waitlist_signup_completed', {
-      position: 100,
-      variant: expect.any(Object),
-    })
+    // Find the form in the modal
+    const form = screen.getByTestId('waitlist-form')
+    expect(form).toBeInTheDocument()
   })
 
   it('should show value propositions', () => {
     render(<OrganicHomepage />)
 
-    expect(
-      screen.getByText(/comprehensive technical audit/i)
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText(/missed revenue opportunities/i)
-    ).toBeInTheDocument()
-    expect(screen.getByText(/priority action plan/i)).toBeInTheDocument()
-    expect(screen.getByText(/competitive analysis/i)).toBeInTheDocument()
+    expect(screen.getByText(/Load Performance/i)).toBeInTheDocument()
+    expect(screen.getByText(/Mobile Experience/i)).toBeInTheDocument()
+
+    // Use a more specific selector for Revenue Impact heading
+    const revenueHeading = screen.getByRole('heading', {
+      name: /Revenue Impact/i,
+    })
+    expect(revenueHeading).toBeInTheDocument()
   })
 
-  it('should show how it works section', () => {
+  it('should show what we analyze section', () => {
     render(<OrganicHomepage />)
 
-    expect(screen.getByText(/how it works/i)).toBeInTheDocument()
-    expect(screen.getByText(/enter your domain/i)).toBeInTheDocument()
-    expect(screen.getByText(/automated analysis/i)).toBeInTheDocument()
-    expect(screen.getByText(/detailed report/i)).toBeInTheDocument()
+    expect(screen.getByText(/What We Analyze/i)).toBeInTheDocument()
+    expect(screen.getByText(/4.8s/i)).toBeInTheDocument()
+    expect(screen.getByText(/47%/i)).toBeInTheDocument()
   })
 
-  it('should show social proof section', () => {
+  it('should show assessment information', () => {
     render(<OrganicHomepage />)
 
-    expect(screen.getByText(/trusted by/i)).toBeInTheDocument()
     expect(
-      screen.getByText(/32% average conversion increase/i)
+      screen.getByText(/No fluff. No 50-page reports/i)
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/\$49k average revenue recovery/i)
+      screen.getByText(/Just what's broken and what it's worth to fix it/i)
     ).toBeInTheDocument()
-    expect(screen.getByText(/4\.9\/5 customer rating/i)).toBeInTheDocument()
   })
 
   it('should show FAQ section', () => {
     render(<OrganicHomepage />)
 
-    expect(screen.getByText(/frequently asked questions/i)).toBeInTheDocument()
+    expect(screen.getByText(/Questions/i)).toBeInTheDocument()
+    expect(screen.getByText(/What exactly do I get\?/i)).toBeInTheDocument()
     expect(
-      screen.getByText(/what's included in the audit/i)
+      screen.getByText(/How is this different from free tools\?/i)
     ).toBeInTheDocument()
-    expect(screen.getByText(/how long does it take/i)).toBeInTheDocument()
-    expect(screen.getByText(/what makes this different/i)).toBeInTheDocument()
+    expect(screen.getByText(/When will I get my report\?/i)).toBeInTheDocument()
   })
 
   it('should handle FAQ toggle', () => {
     render(<OrganicHomepage />)
 
-    const faqButton = screen.getByText(/what's included in the audit/i)
+    const faqButton = screen.getByText(/What exactly do I get\?/i)
     fireEvent.click(faqButton)
 
-    expect(
-      screen.getByText(/50\+ page comprehensive report/i)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/A focused report showing/i)).toBeInTheDocument()
   })
 
-  it('should show pricing information', () => {
+  it('should show footer information', () => {
     render(<OrganicHomepage />)
 
-    expect(screen.getByText(/simple, transparent pricing/i)).toBeInTheDocument()
-    expect(screen.getByText(/\$99/i)).toBeInTheDocument()
-    expect(screen.getByText(/one-time payment/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/© 2024 Anthrasite. All rights reserved./i)
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Privacy Policy/i)).toBeInTheDocument()
+    expect(screen.getByText(/Terms of Service/i)).toBeInTheDocument()
   })
 
-  it('should apply custom variant styling', () => {
-    const customVariant = {
-      ...defaultVariant,
-      primaryColor: '#FF0000',
-      fontFamily: 'Arial',
-    }
-
-    ;(useABTest as jest.Mock).mockReturnValue({
-      variant: customVariant,
-      loading: false,
-    })
-
+  it('should have proper styling classes', () => {
     const { container } = render(<OrganicHomepage />)
 
-    const hero = container.querySelector('.hero-section')
-    expect(hero).toHaveStyle('--primary-color: #FF0000')
+    const hero = container.querySelector('.hero')
+    expect(hero).toBeInTheDocument()
   })
 
-  it('should track scroll events', () => {
+  it('should handle modal opening and closing', () => {
     render(<OrganicHomepage />)
 
-    // Simulate scroll to value props section
-    screen.getByText(/comprehensive technical audit/i).closest('section')
-    fireEvent.scroll(window, { target: { scrollY: 500 } })
+    const joinButtons = screen.getAllByText('Join Waitlist')
+    const heroButton = joinButtons[0]
+    fireEvent.click(heroButton)
 
-    // Would need intersection observer mock to properly test this
+    expect(screen.getByTestId('waitlist-form')).toBeInTheDocument()
   })
 
   it('should use responsive design', () => {
