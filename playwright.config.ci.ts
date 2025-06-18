@@ -28,11 +28,15 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm run build && npm run start',
+    command: 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start',
     port: 3333,
     reuseExistingServer: false,
-    timeout: 120 * 1000, // 2 minutes for build + start
+    timeout: 180 * 1000, // 3 minutes for build + start in CI
     stdout: 'pipe',
     stderr: 'pipe',
+    env: {
+      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
+      NODE_ENV: 'development'
+    }
   },
 })
