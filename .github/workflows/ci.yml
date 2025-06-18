@@ -70,25 +70,23 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
 
-      # E2E tests temporarily disabled - they need more investigation
-      # TODO: Fix E2E test configuration for CI environment
-      # - name: Install Playwright browsers
-      #   run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
 
-      # - name: Run E2E tests
-      #   run: npm run test:e2e:ci
-      #   env:
-      #     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-      #     NODE_ENV: test
-      #   timeout-minutes: 15
+      - name: Run E2E tests
+        run: npm run test:e2e:ci
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          NODE_ENV: test
+        timeout-minutes: 15
 
-      # - name: Upload Playwright report
-      #   uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: playwright-report-${{ matrix.node-version }}
-      #     path: playwright-report/
-      #     retention-days: 7
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.node-version }}
+          path: playwright-report/
+          retention-days: 7
 
   build:
     runs-on: ubuntu-latest
