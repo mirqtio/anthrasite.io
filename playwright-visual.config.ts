@@ -146,10 +146,13 @@ export default defineConfig({
     stderr: 'pipe',
     env: {
       NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
-      NODE_ENV: process.env.CI ? 'production' : 'development',
+      NODE_ENV: process.env.CI ? 'test' : 'development',
       CI: process.env.CI || 'false',
       SKIP_ENV_VALIDATION: 'true',
       SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1',
+      ...(process.env.CI && {
+        DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
+      }),
     },
   },
 })
