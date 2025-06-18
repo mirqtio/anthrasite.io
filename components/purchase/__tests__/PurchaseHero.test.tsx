@@ -9,46 +9,49 @@ jest.mock('framer-motion', () => ({
   },
 }))
 
+// Mock Logo component
+jest.mock('@/components/Logo', () => ({
+  Logo: () => <div>Logo</div>,
+}))
+
 describe('PurchaseHero', () => {
   const defaultProps = {
     businessName: 'Test Company',
     domain: 'testcompany.com',
   }
 
-  it('renders business name and domain', () => {
-    render(<PurchaseHero {...defaultProps} />)
-
-    expect(screen.getByText('Test Company')).toBeInTheDocument()
-    expect(screen.getByText('testcompany.com')).toBeInTheDocument()
-  })
-
   it('renders heading with business name', () => {
     render(<PurchaseHero {...defaultProps} />)
 
     const heading = screen.getByRole('heading', { level: 1 })
     expect(heading).toHaveTextContent(
-      'Your Website Audit Report for Test Company'
+      'Test Company, your audit is ready'
     )
   })
 
-  it('renders back link', () => {
+  it('renders subheading', () => {
     render(<PurchaseHero {...defaultProps} />)
 
-    const backLink = screen.getByRole('link', { name: /back to anthrasite/i })
-    expect(backLink).toHaveAttribute('href', '/')
+    expect(screen.getByText("We've identified opportunities worth thousands")).toBeInTheDocument()
   })
 
-  it('applies correct styling classes', () => {
+  it('renders tagline', () => {
+    render(<PurchaseHero {...defaultProps} />)
+
+    expect(screen.getByText('VALUE, CRYSTALLIZED')).toBeInTheDocument()
+  })
+
+  it('applies correct test id', () => {
     const { container } = render(<PurchaseHero {...defaultProps} />)
 
-    const section = container.querySelector('section')
-    expect(section).toHaveClass('bg-anthracite-black', 'text-white')
+    const header = screen.getByTestId('purchase-header')
+    expect(header).toBeInTheDocument()
   })
 
   it('renders personalized content', () => {
     render(<PurchaseHero businessName="Acme Corp" domain="acme.com" />)
 
-    expect(screen.getByText('Acme Corp')).toBeInTheDocument()
-    expect(screen.getByText('acme.com')).toBeInTheDocument()
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading).toHaveTextContent('Acme Corp, your audit is ready')
   })
 })

@@ -21,6 +21,8 @@ jest.mock('@/lib/monitoring', () => ({
 describe('Domain Validation', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    // Reset the fetch mock completely
+    ;(global.fetch as jest.Mock).mockReset()
     // Clear cache between tests
     clearExpiredCache()
   })
@@ -156,13 +158,22 @@ describe('Domain Validation', () => {
 
     it('should handle failed DNS lookup', async () => {
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          Status: 0,
-          Answer: [],
-        }),
-      } as Response)
+      // Mock both Cloudflare and Google DNS responses with empty answers
+      mockFetch
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            Status: 0,
+            Answer: [],
+          }),
+        } as Response)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            Status: 0,
+            Answer: [],
+          }),
+        } as Response)
 
       const result = await validateDomain('nonexistent.com')
       expect(result.isValid).toBe(false)
@@ -171,13 +182,22 @@ describe('Domain Validation', () => {
 
     it('should provide suggestion for typos with failed DNS', async () => {
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          Status: 0,
-          Answer: [],
-        }),
-      } as Response)
+      // Mock both Cloudflare and Google DNS responses
+      mockFetch
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            Status: 0,
+            Answer: [],
+          }),
+        } as Response)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            Status: 0,
+            Answer: [],
+          }),
+        } as Response)
 
       const result = await validateDomain('gmial.com')
       expect(result.isValid).toBe(false)
@@ -186,7 +206,7 @@ describe('Domain Validation', () => {
 
     it('should cache DNS results', async () => {
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           Status: 0,
@@ -197,12 +217,15 @@ describe('Domain Validation', () => {
       // First call - should hit DNS
       const result1 = await validateDomain('cached.com')
       expect(result1.isValid).toBe(true)
-      expect(mockFetch).toHaveBeenCalledTimes(1)
+      
+      const firstCallCount = mockFetch.mock.calls.length
 
       // Second call - should use cache
       const result2 = await validateDomain('cached.com')
       expect(result2.isValid).toBe(true)
-      expect(mockFetch).toHaveBeenCalledTimes(1) // Still only 1 call
+      
+      // Should not make additional DNS calls
+      expect(mockFetch.mock.calls.length).toBe(firstCallCount)
     })
 
     it('should fallback to Google DNS if Cloudflare fails', async () => {
@@ -231,7 +254,10 @@ describe('Domain Validation', () => {
 
     it('should handle complete DNS failure gracefully', async () => {
       const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>
-      mockFetch.mockRejectedValue(new Error('Network error'))
+      // Both Cloudflare and Google fail
+      mockFetch
+        .mockRejectedValueOnce(new Error('Network error'))
+        .mockRejectedValueOnce(new Error('Network error'))
 
       const result = await validateDomain('error.com')
       expect(result.isValid).toBe(false)

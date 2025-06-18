@@ -27,15 +27,20 @@ describe('ConsentContext', () => {
     localStorageMock.getItem.mockReturnValue(null)
   })
 
-  it('should show banner on first visit', () => {
+  it('should show banner on first visit', async () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
 
-    expect(result.current.showBanner).toBe(false) // In test env, banner starts false
+    // Wait for the component to mount
+    await waitFor(() => {
+      expect(result.current.showBanner).toBeDefined()
+    })
+
+    expect(result.current.showBanner).toBe(true) // Banner should show on first visit
     expect(result.current.hasConsented).toBe(false)
     expect(result.current.preferences).toBe(null)
   })
 
-  it('should not show banner if consent already given', () => {
+  it('should not show banner if consent already given', async () => {
     const storedConsent = JSON.stringify({
       version: '1.0',
       preferences: {
@@ -50,11 +55,16 @@ describe('ConsentContext', () => {
 
     const { result } = renderHook(() => useConsent(), { wrapper })
 
+    // Wait for localStorage to be read
+    await waitFor(() => {
+      expect(result.current.hasConsented).toBe(true)
+    })
+
     expect(result.current.showBanner).toBe(false)
-    expect(result.current.hasConsented).toBe(false) // In test env, doesn't load from localStorage
+    expect(result.current.hasConsented).toBe(true)
   })
 
-  it('should show banner if consent version mismatch', () => {
+  it('should show banner if consent version mismatch', async () => {
     const oldConsent = JSON.stringify({
       version: '0.9',
       preferences: {
@@ -69,12 +79,22 @@ describe('ConsentContext', () => {
 
     const { result } = renderHook(() => useConsent(), { wrapper })
 
-    expect(result.current.showBanner).toBe(false) // In test env
+    // Wait for localStorage to be read
+    await waitFor(() => {
+      expect(result.current.showBanner).toBeDefined()
+    })
+
+    expect(result.current.showBanner).toBe(true) // Should show banner for version mismatch
     expect(result.current.hasConsented).toBe(false)
   })
 
-  it('should accept all cookies', () => {
+  it('should accept all cookies', async () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
+
+    // Wait for initial load
+    await waitFor(() => {
+      expect(result.current).toBeDefined()
+    })
 
     act(() => {
       result.current.acceptAll()
@@ -98,8 +118,13 @@ describe('ConsentContext', () => {
     )
   })
 
-  it('should reject all cookies', () => {
+  it('should reject all cookies', async () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
+
+    // Wait for initial load
+    await waitFor(() => {
+      expect(result.current).toBeDefined()
+    })
 
     act(() => {
       result.current.rejectAll()
@@ -107,7 +132,7 @@ describe('ConsentContext', () => {
 
     expect(result.current.showBanner).toBe(false)
     expect(result.current.preferences?.analytics).toBe(false)
-    expect(result.current.preferences?.functional).toBe(false)
+    expect(result.current.preferences?.functional).toBe(true) // Functional is always true
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       'anthrasite_cookie_consent',
       expect.stringContaining('"analytics":false')
@@ -118,11 +143,12 @@ describe('ConsentContext', () => {
     const { result } = renderHook(() => useConsent(), { wrapper })
 
     act(() => {
-      result.current.updateConsent({ analytics: true, functional: false })
+      result.current.updateConsent({ analytics: true, marketing: false })
     })
 
     expect(result.current.preferences?.analytics).toBe(true)
-    expect(result.current.preferences?.functional).toBe(false)
+    expect(result.current.preferences?.marketing).toBe(false)
+    expect(result.current.preferences?.functional).toBe(true) // Functional is always true
   })
 
   it('should open and close preferences modal', () => {

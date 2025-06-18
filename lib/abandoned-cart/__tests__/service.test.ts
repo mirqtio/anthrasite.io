@@ -1,6 +1,6 @@
 import { AbandonedCartService } from '../service'
 import { prisma } from '@/lib/db'
-import { sendEmail } from '@/lib/email'
+import { sendCartRecoveryEmail } from '@/lib/email/email-service'
 import * as tracker from '../tracker'
 import type { Stripe } from 'stripe'
 
@@ -20,8 +20,8 @@ jest.mock('@/lib/db', () => ({
   },
 }))
 
-jest.mock('@/lib/email', () => ({
-  sendEmail: jest.fn(),
+jest.mock('@/lib/email/email-service', () => ({
+  sendCartRecoveryEmail: jest.fn(),
 }))
 
 jest.mock('../tracker', () => ({
@@ -91,7 +91,7 @@ describe('AbandonedCartService', () => {
       ]
 
       ;(prisma.abandonedCart.findMany as jest.Mock).mockResolvedValue(mockCarts)
-      ;(sendEmail as jest.Mock).mockResolvedValue({ success: true })
+      ;(sendCartRecoveryEmail as jest.Mock).mockResolvedValue({ success: true })
       ;(prisma.abandonedCart.update as jest.Mock).mockResolvedValue({})
 
       const result = await service.checkAbandoned()
@@ -106,11 +106,14 @@ describe('AbandonedCartService', () => {
       })
 
       // Should only send email to cart with email address
-      expect(sendEmail).toHaveBeenCalledTimes(1)
-      expect(sendEmail).toHaveBeenCalledWith({
+      expect(sendCartRecoveryEmail).toHaveBeenCalledTimes(1)
+      expect(sendCartRecoveryEmail).toHaveBeenCalledWith({
         to: 'test1@example.com',
-        subject: 'Complete your Anthrasite report purchase for Business 1',
-        html: expect.any(String),
+        businessName: 'Business 1',
+        amount: '99.00',
+        currency: 'USD',
+        recoveryUrl: expect.stringContaining('/purchase/recover?token=token-1'),
+        expiresAt: expect.any(Date),
       })
     })
 
@@ -129,7 +132,7 @@ describe('AbandonedCartService', () => {
       ;(prisma.abandonedCart.findMany as jest.Mock).mockResolvedValue([
         mockCart,
       ])
-      ;(sendEmail as jest.Mock).mockRejectedValue(
+      ;(sendCartRecoveryEmail as jest.Mock).mockRejectedValue(
         new Error('Email service error')
       )
 
@@ -158,16 +161,19 @@ describe('AbandonedCartService', () => {
         createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
       }
 
-      ;(sendEmail as jest.Mock).mockResolvedValue({ success: true })
+      ;(sendCartRecoveryEmail as jest.Mock).mockResolvedValue({ success: true })
       ;(prisma.abandonedCart.update as jest.Mock).mockResolvedValue({})
       ;(prisma.analyticsEvent.create as jest.Mock).mockResolvedValue({})
 
       await service.sendRecoveryEmail(mockCart)
 
-      expect(sendEmail).toHaveBeenCalledWith({
+      expect(sendCartRecoveryEmail).toHaveBeenCalledWith({
         to: 'test@example.com',
-        subject: 'Complete your Anthrasite report purchase for Test Business',
-        html: expect.stringContaining('Complete Your Purchase'),
+        businessName: 'Test Business',
+        amount: '99.00',
+        currency: 'USD',
+        recoveryUrl: expect.stringContaining('/purchase/recover?token=recovery-123'),
+        expiresAt: expect.any(Date),
       })
 
       expect(prisma.abandonedCart.update).toHaveBeenCalledWith({

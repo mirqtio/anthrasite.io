@@ -6,6 +6,43 @@ import { validateUTMToken } from '@/lib/utm/crypto'
 import { getUTMToken, markTokenUsed } from '@/lib/utm/storage'
 import { prisma } from '@/lib/db'
 import { trackEvent, sendAlert } from '@/lib/monitoring'
+import { NextRequest } from 'next/server'
+
+// Add a proper NextRequest mock for node environment
+jest.mock('next/server', () => ({
+  NextRequest: class NextRequest {
+    url: string
+    method: string
+    headers: Map<string, string>
+    nextUrl: URL
+
+    constructor(input: string | URL, init?: any) {
+      const url = typeof input === 'string' ? new URL(input) : input
+      this.url = url.toString()
+      this.nextUrl = url
+      this.method = init?.method || 'GET'
+      this.headers = new Map()
+      
+      if (init?.headers) {
+        Object.entries(init.headers).forEach(([key, value]) => {
+          this.headers.set(key, value as string)
+        })
+      }
+    }
+  },
+  NextResponse: {
+    json: (data: any, init?: ResponseInit) => {
+      const response = new Response(JSON.stringify(data), {
+        ...init,
+        headers: {
+          ...init?.headers,
+          'content-type': 'application/json',
+        },
+      })
+      return response
+    },
+  },
+}))
 
 // Mock dependencies
 jest.mock('@/lib/utm/crypto')
@@ -17,7 +54,19 @@ jest.mock('@/lib/db', () => ({
     },
   },
 }))
-jest.mock('@/lib/monitoring')
+jest.mock('@/lib/monitoring', () => ({
+  trackEvent: jest.fn(),
+  sendAlert: jest.fn(),
+  AlertType: {
+    UTM_VALIDATION_FAILED: 'UTM_VALIDATION_FAILED',
+  },
+}))
+jest.mock('@/lib/utm/rate-limit', () => ({
+  withRateLimit: (handler: any) => handler,
+}))
+jest.mock('@/lib/monitoring/api-middleware', () => ({
+  withMonitoring: (handler: any) => handler,
+}))
 
 describe('UTM Validation API', () => {
   beforeEach(() => {
@@ -29,12 +78,12 @@ describe('UTM Validation API', () => {
       ? `http://localhost/api/validate-utm?utm=${utm}`
       : 'http://localhost/api/validate-utm'
 
-    return {
-      nextUrl: new URL(url),
-      url,
+    return new NextRequest(url, {
       method: 'GET',
-      headers: new Map([['x-forwarded-for', '127.0.0.1']]),
-    } as any
+      headers: {
+        'x-forwarded-for': '127.0.0.1',
+      },
+    })
   }
 
   describe('Valid UTM flow', () => {
@@ -66,6 +115,10 @@ describe('UTM Validation API', () => {
 
       const response = await GET(createMockRequest(mockUTM))
       const data = await response.json()
+
+      if (response.status !== 200) {
+        console.log('Response error:', data)
+      }
 
       expect(response.status).toBe(200)
       expect(data).toEqual({
