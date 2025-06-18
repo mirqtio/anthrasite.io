@@ -186,7 +186,7 @@ export class FAQService {
     if (userState.hasPurchased) {
       // User has already purchased
       additionalFAQs.push(
-        ...REPORT_FAQS.filter(
+        ...PURCHASE_FAQS.filter(
           (f) => f.id === 'report-updates' || f.id === 'team-sharing'
         )
       )
