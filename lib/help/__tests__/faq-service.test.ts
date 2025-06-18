@@ -303,12 +303,12 @@ describe('FAQService', () => {
       expect(results).toBeDefined()
     })
 
-    it('should index all FAQs', () => {
+    it('should index all FAQs', async () => {
       // Verify all FAQs are searchable
-      ALL_FAQS.forEach((faq) => {
-        const results = service.searchFAQs(faq.id)
+      for (const faq of ALL_FAQS) {
+        const results = await service.searchFAQs(faq.id)
         expect(results.some((r) => r.item.id === faq.id)).toBe(true)
-      })
+      }
     })
   })
 })

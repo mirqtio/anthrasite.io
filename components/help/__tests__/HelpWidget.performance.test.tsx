@@ -5,15 +5,24 @@ import { HelpWidgetProvider } from '../HelpProvider'
 import { faqService, useFAQSearch } from '@/lib/help/faq-service'
 
 // Mock framer-motion
-jest.mock('framer-motion', () => ({
-  motion: {
-    button: ({ children, ...props }: any) => (
-      <button {...props}>{children}</button>
-    ),
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  },
-  AnimatePresence: ({ children }: any) => <>{children}</>,
-}))
+jest.mock('framer-motion', () => {
+  const React = require('react')
+  return {
+    motion: {
+      button: React.forwardRef<HTMLButtonElement, any>(
+        ({ children, whileHover, whileTap, variants, initial, animate, exit, transition, ...props }, ref) => (
+          <button ref={ref} {...props}>{children}</button>
+        )
+      ),
+      div: React.forwardRef<HTMLDivElement, any>(
+        ({ children, variants, initial, animate, exit, transition, ...props }, ref) => (
+          <div ref={ref} {...props}>{children}</div>
+        )
+      ),
+    },
+    AnimatePresence: ({ children }: any) => <>{children}</>,
+  }
+})
 
 // Mock FAQ service
 jest.mock('@/lib/help/faq-service', () => ({
