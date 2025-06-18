@@ -9,14 +9,14 @@ describe('Abandoned Cart Cron Route - Simple Tests', () => {
   async function testHandler(request: NextRequest) {
     const authHeader = request.headers.get('authorization')
     const CRON_SECRET = 'test-cron-secret'
-    
+
     if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     try {
       const result = await mockCheckAbandoned()
-      
+
       await mockAnalyticsCreate({
         eventName: 'abandoned_cart_cron_executed',
         properties: {
@@ -25,7 +25,7 @@ describe('Abandoned Cart Cron Route - Simple Tests', () => {
           failed: result.results.filter((r: any) => !r.success).length,
         },
       })
-      
+
       return NextResponse.json({
         success: true,
         processed: result.processed,
@@ -38,7 +38,7 @@ describe('Abandoned Cart Cron Route - Simple Tests', () => {
           error: error instanceof Error ? error.message : 'Unknown error',
         },
       })
-      
+
       return NextResponse.json(
         { error: 'Internal server error' },
         { status: 500 }
@@ -60,11 +60,14 @@ describe('Abandoned Cart Cron Route - Simple Tests', () => {
   })
 
   it('should accept authorized requests', async () => {
-    const request = new NextRequest('http://localhost/api/cron/abandoned-cart', {
-      headers: {
-        authorization: 'Bearer test-cron-secret',
-      },
-    })
+    const request = new NextRequest(
+      'http://localhost/api/cron/abandoned-cart',
+      {
+        headers: {
+          authorization: 'Bearer test-cron-secret',
+        },
+      }
+    )
 
     mockCheckAbandoned.mockResolvedValue({
       processed: 5,
@@ -92,11 +95,14 @@ describe('Abandoned Cart Cron Route - Simple Tests', () => {
   })
 
   it('should handle errors gracefully', async () => {
-    const request = new NextRequest('http://localhost/api/cron/abandoned-cart', {
-      headers: {
-        authorization: 'Bearer test-cron-secret',
-      },
-    })
+    const request = new NextRequest(
+      'http://localhost/api/cron/abandoned-cart',
+      {
+        headers: {
+          authorization: 'Bearer test-cron-secret',
+        },
+      }
+    )
 
     mockCheckAbandoned.mockRejectedValue(new Error('Service error'))
 

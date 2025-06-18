@@ -11,7 +11,7 @@ function verifyWebhookSignature(
 ): boolean {
   // In production, you would verify the signature using SendGrid's Event Webhook
   // https://docs.sendgrid.com/for-developers/tracking-events/getting-started-event-webhook-security-features
-  
+
   // For now, we'll check for the webhook key in env
   const webhookKey = process.env.SENDGRID_WEBHOOK_KEY
   if (!webhookKey) {
@@ -26,12 +26,14 @@ function verifyWebhookSignature(
 export async function POST(req: NextRequest) {
   try {
     // Get webhook signature headers
-    const signature = req.headers.get('x-twilio-email-event-webhook-signature') || ''
-    const timestamp = req.headers.get('x-twilio-email-event-webhook-timestamp') || ''
-    
+    const signature =
+      req.headers.get('x-twilio-email-event-webhook-signature') || ''
+    const timestamp =
+      req.headers.get('x-twilio-email-event-webhook-timestamp') || ''
+
     // Parse body
-    const events = await req.json() as SendGridWebhookEvent[]
-    
+    const events = (await req.json()) as SendGridWebhookEvent[]
+
     // Verify signature
     const publicKey = process.env.SENDGRID_WEBHOOK_PUBLIC_KEY || ''
     const isValid = verifyWebhookSignature(
@@ -43,10 +45,7 @@ export async function POST(req: NextRequest) {
 
     if (!isValid) {
       console.error('Invalid SendGrid webhook signature')
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 
     // Process events
@@ -81,33 +80,36 @@ async function processWebhookEvent(event: SendGridWebhookEvent) {
     case 'delivered':
       await handleDelivered(event, purchaseId)
       break
-    
+
     case 'bounce':
       await handleBounce(event, purchaseId)
       break
-    
+
     case 'complaint':
       await handleComplaint(event, purchaseId)
       break
-    
+
     case 'unsubscribed':
       await handleUnsubscribe(event)
       break
-    
+
     case 'open':
       await handleOpen(event, purchaseId)
       break
-    
+
     case 'click':
       await handleClick(event, purchaseId)
       break
-    
+
     default:
       console.log(`Unhandled SendGrid event type: ${event.event}`)
   }
 }
 
-async function handleDelivered(event: SendGridWebhookEvent, purchaseId?: string) {
+async function handleDelivered(
+  event: SendGridWebhookEvent,
+  purchaseId?: string
+) {
   // Update purchase metadata if purchaseId provided
   if (purchaseId) {
     try {
@@ -120,7 +122,7 @@ async function handleDelivered(event: SendGridWebhookEvent, purchaseId?: string)
           where: { id: purchaseId },
           data: {
             metadata: {
-              ...(purchase.metadata as object || {}),
+              ...((purchase.metadata as object) || {}),
               emailDelivered: true,
               emailDeliveredAt: new Date(event.timestamp * 1000).toISOString(),
             },
@@ -148,7 +150,7 @@ async function handleBounce(event: SendGridWebhookEvent, purchaseId?: string) {
           where: { id: purchaseId },
           data: {
             metadata: {
-              ...(purchase.metadata as object || {}),
+              ...((purchase.metadata as object) || {}),
               emailBounced: true,
               emailBouncedAt: new Date(event.timestamp * 1000).toISOString(),
               emailBounceReason: event.reason,
@@ -165,7 +167,10 @@ async function handleBounce(event: SendGridWebhookEvent, purchaseId?: string) {
   // TODO: Add email to suppression list to prevent future sends
 }
 
-async function handleComplaint(event: SendGridWebhookEvent, purchaseId?: string) {
+async function handleComplaint(
+  event: SendGridWebhookEvent,
+  purchaseId?: string
+) {
   console.error(`Email complaint: ${event.email}`)
 
   // Update purchase metadata if purchaseId provided
@@ -180,7 +185,7 @@ async function handleComplaint(event: SendGridWebhookEvent, purchaseId?: string)
           where: { id: purchaseId },
           data: {
             metadata: {
-              ...(purchase.metadata as object || {}),
+              ...((purchase.metadata as object) || {}),
               emailComplaint: true,
               emailComplaintAt: new Date(event.timestamp * 1000).toISOString(),
             },
@@ -210,7 +215,7 @@ async function handleOpen(event: SendGridWebhookEvent, purchaseId?: string) {
       })
 
       if (purchase) {
-        const metadata = purchase.metadata as any || {}
+        const metadata = (purchase.metadata as any) || {}
         const openCount = (metadata.emailOpenCount || 0) + 1
 
         await prisma.purchase.update({
@@ -240,7 +245,7 @@ async function handleClick(event: SendGridWebhookEvent, purchaseId?: string) {
       })
 
       if (purchase) {
-        const metadata = purchase.metadata as any || {}
+        const metadata = (purchase.metadata as any) || {}
         const clicks = metadata.emailClicks || []
         clicks.push({
           url: event.url,
@@ -254,7 +259,9 @@ async function handleClick(event: SendGridWebhookEvent, purchaseId?: string) {
               ...metadata,
               emailClicked: true,
               emailClicks: clicks,
-              emailLastClickedAt: new Date(event.timestamp * 1000).toISOString(),
+              emailLastClickedAt: new Date(
+                event.timestamp * 1000
+              ).toISOString(),
             },
           },
         })

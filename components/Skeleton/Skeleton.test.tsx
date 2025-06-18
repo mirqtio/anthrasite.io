@@ -18,12 +18,7 @@ describe('Skeleton', () => {
   })
 
   it('renders with custom width and height', () => {
-    render(
-      <Skeleton
-        className="h-20 w-40"
-        data-testid="skeleton"
-      />
-    )
+    render(<Skeleton className="h-20 w-40" data-testid="skeleton" />)
     const skeleton = screen.getByTestId('skeleton')
     expect(skeleton).toHaveClass('h-20')
     expect(skeleton).toHaveClass('w-40')

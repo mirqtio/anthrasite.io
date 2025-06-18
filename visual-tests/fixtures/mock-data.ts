@@ -70,15 +70,18 @@ export const mockReportData = {
 export const mockFAQData = [
   {
     question: 'What is included in the Website Analytics Report?',
-    answer: 'Our comprehensive report includes traffic analysis, conversion metrics, user behavior insights, and actionable recommendations.',
+    answer:
+      'Our comprehensive report includes traffic analysis, conversion metrics, user behavior insights, and actionable recommendations.',
   },
   {
     question: 'How long does it take to receive my report?',
-    answer: 'Reports are typically delivered within 24-48 hours after purchase.',
+    answer:
+      'Reports are typically delivered within 24-48 hours after purchase.',
   },
   {
     question: 'Do you offer refunds?',
-    answer: 'Yes, we offer a 30-day money-back guarantee if you\'re not satisfied with your report.',
+    answer:
+      "Yes, we offer a 30-day money-back guarantee if you're not satisfied with your report.",
   },
 ]
 
@@ -87,14 +90,16 @@ export const mockTestimonials = [
     name: 'Sarah Johnson',
     role: 'Marketing Director',
     company: 'TechCorp',
-    content: 'The insights from Anthrasite helped us increase our conversion rate by 45% in just 3 months.',
+    content:
+      'The insights from Anthrasite helped us increase our conversion rate by 45% in just 3 months.',
     rating: 5,
   },
   {
     name: 'Michael Chen',
     role: 'CEO',
     company: 'StartupXYZ',
-    content: 'Best investment we made this year. The report identified critical issues we had overlooked.',
+    content:
+      'Best investment we made this year. The report identified critical issues we had overlooked.',
     rating: 5,
   },
 ]

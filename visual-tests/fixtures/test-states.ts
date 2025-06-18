@@ -8,7 +8,7 @@ import { mockUTMParams, mockConsentData } from './mock-data'
 export async function setupOrganicMode(page: Page) {
   // Clear any UTM parameters
   await page.goto('/', { waitUntil: 'networkidle' })
-  
+
   // Ensure we're in organic mode
   await page.evaluate(() => {
     localStorage.removeItem('utm_params')
@@ -20,7 +20,7 @@ export async function setupPurchaseMode(page: Page) {
   // Navigate with valid UTM parameters
   const params = new URLSearchParams(mockUTMParams.valid)
   await page.goto(`/?${params.toString()}`, { waitUntil: 'networkidle' })
-  
+
   // Verify purchase mode is active
   await page.waitForSelector('[data-testid="purchase-hero"]', { timeout: 5000 })
 }
@@ -40,10 +40,13 @@ export async function setupUsedUTM(page: Page) {
 export async function setupConsentAccepted(page: Page) {
   // Set consent preferences
   await page.evaluate((consent) => {
-    localStorage.setItem('consent-preferences', JSON.stringify({
-      ...consent,
-      timestamp: new Date('2025-01-01T12:00:00Z').toISOString(),
-    }))
+    localStorage.setItem(
+      'consent-preferences',
+      JSON.stringify({
+        ...consent,
+        timestamp: new Date('2025-01-01T12:00:00Z').toISOString(),
+      })
+    )
   }, mockConsentData)
 }
 
@@ -53,17 +56,19 @@ export async function setupConsentBanner(page: Page) {
     localStorage.removeItem('consent-preferences')
     localStorage.removeItem('consent-banner-dismissed')
   })
-  
+
   await page.reload({ waitUntil: 'networkidle' })
-  await page.waitForSelector('[data-testid="consent-banner"]', { timeout: 5000 })
+  await page.waitForSelector('[data-testid="consent-banner"]', {
+    timeout: 5000,
+  })
 }
 
 export async function setupHelpWidgetOpen(page: Page) {
   // Open help widget
   await page.click('[data-testid="help-widget-trigger"]')
-  await page.waitForSelector('[data-testid="help-widget-content"]', { 
+  await page.waitForSelector('[data-testid="help-widget-content"]', {
     state: 'visible',
-    timeout: 5000 
+    timeout: 5000,
   })
 }
 
@@ -128,16 +133,16 @@ export async function resetState(page: Page) {
     localStorage.clear()
     sessionStorage.clear()
   })
-  
+
   // Clear cookies
   await page.context().clearCookies()
-  
+
   // Reset viewport
   await page.setViewportSize({ width: 1920, height: 1080 })
-  
+
   // Reset network conditions
   await page.context().setOffline(false)
-  
+
   // Clear route handlers
   await page.unroute('**/*')
 }

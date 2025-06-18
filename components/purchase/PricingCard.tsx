@@ -10,17 +10,21 @@ interface PricingCardProps {
   onCheckout: () => Promise<void>
 }
 
-export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps) {
+export function PricingCard({
+  businessName,
+  utm,
+  onCheckout,
+}: PricingCardProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-  
+
   const handleCheckout = async () => {
     setIsLoading(true)
     setError('')
-    
+
     try {
       await onCheckout()
-      
+
       // Track successful checkout initiation
       trackEvent('checkout_started', {
         business_name: businessName,
@@ -29,7 +33,7 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
     } catch (error: any) {
       console.error('Checkout error:', error)
       setError('Unable to start checkout. Please try again.')
-      
+
       // Track checkout error
       trackEvent('checkout_error', {
         error: error.message || 'Unknown error',
@@ -38,7 +42,7 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
       setIsLoading(false)
     }
   }
-  
+
   return (
     <section className="py-12 md:py-16">
       <div className="px-10 max-w-[1200px] mx-auto">
@@ -59,7 +63,7 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
             </p>
           </div>
         </motion.div>
-        
+
         {/* Report Overview */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -67,7 +71,9 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
           transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
           className="mb-12"
         >
-          <h2 className="text-[32px] font-light mb-8 text-center">What's included</h2>
+          <h2 className="text-[32px] font-light mb-8 text-center">
+            What's included
+          </h2>
           <div className="space-y-6 max-w-[800px] mx-auto">
             {[
               'Complete 50+ page website audit report',
@@ -79,7 +85,11 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
                 key={index}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 + index * 0.05, ease: 'easeOut' }}
+                transition={{
+                  duration: 0.3,
+                  delay: 0.2 + index * 0.05,
+                  ease: 'easeOut',
+                }}
                 className="flex items-start gap-4"
               >
                 {/* Custom bullet */}
@@ -89,7 +99,7 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
             ))}
           </div>
         </motion.div>
-        
+
         {/* Error Message */}
         {error && (
           <motion.div
@@ -100,13 +110,35 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
             {error}
           </motion.div>
         )}
-        
+
         {/* CTA Section with Pulsing Rings */}
         <div className="relative inline-block w-full">
-          <div className="pressure-visual mx-auto" style={{ width: '400px', height: '400px' }}>
-            <div className="pressure-ring" style={{ '--scale': 1 } as React.CSSProperties}></div>
-            <div className="pressure-ring" style={{ '--scale': 0.8, animationDelay: '0.3s' } as React.CSSProperties}></div>
-            <div className="pressure-ring" style={{ '--scale': 0.6, animationDelay: '0.6s' } as React.CSSProperties}></div>
+          <div
+            className="pressure-visual mx-auto"
+            style={{ width: '400px', height: '400px' }}
+          >
+            <div
+              className="pressure-ring"
+              style={{ '--scale': 1 } as React.CSSProperties}
+            ></div>
+            <div
+              className="pressure-ring"
+              style={
+                {
+                  '--scale': 0.8,
+                  animationDelay: '0.3s',
+                } as React.CSSProperties
+              }
+            ></div>
+            <div
+              className="pressure-ring"
+              style={
+                {
+                  '--scale': 0.6,
+                  animationDelay: '0.6s',
+                } as React.CSSProperties
+              }
+            ></div>
             <div className="pressure-center">
               <button
                 onClick={handleCheckout}
@@ -123,7 +155,7 @@ export function PricingCard({ businessName, utm, onCheckout }: PricingCardProps)
             </div>
           </div>
         </div>
-        
+
         {/* Trust text */}
         <motion.p
           initial={{ opacity: 0 }}

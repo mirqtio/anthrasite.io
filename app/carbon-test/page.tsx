@@ -5,27 +5,21 @@ export default function CarbonTestPage() {
     <>
       {/* Radial gradient background */}
       <div className="radial-gradient" />
-      
+
       {/* Two-column grid layout */}
       <div className="carbon-grid">
         {/* Left column - Hero content */}
         <div className="carbon-left">
           <div>
-            <h1 className="text-display mb-8">
-              Anthrasite
-            </h1>
+            <h1 className="text-display mb-8">Anthrasite</h1>
             <p className="text-subheader mb-12">
               Automated website performance audits delivered to your inbox
             </p>
-            <div className="text-accent mb-8">
-              $2,400
-            </div>
+            <div className="text-accent mb-8">$2,400</div>
             <p className="text-body mb-12">
               Average value discovered per audit
             </p>
-            <button className="carbon-button">
-              Get Your Report
-            </button>
+            <button className="carbon-button">Get Your Report</button>
           </div>
         </div>
 
@@ -47,33 +41,35 @@ export default function CarbonTestPage() {
 
           {/* How it works */}
           <section className="mb-20">
-            <h2 className="text-header mb-8">
-              How it works
-            </h2>
+            <h2 className="text-header mb-8">How it works</h2>
             <div className="space-y-12">
               <div className="carbon-container">
                 <div className="text-small opacity-40 mb-2">01</div>
                 <h3 className="text-subheader mb-2">Submit your domain</h3>
-                <p className="text-body">We analyze your entire website automatically</p>
+                <p className="text-body">
+                  We analyze your entire website automatically
+                </p>
               </div>
               <div className="carbon-container">
                 <div className="text-small opacity-40 mb-2">02</div>
                 <h3 className="text-subheader mb-2">Receive detailed report</h3>
-                <p className="text-body">15-page PDF with actionable recommendations</p>
+                <p className="text-body">
+                  15-page PDF with actionable recommendations
+                </p>
               </div>
               <div className="carbon-container">
                 <div className="text-small opacity-40 mb-2">03</div>
                 <h3 className="text-subheader mb-2">Implement changes</h3>
-                <p className="text-body">Follow our prioritized roadmap for maximum impact</p>
+                <p className="text-body">
+                  Follow our prioritized roadmap for maximum impact
+                </p>
               </div>
             </div>
           </section>
 
           {/* Pricing */}
           <section className="mb-20">
-            <h2 className="text-header mb-8">
-              Simple pricing
-            </h2>
+            <h2 className="text-header mb-8">Simple pricing</h2>
             <div className="carbon-container">
               <div className="flex items-baseline gap-4 mb-4">
                 <span className="text-accent">$99</span>
@@ -93,12 +89,8 @@ export default function CarbonTestPage() {
 
           {/* Contact */}
           <section>
-            <h2 className="text-header mb-8">
-              Questions?
-            </h2>
-            <p className="text-body mb-4">
-              hello@anthrasite.io
-            </p>
+            <h2 className="text-header mb-8">Questions?</h2>
+            <p className="text-body mb-4">hello@anthrasite.io</p>
             <p className="text-body opacity-40">
               We typically respond within 24 hours
             </p>

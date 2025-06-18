@@ -12,16 +12,15 @@ export default function CancelPage() {
             <XCircle className="w-10 h-10 text-gray-400" />
           </div>
         </div>
-        
+
         {/* Cancel Message */}
-        <h1 className="text-3xl font-semibold mb-4">
-          Purchase Cancelled
-        </h1>
-        
+        <h1 className="text-3xl font-semibold mb-4">Purchase Cancelled</h1>
+
         <p className="text-gray-600 mb-8">
-          Your purchase was cancelled and no charges were made. You can return to complete your purchase at any time.
+          Your purchase was cancelled and no charges were made. You can return
+          to complete your purchase at any time.
         </p>
-        
+
         {/* Why purchase section */}
         <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
           <h2 className="font-medium mb-3">Still on the fence?</h2>
@@ -32,7 +31,7 @@ export default function CancelPage() {
             <li>• Priority email support</li>
           </ul>
         </div>
-        
+
         {/* Actions */}
         <div className="space-y-3">
           <Link href="/">
@@ -41,10 +40,13 @@ export default function CancelPage() {
               Back to Homepage
             </Button>
           </Link>
-          
+
           <p className="text-sm text-gray-500">
             Questions? Contact us at{' '}
-            <a href="mailto:support@anthrasite.io" className="text-anthracite-blue hover:underline">
+            <a
+              href="mailto:support@anthrasite.io"
+              className="text-anthracite-blue hover:underline"
+            >
               support@anthrasite.io
             </a>
           </p>

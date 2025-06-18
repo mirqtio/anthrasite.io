@@ -31,12 +31,14 @@ describe('SendGrid Webhook', () => {
 
   describe('Event Processing', () => {
     it('should process delivered events', async () => {
-      const events: SendGridWebhookEvent[] = [{
-        email: 'customer@example.com',
-        event: 'delivered',
-        sg_message_id: 'msg-123',
-        timestamp: Date.now() / 1000,
-      }]
+      const events: SendGridWebhookEvent[] = [
+        {
+          email: 'customer@example.com',
+          event: 'delivered',
+          sg_message_id: 'msg-123',
+          timestamp: Date.now() / 1000,
+        },
+      ]
 
       const mockPurchase = {
         id: 'purchase-123',
@@ -54,14 +56,16 @@ describe('SendGrid Webhook', () => {
     })
 
     it('should process bounce events', async () => {
-      const events: SendGridWebhookEvent[] = [{
-        email: 'bounced@example.com',
-        event: 'bounce',
-        sg_message_id: 'msg-456',
-        timestamp: Date.now() / 1000,
-        reason: 'Invalid email address',
-        type: 'hard',
-      }]
+      const events: SendGridWebhookEvent[] = [
+        {
+          email: 'bounced@example.com',
+          event: 'bounce',
+          sg_message_id: 'msg-456',
+          timestamp: Date.now() / 1000,
+          reason: 'Invalid email address',
+          type: 'hard',
+        },
+      ]
 
       const request = createRequest(events)
       const response = await POST(request)
@@ -70,12 +74,14 @@ describe('SendGrid Webhook', () => {
     })
 
     it('should process complaint events', async () => {
-      const events: SendGridWebhookEvent[] = [{
-        email: 'complainer@example.com',
-        event: 'complaint',
-        sg_message_id: 'msg-789',
-        timestamp: Date.now() / 1000,
-      }]
+      const events: SendGridWebhookEvent[] = [
+        {
+          email: 'complainer@example.com',
+          event: 'complaint',
+          sg_message_id: 'msg-789',
+          timestamp: Date.now() / 1000,
+        },
+      ]
 
       const request = createRequest(events)
       const response = await POST(request)
@@ -115,17 +121,19 @@ describe('SendGrid Webhook', () => {
 
   describe('Purchase Metadata Updates', () => {
     it('should update purchase metadata for delivered event', async () => {
-      const events: SendGridWebhookEvent[] = [{
-        email: 'customer@example.com',
-        event: 'delivered',
-        sg_message_id: 'msg-123',
-        timestamp: Date.now() / 1000,
-        custom_args: {
-          purchaseId: 'purchase-123',
-          businessId: 'business-123',
-          template: 'orderConfirmation',
-        },
-      } as any]
+      const events: SendGridWebhookEvent[] = [
+        {
+          email: 'customer@example.com',
+          event: 'delivered',
+          sg_message_id: 'msg-123',
+          timestamp: Date.now() / 1000,
+          custom_args: {
+            purchaseId: 'purchase-123',
+            businessId: 'business-123',
+            template: 'orderConfirmation',
+          },
+        } as any,
+      ]
 
       const mockPurchase = {
         id: 'purchase-123',
@@ -151,15 +159,17 @@ describe('SendGrid Webhook', () => {
     })
 
     it('should track email opens', async () => {
-      const events: SendGridWebhookEvent[] = [{
-        email: 'customer@example.com',
-        event: 'open',
-        sg_message_id: 'msg-123',
-        timestamp: Date.now() / 1000,
-        custom_args: {
-          purchaseId: 'purchase-123',
-        },
-      } as any]
+      const events: SendGridWebhookEvent[] = [
+        {
+          email: 'customer@example.com',
+          event: 'open',
+          sg_message_id: 'msg-123',
+          timestamp: Date.now() / 1000,
+          custom_args: {
+            purchaseId: 'purchase-123',
+          },
+        } as any,
+      ]
 
       const mockPurchase = {
         id: 'purchase-123',
@@ -185,16 +195,18 @@ describe('SendGrid Webhook', () => {
     })
 
     it('should track email clicks', async () => {
-      const events: SendGridWebhookEvent[] = [{
-        email: 'customer@example.com',
-        event: 'click',
-        sg_message_id: 'msg-123',
-        timestamp: Date.now() / 1000,
-        url: 'https://example.com/report/123',
-        custom_args: {
-          purchaseId: 'purchase-123',
-        },
-      } as any]
+      const events: SendGridWebhookEvent[] = [
+        {
+          email: 'customer@example.com',
+          event: 'click',
+          sg_message_id: 'msg-123',
+          timestamp: Date.now() / 1000,
+          url: 'https://example.com/report/123',
+          custom_args: {
+            purchaseId: 'purchase-123',
+          },
+        } as any,
+      ]
 
       const mockPurchase = {
         id: 'purchase-123',
@@ -225,17 +237,19 @@ describe('SendGrid Webhook', () => {
     })
 
     it('should handle bounce with metadata', async () => {
-      const events: SendGridWebhookEvent[] = [{
-        email: 'bounced@example.com',
-        event: 'bounce',
-        sg_message_id: 'msg-456',
-        timestamp: Date.now() / 1000,
-        reason: 'Email address does not exist',
-        type: 'hard',
-        custom_args: {
-          purchaseId: 'purchase-456',
-        },
-      } as any]
+      const events: SendGridWebhookEvent[] = [
+        {
+          email: 'bounced@example.com',
+          event: 'bounce',
+          sg_message_id: 'msg-456',
+          timestamp: Date.now() / 1000,
+          reason: 'Email address does not exist',
+          type: 'hard',
+          custom_args: {
+            purchaseId: 'purchase-456',
+          },
+        } as any,
+      ]
 
       const mockPurchase = {
         id: 'purchase-456',
@@ -285,7 +299,6 @@ describe('SendGrid Webhook', () => {
       ;(prisma.purchase.findUnique as jest.Mock)
         .mockRejectedValueOnce(new Error('Database error'))
         .mockResolvedValueOnce({ id: 'purchase-2', metadata: {} })
-
       ;(prisma.purchase.update as jest.Mock).mockResolvedValue({})
 
       const request = createRequest(events)
@@ -308,7 +321,9 @@ describe('SendGrid Webhook', () => {
       const response = await POST(request)
 
       expect(response.status).toBe(500)
-      expect(await response.json()).toEqual({ error: 'Webhook processing failed' })
+      expect(await response.json()).toEqual({
+        error: 'Webhook processing failed',
+      })
     })
   })
 })

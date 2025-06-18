@@ -1,6 +1,12 @@
 import { randomUUID } from 'crypto'
 import { emailConfig } from './config'
-import type { EmailQueueItem, EmailTemplate, BaseEmailData, EmailMetadata, EmailStatus } from './types'
+import type {
+  EmailQueueItem,
+  EmailTemplate,
+  BaseEmailData,
+  EmailMetadata,
+  EmailStatus,
+} from './types'
 
 // In-memory queue for failed emails
 class EmailQueue {
@@ -24,7 +30,7 @@ class EmailQueue {
   ): string {
     const id = randomUUID()
     const now = new Date()
-    
+
     const queueItem: EmailQueueItem = {
       id,
       template,
@@ -38,7 +44,7 @@ class EmailQueue {
 
     this.queue.set(id, queueItem)
     console.log(`Email queued: ${id} (${template})`)
-    
+
     return id
   }
 
@@ -58,7 +64,7 @@ class EmailQueue {
       console.log(`Email sent successfully: ${id}`)
     } else {
       item.error = error
-      
+
       if (item.attempts >= emailConfig.retry.maxAttempts) {
         item.status = 'failed'
         console.error(`Email failed after ${item.attempts} attempts: ${id}`)
@@ -66,11 +72,14 @@ class EmailQueue {
       } else {
         // Calculate next retry time with exponential backoff
         const delay = Math.min(
-          emailConfig.retry.initialDelay * Math.pow(emailConfig.retry.backoffMultiplier, item.attempts - 1),
+          emailConfig.retry.initialDelay *
+            Math.pow(emailConfig.retry.backoffMultiplier, item.attempts - 1),
           emailConfig.retry.maxDelay
         )
         item.nextRetryAt = new Date(Date.now() + delay)
-        console.log(`Email retry scheduled for ${item.nextRetryAt.toISOString()}: ${id}`)
+        console.log(
+          `Email retry scheduled for ${item.nextRetryAt.toISOString()}: ${id}`
+        )
       }
     }
   }
@@ -109,8 +118,9 @@ class EmailQueue {
     for (const item of this.queue.values()) {
       if (item.status === 'pending') stats.pending++
       if (item.status === 'failed') stats.failed++
-      
-      stats.byTemplate[item.template] = (stats.byTemplate[item.template] || 0) + 1
+
+      stats.byTemplate[item.template] =
+        (stats.byTemplate[item.template] || 0) + 1
     }
 
     return stats
@@ -148,13 +158,13 @@ class EmailQueue {
     if (this.isProcessing) return
 
     this.isProcessing = true
-    
+
     try {
       const items = this.getItemsForRetry()
-      
+
       if (items.length > 0) {
         console.log(`Processing ${items.length} queued emails`)
-        
+
         // Process items sequentially to avoid rate limits
         for (const item of items) {
           // This will be called by the email service

@@ -93,20 +93,20 @@ jobs:
           script: |
             const fs = require('fs');
             const results = JSON.parse(fs.readFileSync('visual-test-results.json', 'utf8'));
-            
+
             const passed = results.stats.expected;
             const failed = results.stats.unexpected;
             const flaky = results.stats.flaky;
             const skipped = results.stats.skipped;
-            
+
             const comment = `## Visual Regression Test Results
-            
+
             ${failed === 0 ? '✅' : '❌'} **${passed} passed**, **${failed} failed**, **${flaky} flaky**, **${skipped} skipped**
-            
+
             ${failed > 0 ? '### Failed Tests\n' + results.errors.map(e => `- ${e.test}: ${e.message}`).join('\n') : ''}
-            
+
             [View full report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

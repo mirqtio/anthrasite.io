@@ -4,7 +4,7 @@ describe('Animation Utilities', () => {
   const mockMatchMedia = (matches: boolean) => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: jest.fn().mockImplementation(query => ({
+      value: jest.fn().mockImplementation((query) => ({
         matches,
         media: query,
         onchange: null,
@@ -22,9 +22,9 @@ describe('Animation Utilities', () => {
       const originalMatchMedia = window.matchMedia
       // @ts-expect-error - Testing matchMedia undefined
       window.matchMedia = undefined as any
-      
+
       expect(prefersReducedMotion()).toBe(false)
-      
+
       window.matchMedia = originalMatchMedia
     })
 
@@ -43,7 +43,7 @@ describe('Animation Utilities', () => {
     beforeEach(() => {
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
-        value: jest.fn().mockImplementation(query => ({
+        value: jest.fn().mockImplementation((query) => ({
           matches: false,
           media: query,
         })),
@@ -58,7 +58,7 @@ describe('Animation Utilities', () => {
     it('returns empty object when motion is reduced and respectMotionPreference is true', () => {
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
-        value: jest.fn().mockImplementation(query => ({
+        value: jest.fn().mockImplementation((query) => ({
           matches: true,
           media: query,
         })),
@@ -71,7 +71,7 @@ describe('Animation Utilities', () => {
     it('returns animation when motion is reduced but respectMotionPreference is false', () => {
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
-        value: jest.fn().mockImplementation(query => ({
+        value: jest.fn().mockImplementation((query) => ({
           matches: true,
           media: query,
         })),

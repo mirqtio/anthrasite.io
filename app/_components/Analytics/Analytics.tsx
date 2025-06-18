@@ -10,14 +10,14 @@ import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
 export function Analytics() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  
+
   // Track Web Vitals
   useWebVitals()
 
   // Initialize analytics on mount
   useEffect(() => {
     const consent = getCookieConsent()
-    
+
     if (consent.analytics) {
       initializeAnalytics({
         ga4: {
@@ -34,10 +34,12 @@ export function Analytics() {
   // Track page views on route change
   useEffect(() => {
     const consent = getCookieConsent()
-    
+
     if (consent.analytics) {
-      const url = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '')
-      
+      const url =
+        pathname +
+        (searchParams.toString() ? `?${searchParams.toString()}` : '')
+
       trackPageView({
         path: pathname,
         url: url,
@@ -68,7 +70,7 @@ export function Analytics() {
       gtag('js', new Date())
       gtag('config', process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID, {
         page_path: window.location.pathname,
-        send_page_view: false
+        send_page_view: false,
       })
     }
 

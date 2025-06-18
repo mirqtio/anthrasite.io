@@ -7,12 +7,14 @@ The purchase flow has been optimized to take customers directly to Stripe Checko
 ## Flow Behavior
 
 ### Production Flow
+
 1. Customer clicks email CTA → `https://anthrasite.io/purchase?utm=HASH`
 2. Server validates UTM token
 3. If valid → Immediate redirect to Stripe Checkout
 4. If invalid → Show interstitial page with error
 
 ### Development Flow
+
 1. Customer clicks test link → `http://localhost:3333/purchase?utm=mock-hash-123`
 2. Server validates mock UTM token
 3. If valid → Redirect to checkout simulator at `/test-purchase/checkout-simulator`
@@ -26,11 +28,13 @@ The purchase flow has been optimized to take customers directly to Stripe Checko
 ## Examples
 
 ### Direct to Checkout (Default)
+
 ```
 https://anthrasite.io/purchase?utm=eyJidXNpbmVzc19pZCI6MTIzLCJwcmljZSI6OTkwMH0...
 ```
 
 ### Preview Mode (Shows Interstitial)
+
 ```
 https://anthrasite.io/purchase?utm=eyJidXNpbmVzc19pZCI6MTIzLCJwcmljZSI6OTkwMH0...&preview=true
 ```
@@ -38,6 +42,7 @@ https://anthrasite.io/purchase?utm=eyJidXNpbmVzc19pZCI6MTIzLCJwcmljZSI6OTkwMH0..
 ## Testing
 
 ### Local Development
+
 ```bash
 # Direct to checkout simulator (default)
 http://localhost:3333/purchase?utm=mock-hash-123
@@ -50,6 +55,7 @@ http://localhost:3333/purchase?utm=invalid-token
 ```
 
 ### Mock UTM Tokens
+
 - `mock-hash-123` - Valid token for Acme Corp
 - `mock-hash-456` - Valid token for TechStartup Inc
 - `dev-utm-used` - Already used token (shows error)
@@ -65,6 +71,7 @@ http://localhost:3333/purchase?utm=invalid-token
 ## Implementation Details
 
 The purchase page checks:
+
 1. Is the UTM token valid?
 2. Is `preview=true` set?
 

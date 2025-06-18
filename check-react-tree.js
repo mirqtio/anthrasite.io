@@ -1,46 +1,52 @@
-const { chromium } = require('playwright');
+// Simple JavaScript script to check React tree
+// This runs after React app initialization to verify the tree is correct
 
-(async () => {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  
-  await page.goto('http://localhost:3000');
-  await page.waitForTimeout(5000); // Give React time to mount
-  
-  // Check what's actually rendered
-  const diagnostics = await page.evaluate(() => {
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    // Check DOM structure
+    const rootElement = document.getElementById('__next')
+
+    if (!rootElement) {
+      console.error('❌ No __next root element found')
+      return
+    }
+
     const results = {
       bodyChildrenCount: document.body.children.length,
-      hasNextDiv: \!\!document.getElementById('__next'),
+      hasNextDiv: !!document.getElementById('__next'),
       firstChild: document.body.firstElementChild?.tagName,
       bodyClasses: document.body.className,
       scripts: Array.from(document.querySelectorAll('script')).length,
-      visibleDivs: Array.from(document.querySelectorAll('div')).filter(el => {
-        const style = window.getComputedStyle(el);
-        return style.display \!== 'none' && style.visibility \!== 'hidden';
-      }).length,
-    };
-    
-    // Try to find any rendered React components
-    const allElements = document.querySelectorAll('*');
-    results.totalElements = allElements.length;
-    
-    // Look for common React attributes
-    results.reactElements = Array.from(allElements).filter(el => {
-      return Array.from(el.attributes).some(attr => 
-        attr.name.startsWith('data-react') || 
-        attr.name === 'data-testid'
-      );
-    }).length;
-    
-    return results;
-  });
-  
-  console.log('Page Diagnostics:', diagnostics);
-  
-  // Take a screenshot to see what's visible
-  await page.screenshot({ path: 'debug-screenshot.png' });
-  console.log('Screenshot saved to debug-screenshot.png');
-  
-  await browser.close();
-})();
+      links: Array.from(document.querySelectorAll('link')).length,
+      reactRoot: rootElement.innerHTML.length > 0 ? 'Has content' : 'Empty',
+      reactComponents: rootElement.querySelectorAll('[data-reactroot]').length,
+    }
+
+    console.log('React Tree Check Results:', results)
+
+    // Log warnings
+    if (results.bodyChildrenCount > 5) {
+      console.warn('⚠️ Many body children:', results.bodyChildrenCount)
+    }
+
+    if (!results.hasNextDiv) {
+      console.error('❌ Missing __next div')
+    }
+
+    if (results.reactRoot === 'Empty') {
+      console.error('❌ React root is empty')
+    }
+
+    // Display results on page for visual testing
+    if (window.location.search.includes('debug')) {
+      const debugDiv = document.createElement('div')
+      debugDiv.style.cssText =
+        'position:fixed;top:10px;right:10px;background:white;padding:10px;border:1px solid black;font-family:monospace;font-size:12px;z-index:9999;'
+      debugDiv.innerHTML = `
+        <h4>React Tree Debug</h4>
+        <pre>${JSON.stringify(results, null, 2)}</pre>
+      `
+      document.body.appendChild(debugDiv)
+    }
+  }, 1000) // Wait for React to mount
+})

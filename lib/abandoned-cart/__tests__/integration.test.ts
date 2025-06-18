@@ -1,4 +1,8 @@
-import { trackCheckoutSession, markSessionCompleted, getAbandonedCartByToken } from '../tracker'
+import {
+  trackCheckoutSession,
+  markSessionCompleted,
+  getAbandonedCartByToken,
+} from '../tracker'
 import { AbandonedCartService } from '../service'
 import { prisma } from '@/lib/db'
 import type { Stripe } from 'stripe'
@@ -31,20 +35,36 @@ jest.mock('@/lib/db', () => ({
 
         // Apply where clause
         if (args?.where) {
-          filtered = carts.filter(cart => {
-            if (args.where.createdAt?.lte && cart.createdAt > args.where.createdAt.lte) return false
-            if (args.where.recoveryEmailSent === false && cart.recoveryEmailSent) return false
+          filtered = carts.filter((cart) => {
+            if (
+              args.where.createdAt?.lte &&
+              cart.createdAt > args.where.createdAt.lte
+            )
+              return false
+            if (
+              args.where.recoveryEmailSent === false &&
+              cart.recoveryEmailSent
+            )
+              return false
             if (args.where.recovered === false && cart.recovered) return false
-            if (args.where.sessionExpiresAt?.gt && cart.sessionExpiresAt <= args.where.sessionExpiresAt.gt) return false
+            if (
+              args.where.sessionExpiresAt?.gt &&
+              cart.sessionExpiresAt <= args.where.sessionExpiresAt.gt
+            )
+              return false
             return true
           })
         }
 
         // Include relations
         if (args?.include?.business) {
-          filtered = filtered.map(cart => ({
+          filtered = filtered.map((cart) => ({
             ...cart,
-            business: { id: cart.businessId, name: 'Test Business', domain: 'test.com' },
+            business: {
+              id: cart.businessId,
+              name: 'Test Business',
+              domain: 'test.com',
+            },
           }))
         }
 
@@ -53,18 +73,22 @@ jest.mock('@/lib/db', () => ({
       findUnique: jest.fn((args) => {
         if (args.where.stripeSessionId) {
           const cart = Array.from(mockDatabase.abandonedCarts.values()).find(
-            c => c.stripeSessionId === args.where.stripeSessionId
+            (c) => c.stripeSessionId === args.where.stripeSessionId
           )
           return Promise.resolve(cart || null)
         }
         if (args.where.recoveryToken) {
           const cart = Array.from(mockDatabase.abandonedCarts.values()).find(
-            c => c.recoveryToken === args.where.recoveryToken
+            (c) => c.recoveryToken === args.where.recoveryToken
           )
           if (cart && args.include?.business) {
             return Promise.resolve({
               ...cart,
-              business: { id: cart.businessId, name: 'Test Business', domain: 'test.com' },
+              business: {
+                id: cart.businessId,
+                name: 'Test Business',
+                domain: 'test.com',
+              },
             })
           }
           return Promise.resolve(cart || null)
@@ -73,7 +97,7 @@ jest.mock('@/lib/db', () => ({
       }),
       update: jest.fn((args) => {
         const carts = Array.from(mockDatabase.abandonedCarts.values())
-        const cart = carts.find(c => c.id === args.where.id)
+        const cart = carts.find((c) => c.id === args.where.id)
         if (cart) {
           Object.assign(cart, args.data)
           cart.updatedAt = new Date()
@@ -105,7 +129,9 @@ jest.mock('@/lib/db', () => ({
 
 // Mock email service
 jest.mock('@/lib/email', () => ({
-  sendEmail: jest.fn().mockResolvedValue({ success: true, messageId: 'msg-123' }),
+  sendEmail: jest
+    .fn()
+    .mockResolvedValue({ success: true, messageId: 'msg-123' }),
 }))
 
 describe('Abandoned Cart Recovery Integration', () => {
@@ -116,7 +142,7 @@ describe('Abandoned Cart Recovery Integration', () => {
     mockDatabase.abandonedCarts.clear()
     mockDatabase.analyticsEvents = []
     jest.clearAllMocks()
-    
+
     service = new AbandonedCartService({ baseUrl: 'https://test.com' })
   })
 
@@ -175,7 +201,9 @@ describe('Abandoned Cart Recovery Integration', () => {
     // 6. Verify analytics events were tracked
     const analyticsEvents = mockDatabase.analyticsEvents
     expect(analyticsEvents).toHaveLength(2)
-    expect(analyticsEvents[0].eventName).toBe('abandoned_cart_recovery_email_sent')
+    expect(analyticsEvents[0].eventName).toBe(
+      'abandoned_cart_recovery_email_sent'
+    )
     expect(analyticsEvents[1].eventName).toBe('abandoned_cart_recovered')
   })
 

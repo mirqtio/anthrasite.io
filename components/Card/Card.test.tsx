@@ -63,13 +63,17 @@ describe('Card', () => {
         <p>Section card</p>
       </Card>
     )
-    expect(screen.getByText('Section card').parentElement?.tagName).toBe('SECTION')
+    expect(screen.getByText('Section card').parentElement?.tagName).toBe(
+      'SECTION'
+    )
 
     rerender(
       <Card as="article">
         <p>Article card</p>
       </Card>
     )
-    expect(screen.getByText('Article card').parentElement?.tagName).toBe('ARTICLE')
+    expect(screen.getByText('Article card').parentElement?.tagName).toBe(
+      'ARTICLE'
+    )
   })
 })

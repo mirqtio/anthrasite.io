@@ -1,4 +1,8 @@
-import { createCheckoutSession, retrieveSession, isSessionPaid } from '../checkout'
+import {
+  createCheckoutSession,
+  retrieveSession,
+  isSessionPaid,
+} from '../checkout'
 import { stripe } from '../config'
 import { LRUCache } from 'lru-cache'
 
@@ -19,7 +23,8 @@ jest.mock('../config', () => ({
     productDescription: 'Test description',
   },
   getStripeUrls: jest.fn(() => ({
-    successUrl: 'http://localhost:3000/purchase/success?session_id={CHECKOUT_SESSION_ID}',
+    successUrl:
+      'http://localhost:3000/purchase/success?session_id={CHECKOUT_SESSION_ID}',
     cancelUrl: 'http://localhost:3000/purchase/cancel',
   })),
 }))
@@ -40,7 +45,9 @@ describe('Stripe Checkout Service', () => {
         amount_total: 9900,
       }
 
-      ;(stripe.checkout.sessions.create as jest.Mock).mockResolvedValue(mockSession)
+      ;(stripe.checkout.sessions.create as jest.Mock).mockResolvedValue(
+        mockSession
+      )
 
       const result = await createCheckoutSession({
         businessId: 'business-123',
@@ -66,7 +73,8 @@ describe('Stripe Checkout Service', () => {
           },
         ],
         mode: 'payment',
-        success_url: 'http://localhost:3000/purchase/success?session_id={CHECKOUT_SESSION_ID}',
+        success_url:
+          'http://localhost:3000/purchase/success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url: 'http://localhost:3000/purchase/cancel',
         customer_email: 'test@example.com',
         metadata: {
@@ -102,7 +110,6 @@ describe('Stripe Checkout Service', () => {
         get: jest.fn(),
         set: jest.fn(),
       }
-      
       ;(LRUCache as jest.Mock) = jest.fn(() => mockCache)
     })
 
@@ -132,7 +139,9 @@ describe('Stripe Checkout Service', () => {
       }
 
       mockCache.get.mockReturnValue(null)
-      ;(stripe.checkout.sessions.retrieve as jest.Mock).mockResolvedValue(mockSession)
+      ;(stripe.checkout.sessions.retrieve as jest.Mock).mockResolvedValue(
+        mockSession
+      )
 
       // Need to re-import the module to get fresh instance with new mock
       jest.resetModules()
@@ -141,9 +150,12 @@ describe('Stripe Checkout Service', () => {
       const result = await retrieveSessionFresh('cs_test_123')
 
       expect(result).toEqual(mockSession)
-      expect(stripe.checkout.sessions.retrieve).toHaveBeenCalledWith('cs_test_123', {
-        expand: ['payment_intent', 'customer'],
-      })
+      expect(stripe.checkout.sessions.retrieve).toHaveBeenCalledWith(
+        'cs_test_123',
+        {
+          expand: ['payment_intent', 'customer'],
+        }
+      )
       expect(mockCache.set).toHaveBeenCalledWith('cs_test_123', mockSession)
     })
 
@@ -154,7 +166,9 @@ describe('Stripe Checkout Service', () => {
       }
 
       ;(LRUCache as jest.Mock).mockImplementation(() => mockCache)
-      ;(stripe.checkout.sessions.retrieve as jest.Mock).mockRejectedValue(new Error('Not found'))
+      ;(stripe.checkout.sessions.retrieve as jest.Mock).mockRejectedValue(
+        new Error('Not found')
+      )
 
       const result = await retrieveSession('cs_test_123')
 

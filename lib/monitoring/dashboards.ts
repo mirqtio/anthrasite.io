@@ -44,7 +44,7 @@ export const metrics: Record<string, MetricDefinition> = {
     type: 'gauge',
     tags: ['page'],
   },
-  
+
   // API metrics
   'api.request.count': {
     name: 'API Request Count',
@@ -60,7 +60,7 @@ export const metrics: Record<string, MetricDefinition> = {
     type: 'histogram',
     tags: ['endpoint', 'method'],
   },
-  
+
   // Business metrics
   'business.waitlist.signups': {
     name: 'Waitlist Signups',
@@ -83,7 +83,7 @@ export const metrics: Record<string, MetricDefinition> = {
     type: 'counter',
     tags: ['plan', 'currency'],
   },
-  
+
   // Error metrics
   'error.count': {
     name: 'Error Count',
@@ -92,7 +92,7 @@ export const metrics: Record<string, MetricDefinition> = {
     type: 'counter',
     tags: ['type', 'severity', 'source'],
   },
-  
+
   // Database metrics
   'db.query.count': {
     name: 'Database Query Count',
@@ -126,7 +126,11 @@ export const dashboards: Dashboard[] = [
       {
         title: 'Core Web Vitals',
         type: 'timeseries',
-        metrics: ['web.performance.lcp', 'web.performance.fid', 'web.performance.cls'],
+        metrics: [
+          'web.performance.lcp',
+          'web.performance.fid',
+          'web.performance.cls',
+        ],
         aggregation: 'avg',
       },
       {
@@ -138,12 +142,16 @@ export const dashboards: Dashboard[] = [
       {
         title: 'Performance Score',
         type: 'number',
-        metrics: ['web.performance.lcp', 'web.performance.fid', 'web.performance.cls'],
+        metrics: [
+          'web.performance.lcp',
+          'web.performance.fid',
+          'web.performance.cls',
+        ],
         aggregation: 'avg',
       },
     ],
   },
-  
+
   {
     name: 'API Health',
     description: 'API performance and error rates',
@@ -178,7 +186,7 @@ export const dashboards: Dashboard[] = [
       },
     ],
   },
-  
+
   {
     name: 'Business Metrics',
     description: 'Key business performance indicators',
@@ -210,7 +218,7 @@ export const dashboards: Dashboard[] = [
       },
     ],
   },
-  
+
   {
     name: 'Database Performance',
     description: 'Database query performance and connection pool health',
@@ -244,7 +252,7 @@ export const dashboards: Dashboard[] = [
       },
     ],
   },
-  
+
   {
     name: 'Error Tracking',
     description: 'Application errors and issues',
@@ -278,14 +286,14 @@ export const getDatadogDashboardConfig = (dashboard: Dashboard) => {
   return {
     title: dashboard.name,
     description: dashboard.description,
-    widgets: dashboard.widgets.map(widget => ({
+    widgets: dashboard.widgets.map((widget) => ({
       definition: {
         title: widget.title,
         type: widget.type,
         requests: [
           {
             q: widget.metrics
-              .map(metric => `${widget.aggregation || 'avg'}:${metric}{*}`)
+              .map((metric) => `${widget.aggregation || 'avg'}:${metric}{*}`)
               .join(', '),
             display_type: widget.type === 'timeseries' ? 'line' : widget.type,
           },

@@ -9,36 +9,42 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'anthracite': {
-          'black': '#0A0A0A',
-          'white': '#FFFFFF',
-          'blue': '#0066FF',
-          'gray': {
+        anthracite: {
+          black: '#0A0A0A',
+          white: '#FFFFFF',
+          blue: '#0066FF',
+          gray: {
             '50': '#FAFAFA',
             '100': '#F5F5F5',
             '200': '#E5E5E5',
           },
-          'error': '#FF3B30',
-        }
+          error: '#FF3B30',
+        },
       },
       fontFamily: {
-        'sans': ['var(--font-inter)', 'Helvetica Now', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: [
+          'var(--font-inter)',
+          'Helvetica Now',
+          'system-ui',
+          '-apple-system',
+          'sans-serif',
+        ],
       },
       fontSize: {
-        'hero': ['64px', { lineHeight: '1.1', fontWeight: '300' }],
+        hero: ['64px', { lineHeight: '1.1', fontWeight: '300' }],
         'hero-mobile': ['40px', { lineHeight: '1.1', fontWeight: '300' }],
-        'subheadline': ['18px', { lineHeight: '1.5', fontWeight: '400' }],
+        subheadline: ['18px', { lineHeight: '1.5', fontWeight: '400' }],
         'business-name': ['32px', { lineHeight: '1.2', fontWeight: '500' }],
-        'label': ['14px', { lineHeight: '1.5', fontWeight: '400' }],
+        label: ['14px', { lineHeight: '1.5', fontWeight: '400' }],
         'value-prop': ['48px', { lineHeight: '1.1', fontWeight: '300' }],
-        'button': ['18px', { lineHeight: '1', fontWeight: '500' }],
+        button: ['18px', { lineHeight: '1', fontWeight: '500' }],
       },
       spacing: {
         '18': '4.5rem',
         '56': '14rem',
       },
       height: {
-        'button': '56px',
+        button: '56px',
       },
       width: {
         'button-desktop': '400px',
@@ -85,13 +91,13 @@ const config: Config = {
         '800': '800ms',
       },
       borderRadius: {
-        'button': '0px',
-        'card': '20px',
+        button: '0px',
+        card: '20px',
       },
       boxShadow: {
-        'card': '0 2px 8px rgba(0, 0, 0, 0.04)',
-        'button': '0 4px 16px rgba(0, 102, 255, 0.2)',
-        'help': '0 4px 24px rgba(0, 0, 0, 0.12)',
+        card: '0 2px 8px rgba(0, 0, 0, 0.04)',
+        button: '0 4px 16px rgba(0, 102, 255, 0.2)',
+        help: '0 4px 24px rgba(0, 0, 0, 0.12)',
       },
     },
   },

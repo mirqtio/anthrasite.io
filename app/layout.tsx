@@ -9,10 +9,10 @@ import { ConditionalHelpWidget } from '@/components/help/ConditionalHelpWidget'
 import { Analytics, AnalyticsNoScript } from '@/app/_components/Analytics'
 import './globals.css'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-inter'
+  variable: '--font-inter',
 })
 
 export const metadata: Metadata = {
@@ -30,7 +30,11 @@ export default function RootLayout({
       <head>
         {/* Preconnect to critical third-party domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
       </head>

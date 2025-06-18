@@ -5,7 +5,8 @@ const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 
 // PostHog configuration
 const POSTHOG_API_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY
-const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com'
+const POSTHOG_HOST =
+  process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com'
 
 // Track if scripts are loaded
 let gaLoaded = false
@@ -25,19 +26,19 @@ const ANALYTICS_COOKIES = [
 // Clear cookies by name pattern
 function clearCookies(patterns: string[]) {
   const cookies = document.cookie.split(';')
-  
+
   cookies.forEach((cookie) => {
     const eqPos = cookie.indexOf('=')
     const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim()
-    
+
     // Check if cookie matches any pattern
-    const shouldDelete = patterns.some(pattern => {
+    const shouldDelete = patterns.some((pattern) => {
       if (pattern.endsWith('*')) {
         return name.startsWith(pattern.slice(0, -1))
       }
       return name === pattern
     })
-    
+
     if (shouldDelete) {
       // Delete cookie for current domain and all parent domains
       const domains = [
@@ -45,11 +46,11 @@ function clearCookies(patterns: string[]) {
         '.' + window.location.hostname,
         window.location.hostname.replace(/^www\./, '.'),
       ]
-      
+
       const paths = ['/', window.location.pathname]
-      
-      domains.forEach(domain => {
-        paths.forEach(path => {
+
+      domains.forEach((domain) => {
+        paths.forEach((path) => {
           document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain}`
           document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}`
         })
@@ -61,10 +62,10 @@ function clearCookies(patterns: string[]) {
 // Load Google Analytics 4
 function loadGoogleAnalytics() {
   if (gaLoaded || !GA_MEASUREMENT_ID) return
-  
+
   // Create gtag function
   window.dataLayer = window.dataLayer || []
-  ;(window as any).gtag = function() {
+  ;(window as any).gtag = function () {
     window.dataLayer!.push(arguments)
   }
   ;(window as any).gtag('js', new Date())
@@ -73,7 +74,7 @@ function loadGoogleAnalytics() {
     anonymize_ip: true, // GDPR compliance
     cookie_flags: 'SameSite=Strict;Secure',
   })
-  
+
   // Load GA script
   const script = document.createElement('script')
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
@@ -91,7 +92,7 @@ function loadGoogleAnalytics() {
 // Load PostHog
 function loadPostHog() {
   if (posthogLoaded || !POSTHOG_API_KEY) return
-  
+
   // PostHog initialization script
   const script = document.createElement('script')
   script.innerHTML = `
@@ -107,30 +108,30 @@ function loadPostHog() {
       cookie_name: 'ph_${POSTHOG_API_KEY}_posthog',
     })
   `
-  
+
   script.onload = () => {
     posthogLoaded = true
     console.log('PostHog loaded')
   }
-  
+
   document.head.appendChild(script)
 }
 
 // Unload Google Analytics
 function unloadGoogleAnalytics() {
   if (!gaLoaded) return
-  
+
   // Disable GA tracking
   if (window.gtag && GA_MEASUREMENT_ID) {
     ;(window as any).gtag('config', GA_MEASUREMENT_ID, {
-      'send_page_view': false,
+      send_page_view: false,
     })
     ;(window as any)[`ga-disable-${GA_MEASUREMENT_ID}`] = true
   }
-  
+
   // Clear GA cookies
   clearCookies(['_ga', '_ga_*', '_gid', '_gat', '_gat_*'])
-  
+
   gaLoaded = false
   console.log('Google Analytics unloaded')
 }
@@ -138,16 +139,16 @@ function unloadGoogleAnalytics() {
 // Unload PostHog
 function unloadPostHog() {
   if (!posthogLoaded) return
-  
+
   // Opt out of PostHog tracking
   if (window.posthog) {
     window.posthog.opt_out_capturing()
     window.posthog.reset()
   }
-  
+
   // Clear PostHog cookies
   clearCookies(['ph_*', 'posthog'])
-  
+
   posthogLoaded = false
   console.log('PostHog unloaded')
 }
@@ -156,12 +157,12 @@ function unloadPostHog() {
 export function initializeAnalytics(preferences: ConsentPreferences | null) {
   // Only run in browser environment
   if (typeof window === 'undefined') return
-  
+
   if (!preferences) {
     // No consent given yet, don't load anything
     return
   }
-  
+
   // Handle analytics consent
   if (preferences.analytics) {
     loadGoogleAnalytics()
@@ -174,8 +175,9 @@ export function initializeAnalytics(preferences: ConsentPreferences | null) {
 
 // Listen for consent updates
 if (typeof window !== 'undefined') {
-  window.addEventListener('consentUpdated', ((event: CustomEvent<ConsentPreferences>) => {
+  window.addEventListener('consentUpdated', ((
+    event: CustomEvent<ConsentPreferences>
+  ) => {
     initializeAnalytics(event.detail)
   }) as EventListener)
 }
-

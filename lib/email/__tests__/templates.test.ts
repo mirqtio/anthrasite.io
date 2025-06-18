@@ -1,8 +1,16 @@
 import { orderConfirmationTemplate } from '../templates/orderConfirmation'
 import { reportReadyTemplate } from '../templates/reportReady'
 import { welcomeEmailTemplate } from '../templates/welcomeEmail'
-import { baseTemplate, emailButton, emailDivider } from '../templates/base-template'
-import type { OrderConfirmationData, ReportReadyData, WelcomeEmailData } from '../types'
+import {
+  baseTemplate,
+  emailButton,
+  emailDivider,
+} from '../templates/base-template'
+import type {
+  OrderConfirmationData,
+  ReportReadyData,
+  WelcomeEmailData,
+} from '../types'
 
 describe('Email Templates', () => {
   describe('baseTemplate', () => {

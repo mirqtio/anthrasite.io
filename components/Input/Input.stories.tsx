@@ -81,7 +81,8 @@ export const WithCharacterCount: Story = {
     placeholder: 'Tell us about yourself...',
     showCount: true,
     maxLength: 150,
-    defaultValue: 'I am a software developer with a passion for building great user experiences.',
+    defaultValue:
+      'I am a software developer with a passion for building great user experiences.',
   },
 }
 

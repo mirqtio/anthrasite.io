@@ -20,7 +20,7 @@ export function getStripe(): Stripe {
 export const stripe = new Proxy({} as Stripe, {
   get(target, prop, receiver) {
     return Reflect.get(getStripe(), prop, receiver)
-  }
+  },
 })
 
 // Webhook configuration
@@ -31,7 +31,8 @@ export const REPORT_PRICE = {
   amount: 9900, // $99.00 in cents
   currency: 'usd' as const,
   productName: 'Website Audit Report',
-  productDescription: 'Comprehensive 50+ page website audit report with technical SEO analysis, performance optimization roadmap, and priority-ranked action items.',
+  productDescription:
+    'Comprehensive 50+ page website audit report with technical SEO analysis, performance optimization roadmap, and priority-ranked action items.',
 }
 
 // URLs for Stripe checkout
@@ -48,10 +49,12 @@ export function validateStripeConfig() {
     'STRIPE_WEBHOOK_SECRET',
     'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
   ]
-  
-  const missing = required.filter(key => !process.env[key])
-  
+
+  const missing = required.filter((key) => !process.env[key])
+
   if (missing.length > 0) {
-    throw new Error(`Missing required Stripe environment variables: ${missing.join(', ')}`)
+    throw new Error(
+      `Missing required Stripe environment variables: ${missing.join(', ')}`
+    )
   }
 }

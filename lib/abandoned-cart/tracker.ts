@@ -17,10 +17,10 @@ export async function trackCheckoutSession({
   try {
     // Generate a unique recovery token
     const recoveryToken = randomBytes(32).toString('hex')
-    
+
     // Extract session expiration time
     const sessionExpiresAt = new Date(session.expires_at * 1000)
-    
+
     // Create abandoned cart record
     await prisma.abandonedCart.create({
       data: {
@@ -34,7 +34,7 @@ export async function trackCheckoutSession({
         sessionExpiresAt,
       },
     })
-    
+
     return { success: true, recoveryToken }
   } catch (error) {
     console.error('Failed to track checkout session:', error)
@@ -53,7 +53,7 @@ export async function markSessionCompleted(stripeSessionId: string) {
         stripeSessionId,
       },
     })
-    
+
     return { success: true }
   } catch (error) {
     console.error('Failed to mark session as completed:', error)
@@ -64,29 +64,31 @@ export async function markSessionCompleted(stripeSessionId: string) {
 /**
  * Checks if a session is recoverable (not expired, not completed)
  */
-export async function isSessionRecoverable(stripeSessionId: string): Promise<boolean> {
+export async function isSessionRecoverable(
+  stripeSessionId: string
+): Promise<boolean> {
   try {
     const abandonedCart = await prisma.abandonedCart.findUnique({
       where: {
         stripeSessionId,
       },
     })
-    
+
     if (!abandonedCart) {
       return false
     }
-    
+
     // Check if session hasn't expired
     const now = new Date()
     if (abandonedCart.sessionExpiresAt < now) {
       return false
     }
-    
+
     // Check if not already recovered
     if (abandonedCart.recovered) {
       return false
     }
-    
+
     return true
   } catch (error) {
     console.error('Failed to check session recoverability:', error)
@@ -107,7 +109,7 @@ export async function getAbandonedCartByToken(recoveryToken: string) {
         business: true,
       },
     })
-    
+
     return abandonedCart
   } catch (error) {
     console.error('Failed to get abandoned cart by token:', error)
@@ -127,7 +129,7 @@ export async function markCartRecovered(id: string) {
         recoveredAt: new Date(),
       },
     })
-    
+
     return { success: true }
   } catch (error) {
     console.error('Failed to mark cart as recovered:', error)

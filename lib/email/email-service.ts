@@ -4,7 +4,10 @@ import { emailQueue } from './queue'
 import { orderConfirmationTemplate } from './templates/orderConfirmation'
 import { reportReadyTemplate } from './templates/reportReady'
 import { welcomeEmailTemplate } from './templates/welcomeEmail'
-import { cartRecoveryEmail, CartRecoveryEmailData } from './templates/cartRecovery'
+import {
+  cartRecoveryEmail,
+  CartRecoveryEmailData,
+} from './templates/cartRecovery'
 import type {
   EmailDeliveryResult,
   EmailOptions,
@@ -58,7 +61,9 @@ async function sendEmail(
 
     // Add categories for tracking
     if (options?.categories || metadata?.template) {
-      msg.categories = options?.categories || [metadata?.template || 'transactional']
+      msg.categories = options?.categories || [
+        metadata?.template || 'transactional',
+      ]
     }
 
     // Add custom args for webhook tracking
@@ -85,7 +90,8 @@ async function sendEmail(
     console.error('Failed to send email:', error)
 
     // Extract error details
-    const errorMessage = error.response?.body?.errors?.[0]?.message || error.message
+    const errorMessage =
+      error.response?.body?.errors?.[0]?.message || error.message
 
     return {
       success: false,
@@ -178,9 +184,11 @@ export async function sendWelcomeEmail(
 /**
  * Retry sending a queued email
  */
-export async function retryQueuedEmail(queueItemId: string): Promise<EmailDeliveryResult> {
+export async function retryQueuedEmail(
+  queueItemId: string
+): Promise<EmailDeliveryResult> {
   const items = emailQueue.getAllItems()
-  const item = items.find(i => i.id === queueItemId)
+  const item = items.find((i) => i.id === queueItemId)
 
   if (!item) {
     return {
@@ -204,7 +212,9 @@ export async function retryQueuedEmail(queueItemId: string): Promise<EmailDelive
       result = await sendWelcomeEmail(item.data as WelcomeEmailData)
       break
     case 'cartRecovery':
-      result = await sendCartRecoveryEmail(item.data as CartRecoveryEmailData & { to: string })
+      result = await sendCartRecoveryEmail(
+        item.data as CartRecoveryEmailData & { to: string }
+      )
       break
     default:
       result = {
@@ -228,25 +238,27 @@ export async function processRetryQueue(): Promise<void> {
 
   for (const item of items) {
     await retryQueuedEmail(item.id)
-    
+
     // Add small delay between sends to avoid rate limits
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 100))
   }
 }
 
 /**
  * Send cart recovery email
  */
-export async function sendCartRecoveryEmail(data: CartRecoveryEmailData & { to: string }): Promise<EmailDeliveryResult> {
+export async function sendCartRecoveryEmail(
+  data: CartRecoveryEmailData & { to: string }
+): Promise<EmailDeliveryResult> {
   const htmlContent = cartRecoveryEmail(data)
   const subject = `Complete your purchase for ${data.businessName}`
-  
+
   const metadata: EmailMetadata = {
     template: 'cartRecovery',
     businessId: data.businessName,
     timestamp: new Date(),
   }
-  
+
   const options: EmailOptions = {
     categories: ['cart_recovery'],
     customArgs: {
@@ -254,14 +266,20 @@ export async function sendCartRecoveryEmail(data: CartRecoveryEmailData & { to: 
       amount: data.amount,
     },
   }
-  
-  const result = await sendEmail(data.to, subject, htmlContent, options, metadata)
-  
+
+  const result = await sendEmail(
+    data.to,
+    subject,
+    htmlContent,
+    options,
+    metadata
+  )
+
   // Queue for retry if failed
   if (!result.success && result.error !== 'Email service not configured') {
     emailQueue.add('cartRecovery', data, metadata, result.error)
   }
-  
+
   return result
 }
 

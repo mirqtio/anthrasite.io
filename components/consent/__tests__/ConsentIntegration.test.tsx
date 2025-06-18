@@ -4,7 +4,7 @@ import { ConsentManager } from '../ConsentManager'
 
 // Mock the analytics module
 jest.mock('@/lib/analytics/consent-loader', () => ({
-  initializeAnalytics: jest.fn()
+  initializeAnalytics: jest.fn(),
 }))
 
 import { initializeAnalytics } from '@/lib/analytics/consent-loader'
@@ -32,19 +32,23 @@ describe('Consent Integration', () => {
 
     // Banner should disappear
     await waitFor(() => {
-      expect(screen.queryByText('We value your privacy')).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('We value your privacy')
+      ).not.toBeInTheDocument()
     })
 
     // Analytics should be initialized with consent
     expect(initializeAnalytics).toHaveBeenCalledWith(
       expect.objectContaining({
         analytics: true,
-        functional: true
+        functional: true,
       })
     )
 
     // Check localStorage
-    const stored = JSON.parse(localStorage.getItem('anthrasite_cookie_consent') || '{}')
+    const stored = JSON.parse(
+      localStorage.getItem('anthrasite_cookie_consent') || '{}'
+    )
     expect(stored.preferences.analytics).toBe(true)
     expect(stored.preferences.functional).toBe(true)
   })
@@ -63,13 +67,15 @@ describe('Consent Integration', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Reject all cookies' }))
 
     await waitFor(() => {
-      expect(screen.queryByText('We value your privacy')).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('We value your privacy')
+      ).not.toBeInTheDocument()
     })
 
     expect(initializeAnalytics).toHaveBeenCalledWith(
       expect.objectContaining({
         analytics: false,
-        functional: false
+        functional: false,
       })
     )
   })
@@ -86,7 +92,9 @@ describe('Consent Integration', () => {
     })
 
     // Open preferences
-    fireEvent.click(screen.getByRole('button', { name: 'Manage cookie preferences' }))
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Manage cookie preferences' })
+    )
 
     // Modal should open
     await waitFor(() => {
@@ -95,7 +103,9 @@ describe('Consent Integration', () => {
     })
 
     // Toggle analytics on
-    const analyticsToggle = screen.getByRole('switch', { name: /Analytics Cookies/ })
+    const analyticsToggle = screen.getByRole('switch', {
+      name: /Analytics Cookies/,
+    })
     fireEvent.click(analyticsToggle)
 
     // Save preferences
@@ -104,28 +114,33 @@ describe('Consent Integration', () => {
     // Modal should close and banner should disappear
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      expect(screen.queryByText('We value your privacy')).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('We value your privacy')
+      ).not.toBeInTheDocument()
     })
 
     // Check that analytics was initialized with correct preferences
     expect(initializeAnalytics).toHaveBeenLastCalledWith(
       expect.objectContaining({
         analytics: true,
-        functional: true
+        functional: true,
       })
     )
   })
 
   it('should remember consent on page reload', async () => {
     // Set previous consent
-    localStorage.setItem('anthrasite_cookie_consent', JSON.stringify({
-      version: '1.0',
-      preferences: {
-        analytics: true,
-        functional: false,
-        timestamp: new Date().toISOString()
-      }
-    }))
+    localStorage.setItem(
+      'anthrasite_cookie_consent',
+      JSON.stringify({
+        version: '1.0',
+        preferences: {
+          analytics: true,
+          functional: false,
+          timestamp: new Date().toISOString(),
+        },
+      })
+    )
 
     render(
       <ConsentProvider>
@@ -134,29 +149,37 @@ describe('Consent Integration', () => {
     )
 
     // Banner should not be shown
-    await waitFor(() => {
-      expect(screen.queryByText('We value your privacy')).not.toBeInTheDocument()
-    }, { timeout: 1000 })
+    await waitFor(
+      () => {
+        expect(
+          screen.queryByText('We value your privacy')
+        ).not.toBeInTheDocument()
+      },
+      { timeout: 1000 }
+    )
 
     // Analytics should be initialized with stored preferences
     expect(initializeAnalytics).toHaveBeenCalledWith(
       expect.objectContaining({
         analytics: true,
-        functional: false
+        functional: false,
       })
     )
   })
 
   it('should show banner again if consent version changes', async () => {
     // Set old version consent
-    localStorage.setItem('anthrasite_cookie_consent', JSON.stringify({
-      version: '0.9',
-      preferences: {
-        analytics: true,
-        functional: true,
-        timestamp: new Date().toISOString()
-      }
-    }))
+    localStorage.setItem(
+      'anthrasite_cookie_consent',
+      JSON.stringify({
+        version: '0.9',
+        preferences: {
+          analytics: true,
+          functional: true,
+          timestamp: new Date().toISOString(),
+        },
+      })
+    )
 
     render(
       <ConsentProvider>

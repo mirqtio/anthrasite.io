@@ -4,47 +4,49 @@ import { useEffect, useState } from 'react'
 
 export default function DebugDatadogPage() {
   const [status, setStatus] = useState<any>({})
-  
+
   useEffect(() => {
     // Check environment variables
     const envStatus = {
       applicationId: process.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID,
-      clientToken: process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN ? '✅ Set' : '❌ Missing',
+      clientToken: process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN
+        ? '✅ Set'
+        : '❌ Missing',
       site: process.env.NEXT_PUBLIC_DATADOG_SITE,
     }
-    
+
     // Check if Datadog is loaded
     const checkDatadog = () => {
       const ddRum = (window as any).DD_RUM
       const ddLogs = (window as any).DD_LOGS
-      
+
       setStatus({
         env: envStatus,
         rum: {
           loaded: !!ddRum,
           initialized: ddRum?.getInternalContext ? '✅ Yes' : '❌ No',
-          context: ddRum?.getInternalContext?.() || 'Not available'
+          context: ddRum?.getInternalContext?.() || 'Not available',
         },
         logs: {
           loaded: !!ddLogs,
-          initialized: ddLogs?.logger ? '✅ Yes' : '❌ No'
+          initialized: ddLogs?.logger ? '✅ Yes' : '❌ No',
         },
         window: {
           datadogRum: !!(window as any).datadogRum,
-          datadogLogs: !!(window as any).datadogLogs
-        }
+          datadogLogs: !!(window as any).datadogLogs,
+        },
       })
     }
-    
+
     // Check immediately and after a delay
     checkDatadog()
     setTimeout(checkDatadog, 2000)
   }, [])
-  
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Datadog Debug Information</h1>
-      
+
       <div className="space-y-6">
         <section>
           <h2 className="text-xl font-semibold mb-2">Environment Variables</h2>
@@ -52,32 +54,32 @@ export default function DebugDatadogPage() {
             {JSON.stringify(status.env, null, 2)}
           </pre>
         </section>
-        
+
         <section>
           <h2 className="text-xl font-semibold mb-2">RUM Status</h2>
           <pre className="bg-gray-100 p-4 rounded overflow-auto">
             {JSON.stringify(status.rum, null, 2)}
           </pre>
         </section>
-        
+
         <section>
           <h2 className="text-xl font-semibold mb-2">Logs Status</h2>
           <pre className="bg-gray-100 p-4 rounded overflow-auto">
             {JSON.stringify(status.logs, null, 2)}
           </pre>
         </section>
-        
+
         <section>
           <h2 className="text-xl font-semibold mb-2">Window Objects</h2>
           <pre className="bg-gray-100 p-4 rounded overflow-auto">
             {JSON.stringify(status.window, null, 2)}
           </pre>
         </section>
-        
+
         <section>
           <h2 className="text-xl font-semibold mb-2">Test Actions</h2>
           <div className="space-x-4">
-            <button 
+            <button
               onClick={() => {
                 try {
                   const ddRum = (window as any).DD_RUM
@@ -95,8 +97,8 @@ export default function DebugDatadogPage() {
             >
               Send Test Action
             </button>
-            
-            <button 
+
+            <button
               onClick={() => {
                 try {
                   throw new Error('Test error for Datadog')

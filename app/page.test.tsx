@@ -9,11 +9,15 @@ jest.mock('@/lib/context/SiteModeContext', () => ({
 
 // Mock the homepage components
 jest.mock('@/components/homepage/OrganicHomepage', () => ({
-  OrganicHomepage: () => <div data-testid="organic-homepage">Organic Homepage</div>,
+  OrganicHomepage: () => (
+    <div data-testid="organic-homepage">Organic Homepage</div>
+  ),
 }))
 
 jest.mock('@/components/homepage/PurchaseHomepage', () => ({
-  PurchaseHomepage: () => <div data-testid="purchase-homepage">Purchase Homepage</div>,
+  PurchaseHomepage: () => (
+    <div data-testid="purchase-homepage">Purchase Homepage</div>
+  ),
 }))
 
 describe('HomePage', () => {
@@ -34,10 +38,18 @@ describe('HomePage', () => {
 
     // Check for loading state - now it's just an animated square
     const loadingContainer = screen.getByRole('main')
-    expect(loadingContainer).toHaveClass('min-h-screen', 'bg-white', 'flex', 'items-center', 'justify-center')
-    
+    expect(loadingContainer).toHaveClass(
+      'min-h-screen',
+      'bg-white',
+      'flex',
+      'items-center',
+      'justify-center'
+    )
+
     // Check for the animated square
-    const animatedSquare = loadingContainer.querySelector('.bg-anthracite-black')
+    const animatedSquare = loadingContainer.querySelector(
+      '.bg-anthracite-black'
+    )
     expect(animatedSquare).toBeInTheDocument()
     expect(animatedSquare).toHaveClass('w-8', 'h-8', 'animate-pulse')
 

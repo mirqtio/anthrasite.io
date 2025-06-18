@@ -7,17 +7,17 @@ export const usePageTracking = () => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const previousPath = useRef<string | undefined>(undefined)
-  
+
   useEffect(() => {
     const currentPath = pathname + (searchParams ? `?${searchParams}` : '')
-    
+
     if (previousPath.current !== currentPath) {
       trackEvent('page_view', {
         path: pathname,
         search: searchParams?.toString(),
         referrer: previousPath.current,
       })
-      
+
       previousPath.current = currentPath
     }
   }, [pathname, searchParams])
@@ -27,10 +27,10 @@ export const usePageTracking = () => {
 export const useRenderTracking = (componentName: string) => {
   const renderCount = useRef(0)
   const mountTime = useRef(Date.now())
-  
+
   useEffect(() => {
     renderCount.current++
-    
+
     // Track excessive re-renders
     if (renderCount.current > 10) {
       trackEvent('performance.excessive_renders', {
@@ -40,7 +40,7 @@ export const useRenderTracking = (componentName: string) => {
       })
     }
   })
-  
+
   useEffect(() => {
     return () => {
       // Track component lifecycle
@@ -70,15 +70,15 @@ export const useApiTracking = () => {
     apiCall: () => Promise<T>
   ): Promise<T> => {
     const transaction = startTransaction(`api.${apiName}`, 'http.client')
-    
+
     try {
       const startTime = performance.now()
       const result = await apiCall()
       const duration = performance.now() - startTime
-      
+
       // Track the performance manually
       trackEvent(`api_performance.${apiName}`, { duration })
-      
+
       transaction.setStatus('ok')
       return result
     } catch (error) {
@@ -88,19 +88,19 @@ export const useApiTracking = () => {
       transaction.finish()
     }
   }
-  
+
   return { track }
 }
 
 // Track form interactions
 export const useFormTracking = (formName: string) => {
   const startTime = useRef<number | undefined>(undefined)
-  
+
   const trackStart = () => {
     startTime.current = Date.now()
     trackEvent('form.started', { form: formName })
   }
-  
+
   const trackField = (fieldName: string, isValid: boolean) => {
     trackEvent('form.field_interaction', {
       form: formName,
@@ -108,26 +108,26 @@ export const useFormTracking = (formName: string) => {
       valid: isValid,
     })
   }
-  
+
   const trackSubmit = (success: boolean, errors?: string[]) => {
     const duration = startTime.current ? Date.now() - startTime.current : 0
-    
+
     trackEvent(success ? 'form.submitted' : 'form.error', {
       form: formName,
       duration,
       errors,
     })
   }
-  
+
   const trackAbandon = () => {
     const duration = startTime.current ? Date.now() - startTime.current : 0
-    
+
     trackEvent('form.abandoned', {
       form: formName,
       duration,
     })
   }
-  
+
   return {
     trackStart,
     trackField,
@@ -145,7 +145,7 @@ export const usePurchaseFunnelTracking = () => {
       ...metadata,
     })
   }
-  
+
   const trackConversion = (amount: number, currency: string = 'USD') => {
     trackEvent('funnel.purchase_completed', {
       amount,
@@ -153,7 +153,7 @@ export const usePurchaseFunnelTracking = () => {
       timestamp: Date.now(),
     })
   }
-  
+
   const trackAbandonment = (step: string, reason?: string) => {
     trackEvent('funnel.abandoned', {
       step,
@@ -161,7 +161,7 @@ export const usePurchaseFunnelTracking = () => {
       timestamp: Date.now(),
     })
   }
-  
+
   return {
     trackStep,
     trackConversion,
@@ -175,18 +175,18 @@ export const usePerformanceObserver = () => {
     if (typeof window === 'undefined' || !window.PerformanceObserver) {
       return
     }
-    
+
     // Observe Largest Contentful Paint
     const lcpObserver = new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries()
       const lastEntry = entries[entries.length - 1]
-      
+
       trackEvent('performance.lcp', {
         value: lastEntry.startTime,
         element: (lastEntry as any).element?.tagName,
       })
     })
-    
+
     // Observe First Input Delay
     const fidObserver = new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries()
@@ -197,23 +197,23 @@ export const usePerformanceObserver = () => {
         })
       })
     })
-    
+
     // Observe Cumulative Layout Shift
     const clsObserver = new PerformanceObserver((entryList) => {
       const entries = entryList.getEntries()
       let cls = 0
-      
+
       entries.forEach((entry) => {
         if (!(entry as any).hadRecentInput) {
           cls += (entry as any).value
         }
       })
-      
+
       trackEvent('performance.cls', {
         value: cls,
       })
     })
-    
+
     try {
       lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
       fidObserver.observe({ type: 'first-input', buffered: true })
@@ -221,7 +221,7 @@ export const usePerformanceObserver = () => {
     } catch (e) {
       // Some browsers don't support all performance entry types
     }
-    
+
     return () => {
       lcpObserver.disconnect()
       fidObserver.disconnect()

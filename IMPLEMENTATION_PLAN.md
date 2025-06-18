@@ -1,9 +1,11 @@
 # Anthrasite.io Implementation Plan
 
 ## Overview
+
 This plan ensures coherent development through context limits by breaking the project into discrete, testable features. Each feature will be fully implemented, tested, and merged before proceeding to the next.
 
 ## Configuration Notes
+
 - **Database**: Vercel Postgres for production, local PostgreSQL for development
 - **Email**: SendGrid account available
 - **Payments**: Stripe account available
@@ -12,7 +14,9 @@ This plan ensures coherent development through context limits by breaking the pr
 - **Report Generation**: External system (out of scope) - triggered by Stripe webhook
 
 ## Critical Gap Additions
+
 This plan addresses all gaps identified in the gap analysis:
+
 - **SendGrid Integration**: Added in Phase 4.3
 - **Cookie Consent**: Added in Phase 3.3
 - **Monitoring/Alerting**: Added in Phase 1.5
@@ -26,6 +30,7 @@ This plan addresses all gaps identified in the gap analysis:
 ## Phase 1: Foundation & Infrastructure
 
 ### 1.1 Project Setup
+
 **Duration**: 1 day  
 **Dependencies**: None
 
@@ -36,16 +41,19 @@ This plan addresses all gaps identified in the gap analysis:
 - Set up ESLint, Prettier, and Husky
 
 **Test Strategy**:
+
 - Unit tests: Jest setup with React Testing Library
 - E2E tests: Playwright configuration
 - Coverage: Minimum 80% for all features
 
 **Acceptance Criteria**:
+
 - [ ] Project builds without errors
 - [ ] Test frameworks execute sample tests
 - [ ] Linting passes on pre-commit
 
 ### 1.2 CI/CD Pipeline & Environment Configuration
+
 **Duration**: 1 day  
 **Dependencies**: 1.1
 
@@ -58,12 +66,14 @@ This plan addresses all gaps identified in the gap analysis:
 - Environment variable documentation template
 
 **Test Strategy**:
+
 - Pipeline runs all tests on PR
 - Blocks merge if tests fail
 - Automated deployment to preview
 - Environment parity validation
 
 **Acceptance Criteria**:
+
 - [ ] PRs automatically run full test suite
 - [ ] Failed tests block merge
 - [ ] Successful merge deploys to staging
@@ -72,6 +82,7 @@ This plan addresses all gaps identified in the gap analysis:
 - [ ] Staging mirrors production config
 
 ### 1.3 Database Schema & Migrations
+
 **Duration**: 1 day  
 **Dependencies**: 1.1
 
@@ -86,12 +97,14 @@ This plan addresses all gaps identified in the gap analysis:
 - Database performance baselines
 
 **Test Strategy**:
+
 - Migration rollback tests
 - Seed data for testing
 - Database constraint validation
 - Connection pool stress testing
 
 **Acceptance Criteria**:
+
 - [ ] All tables created per PRD schema
 - [ ] Indexes properly configured
 - [ ] Migrations are reversible
@@ -100,6 +113,7 @@ This plan addresses all gaps identified in the gap analysis:
 - [ ] Query performance baselines established
 
 ### 1.4 Visual Design System
+
 **Duration**: 1 day  
 **Dependencies**: 1.1
 
@@ -109,17 +123,20 @@ This plan addresses all gaps identified in the gap analysis:
 - Loading states and skeleton screens
 
 **Test Strategy**:
+
 - Storybook for component documentation
 - Visual regression tests for components
 - Animation performance benchmarks
 
 **Acceptance Criteria**:
+
 - [ ] Design tokens match PRD specifications
 - [ ] Core components built (Button, Input, Card, etc.)
 - [ ] Animation utilities perform at 60fps
 - [ ] Loading states for all async operations
 
 ### 1.5 Monitoring & Alerting Setup
+
 **Duration**: 1 day  
 **Dependencies**: 1.1
 
@@ -129,11 +146,13 @@ This plan addresses all gaps identified in the gap analysis:
 - Performance monitoring baselines
 
 **Test Strategy**:
+
 - Test alert triggers
 - Verify error capture
 - Performance baseline validation
 
 **Acceptance Criteria**:
+
 - [ ] Datadog APM sending traces
 - [ ] Sentry capturing errors
 - [ ] Alert rules configured for payment/email failures
@@ -142,16 +161,19 @@ This plan addresses all gaps identified in the gap analysis:
 ## Phase 2: Core Security - UTM Parameter System
 
 ### 2.1 Cryptographic UTM Implementation
+
 **Duration**: 2 days  
 **Dependencies**: Phase 1
 
 **Backend Implementation**:
+
 - HMAC-SHA256 signing service
 - Base64URL encoding utilities
 - Token generation with expiration
 - Nonce generation for one-time use
 
 **Test Strategy (TDD)**:
+
 ```typescript
 // Write tests first:
 describe('UTM Signing Service', () => {
@@ -165,12 +187,14 @@ describe('UTM Signing Service', () => {
 ```
 
 **Acceptance Criteria**:
+
 - [ ] Generates cryptographically secure tokens
 - [ ] Tokens expire after 24 hours
 - [ ] One-time use enforcement works
 - [ ] Rate limiting implemented (10/min/IP)
 
 ### 2.2 UTM Validation API & Middleware
+
 **Duration**: 2 days  
 **Dependencies**: 2.1
 
@@ -180,13 +204,14 @@ describe('UTM Signing Service', () => {
 - Comprehensive error handling
 
 **Test Strategy (BDD)**:
+
 ```gherkin
 Feature: UTM Parameter Validation
   Scenario: Valid UTM parameters
     Given a valid UTM hash
     When user visits purchase page
     Then purchase data is displayed
-    
+
   Scenario: Expired UTM
     Given an expired UTM hash
     When user visits purchase page
@@ -194,11 +219,13 @@ Feature: UTM Parameter Validation
 ```
 
 **E2E Browser Tests**:
+
 - Valid flow: Email link → Purchase page
 - Invalid flow: Tampered URL → Error page
 - Expiration flow: Old link → Expiration page
 
 **Acceptance Criteria**:
+
 - [ ] Valid tokens return purchase data
 - [ ] Invalid tokens redirect appropriately
 - [ ] Rate limiting prevents abuse
@@ -207,6 +234,7 @@ Feature: UTM Parameter Validation
 ## Phase 3: Dual-Mode Homepage
 
 ### 3.1 Mode Detection & Routing
+
 **Duration**: 2 days  
 **Dependencies**: Phase 2
 
@@ -216,6 +244,7 @@ Feature: UTM Parameter Validation
 - Performance optimization
 
 **Test Strategy**:
+
 ```typescript
 describe('Homepage Mode Detection', () => {
   it('shows organic mode without UTM')
@@ -226,16 +255,19 @@ describe('Homepage Mode Detection', () => {
 ```
 
 **E2E Tests**:
+
 - Direct visit → Organic mode
 - Email link → Purchase mode
 - Mode persistence across refreshes
 
 **Acceptance Criteria**:
+
 - [ ] Correct mode detection 100% of time
 - [ ] Page loads in < 2.5s (LCP)
 - [ ] No layout shift between modes
 
 ### 3.2 Waitlist Implementation
+
 **Duration**: 2 days  
 **Dependencies**: 3.1
 
@@ -248,18 +280,19 @@ describe('Homepage Mode Detection', () => {
 - Typo suggestions for common domains
 
 **Test Strategy (BDD)**:
+
 ```gherkin
 Feature: Waitlist Signup
   Scenario: Valid domain submission
     Given user enters valid domain
     When DNS lookup succeeds
     Then email field appears
-    
+
   Scenario: Invalid domain
     Given user enters invalid domain
     When validation fails
     Then error message appears with suggestions
-    
+
   Scenario: Subdomain handling
     Given user enters "www.example.com"
     When validation runs
@@ -267,6 +300,7 @@ Feature: Waitlist Signup
 ```
 
 **Acceptance Criteria**:
+
 - [ ] DNS validation via Cloudflare DoH API
 - [ ] Results cached for 1 hour
 - [ ] Subdomain normalization working
@@ -276,6 +310,7 @@ Feature: Waitlist Signup
 - [ ] Analytics events fire correctly
 
 ### 3.3 Cookie Consent Implementation
+
 **Duration**: 1 day  
 **Dependencies**: 3.1
 
@@ -285,17 +320,20 @@ Feature: Waitlist Signup
 - Consent change handling
 
 **Test Strategy**:
+
 - E2E tests for consent flows
 - Analytics blocking verification
 - Preference persistence tests
 
 **Acceptance Criteria**:
+
 - [ ] Consent banner appears on first visit
 - [ ] Analytics blocked until consent given
 - [ ] Preferences persist across sessions
 - [ ] Consent changes update analytics
 
 ### 3.4 A/B Testing Framework
+
 **Duration**: 2 days  
 **Dependencies**: 3.1, 3.2
 
@@ -305,11 +343,13 @@ Feature: Waitlist Signup
 - Statistical significance calculation
 
 **Test Strategy**:
+
 - Unit tests for assignment algorithm
 - Integration tests for config updates
 - E2E tests for variant persistence
 
 **Acceptance Criteria**:
+
 - [ ] Consistent variant assignment
 - [ ] Real-time config updates work
 - [ ] Analytics properly segmented
@@ -318,6 +358,7 @@ Feature: Waitlist Signup
 ## Phase 4: Purchase Flow
 
 ### 4.1 Purchase Page Implementation
+
 **Duration**: 2 days  
 **Dependencies**: Phase 2, Phase 3
 
@@ -327,6 +368,7 @@ Feature: Waitlist Signup
 - Mobile-optimized design
 
 **Test Strategy (E2E)**:
+
 ```typescript
 test('Complete purchase flow', async ({ page }) => {
   // Navigate with valid UTM
@@ -338,12 +380,14 @@ test('Complete purchase flow', async ({ page }) => {
 ```
 
 **Acceptance Criteria**:
+
 - [ ] Personalized content displays correctly
 - [ ] Stripe session creates successfully
 - [ ] Page follows design specifications
 - [ ] Mobile experience optimized
 
 ### 4.2 Stripe Integration & Webhooks
+
 **Duration**: 2 days  
 **Dependencies**: 4.1
 
@@ -357,6 +401,7 @@ test('Complete purchase flow', async ({ page }) => {
 - Session data caching for recovery
 
 **Test Strategy**:
+
 - Mock Stripe API for unit tests
 - Webhook replay tests
 - Idempotency verification
@@ -364,6 +409,7 @@ test('Complete purchase flow', async ({ page }) => {
 - Fallback flow testing
 
 **Acceptance Criteria**:
+
 - [ ] Payments process successfully
 - [ ] Webhooks handle all events
 - [ ] Duplicate prevention works
@@ -374,6 +420,7 @@ test('Complete purchase flow', async ({ page }) => {
 - [ ] Graceful handling of Stripe downtime
 
 ### 4.3 SendGrid Email Integration
+
 **Duration**: 2 days  
 **Dependencies**: 4.2
 
@@ -383,17 +430,20 @@ test('Complete purchase flow', async ({ page }) => {
 - Bounce/complaint handling
 
 **Test Strategy**:
+
 - Mock SendGrid API for tests
 - Template rendering validation
 - Email delivery monitoring
 
 **Acceptance Criteria**:
+
 - [ ] Order confirmation emails send on purchase
 - [ ] Email templates render correctly
 - [ ] Delivery tracking implemented
 - [ ] Bounce handling configured
 
 ### 4.4 Abandoned Cart Recovery
+
 **Duration**: 1 day  
 **Dependencies**: 4.2
 
@@ -403,11 +453,13 @@ test('Complete purchase flow', async ({ page }) => {
 - Recovery success metrics
 
 **Test Strategy**:
+
 - Timer accuracy tests
 - Recovery flow E2E tests
 - Analytics event validation
 
 **Acceptance Criteria**:
+
 - [ ] Timer triggers after 3 hours
 - [ ] Recovery emails send correctly
 - [ ] Analytics tracks abandonment/recovery
@@ -416,6 +468,7 @@ test('Complete purchase flow', async ({ page }) => {
 ## Phase 5: Help Widget
 
 ### 5.1 Floating Help Component
+
 **Duration**: 2 days  
 **Dependencies**: Phase 4
 
@@ -425,18 +478,21 @@ test('Complete purchase flow', async ({ page }) => {
 - Accessibility compliance
 
 **Test Strategy**:
+
 - Visual regression tests
 - Interaction tests
 - Performance benchmarks
 - Accessibility audits
 
 **Acceptance Criteria**:
+
 - [ ] Widget loads < 10KB
 - [ ] Animations smooth (60fps)
 - [ ] Keyboard navigation works
 - [ ] WCAG AA compliant
 
 ### 5.2 Visual Regression Testing Setup
+
 **Duration**: 1 day  
 **Dependencies**: 5.1
 
@@ -446,11 +502,13 @@ test('Complete purchase flow', async ({ page }) => {
 - Mobile responsive testing
 
 **Test Strategy**:
+
 - Playwright screenshot tests
 - Percy or similar integration
 - Viewport coverage tests
 
 **Acceptance Criteria**:
+
 - [ ] Visual tests for all key pages
 - [ ] Cross-browser screenshots match
 - [ ] Mobile layouts verified
@@ -459,6 +517,7 @@ test('Complete purchase flow', async ({ page }) => {
 ## Phase 6: Analytics Integration
 
 ### 6.1 Multi-Provider Setup
+
 **Duration**: 2 days  
 **Dependencies**: All previous phases
 
@@ -468,18 +527,21 @@ test('Complete purchase flow', async ({ page }) => {
 - Privacy compliance
 
 **Test Strategy**:
+
 - Mock provider APIs
 - Event validation tests
 - Consent flow testing
 - Data retention verification
 
 **Acceptance Criteria**:
+
 - [ ] All providers initialize correctly
 - [ ] Consent management works
 - [ ] Events fire to all providers
 - [ ] GDPR compliance verified
 
 ### 6.2 Server-Side Tracking
+
 **Duration**: 1 day  
 **Dependencies**: 6.1
 
@@ -489,12 +551,14 @@ test('Complete purchase flow', async ({ page }) => {
 - Real-time dashboards
 
 **Acceptance Criteria**:
+
 - [ ] Server events track accurately
 - [ ] Funnel visualization works
 - [ ] A/B test results calculate
 - [ ] Dashboards update real-time
 
 ### 6.3 A/B Testing Results UI
+
 **Duration**: 1 day  
 **Dependencies**: 6.2
 
@@ -504,11 +568,13 @@ test('Complete purchase flow', async ({ page }) => {
 - Historical test results
 
 **Test Strategy**:
+
 - Dashboard functionality tests
 - Calculation accuracy verification
 - UI interaction tests
 
 **Acceptance Criteria**:
+
 - [ ] Significance calculations accurate
 - [ ] Dashboard displays results clearly
 - [ ] Winner selection works
@@ -517,10 +583,12 @@ test('Complete purchase flow', async ({ page }) => {
 ## Phase 7: Final Integration & Validation
 
 ### 7.1 Complete E2E Test Suite
+
 **Duration**: 2 days  
 **Dependencies**: All phases
 
 **Test Scenarios**:
+
 1. Complete organic visitor flow
 2. Email → Purchase → Success flow
 3. A/B test variant flows
@@ -528,6 +596,7 @@ test('Complete purchase flow', async ({ page }) => {
 5. Analytics consent flows
 
 ### 7.2 Performance Optimization
+
 **Duration**: 1 day  
 **Dependencies**: 7.1
 
@@ -537,12 +606,14 @@ test('Complete purchase flow', async ({ page }) => {
 - CDN configuration
 
 **Acceptance Criteria**:
+
 - [ ] Lighthouse score > 95
 - [ ] Bundle size < 200KB
 - [ ] All images WebP optimized
 - [ ] CDN caching configured
 
 ### 7.3 Security Audit
+
 **Duration**: 1 day  
 **Dependencies**: 7.1
 
@@ -556,17 +627,20 @@ test('Complete purchase flow', async ({ page }) => {
 - Dependency vulnerability scanning
 
 **Test Strategy**:
+
 - Automated security scans
 - Manual penetration testing
 - Dependency audit tools
 
 **Acceptance Criteria**:
+
 - [ ] All security headers configured
 - [ ] Rate limiting working on all endpoints
 - [ ] No critical vulnerabilities found
 - [ ] Dependencies up to date
 
 ### 7.4 Load Testing
+
 **Duration**: 1 day  
 **Dependencies**: 7.1
 
@@ -576,11 +650,13 @@ test('Complete purchase flow', async ({ page }) => {
 - Concurrent purchase flow testing
 
 **Test Strategy**:
+
 - k6 or Artillery load tests
 - Gradually increasing load patterns
 - Spike testing scenarios
 
 **Acceptance Criteria**:
+
 - [ ] Handles 1000 concurrent users
 - [ ] Database pool doesn't exhaust
 - [ ] Edge functions respond < 200ms
@@ -589,6 +665,7 @@ test('Complete purchase flow', async ({ page }) => {
 ## Deliverables Checklist
 
 **Before marking complete**:
+
 - [ ] All features implemented per PRD
 - [ ] 100% of E2E tests passing
 - [ ] CI/CD pipeline fully operational
@@ -628,6 +705,7 @@ test('Complete purchase flow', async ({ page }) => {
 ## Success Criteria
 
 The project is considered complete when:
+
 1. All acceptance criteria are met
 2. All tests pass (unit, integration, E2E)
 3. Performance targets achieved
@@ -653,17 +731,20 @@ The project is considered complete when:
 ## Risk Mitigation Strategies
 
 ### Third-party Dependencies
+
 - **SendGrid**: Queue emails locally for retry on failures
 - **Stripe**: Cache session data for recovery flows
 - **Analytics**: Batch and retry failed events
 
 ### Launch Day Surge
+
 - Pre-warm edge functions before launch
 - Increase database connection pool temporarily
 - Enable CDN aggressive caching
 - Have scaling runbook ready
 
 ### Compliance Requirements
+
 - Cookie consent must be live before any tracking
 - Privacy policy linked from all pages
 - Terms of service accessible

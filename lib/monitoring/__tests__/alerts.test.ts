@@ -1,4 +1,9 @@
-import { alertManager, monitorDatabasePool, monitorPaymentSuccess, monitorEmailDelivery } from '../alerts'
+import {
+  alertManager,
+  monitorDatabasePool,
+  monitorPaymentSuccess,
+  monitorEmailDelivery,
+} from '../alerts'
 import { sendAlert, AlertType } from '../index'
 
 // Mock the sendAlert function
@@ -17,20 +22,20 @@ describe('Alert Rules', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
-  
+
   describe('alertManager', () => {
     it('should add and check rules', async () => {
       const mockCondition = jest.fn().mockResolvedValue(true)
-      
+
       alertManager.addRule({
         name: 'test_rule',
         condition: mockCondition,
         alertType: AlertType.PAYMENT_FAILED,
         message: 'Test alert',
       })
-      
+
       await alertManager.checkRules()
-      
+
       expect(mockCondition).toHaveBeenCalled()
       expect(sendAlert).toHaveBeenCalledWith(
         AlertType.PAYMENT_FAILED,
@@ -39,14 +44,14 @@ describe('Alert Rules', () => {
           message: 'Test alert',
         })
       )
-      
+
       // Cleanup
       alertManager.removeRule('test_rule')
     })
-    
+
     it('should respect cooldown period', async () => {
       const mockCondition = jest.fn().mockResolvedValue(true)
-      
+
       alertManager.addRule({
         name: 'cooldown_test',
         condition: mockCondition,
@@ -54,24 +59,24 @@ describe('Alert Rules', () => {
         message: 'Test alert',
         cooldown: 1000, // 1 second
       })
-      
+
       // First check - should alert
       await alertManager.checkRules()
       expect(sendAlert).toHaveBeenCalledTimes(1)
-      
+
       // Immediate second check - should not alert due to cooldown
       await alertManager.checkRules()
       expect(sendAlert).toHaveBeenCalledTimes(1)
-      
+
       // Cleanup
       alertManager.removeRule('cooldown_test')
     })
   })
-  
+
   describe('monitorDatabasePool', () => {
     it('should alert when pool usage is high', () => {
       monitorDatabasePool(95, 100)
-      
+
       expect(sendAlert).toHaveBeenCalledWith(
         AlertType.DATABASE_CONNECTION_FAILED,
         expect.objectContaining({
@@ -82,18 +87,18 @@ describe('Alert Rules', () => {
         })
       )
     })
-    
+
     it('should not alert when pool usage is normal', () => {
       monitorDatabasePool(50, 100)
-      
+
       expect(sendAlert).not.toHaveBeenCalled()
     })
   })
-  
+
   describe('monitorPaymentSuccess', () => {
     it('should alert when success rate is low', () => {
       monitorPaymentSuccess(85, 100)
-      
+
       expect(sendAlert).toHaveBeenCalledWith(
         AlertType.PAYMENT_FAILED,
         expect.objectContaining({
@@ -104,18 +109,18 @@ describe('Alert Rules', () => {
         })
       )
     })
-    
+
     it('should not alert when success rate is good', () => {
       monitorPaymentSuccess(95, 100)
-      
+
       expect(sendAlert).not.toHaveBeenCalled()
     })
   })
-  
+
   describe('monitorEmailDelivery', () => {
     it('should alert when bounce rate is high', () => {
       monitorEmailDelivery(90, 10, 100)
-      
+
       expect(sendAlert).toHaveBeenCalledWith(
         AlertType.EMAIL_FAILED,
         expect.objectContaining({
@@ -127,10 +132,10 @@ describe('Alert Rules', () => {
         })
       )
     })
-    
+
     it('should not alert when bounce rate is acceptable', () => {
       monitorEmailDelivery(97, 3, 100)
-      
+
       expect(sendAlert).not.toHaveBeenCalled()
     })
   })
