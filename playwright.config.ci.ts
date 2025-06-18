@@ -30,13 +30,8 @@ export default defineConfig({
   webServer: {
     command: 'npm run build && npm run start',
     port: 3333,
-    timeout: 120 * 1000, // 2 minutes to build and start
     reuseExistingServer: false,
     stdout: 'pipe',
     stderr: 'pipe',
-    env: {
-      NODE_ENV: 'test',
-      DATABASE_URL: process.env.DATABASE_URL,
-    },
   },
 })
