@@ -13,13 +13,13 @@ if (typeof global.Request === 'undefined') {
         value: typeof input === 'string' ? input : input.url,
         writable: false,
         enumerable: true,
-        configurable: true
+        configurable: true,
       })
       Object.defineProperty(this, 'method', {
         value: init?.method || 'GET',
         writable: false,
         enumerable: true,
-        configurable: true
+        configurable: true,
       })
       this.headers = new Map()
       if (init?.headers) {
