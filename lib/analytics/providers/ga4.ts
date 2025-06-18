@@ -142,6 +142,12 @@ export class GoogleAnalytics4Provider implements AnalyticsProvider {
         mapped[sanitizedKey] = value.substring(0, 100)
       } else if (typeof value === 'number' || typeof value === 'boolean') {
         mapped[sanitizedKey] = value
+      } else if (Array.isArray(value)) {
+        // Preserve arrays for e-commerce items
+        mapped[sanitizedKey] = value
+      } else if (typeof value === 'object' && value !== null) {
+        // Preserve objects as-is for GA4 enhanced e-commerce
+        mapped[sanitizedKey] = value
       } else if (value !== null && value !== undefined) {
         mapped[sanitizedKey] = String(value)
       }
