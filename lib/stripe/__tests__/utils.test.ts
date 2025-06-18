@@ -10,7 +10,35 @@ import {
   retryStripeOperation,
 } from '../utils'
 
-// Mock Stripe error constructor
+// Mock Stripe error constructors
+class MockStripeCardError extends Error {
+  code?: string
+
+  constructor(options: { message: string; code?: string }) {
+    super(options.message)
+    this.code = options.code
+    Object.setPrototypeOf(this, Stripe.errors.StripeCardError.prototype)
+  }
+}
+
+class MockStripeAPIError extends Error {
+  constructor(options: { message: string }) {
+    super(options.message)
+    Object.setPrototypeOf(this, Stripe.errors.StripeAPIError.prototype)
+  }
+}
+
+class MockStripeInvalidRequestError extends Error {
+  constructor(options: { message: string }) {
+    super(options.message)
+    Object.setPrototypeOf(
+      this,
+      Stripe.errors.StripeInvalidRequestError.prototype
+    )
+  }
+}
+
+// Legacy mock for backward compatibility
 class MockStripeError extends Error {
   type: string
   code?: string
@@ -66,9 +94,8 @@ describe('Stripe Utils', () => {
 
   describe('getStripeErrorMessage', () => {
     it('should return user-friendly message for card_declined', () => {
-      const error = new MockStripeError({
+      const error = new MockStripeCardError({
         message: 'Card declined',
-        type: 'card_error',
         code: 'card_declined',
       })
 
@@ -79,9 +106,8 @@ describe('Stripe Utils', () => {
     })
 
     it('should return user-friendly message for insufficient_funds', () => {
-      const error = new MockStripeError({
+      const error = new MockStripeCardError({
         message: 'Insufficient funds',
-        type: 'card_error',
         code: 'insufficient_funds',
       })
 
@@ -92,9 +118,8 @@ describe('Stripe Utils', () => {
     })
 
     it('should return generic message for api_error', () => {
-      const error = new MockStripeError({
+      const error = new MockStripeAPIError({
         message: 'API error',
-        type: 'api_error',
       })
 
       const message = getStripeErrorMessage(error)
