@@ -12,36 +12,52 @@ jest.mock('framer-motion', () => {
   const React = require('react')
   return {
     motion: {
-      button: React.forwardRef<HTMLButtonElement, any>(
-        (
-          {
-            children,
-            whileHover,
-            whileTap,
-            variants,
-            initial,
-            animate,
-            exit,
-            transition,
-            ...props
-          },
-          ref
-        ) => (
-          <button ref={ref} {...props}>
-            {children}
-          </button>
+      button: (() => {
+        const Component = React.forwardRef<HTMLButtonElement, any>(
+          (
+            {
+              children,
+              whileHover,
+              whileTap,
+              variants,
+              initial,
+              animate,
+              exit,
+              transition,
+              ...props
+            },
+            ref
+          ) => (
+            <button ref={ref} {...props}>
+              {children}
+            </button>
+          )
         )
-      ),
-      div: React.forwardRef<HTMLDivElement, any>(
-        (
-          { children, variants, initial, animate, exit, transition, ...props },
-          ref
-        ) => (
-          <div ref={ref} {...props}>
-            {children}
-          </div>
+        Component.displayName = 'MotionButton'
+        return Component
+      })(),
+      div: (() => {
+        const Component = React.forwardRef<HTMLDivElement, any>(
+          (
+            {
+              children,
+              variants,
+              initial,
+              animate,
+              exit,
+              transition,
+              ...props
+            },
+            ref
+          ) => (
+            <div ref={ref} {...props}>
+              {children}
+            </div>
+          )
         )
-      ),
+        Component.displayName = 'MotionDiv'
+        return Component
+      })(),
     },
     AnimatePresence: ({ children }: any) => <>{children}</>,
   }

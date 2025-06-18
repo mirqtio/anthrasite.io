@@ -1,0 +1,39 @@
+# Match CI environment exactly
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies for Playwright
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    nodejs \
+    yarn
+
+# Tell Playwright to use installed Chromium
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies (using npm ci like CI)
+RUN npm ci
+
+# Install Playwright
+RUN npx playwright install-deps
+RUN npx playwright install
+
+# Copy application files
+COPY . .
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Default command
+CMD ["npm", "test"]

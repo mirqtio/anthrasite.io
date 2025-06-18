@@ -14,11 +14,40 @@ jest.mock('framer-motion', () => ({
       viewport,
       ...props
     }: any) => <div {...props}>{children}</div>,
+    p: ({
+      children,
+      initial,
+      animate,
+      transition,
+      whileInView,
+      viewport,
+      ...props
+    }: any) => <p {...props}>{children}</p>,
+    button: ({
+      children,
+      initial,
+      animate,
+      transition,
+      whileInView,
+      whileTap,
+      whileHover,
+      viewport,
+      onClick,
+      ...props
+    }: any) => (
+      <button onClick={onClick} {...props}>
+        {children}
+      </button>
+    ),
   },
 }))
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+}))
+
+jest.mock('@/lib/analytics/analytics-client', () => ({
+  trackEvent: jest.fn(),
 }))
 
 describe('PricingCard', () => {
@@ -39,9 +68,10 @@ describe('PricingCard', () => {
   it('renders pricing information', () => {
     render(<PricingCard {...defaultProps} />)
 
-    expect(screen.getByText('$99')).toBeInTheDocument()
-    expect(screen.getByText('one-time')).toBeInTheDocument()
-    expect(screen.getByText('For Test Company')).toBeInTheDocument()
+    expect(screen.getByText('$2,400')).toBeInTheDocument()
+    expect(
+      screen.getByText('in potential improvements identified')
+    ).toBeInTheDocument()
   })
 
   it('renders all features', () => {
@@ -51,13 +81,7 @@ describe('PricingCard', () => {
       'Complete 50+ page website audit report',
       'Technical SEO analysis & recommendations',
       'Performance optimization roadmap',
-      'Security vulnerability assessment',
-      'Mobile responsiveness analysis',
-      'Competitor comparison insights',
-      'Priority-ranked action items',
-      'ROI estimates for improvements',
-      'Implementation guides included',
-      '30-day money-back guarantee',
+      'Priority-ranked action items with ROI estimates',
     ]
 
     expectedFeatures.forEach((feature) => {
@@ -68,14 +92,15 @@ describe('PricingCard', () => {
   it('renders CTA button', () => {
     render(<PricingCard {...defaultProps} />)
 
-    const button = screen.getByRole('button', { name: /get your report now/i })
+    const button = screen.getByTestId('checkout-button')
     expect(button).toBeInTheDocument()
+    expect(button).toHaveTextContent('Get Your Report for $99')
   })
 
   it('handles checkout click', async () => {
     render(<PricingCard {...defaultProps} />)
 
-    const button = screen.getByRole('button', { name: /get your report now/i })
+    const button = screen.getByTestId('checkout-button')
     fireEvent.click(button)
 
     await waitFor(() => {
@@ -90,16 +115,14 @@ describe('PricingCard', () => {
 
     render(<PricingCard {...defaultProps} />)
 
-    const button = screen.getByRole('button', { name: /get your report now/i })
+    const button = screen.getByTestId('checkout-button')
     fireEvent.click(button)
 
     expect(screen.getByText('Processing...')).toBeInTheDocument()
     expect(button).toBeDisabled()
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /get your report now/i })
-      ).toBeInTheDocument()
+      expect(screen.getByTestId('checkout-button')).toBeInTheDocument()
     })
   })
 
@@ -109,7 +132,7 @@ describe('PricingCard', () => {
 
     render(<PricingCard {...defaultProps} />)
 
-    const button = screen.getByRole('button', { name: /get your report now/i })
+    const button = screen.getByTestId('checkout-button')
     fireEvent.click(button)
 
     await waitFor(() => {
@@ -125,32 +148,8 @@ describe('PricingCard', () => {
   it('renders trust indicators', () => {
     render(<PricingCard {...defaultProps} />)
 
-    expect(screen.getByText('Secure payment')).toBeInTheDocument()
-    expect(screen.getByText('24hr delivery')).toBeInTheDocument()
-    expect(screen.getByText('Instant access')).toBeInTheDocument()
-  })
-
-  it('renders support email link', () => {
-    render(<PricingCard {...defaultProps} />)
-
-    const emailLink = screen.getByRole('link', {
-      name: /support@anthrasite.io/i,
-    })
-    expect(emailLink).toHaveAttribute('href', 'mailto:support@anthrasite.io')
-  })
-
-  it('renders money-back guarantee text', () => {
-    render(<PricingCard {...defaultProps} />)
-
-    // There are multiple instances of this text, so check for all
-    const guaranteeTexts = screen.getAllByText(/30-day money-back guarantee/)
-    expect(guaranteeTexts.length).toBeGreaterThan(0)
-
-    // Check the specific text in the footer
     expect(
-      screen.getByText(
-        'Your purchase is protected by our 30-day money-back guarantee'
-      )
+      screen.getByText('Secure payment · Instant delivery · 30-day guarantee')
     ).toBeInTheDocument()
   })
 })
