@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: anthrasite_test
+    ports:
+      - '5433:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ci-network
+
+  ci-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    environment:
+      NODE_ENV: test
+      CI: true
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
+      # For Playwright to connect to host
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Mount source code but not node_modules
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - ci-network
+    command: >
+      bash -c "
+        echo '🔧 Setting up database...'
+        npx prisma generate
+        npx prisma db push --force-reset
+        
+        echo '📋 Running linting...'
+        npm run lint
+        
+        echo '📝 Running format check...'
+        npm run format:check
+        
+        echo '🧪 Running tests with coverage...'
+        npm run test:coverage
+        
+        echo '🏗️ Building application...'
+        npm run build
+        
+        echo '📊 Checking build size...'
+        NEXT_SIZE=\$$(du -sm .next | cut -f1)
+        echo \"Build output size: \$$NEXT_SIZE MB\"
+        if [ \"\$$NEXT_SIZE\" -gt 2048 ]; then
+            echo 'Build output exceeds 2GB limit'
+            exit 1
+        fi
+        
+        echo '🎭 Running E2E tests...'
+        npm run dev &
+        DEV_PID=\$$!
+        
+        # Wait for dev server
+        for i in {1..30}; do
+            if curl -s http://localhost:3333 > /dev/null; then
+                break
+            fi
+            sleep 1
+        done
+        
+        npm run test:e2e
+        E2E_RESULT=\$$?
+        
+        kill \$$DEV_PID
+        
+        exit \$$E2E_RESULT
+      "
+
+networks:
+  ci-network:
+    driver: bridge

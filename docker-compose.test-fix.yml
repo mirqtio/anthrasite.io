@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: anthrasite_test
+    networks:
+      - test-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  test-runner:
+    image: node:20
+    working_dir: /app
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
+      CI: true
+    volumes:
+      - .:/app
+    networks:
+      - test-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      bash -c "
+        echo '📦 Installing dependencies...'
+        npm ci
+        
+        echo '🔧 Setting up database...'
+        npx prisma generate
+        npx prisma db push --force-reset
+        
+        echo '🧪 Running specific failing tests...'
+        
+        echo '1. Testing consent context...'
+        npm test components/consent/__tests__/ConsentContext.test.tsx || true
+        
+        echo '2. Testing analytics consent loader...'
+        npm test lib/analytics/__tests__/consent-loader.test.ts || true
+        
+        echo '3. Testing help widget accessibility...'
+        npm test components/help/__tests__/HelpWidget.accessibility.test.tsx || true
+        
+        echo '4. Running all tests to see summary...'
+        npm test 2>&1 | grep -E '(Test Suites:|Tests:|FAIL)' | sort | uniq
+      "
+
+networks:
+  test-network:
+    driver: bridge
