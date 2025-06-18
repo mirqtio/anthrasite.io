@@ -1,0 +1,48 @@
+# Gitleaks configuration for secret detection
+
+[allowlist]
+description = "Global allowlist"
+
+# Allow example/mock keys
+[[allowlist.regexes]]
+regex = '''mock-hash-\d+'''
+description = "Mock UTM hashes for testing"
+
+[[allowlist.regexes]]
+regex = '''cs_test_'''
+description = "Stripe test mode session IDs"
+
+# Allow environment variable references
+[[allowlist.regexes]]
+regex = '''process\.env\.[A-Z_]+'''
+description = "Environment variable references"
+
+[[allowlist.regexes]]
+regex = '''NEXT_PUBLIC_[A-Z_]+'''
+description = "Next.js public environment variables"
+
+# Custom rules for common API keys
+[[rules]]
+description = "Stripe Secret Key"
+regex = '''sk_live_[0-9a-zA-Z]{24,}'''
+tags = ["key", "stripe"]
+
+[[rules]]
+description = "SendGrid API Key"
+regex = '''SG\.[a-zA-Z0-9_-]{22}\.[a-zA-Z0-9_-]{43}'''
+tags = ["key", "sendgrid"]
+
+[[rules]]
+description = "Datadog API Key"
+regex = '''DD[a-zA-Z0-9]{32}'''
+tags = ["key", "datadog"]
+
+[[rules]]
+description = "Generic API Key"
+regex = '''['\"]?[Aa][Pp][Ii][_-]?[Kk][Ee][Yy]['\"]?\s*[:=]\s*['\"][0-9a-zA-Z]{32,}['\"]'''
+tags = ["key", "api"]
+
+[[rules]]
+description = "Generic Secret"
+regex = '''['\"]?[Ss][Ee][Cc][Rr][Ee][Tt][_-]?[Kk][Ee][Yy]['\"]?\s*[:=]\s*['\"][0-9a-zA-Z]{32,}['\"]'''
+tags = ["key", "secret"]
