@@ -5,12 +5,15 @@ test.describe('Homepage', () => {
   test('should display the homepage', async ({ page }) => {
     await gotoAndDismissCookies(page, '/')
 
+    // Check page title
     await expect(page).toHaveTitle(/Anthrasite/)
 
-    const heading = page.getByRole('heading', { name: 'Anthrasite' })
+    // Check main heading
+    const heading = page.getByRole('heading', { name: 'Your website has untapped potential' })
     await expect(heading).toBeVisible()
 
-    const subtitle = page.getByText('Website Audit Tool - Coming Soon')
-    await expect(subtitle).toBeVisible()
+    // Check key content sections
+    await expect(page.getByText('We find the problems costing you money')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Join Waitlist' })).toBeVisible()
   })
 })

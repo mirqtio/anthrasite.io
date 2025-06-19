@@ -132,9 +132,7 @@ test.describe('Client-Side Rendering', () => {
     await joinWaitlistButton.click()
 
     // Type in the waitlist form (first input is domain)
-    const domainInput = page.locator(
-      'input[placeholder*="https://example.com"]'
-    )
+    const domainInput = page.locator('input[placeholder="example.com"]')
     await domainInput.fill('test.com')
 
     // Verify the input maintains its value
