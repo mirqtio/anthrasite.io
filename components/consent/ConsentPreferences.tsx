@@ -134,6 +134,7 @@ export function ConsentPreferences() {
                 fontWeight: typography.fontWeight.semibold,
                 color: colors.anthracite.black,
               }}
+              data-testid="cookie-preferences-title"
             >
               Cookie Preferences
             </h2>
