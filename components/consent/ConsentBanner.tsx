@@ -91,7 +91,7 @@ export function ConsentBanner() {
               onClick={openPreferences}
               aria-label="Manage cookie preferences"
             >
-              Manage preferences
+              Manage cookie preferences
             </Button>
             <Button
               variant="secondary"
