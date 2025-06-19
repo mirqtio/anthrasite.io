@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test'
+import { gotoAndDismissCookies } from './helpers/test-utils'
 
 test.describe('Client-Side Rendering', () => {
   test('should properly hydrate React on client side', async ({ page }) => {
     // Navigate to the page
-    await page.goto('/')
+    await gotoAndDismissCookies(page, '/')
 
     // Check that the page has rendered properly (App Router uses body as the container)
     const hasBody = await page.evaluate(() => {
@@ -24,7 +25,7 @@ test.describe('Client-Side Rendering', () => {
   })
 
   test('should not show loading state indefinitely', async ({ page }) => {
-    await page.goto('/')
+    await gotoAndDismissCookies(page, '/')
 
     // Wait up to 5 seconds for loading to complete
     await page
@@ -42,7 +43,7 @@ test.describe('Client-Side Rendering', () => {
   })
 
   test('should handle client-side navigation', async ({ page }) => {
-    await page.goto('/')
+    await gotoAndDismissCookies(page, '/')
 
     // Wait for the page to load
     await page.waitForSelector('main', { state: 'visible' })
@@ -68,7 +69,7 @@ test.describe('Client-Side Rendering', () => {
   })
 
   test('should have interactive elements after hydration', async ({ page }) => {
-    await page.goto('/')
+    await gotoAndDismissCookies(page, '/')
 
     // Wait for content to load
     await page.waitForSelector('main', { state: 'visible' })
@@ -83,9 +84,9 @@ test.describe('Client-Side Rendering', () => {
     // Click the button and verify it responds
     await joinWaitlistButton.click()
 
-    // Should scroll to waitlist form
-    const waitlistForm = page.locator('#waitlist')
-    await expect(waitlistForm).toBeInViewport()
+    // Should open modal with waitlist form (not scroll to it)
+    const waitlistForm = page.locator('[data-testid="waitlist-form"]')
+    await expect(waitlistForm).toBeVisible()
   })
 
   test('should detect console errors', async ({ page }) => {
@@ -121,11 +122,15 @@ test.describe('Client-Side Rendering', () => {
   test('should maintain state during client-side interactions', async ({
     page,
   }) => {
-    await page.goto('/')
+    await gotoAndDismissCookies(page, '/')
     await page.waitForSelector('main', { state: 'visible' })
 
+    // Open waitlist modal first
+    const joinWaitlistButton = page.locator('button:has-text("Join Waitlist")').first()
+    await joinWaitlistButton.click()
+
     // Type in the waitlist form
-    const domainInput = page.locator('input[placeholder="example.com"]')
+    const domainInput = page.locator('input[placeholder*="example.com"]')
     await domainInput.fill('test.com')
 
     // Verify the input maintains its value
