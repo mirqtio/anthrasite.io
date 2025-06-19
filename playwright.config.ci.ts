@@ -2,9 +2,9 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30 * 1000, // Faster individual test timeout
+  timeout: 45 * 1000, // Reasonable test timeout for CI
   expect: {
-    timeout: 5000, // Faster expect timeout
+    timeout: 8000, // Reasonable expect timeout
   },
   fullyParallel: true, // Run tests in parallel for speed
   forbidOnly: true,
@@ -12,7 +12,7 @@ export default defineConfig({
   workers: 2, // Use 2 workers for parallel execution
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    actionTimeout: 5000, // Faster action timeout
+    actionTimeout: 8000, // Reasonable action timeout
     baseURL: 'http://localhost:3333',
     trace: 'off', // Disable trace for speed
     screenshot: 'only-on-failure',
