@@ -107,6 +107,7 @@ export function ConsentBanner() {
               size="md"
               onClick={acceptAll}
               aria-label="Accept all cookies"
+              data-testid="accept-all-cookies-button"
             >
               Accept all
             </Button>

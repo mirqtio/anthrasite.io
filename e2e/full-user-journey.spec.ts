@@ -1,13 +1,17 @@
 import { test, expect } from '@playwright/test'
 import { generateUTMToken } from './helpers/utm-generator'
 import { mockStripeCheckout } from './helpers/stripe-mocks'
-import { safeClick, safeFill } from './helpers/test-utils'
+import {
+  safeClick,
+  safeFill,
+  gotoAndDismissCookies,
+} from './helpers/test-utils'
 
 test.describe('Full User Journey - Comprehensive E2E Tests', () => {
   test.describe('Organic Visitor Flow', () => {
     test('complete waitlist signup journey', async ({ page }) => {
-      // 1. Visit homepage
-      await page.goto('/')
+      // 1. Visit homepage with cookie dismissal
+      await gotoAndDismissCookies(page, '/')
       await expect(page).toHaveTitle(/Anthrasite/)
 
       // 2. Verify organic mode
@@ -16,16 +20,6 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
           name: /Your website has untapped potential/i,
         })
       ).toBeVisible()
-
-      // 3. Check cookie consent
-      const consentBanner = page.getByRole('region', {
-        name: /cookie consent/i,
-      })
-      await expect(consentBanner).toBeVisible()
-
-      // 4. Accept analytics cookies
-      await page.getByRole('button', { name: /accept all/i }).click()
-      await expect(consentBanner).not.toBeVisible()
 
       // 5. Click Get Started button to open modal
       await safeClick(page, '[data-testid="open-waitlist-button"]')
@@ -43,8 +37,10 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
       // 9. Verify success state
-      await expect(page.getByText(/you're on the list/i)).toBeVisible()
-      await expect(page.getByText(/position #/i)).toBeVisible()
+      await expect(page.getByText("You're on the list!")).toBeVisible()
+      await expect(
+        page.getByText(/We'll analyze .* and send the report when we launch/)
+      ).toBeVisible()
 
       // 10. Check analytics event fired
       await page
@@ -218,6 +214,9 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
 
       await page.goto('/')
 
+      // Wait for page to load
+      await page.waitForSelector('main', { state: 'visible', timeout: 10000 })
+
       // Verify no analytics loaded
       const hasGA = await page.evaluate(() => {
         return typeof window.gtag !== 'undefined'
@@ -225,7 +224,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       expect(hasGA).toBeFalsy()
 
       // Accept analytics
-      await page.getByRole('button', { name: /accept all/i }).click()
+      await page.getByTestId('accept-all-cookies-button').click()
 
       // Wait for analytics to load
       await page.waitForTimeout(1000)
@@ -240,8 +239,11 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
     test('manage cookie preferences', async ({ page }) => {
       await page.goto('/')
 
+      // Wait for page to load
+      await page.waitForSelector('main', { state: 'visible', timeout: 10000 })
+
       // Open preferences
-      await page.getByRole('button', { name: /manage preferences/i }).click()
+      await page.getByTestId('cookie-preferences-button').click()
 
       // Verify options
       await expect(page.getByLabel(/analytics cookies/i)).toBeVisible()
