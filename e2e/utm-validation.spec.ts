@@ -87,7 +87,7 @@ test.describe('UTM Parameter Validation', () => {
       page,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
 
       try {
         // Navigate to homepage with UTM
@@ -161,7 +161,7 @@ test.describe('UTM Parameter Validation', () => {
 
     test('should redirect for tampered UTM', async ({ page }) => {
       const business = await createTestBusiness()
-      const validUrl = generateUTMUrl(
+      const validUrl = await generateUTMUrl(
         'http://localhost:3000/purchase',
         business.id
       )
@@ -191,7 +191,7 @@ test.describe('UTM Parameter Validation', () => {
     test('should prevent reuse of UTM token', async ({ page, request }) => {
       const business = await createTestBusiness()
       const { token, nonce } = await createAndStoreToken(business.id)
-      const utmUrl = generateUTMUrl(
+      const utmUrl = await generateUTMUrl(
         'http://localhost:3000/purchase',
         business.id
       )
