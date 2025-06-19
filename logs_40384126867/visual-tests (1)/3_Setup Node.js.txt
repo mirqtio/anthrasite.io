@@ -1,0 +1,25 @@
+﻿2025-06-19T10:06:24.7645279Z ##[group]Run actions/setup-node@v4
+2025-06-19T10:06:24.7646548Z with:
+2025-06-19T10:06:24.7647319Z   node-version: 20
+2025-06-19T10:06:24.7648155Z   cache: npm
+2025-06-19T10:06:24.7648951Z   always-auth: false
+2025-06-19T10:06:24.7649826Z   check-latest: false
+2025-06-19T10:06:24.7650980Z   token: ***
+2025-06-19T10:06:24.7651776Z ##[endgroup]
+2025-06-19T10:06:24.9421519Z Found in cache @ /opt/hostedtoolcache/node/20.19.2/x64
+2025-06-19T10:06:24.9428558Z ##[group]Environment details
+2025-06-19T10:06:25.3118386Z node: v20.19.2
+2025-06-19T10:06:25.3119201Z npm: 10.8.2
+2025-06-19T10:06:25.3119491Z yarn: 1.22.22
+2025-06-19T10:06:25.3120313Z ##[endgroup]
+2025-06-19T10:06:25.3146997Z [command]/opt/hostedtoolcache/node/20.19.2/x64/bin/npm config get cache
+2025-06-19T10:06:25.4286760Z /home/runner/.npm
+2025-06-19T10:06:25.7306180Z Cache hit for: node-cache-Linux-x64-npm-83b34af39050cb8dcf0f8fc59536a1514e9b948d1095880efafd299289ca3bea
+2025-06-19T10:06:27.0481369Z Received 4194304 of 232013951 (1.8%), 4.0 MBs/sec
+2025-06-19T10:06:28.0489369Z Received 100663296 of 232013951 (43.4%), 48.0 MBs/sec
+2025-06-19T10:06:29.0493341Z Received 192937984 of 232013951 (83.2%), 61.3 MBs/sec
+2025-06-19T10:06:29.4787769Z Received 232013951 of 232013951 (100.0%), 64.5 MBs/sec
+2025-06-19T10:06:29.4790219Z Cache Size: ~221 MB (232013951 B)
+2025-06-19T10:06:29.4916669Z [command]/usr/bin/tar -xf /home/runner/work/_temp/8c9fae61-e7d7-4aed-ada6-551485a2b8a1/cache.tzst -P -C /home/runner/work/anthrasite.io/anthrasite.io --use-compress-program unzstd
+2025-06-19T10:06:29.9852404Z Cache restored successfully
+2025-06-19T10:06:30.0320499Z Cache restored from key: node-cache-Linux-x64-npm-83b34af39050cb8dcf0f8fc59536a1514e9b948d1095880efafd299289ca3bea

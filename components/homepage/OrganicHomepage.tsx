@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useRenderTracking } from '@/lib/monitoring/hooks'
 import { Logo } from '@/components/Logo'
+import { ScrollToTop } from '@/components/ScrollToTop'
 
 export function OrganicHomepage() {
   useRenderTracking('OrganicHomepage')
@@ -279,12 +280,14 @@ export function OrganicHomepage() {
                   placeholder="you@example.com"
                   required
                   className="form-input"
+                  data-testid="waitlist-email-input"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="cta-primary button-full"
+                data-testid="waitlist-submit-button"
               >
                 {isSubmitting ? 'Joining...' : 'Join Waitlist'}
               </button>
@@ -306,6 +309,9 @@ export function OrganicHomepage() {
           )}
         </div>
       </div>
+
+      {/* Scroll to Top Component */}
+      <ScrollToTop />
     </>
   )
 }

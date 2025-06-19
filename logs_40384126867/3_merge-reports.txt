@@ -1,0 +1,183 @@
+﻿2025-06-19T10:12:27.1856077Z Current runner version: '2.325.0'
+2025-06-19T10:12:27.1883102Z ##[group]Operating System
+2025-06-19T10:12:27.1883889Z Ubuntu
+2025-06-19T10:12:27.1884380Z 24.04.2
+2025-06-19T10:12:27.1884797Z LTS
+2025-06-19T10:12:27.1885354Z ##[endgroup]
+2025-06-19T10:12:27.1885838Z ##[group]Runner Image
+2025-06-19T10:12:27.1886425Z Image: ubuntu-24.04
+2025-06-19T10:12:27.1886980Z Version: 20250615.1.0
+2025-06-19T10:12:27.1888004Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250615.1/images/ubuntu/Ubuntu2404-Readme.md
+2025-06-19T10:12:27.1889714Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250615.1
+2025-06-19T10:12:27.1890670Z ##[endgroup]
+2025-06-19T10:12:27.1891183Z ##[group]Runner Image Provisioner
+2025-06-19T10:12:27.1891769Z 2.0.437.1
+2025-06-19T10:12:27.1892289Z ##[endgroup]
+2025-06-19T10:12:27.1893371Z ##[group]GITHUB_TOKEN Permissions
+2025-06-19T10:12:27.1895271Z Contents: read
+2025-06-19T10:12:27.1895799Z Metadata: read
+2025-06-19T10:12:27.1896473Z Packages: read
+2025-06-19T10:12:27.1897112Z ##[endgroup]
+2025-06-19T10:12:27.1899710Z Secret source: Actions
+2025-06-19T10:12:27.1900552Z Prepare workflow directory
+2025-06-19T10:12:27.2246889Z Prepare all required actions
+2025-06-19T10:12:27.2286525Z Getting action download info
+2025-06-19T10:12:27.6390901Z ##[group]Download immutable action package 'actions/checkout@v4'
+2025-06-19T10:12:27.6392031Z Version: 4.2.2
+2025-06-19T10:12:27.6393066Z Digest: sha256:ccb2698953eaebd21c7bf6268a94f9c26518a7e38e27e0b83c1fe1ad049819b1
+2025-06-19T10:12:27.6394438Z Source commit SHA: 11bd71901bbe5b1630ceea73d27597364c9af683
+2025-06-19T10:12:27.6395220Z ##[endgroup]
+2025-06-19T10:12:27.7309528Z ##[group]Download immutable action package 'actions/setup-node@v4'
+2025-06-19T10:12:27.7310384Z Version: 4.4.0
+2025-06-19T10:12:27.7311249Z Digest: sha256:9427cefe82346e992fb5b949e3569b39d537ae41aa3086483b14eceebfc16bc1
+2025-06-19T10:12:27.7312328Z Source commit SHA: 49933ea5288caeca8642d1e84afbd3f7d6820020
+2025-06-19T10:12:27.7313047Z ##[endgroup]
+2025-06-19T10:12:27.8245987Z ##[group]Download immutable action package 'actions/download-artifact@v4'
+2025-06-19T10:12:27.8247008Z Version: 4.3.0
+2025-06-19T10:12:27.8247809Z Digest: sha256:552a5b9ad918f62ec0c2e8f42f3c694d4ebd1b4036b18c39b14168fcdfc0e4f2
+2025-06-19T10:12:27.8249178Z Source commit SHA: d3f86a106a0bac45b974a628896c90dbdf5c8093
+2025-06-19T10:12:27.8250040Z ##[endgroup]
+2025-06-19T10:12:28.0563347Z ##[group]Download immutable action package 'actions/upload-artifact@v4'
+2025-06-19T10:12:28.0564332Z Version: 4.6.2
+2025-06-19T10:12:28.0565142Z Digest: sha256:290722aa3281d5caf23d0acdc3dbeb3424786a1a01a9cc97e72f147225e37c38
+2025-06-19T10:12:28.0566183Z Source commit SHA: ea165f8d65b6e75b540449e92b4886f43607fa02
+2025-06-19T10:12:28.0566978Z ##[endgroup]
+2025-06-19T10:12:28.1747567Z ##[group]Download immutable action package 'actions/github-script@v7'
+2025-06-19T10:12:28.1748977Z Version: 7.0.1
+2025-06-19T10:12:28.1750125Z Digest: sha256:bce02966afe3a75123f766b765abe432fac5464b74976015dc06b811ac9054c7
+2025-06-19T10:12:28.1751571Z Source commit SHA: 60a0d83039c74a4aee543508d2ffcb1c3799cdea
+2025-06-19T10:12:28.1752483Z ##[endgroup]
+2025-06-19T10:12:28.4726994Z Complete job name: merge-reports
+2025-06-19T10:12:28.5507129Z ##[group]Run actions/checkout@v4
+2025-06-19T10:12:28.5508557Z with:
+2025-06-19T10:12:28.5509287Z   repository: mirqtio/anthrasite.io
+2025-06-19T10:12:28.5510456Z   token: ***
+2025-06-19T10:12:28.5511160Z   ssh-strict: true
+2025-06-19T10:12:28.5511871Z   ssh-user: git
+2025-06-19T10:12:28.5512599Z   persist-credentials: true
+2025-06-19T10:12:28.5513421Z   clean: true
+2025-06-19T10:12:28.5514165Z   sparse-checkout-cone-mode: true
+2025-06-19T10:12:28.5515053Z   fetch-depth: 1
+2025-06-19T10:12:28.5515746Z   fetch-tags: false
+2025-06-19T10:12:28.5516473Z   show-progress: true
+2025-06-19T10:12:28.5517200Z   lfs: false
+2025-06-19T10:12:28.5517878Z   submodules: false
+2025-06-19T10:12:28.5518733Z   set-safe-directory: true
+2025-06-19T10:12:28.5519810Z ##[endgroup]
+2025-06-19T10:12:28.7335496Z Syncing repository: mirqtio/anthrasite.io
+2025-06-19T10:12:28.7338087Z ##[group]Getting Git version info
+2025-06-19T10:12:28.7339934Z Working directory is '/home/runner/work/anthrasite.io/anthrasite.io'
+2025-06-19T10:12:28.7342124Z [command]/usr/bin/git version
+2025-06-19T10:12:28.7416157Z git version 2.49.0
+2025-06-19T10:12:28.7444217Z ##[endgroup]
+2025-06-19T10:12:28.7459317Z Temporarily overriding HOME='/home/runner/work/_temp/162cce1c-968b-4a4d-8cab-51bde47abb11' before making global git config changes
+2025-06-19T10:12:28.7462271Z Adding repository directory to the temporary git global config as a safe directory
+2025-06-19T10:12:28.7472272Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anthrasite.io/anthrasite.io
+2025-06-19T10:12:28.7509737Z Deleting the contents of '/home/runner/work/anthrasite.io/anthrasite.io'
+2025-06-19T10:12:28.7513557Z ##[group]Initializing the repository
+2025-06-19T10:12:28.7519013Z [command]/usr/bin/git init /home/runner/work/anthrasite.io/anthrasite.io
+2025-06-19T10:12:28.7595126Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-06-19T10:12:28.7597682Z hint: is subject to change. To configure the initial branch name to use in all
+2025-06-19T10:12:28.7600736Z hint: of your new repositories, which will suppress this warning, call:
+2025-06-19T10:12:28.7602767Z hint:
+2025-06-19T10:12:28.7603818Z hint: 	git config --global init.defaultBranch <name>
+2025-06-19T10:12:28.7604873Z hint:
+2025-06-19T10:12:28.7605958Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-06-19T10:12:28.7607931Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-06-19T10:12:28.7609842Z hint:
+2025-06-19T10:12:28.7610840Z hint: 	git branch -m <name>
+2025-06-19T10:12:28.7612227Z Initialized empty Git repository in /home/runner/work/anthrasite.io/anthrasite.io/.git/
+2025-06-19T10:12:28.7619367Z [command]/usr/bin/git remote add origin https://github.com/mirqtio/anthrasite.io
+2025-06-19T10:12:28.7657484Z ##[endgroup]
+2025-06-19T10:12:28.7659478Z ##[group]Disabling automatic garbage collection
+2025-06-19T10:12:28.7662221Z [command]/usr/bin/git config --local gc.auto 0
+2025-06-19T10:12:28.7693215Z ##[endgroup]
+2025-06-19T10:12:28.7694331Z ##[group]Setting up auth
+2025-06-19T10:12:28.7700600Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-06-19T10:12:28.7731382Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-06-19T10:12:28.8083090Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-06-19T10:12:28.8113124Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-06-19T10:12:28.8340015Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-06-19T10:12:28.8377065Z ##[endgroup]
+2025-06-19T10:12:28.8379352Z ##[group]Fetching the repository
+2025-06-19T10:12:28.8389376Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cc5f5979eba54fcad198a59c73a92e96ae943e3c:refs/remotes/origin/main
+2025-06-19T10:12:29.4915000Z From https://github.com/mirqtio/anthrasite.io
+2025-06-19T10:12:29.4917431Z  * [new ref]         cc5f5979eba54fcad198a59c73a92e96ae943e3c -> origin/main
+2025-06-19T10:12:29.4951259Z ##[endgroup]
+2025-06-19T10:12:29.4953404Z ##[group]Determining the checkout info
+2025-06-19T10:12:29.4955710Z ##[endgroup]
+2025-06-19T10:12:29.4957356Z [command]/usr/bin/git sparse-checkout disable
+2025-06-19T10:12:29.5012862Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-06-19T10:12:29.5048518Z ##[group]Checking out the ref
+2025-06-19T10:12:29.5052898Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-06-19T10:12:29.5623121Z Switched to a new branch 'main'
+2025-06-19T10:12:29.5626304Z branch 'main' set up to track 'origin/main'.
+2025-06-19T10:12:29.5636648Z ##[endgroup]
+2025-06-19T10:12:29.5686184Z [command]/usr/bin/git log -1 --format=%H
+2025-06-19T10:12:29.5713151Z cc5f5979eba54fcad198a59c73a92e96ae943e3c
+2025-06-19T10:12:29.6010761Z ##[group]Run actions/setup-node@v4
+2025-06-19T10:12:29.6011751Z with:
+2025-06-19T10:12:29.6012413Z   node-version: 20
+2025-06-19T10:12:29.6013155Z   cache: npm
+2025-06-19T10:12:29.6013849Z   always-auth: false
+2025-06-19T10:12:29.6014620Z   check-latest: false
+2025-06-19T10:12:29.6015608Z   token: ***
+2025-06-19T10:12:29.6016302Z ##[endgroup]
+2025-06-19T10:12:29.7769011Z Found in cache @ /opt/hostedtoolcache/node/20.19.2/x64
+2025-06-19T10:12:29.7775962Z ##[group]Environment details
+2025-06-19T10:12:30.1180754Z node: v20.19.2
+2025-06-19T10:12:30.1182113Z npm: 10.8.2
+2025-06-19T10:12:30.1183283Z yarn: 1.22.22
+2025-06-19T10:12:30.1185558Z ##[endgroup]
+2025-06-19T10:12:30.1204012Z [command]/opt/hostedtoolcache/node/20.19.2/x64/bin/npm config get cache
+2025-06-19T10:12:30.2311918Z /home/runner/.npm
+2025-06-19T10:12:30.4094066Z Cache hit for: node-cache-Linux-x64-npm-83b34af39050cb8dcf0f8fc59536a1514e9b948d1095880efafd299289ca3bea
+2025-06-19T10:12:31.5968870Z Received 134217728 of 232013951 (57.8%), 122.0 MBs/sec
+2025-06-19T10:12:32.1474181Z Received 232013951 of 232013951 (100.0%), 138.3 MBs/sec
+2025-06-19T10:12:32.1475679Z Cache Size: ~221 MB (232013951 B)
+2025-06-19T10:12:32.1560042Z [command]/usr/bin/tar -xf /home/runner/work/_temp/281e29fc-6983-4218-bf08-d64b1ff9b848/cache.tzst -P -C /home/runner/work/anthrasite.io/anthrasite.io --use-compress-program unzstd
+2025-06-19T10:12:32.6409336Z Cache restored successfully
+2025-06-19T10:12:32.6871000Z Cache restored from key: node-cache-Linux-x64-npm-83b34af39050cb8dcf0f8fc59536a1514e9b948d1095880efafd299289ca3bea
+2025-06-19T10:12:32.7035219Z ##[group]Run actions/download-artifact@v4
+2025-06-19T10:12:32.7035559Z with:
+2025-06-19T10:12:32.7035774Z   pattern: visual-test-results-shard-*
+2025-06-19T10:12:32.7036046Z   merge-multiple: true
+2025-06-19T10:12:32.7036284Z   repository: mirqtio/anthrasite.io
+2025-06-19T10:12:32.7036534Z   run-id: 15755238353
+2025-06-19T10:12:32.7036744Z ##[endgroup]
+2025-06-19T10:12:33.0420618Z Found 1 artifact(s)
+2025-06-19T10:12:33.0421899Z Filtering artifacts by pattern 'visual-test-results-shard-*'
+2025-06-19T10:12:33.0435968Z Preparing to download the following artifacts:
+2025-06-19T10:12:33.0437680Z - visual-test-results-shard-2 (ID: 3362098635, Size: 55043136, Expected Digest: sha256:f42820fa455984025f78006fc886053a9197b92c5d679b329e060986df3b70ea)
+2025-06-19T10:12:33.1397758Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/f17042d5-cdee-42ec-99ce-77c2b638490e/workflow-job-run-84aa7f30-1ca0-5f43-9106-8986f223c63f/artifacts/9fa28df26b032916cfe1e932d666e8092b477030e9d3199715fe3c2bdc1e7c64.zip
+2025-06-19T10:12:33.1400532Z Starting download of artifact to: /home/runner/work/anthrasite.io/anthrasite.io
+2025-06-19T10:12:33.2676098Z (node:2002) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2025-06-19T10:12:33.2677958Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-06-19T10:12:34.1370889Z SHA256 digest of downloaded artifact is f42820fa455984025f78006fc886053a9197b92c5d679b329e060986df3b70ea
+2025-06-19T10:12:34.1371559Z Artifact download completed successfully.
+2025-06-19T10:12:34.1378213Z Total of 1 artifact(s) downloaded
+2025-06-19T10:12:34.1379560Z Download artifact has finished successfully
+2025-06-19T10:12:34.1512086Z ##[group]Run npx playwright merge-reports --reporter html ./playwright-visual-report
+2025-06-19T10:12:34.1512754Z [36;1mnpx playwright merge-reports --reporter html ./playwright-visual-report[0m
+2025-06-19T10:12:34.1611935Z shell: /usr/bin/bash -e {0}
+2025-06-19T10:12:34.1612474Z ##[endgroup]
+2025-06-19T10:12:35.0212709Z npm warn exec The following package was not found and will be installed: playwright@1.53.1
+2025-06-19T10:12:36.4852902Z merging reports from /home/runner/work/anthrasite.io/anthrasite.io/playwright-visual-report
+2025-06-19T10:12:36.4874842Z Error: No report files found in /home/runner/work/anthrasite.io/anthrasite.io/playwright-visual-report
+2025-06-19T10:12:36.4876196Z     at createMergedReport (/home/runner/.npm/_npx/e41f203b7505f1fb/node_modules/playwright/lib/reporters/merge.js:55:11)
+2025-06-19T10:12:36.4877522Z     at async mergeReports (/home/runner/.npm/_npx/e41f203b7505f1fb/node_modules/playwright/lib/program.js:252:3)
+2025-06-19T10:12:36.4879138Z     at async t.<anonymous> (/home/runner/.npm/_npx/e41f203b7505f1fb/node_modules/playwright/lib/program.js:140:7)
+2025-06-19T10:12:36.5126346Z ##[error]Process completed with exit code 1.
+2025-06-19T10:12:36.5213622Z Post job cleanup.
+2025-06-19T10:12:36.6174037Z [command]/usr/bin/git version
+2025-06-19T10:12:36.6215485Z git version 2.49.0
+2025-06-19T10:12:36.6264258Z Temporarily overriding HOME='/home/runner/work/_temp/34f4920b-b24b-4a88-b18c-7783ac9b09be' before making global git config changes
+2025-06-19T10:12:36.6265736Z Adding repository directory to the temporary git global config as a safe directory
+2025-06-19T10:12:36.6279365Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anthrasite.io/anthrasite.io
+2025-06-19T10:12:36.6320530Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-06-19T10:12:36.6359340Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-06-19T10:12:36.6611964Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-06-19T10:12:36.6636815Z http.https://github.com/.extraheader
+2025-06-19T10:12:36.6651914Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-06-19T10:12:36.6686794Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-06-19T10:12:36.7063793Z Cleaning up orphan processes

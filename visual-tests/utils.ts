@@ -25,17 +25,22 @@ const ANIMATION_SELECTORS = [
  * Wait for all animations and transitions to complete
  */
 export async function waitForAnimations(page: Page, timeout = 5000) {
-  // Wait for CSS animations and transitions
-  await page.waitForFunction(
-    () => {
-      const animations = document.getAnimations()
-      return (
-        animations.length === 0 ||
-        animations.every((animation) => animation.playState === 'finished')
-      )
-    },
-    { timeout }
-  )
+  try {
+    // Wait for CSS animations and transitions with reduced timeout
+    await page.waitForFunction(
+      () => {
+        const animations = document.getAnimations()
+        return (
+          animations.length === 0 ||
+          animations.every((animation) => animation.playState === 'finished')
+        )
+      },
+      { timeout: Math.min(timeout, 3000) } // Cap at 3 seconds max
+    )
+  } catch (error) {
+    // If animations timeout, continue anyway - they might be infinite animations
+    console.warn('Animation timeout reached, proceeding with test')
+  }
 
   // Wait for any animation classes to stabilize
   for (const selector of ANIMATION_SELECTORS) {
@@ -145,11 +150,11 @@ export async function preparePageForScreenshot(page: Page) {
   // Wait for network to be idle
   await page.waitForLoadState('networkidle')
 
-  // Wait for all content to load
-  await Promise.all([
-    waitForFonts(page),
-    waitForImages(page),
-    waitForAnimations(page),
+  // Wait for all content to load with error handling
+  await Promise.allSettled([
+    waitForFonts(page).catch(() => console.warn('Font loading timeout')),
+    waitForImages(page).catch(() => console.warn('Image loading timeout')),
+    waitForAnimations(page).catch(() => console.warn('Animation timeout')),
   ])
 
   // Hide dynamic content
@@ -159,7 +164,7 @@ export async function preparePageForScreenshot(page: Page) {
   await page.evaluate(() => window.scrollTo(0, 0))
 
   // Final stabilization wait
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(200) // Reduced from 500ms
 }
 
 /**

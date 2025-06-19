@@ -1,0 +1,14 @@
+﻿2025-06-19T10:12:04.2273949Z ##[group]Run actions/upload-artifact@v4
+2025-06-19T10:12:04.2274233Z with:
+2025-06-19T10:12:04.2274429Z   name: visual-test-failures-shard-2
+2025-06-19T10:12:04.2274765Z   path: visual-tests/**/*-actual.png
+visual-tests/**/*-diff.png
+
+2025-06-19T10:12:04.2275077Z   retention-days: 30
+2025-06-19T10:12:04.2275280Z   if-no-files-found: warn
+2025-06-19T10:12:04.2275492Z   compression-level: 6
+2025-06-19T10:12:04.2275686Z   overwrite: false
+2025-06-19T10:12:04.2275878Z   include-hidden-files: false
+2025-06-19T10:12:04.2276442Z ##[endgroup]
+2025-06-19T10:12:04.4678371Z ##[warning]No files were found with the provided path: visual-tests/**/*-actual.png
+visual-tests/**/*-diff.png. No artifacts will be uploaded.

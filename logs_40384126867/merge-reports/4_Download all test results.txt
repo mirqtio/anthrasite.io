@@ -1,0 +1,19 @@
+﻿2025-06-19T10:12:32.7035196Z ##[group]Run actions/download-artifact@v4
+2025-06-19T10:12:32.7035554Z with:
+2025-06-19T10:12:32.7035771Z   pattern: visual-test-results-shard-*
+2025-06-19T10:12:32.7036042Z   merge-multiple: true
+2025-06-19T10:12:32.7036280Z   repository: mirqtio/anthrasite.io
+2025-06-19T10:12:32.7036531Z   run-id: 15755238353
+2025-06-19T10:12:32.7036741Z ##[endgroup]
+2025-06-19T10:12:33.0420551Z Found 1 artifact(s)
+2025-06-19T10:12:33.0421872Z Filtering artifacts by pattern 'visual-test-results-shard-*'
+2025-06-19T10:12:33.0435944Z Preparing to download the following artifacts:
+2025-06-19T10:12:33.0437649Z - visual-test-results-shard-2 (ID: 3362098635, Size: 55043136, Expected Digest: sha256:f42820fa455984025f78006fc886053a9197b92c5d679b329e060986df3b70ea)
+2025-06-19T10:12:33.1397648Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/f17042d5-cdee-42ec-99ce-77c2b638490e/workflow-job-run-84aa7f30-1ca0-5f43-9106-8986f223c63f/artifacts/9fa28df26b032916cfe1e932d666e8092b477030e9d3199715fe3c2bdc1e7c64.zip
+2025-06-19T10:12:33.1400514Z Starting download of artifact to: /home/runner/work/anthrasite.io/anthrasite.io
+2025-06-19T10:12:33.2676043Z (node:2002) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2025-06-19T10:12:33.2677941Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-06-19T10:12:34.1370846Z SHA256 digest of downloaded artifact is f42820fa455984025f78006fc886053a9197b92c5d679b329e060986df3b70ea
+2025-06-19T10:12:34.1371556Z Artifact download completed successfully.
+2025-06-19T10:12:34.1378205Z Total of 1 artifact(s) downloaded
+2025-06-19T10:12:34.1379552Z Download artifact has finished successfully
