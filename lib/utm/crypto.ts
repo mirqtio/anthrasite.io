@@ -265,9 +265,9 @@ export interface ValidationResult {
 }
 
 export async function validateUTMToken(utm: string): Promise<ValidationResult> {
-  // In development mode with mock data, accept specific test tokens
+  // In development/test mode with mock data, accept specific test tokens
   if (
-    process.env.NODE_ENV === 'development' &&
+    (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') &&
     process.env.NEXT_PUBLIC_USE_MOCK_PURCHASE === 'true'
   ) {
     const mockTokens: Record<string, UTMPayload> = {
