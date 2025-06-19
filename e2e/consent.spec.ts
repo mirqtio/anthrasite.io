@@ -60,6 +60,9 @@ test.describe('Cookie Consent Flow', () => {
   test('should open preferences modal', async ({ page }) => {
     await page.getByTestId('cookie-preferences-button').click()
 
+    // Wait for modal animation to complete
+    await page.waitForTimeout(500)
+
     // Modal should be visible
     await expect(page.getByRole('dialog')).toBeVisible()
     await expect(page.getByTestId('cookie-preferences-title')).toBeVisible()
@@ -75,6 +78,10 @@ test.describe('Cookie Consent Flow', () => {
 
   test('should save custom preferences', async ({ page }) => {
     await page.getByTestId('cookie-preferences-button').click()
+
+    // Wait for modal to fully open
+    await page.waitForTimeout(500)
+    await expect(page.getByRole('dialog')).toBeVisible()
 
     // Toggle analytics on
     await page.getByRole('switch', { name: /Analytics Cookies/ }).click()
