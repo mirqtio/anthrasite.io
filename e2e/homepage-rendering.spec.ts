@@ -60,6 +60,9 @@ test.describe('Homepage Rendering', () => {
 
     const submitButton = page.getByTestId('waitlist-submit-button')
     await expect(submitButton).toBeVisible()
+
+    // Wait for button text to stabilize
+    await page.waitForTimeout(200)
     await expect(submitButton).toHaveText('Join Waitlist')
   })
 
