@@ -133,8 +133,8 @@ export function OrganicHomepage() {
                   }
                 ></div>
                 <div className="pressure-center">
-                  <button 
-                    onClick={openModal} 
+                  <button
+                    onClick={openModal}
                     className="cta-primary"
                     data-testid="open-waitlist-button"
                   >

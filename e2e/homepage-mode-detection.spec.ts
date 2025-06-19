@@ -139,9 +139,7 @@ test.describe('Homepage Mode Detection', () => {
       await expect(page.locator('h1')).toContainText(
         'Your website has untapped potential'
       )
-      await expect(
-        page.getByTestId('open-waitlist-button')
-      ).toBeVisible()
+      await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
       // Verify features section is visible
       await expect(page.locator('text=What We Analyze')).toBeVisible()
@@ -537,9 +535,7 @@ test.describe('Homepage Mode Detection', () => {
         await page.waitForLoadState('networkidle')
 
         await expect(page.locator('h1')).toBeVisible()
-        await expect(
-          page.getByTestId('open-waitlist-button')
-        ).toBeVisible()
+        await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
         // Test purchase mode on mobile
         await page.goto(utmUrl)
