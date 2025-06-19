@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test'
+import { gotoAndDismissCookies } from './helpers/test-utils'
 
 test.describe('Waitlist Signup', () => {
   // Clean up test data - using API since E2E tests don't have direct DB access
@@ -9,8 +10,7 @@ test.describe('Waitlist Signup', () => {
 
   // Helper to navigate to waitlist form
   async function navigateToWaitlistForm(page: Page) {
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await gotoAndDismissCookies(page, '/')
     await page.locator('button:has-text("Join Waitlist")').first().click()
     await page.waitForSelector('input[placeholder="example.com"]', {
       state: 'visible',

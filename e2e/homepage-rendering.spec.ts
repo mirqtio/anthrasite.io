@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test'
+import { gotoAndDismissCookies } from './helpers/test-utils'
 
 test.describe('Homepage Rendering', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await gotoAndDismissCookies(page, '/')
     // Wait for content to load by waiting for the main element to be visible
     await page.waitForSelector('main', { state: 'visible', timeout: 10000 })
   })
