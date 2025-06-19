@@ -1,24 +1,27 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { initializeAnalytics } from '@/lib/analytics/analytics-manager'
 import { trackPageView } from '@/lib/analytics/analytics-client'
-import { getCookieConsent } from '@/lib/cookies/consent'
+import { getCookieConsent, onConsentChange } from '@/lib/cookies/consent'
 import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
 
 export function Analytics() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const [hasAnalyticsConsent, setHasAnalyticsConsent] = useState<boolean>(false)
 
   // Track Web Vitals
   useWebVitals()
 
-  // Initialize analytics on mount
+  // Track consent changes and initialize analytics
   useEffect(() => {
-    const consent = getCookieConsent()
+    // Check initial consent
+    const initialConsent = getCookieConsent()
+    setHasAnalyticsConsent(initialConsent.analytics)
 
-    if (consent.analytics) {
+    if (initialConsent.analytics) {
       initializeAnalytics({
         ga4: {
           measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID!,
@@ -29,13 +32,30 @@ export function Analytics() {
         },
       })
     }
+
+    // Listen for consent changes
+    const unsubscribe = onConsentChange((newConsent) => {
+      setHasAnalyticsConsent(newConsent.analytics)
+      
+      if (newConsent.analytics) {
+        initializeAnalytics({
+          ga4: {
+            measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID!,
+            apiSecret: process.env.GA4_API_SECRET,
+          },
+          posthog: {
+            apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY!,
+          },
+        })
+      }
+    })
+
+    return unsubscribe
   }, [])
 
   // Track page views on route change
   useEffect(() => {
-    const consent = getCookieConsent()
-
-    if (consent.analytics) {
+    if (hasAnalyticsConsent) {
       const url =
         pathname +
         (searchParams.toString() ? `?${searchParams.toString()}` : '')
@@ -46,15 +66,19 @@ export function Analytics() {
         title: document.title,
       })
     }
-  }, [pathname, searchParams])
+  }, [pathname, searchParams, hasAnalyticsConsent])
 
-  // GA4 Script - lazy loaded after page is interactive
+  // GA4 Script - lazy loaded after page is interactive and consent is given
   useEffect(() => {
-    const consent = getCookieConsent()
-    if (!consent.analytics) return
+    if (!hasAnalyticsConsent) return
 
     // Delay loading GA4 until after page is interactive
     const loadGA4 = () => {
+      // Check if script is already loaded
+      if (document.querySelector('script[src*="googletagmanager.com"]')) {
+        return
+      }
+
       // Create script element
       const script = document.createElement('script')
       script.src = `https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID}`
@@ -80,7 +104,7 @@ export function Analytics() {
     } else {
       window.addEventListener('load', () => setTimeout(loadGA4, 1000))
     }
-  }, [])
+  }, [hasAnalyticsConsent])
 
   return null
 }
