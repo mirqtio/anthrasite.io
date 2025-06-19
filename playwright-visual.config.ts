@@ -41,8 +41,6 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     // Ensure consistent rendering
     deviceScaleFactor: 1,
-    // Browser permissions for localStorage and other APIs
-    permissions: ['local-storage', 'session-storage'],
     // Disable animations globally
     launchOptions: {
       args: [
@@ -54,8 +52,6 @@ export default defineConfig({
     },
     // Add browser context options for better localStorage support
     contextOptions: {
-      // Grant permissions for storage APIs
-      permissions: ['local-storage', 'session-storage'],
       // Bypass CSP for testing
       bypassCSP: true,
     },
