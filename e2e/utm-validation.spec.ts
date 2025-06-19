@@ -123,7 +123,8 @@ test.describe('UTM Parameter Validation', () => {
 
       // Should be redirected to homepage
       await page.waitForURL('/')
-      expect(page.url()).toBe('http://localhost:3000/')
+      const url = new URL(page.url())
+      expect(url.pathname).toBe('/')
 
       // Check error cookie
       const cookies = await page.context().cookies()
@@ -236,7 +237,8 @@ test.describe('UTM Parameter Validation', () => {
         await page.waitForURL('/')
 
         // Should not crash
-        expect(page.url()).toBe('http://localhost:3000/')
+        const url = new URL(page.url())
+        expect(url.pathname).toBe('/')
       }
     })
 
@@ -247,7 +249,8 @@ test.describe('UTM Parameter Validation', () => {
 
       // Should redirect gracefully
       await page.waitForURL('/')
-      expect(page.url()).toBe('http://localhost:3000/')
+      const url = new URL(page.url())
+      expect(url.pathname).toBe('/')
     })
   })
 })
