@@ -15,7 +15,7 @@ export default defineConfig({
   fullyParallel: true, // Run tests in parallel for speed
   forbidOnly: true,
   retries: 0, // No retries for speed
-  workers: 1, // Single worker for CI stability and speed
+  workers: 2, // Two workers for faster execution while maintaining stability
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     actionTimeout: 7000, // Balanced action timeout
