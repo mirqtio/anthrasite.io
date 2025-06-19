@@ -6,10 +6,11 @@ import { prisma } from '@/lib/db'
 test.describe('UTM Parameter Validation', () => {
   // Helper to create test business
   async function createTestBusiness() {
+    const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
     return await prisma.business.create({
       data: {
-        domain: 'test-business.com',
-        name: 'Test Business',
+        domain: `test-business-${uniqueId}.com`,
+        name: `Test Business ${uniqueId}`,
         reportData: {
           score: 85,
           issues: ['Performance', 'SEO'],
