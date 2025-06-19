@@ -56,9 +56,17 @@ test.describe('Homepage Mode Detection', () => {
       try {
         // Delete in correct order to respect foreign key constraints
         await prisma.utmToken.deleteMany({ where: { businessId } })
-        await prisma.business.delete({ where: { id: businessId } })
+        
+        // Check if business exists before trying to delete
+        const business = await prisma.business.findUnique({ where: { id: businessId } })
+        if (business) {
+          await prisma.business.delete({ where: { id: businessId } })
+        }
       } catch (error) {
-        console.error('Cleanup error:', error)
+        // Silently handle cleanup errors in CI to prevent test failures
+        if (!process.env.CI) {
+          console.error('Cleanup error:', error)
+        }
         // Continue even if cleanup fails
       }
     }
