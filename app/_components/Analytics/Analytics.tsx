@@ -36,7 +36,7 @@ export function Analytics() {
     // Listen for consent changes
     const unsubscribe = onConsentChange((newConsent) => {
       setHasAnalyticsConsent(newConsent.analytics)
-      
+
       if (newConsent.analytics) {
         initializeAnalytics({
           ga4: {
