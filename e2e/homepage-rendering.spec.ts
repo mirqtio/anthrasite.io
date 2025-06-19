@@ -12,31 +12,23 @@ test.describe('Homepage Rendering', () => {
     // Check for main headline
     const headline = page.locator('h1')
     await expect(headline).toBeVisible()
-    await expect(headline).toHaveText(
-      'Automated Website Audits That Uncover Untapped Potential'
-    )
+    await expect(headline).toHaveText('Your website has untapped potential')
 
-    // Check for subheadline
-    const subheadline = page.locator(
-      'text=Anthrasite analyzes your website across 50+ critical factors'
-    )
-    await expect(subheadline).toBeVisible()
+    // Check for subheadline/description
+    await expect(page.getByText('We find the problems costing you money')).toBeVisible()
 
-    // Check for CTAs
+    // Check for CTA
     await expect(page.locator('button:has-text("Join Waitlist")')).toBeVisible()
-    await expect(page.locator('a:has-text("Learn more")')).toBeVisible()
   })
 
   test('should render features section', async ({ page }) => {
     // Check for section title
-    await expect(
-      page.locator('h2:has-text("Comprehensive Website Analysis")')
-    ).toBeVisible()
+    await expect(page.locator('h2:has-text("What We Analyze")')).toBeVisible()
 
-    // Check for feature cards
-    await expect(page.locator('text=Performance Analysis')).toBeVisible()
-    await expect(page.locator('text=Security Audit')).toBeVisible()
-    await expect(page.locator('text=SEO Assessment')).toBeVisible()
+    // Check for feature cards based on actual implementation
+    await expect(page.locator('text=Load Performance')).toBeVisible()
+    await expect(page.locator('text=Mobile Experience')).toBeVisible()
+    await expect(page.locator('text=Revenue Impact')).toBeVisible()
 
     // Check that feature descriptions are visible
     await expect(page.locator('text=Core Web Vitals')).toBeVisible()
@@ -45,20 +37,20 @@ test.describe('Homepage Rendering', () => {
   })
 
   test('should render waitlist form section', async ({ page }) => {
-    // Scroll to form
-    await page.locator('form').scrollIntoViewIfNeeded()
-
-    // Check for form heading
-    await expect(
-      page.locator("text=Ready to unlock your website's potential?")
-    ).toBeVisible()
-
-    // Check for form elements
+    // Check that Join Waitlist button is visible
+    await expect(page.locator('button:has-text("Join Waitlist")')).toBeVisible()
+    
+    // Click to open modal and check form elements
+    await page.locator('button:has-text("Join Waitlist")').click()
+    
+    // Check for form elements in modal
+    await expect(page.getByTestId('waitlist-form')).toBeVisible()
     const domainInput = page.locator('input[placeholder*="example.com"]')
     await expect(domainInput).toBeVisible()
 
-    const submitButton = page.locator('button:has-text("Continue")')
+    const submitButton = page.getByTestId('waitlist-submit-button')
     await expect(submitButton).toBeVisible()
+    await expect(submitButton).toHaveText('Join Waitlist')
   })
 
   test('should not show only icons without text', async ({ page }) => {
@@ -70,10 +62,10 @@ test.describe('Homepage Rendering', () => {
 
     // Should contain meaningful text, not just be empty or minimal
     expect(bodyText.length).toBeGreaterThan(500)
-    expect(bodyText).toContain('Automated Website Audits')
-    expect(bodyText).toContain('Performance Analysis')
-    expect(bodyText).toContain('Security Audit')
-    expect(bodyText).toContain('SEO Assessment')
+    expect(bodyText).toContain('Your website has untapped potential')
+    expect(bodyText).toContain('Load Performance')
+    expect(bodyText).toContain('Mobile Experience')
+    expect(bodyText).toContain('Revenue Impact')
 
     // Check that the page isn't just showing icons
     // Count visible text elements
