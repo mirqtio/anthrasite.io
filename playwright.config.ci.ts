@@ -29,7 +29,7 @@ export default defineConfig({
 
   webServer: {
     command:
-      'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start',
+      'DATABASE_URL="postgresql://postgres:postgres@localhost:5432/anthrasite_test" NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && DATABASE_URL="postgresql://postgres:postgres@localhost:5432/anthrasite_test" NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start',
     port: 3333,
     reuseExistingServer: false,
     timeout: 180 * 1000, // 3 minutes for build + start in CI
