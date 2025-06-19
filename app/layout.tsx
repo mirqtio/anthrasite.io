@@ -6,7 +6,7 @@ import { ConsentProvider } from '@/lib/context/ConsentContext'
 import { ConsentManager } from '@/components/consent'
 import { HelpWidgetProvider } from '@/components/help'
 import { ConditionalHelpWidget } from '@/components/help/ConditionalHelpWidget'
-import { Analytics, AnalyticsNoScript } from '@/app/_components/Analytics'
+import { AnalyticsWrapper, AnalyticsNoScriptWrapper } from '@/app/_components/Analytics/AnalyticsWrapper'
 import './globals.css'
 
 const inter = Inter({
@@ -46,8 +46,8 @@ export default function RootLayout({
                 {children}
                 <ConsentManager />
                 <ConditionalHelpWidget />
-                <Analytics />
-                <AnalyticsNoScript />
+                <AnalyticsWrapper />
+                <AnalyticsNoScriptWrapper />
               </HelpWidgetProvider>
             </SiteModeProvider>
           </ConsentProvider>
