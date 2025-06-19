@@ -15,6 +15,7 @@
 /visual-tests/**/*-diff.png
 /visual-tests/**/*-expected.png
 /logs_visual_regression
+/CI_logs
 
 # next.js
 /.next/
