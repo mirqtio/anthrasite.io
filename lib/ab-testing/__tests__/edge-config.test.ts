@@ -86,6 +86,10 @@ describe('Edge Config Integration', () => {
     it('should handle Edge Config errors gracefully', async () => {
       ;(get as jest.Mock).mockRejectedValue(new Error('Network error'))
 
+      // Set NODE_ENV to development for this test
+      const originalEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'development'
+
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
       const experiments = await fetchExperiments()
 
@@ -96,6 +100,7 @@ describe('Edge Config Integration', () => {
       )
 
       consoleSpy.mockRestore()
+      process.env.NODE_ENV = originalEnv
     })
 
     it('should use cached data on error if available', async () => {
@@ -107,6 +112,10 @@ describe('Edge Config Integration', () => {
       const experiments1 = await fetchExperiments()
       expect(experiments1.size).toBe(2)
 
+      // Set NODE_ENV to development for this test
+      const originalEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'development'
+
       // Second call fails but uses cache
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation()
       const experiments2 = await fetchExperiments(true)
@@ -117,6 +126,7 @@ describe('Edge Config Integration', () => {
       )
 
       consoleSpy.mockRestore()
+      process.env.NODE_ENV = originalEnv
     })
 
     it('should parse date strings to Date objects', async () => {
