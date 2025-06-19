@@ -26,21 +26,16 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       await page.getByRole('button', { name: /accept all/i }).click()
       await expect(consentBanner).not.toBeVisible()
 
-      // 5. Enter domain for waitlist
-      const domainInput = page.getByPlaceholder(/yourdomain\.com/)
-      await domainInput.fill('example.com')
-      await domainInput.press('Enter')
+      // 5. Click Join Waitlist button to open modal
+      await page.getByRole('button', { name: 'Join Waitlist' }).click()
 
-      // 6. Wait for domain validation
-      await expect(page.getByText(/Checking domain/i)).toBeVisible()
+      // 6. Fill waitlist form in modal
+      await expect(page.getByTestId('waitlist-form')).toBeVisible()
+      await page.locator('input[placeholder="example.com"]').fill('example.com')
+      await page.locator('input[placeholder="you@example.com"]').fill('test@example.com')
 
-      // 7. Enter email
-      const emailInput = page.getByPlaceholder(/your@email\.com/)
-      await expect(emailInput).toBeVisible()
-      await emailInput.fill('test@example.com')
-
-      // 8. Submit waitlist form
-      await page.getByRole('button', { name: /join waitlist/i }).click()
+      // 7. Submit waitlist form
+      await page.getByTestId('waitlist-submit-button').click()
 
       // 9. Verify success state
       await expect(page.getByText(/you're on the list/i)).toBeVisible()
