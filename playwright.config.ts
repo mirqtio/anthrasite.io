@@ -52,12 +52,17 @@ export default defineConfig({
       // Flag to indicate E2E test environment
       E2E_TESTING: 'true',
       // Database for tests
-      DATABASE_URL: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
+      DATABASE_URL:
+        process.env.DATABASE_URL ||
+        'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
       // Analytics for consent tests
-      NEXT_PUBLIC_GA4_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID || 'G-TEST123456',
+      NEXT_PUBLIC_GA4_MEASUREMENT_ID:
+        process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID || 'G-TEST123456',
       GA4_API_SECRET: process.env.GA4_API_SECRET || 'test-secret',
-      NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY || 'phc_test_key',
-      NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
+      NEXT_PUBLIC_POSTHOG_KEY:
+        process.env.NEXT_PUBLIC_POSTHOG_KEY || 'phc_test_key',
+      NEXT_PUBLIC_POSTHOG_HOST:
+        process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
       // Edge Config fallback
       EDGE_CONFIG: process.env.EDGE_CONFIG || '',
     },
