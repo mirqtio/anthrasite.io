@@ -15,19 +15,13 @@ test.describe('Cookie Consent Flow', () => {
     await expect(page.getByText('We value your privacy')).toBeVisible()
 
     // All buttons should be present
-    await expect(
-      page.getByRole('button', { name: 'Accept all cookies' })
-    ).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Reject all cookies' })
-    ).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Manage cookie preferences' })
-    ).toBeVisible()
+    await expect(page.getByTestId('accept-all-cookies-button')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Reject all' })).toBeVisible()
+    await expect(page.getByTestId('cookie-preferences-button')).toBeVisible()
   })
 
   test('should hide banner after accepting all cookies', async ({ page }) => {
-    await page.getByRole('button', { name: 'Accept all cookies' }).click()
+    await page.getByTestId('accept-all-cookies-button').click()
 
     // Banner should disappear
     await expect(
@@ -42,7 +36,7 @@ test.describe('Cookie Consent Flow', () => {
   })
 
   test('should hide banner after rejecting all cookies', async ({ page }) => {
-    await page.getByRole('button', { name: 'Reject all cookies' }).click()
+    await page.getByRole('button', { name: 'Reject all' }).click()
 
     // Banner should disappear
     await expect(
@@ -130,7 +124,7 @@ test.describe('Cookie Consent Flow', () => {
     expect(gaScriptBefore).toBe(0)
 
     // Accept analytics cookies
-    await page.getByRole('button', { name: 'Accept all cookies' }).click()
+    await page.getByTestId('accept-all-cookies-button').click()
 
     // Wait a bit for scripts to load
     await page.waitForTimeout(1000)
@@ -171,9 +165,7 @@ test.describe('Cookie Consent Flow', () => {
     await page.keyboard.press('Tab')
 
     // Should focus on "Manage preferences" button
-    await expect(
-      page.getByRole('button', { name: 'Manage cookie preferences' })
-    ).toBeFocused()
+    await expect(page.getByTestId('cookie-preferences-button')).toBeFocused()
 
     // Open modal with Enter
     await page.keyboard.press('Enter')

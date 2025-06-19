@@ -8,7 +8,7 @@ export async function dismissCookieConsent(page: Page) {
   try {
     // Wait for cookie consent banner to appear and dismiss it
     const acceptButton = page.locator(
-      'button:has-text("Accept all"), button[aria-label="Accept all cookies"]'
+      '[data-testid="accept-all-cookies-button"], button:has-text("Accept all")'
     )
     await acceptButton.first().click({ timeout: 3000 })
     await page.waitForTimeout(500) // Wait for banner to disappear
