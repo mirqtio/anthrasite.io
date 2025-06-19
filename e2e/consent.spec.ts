@@ -209,7 +209,9 @@ test.describe('Cookie Consent Flow', () => {
     ).toBeVisible()
 
     // Buttons should stack vertically on mobile - check banner specifically
-    const bannerButtonsContainer = page.getByRole('region', { name: 'Cookie consent' }).locator('.flex-col.sm\\:flex-row')
+    const bannerButtonsContainer = page
+      .getByRole('region', { name: 'Cookie consent' })
+      .locator('.flex-col.sm\\:flex-row')
     await expect(bannerButtonsContainer).toBeVisible()
 
     // Open preferences

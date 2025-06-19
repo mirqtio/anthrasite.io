@@ -9,11 +9,17 @@ test.describe('Homepage', () => {
     await expect(page).toHaveTitle(/Anthrasite/)
 
     // Check main heading
-    const heading = page.getByRole('heading', { name: 'Your website has untapped potential' })
+    const heading = page.getByRole('heading', {
+      name: 'Your website has untapped potential',
+    })
     await expect(heading).toBeVisible()
 
     // Check key content sections
-    await expect(page.getByText('We find the problems costing you money')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Join Waitlist' })).toBeVisible()
+    await expect(
+      page.getByText('We find the problems costing you money')
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: 'Join Waitlist' })
+    ).toBeVisible()
   })
 })

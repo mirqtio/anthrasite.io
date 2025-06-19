@@ -22,8 +22,9 @@ export async function dismissCookieConsent(page: Page) {
  */
 export async function gotoAndDismissCookies(page: Page, url: string = '/') {
   await page.goto(url)
-  await page.waitForLoadState('networkidle')
+  await page.waitForLoadState('domcontentloaded')
   await dismissCookieConsent(page)
+  await page.waitForTimeout(1000) // Give extra time for React hydration
 }
 
 /**
