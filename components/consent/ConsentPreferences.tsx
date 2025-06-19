@@ -229,6 +229,7 @@ export function ConsentPreferences() {
                       type="button"
                       role="switch"
                       aria-checked={localPreferences[category.id]}
+                      aria-label={`${category.name} - ${localPreferences[category.id] ? 'Enabled' : 'Disabled'}`}
                       onClick={() => handleToggle(category.id)}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${animation.duration.fast}`}
                       style={{

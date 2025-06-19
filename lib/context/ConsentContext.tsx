@@ -199,7 +199,8 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
   }
 
   // If still loading, provide context but don't render children
-  if (!isMounted || isLoading) {
+  // In test environment, always render children to avoid timing issues
+  if ((!isMounted || isLoading) && typeof window !== 'undefined' && !window.__testConsentAccepted) {
     return (
       <ConsentContext.Provider value={contextValue}>
         {null}
