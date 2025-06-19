@@ -63,14 +63,14 @@ export function OrganicHomepage() {
     <>
       {/* Navigation */}
       <nav className="nav-fixed">
-        <div className="max-w-[1200px] mx-auto px-10 py-5 flex justify-between items-center">
-          <div>
+        <div className="max-w-[1200px] mx-auto px-10 py-5 flex justify-between items-center pointer-events-none">
+          <div className="pointer-events-auto">
             <Logo />
             <div className="text-[17px] font-light tracking-[0.3em] opacity-70 mt-[2px] text-center">
               VALUE, CRYSTALLIZED
             </div>
           </div>
-          <ul className="hidden md:flex gap-10 list-none">
+          <ul className="hidden md:flex gap-10 list-none pointer-events-auto">
             <li>
               <a
                 href="#assessment"
