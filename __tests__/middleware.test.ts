@@ -32,6 +32,7 @@ jest.mock('next/server', () => {
         set: (name: string, value: string) => {
           cookieStore.set(name, { value })
         },
+        has: (name: string) => cookieStore.has(name),
       }
 
       if (init?.headers) {
