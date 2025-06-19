@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test'
+import { gotoAndDismissCookies } from './helpers/test-utils'
 
 test.describe('Homepage', () => {
   test('should display the homepage', async ({ page }) => {
-    await page.goto('/')
+    await gotoAndDismissCookies(page, '/')
 
     await expect(page).toHaveTitle(/Anthrasite/)
 
