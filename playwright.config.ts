@@ -54,7 +54,7 @@ export default defineConfig({
       // Database for tests
       DATABASE_URL:
         process.env.DATABASE_URL ||
-        'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
+        'postgresql://charlieirwin@localhost:5432/anthrasite_test',
       // Analytics for consent tests
       NEXT_PUBLIC_GA4_MEASUREMENT_ID:
         process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID || 'G-TEST123456',
