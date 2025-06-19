@@ -79,8 +79,8 @@ export async function fetchExperiments(
     const configData = await get<EdgeConfigExperiment>('ab-experiments')
 
     if (!configData) {
-      // Log warnings in Jest tests, suppress in E2E environments only
-      if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
+      // Only log warnings in development, suppress in tests and E2E
+      if (process.env.NODE_ENV === 'development' && typeof jest === 'undefined' && !process.env.E2E_TESTING) {
         console.warn('No experiment configuration found in Edge Config')
       }
       return new Map(Object.entries(FALLBACK_EXPERIMENTS))
@@ -94,26 +94,26 @@ export async function fetchExperiments(
       timestamp: Date.now(),
     }
 
-    // Log success in Jest tests, suppress in E2E environments only
-    if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
+    // Only log success in development, suppress in tests and E2E
+    if (process.env.NODE_ENV === 'development' && typeof jest === 'undefined' && !process.env.E2E_TESTING) {
       console.log(`Loaded ${experiments.size} experiments from Edge Config`)
     }
     return experiments
   } catch (error) {
-    // Always log errors in Jest tests, suppress in E2E environments only
-    if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
+    // Only log errors in development for debugging, suppress in tests and E2E
+    if (process.env.NODE_ENV === 'development' && typeof jest === 'undefined' && !process.env.E2E_TESTING) {
       console.error('Failed to fetch experiments from Edge Config:', error)
     }
 
     // Return cached data if available, otherwise fallback
     if (experimentCache) {
-      if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
+      if (process.env.NODE_ENV === 'development' && typeof jest === 'undefined' && !process.env.E2E_TESTING) {
         console.warn('Using stale cached experiments due to fetch error')
       }
       return experimentCache.data
     }
 
-    if (typeof jest !== 'undefined' || process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV === 'development' && typeof jest === 'undefined' && !process.env.E2E_TESTING) {
       console.warn('Using fallback experiments')
     }
     return new Map(Object.entries(FALLBACK_EXPERIMENTS))

@@ -265,7 +265,7 @@ export function OrganicHomepage() {
                   type="url"
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
-                  placeholder="https://example.com"
+                  placeholder="example.com"
                   required
                   className="form-input"
                   autoFocus
