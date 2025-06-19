@@ -8,6 +8,8 @@ interface Window {
   dataLayer?: any[]
   gtag?: (command: string, ...args: any[]) => void
   posthog?: any
+  // Test-specific properties
+  __testConsentAccepted?: boolean
 }
 
 // Stripe types extension
