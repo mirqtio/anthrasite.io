@@ -31,7 +31,10 @@ const customJestConfig = {
   },
   // Reduce memory issues and worker conflicts
   maxWorkers: 1,
-  workerIdleMemoryLimit: '512MB',
+  workerIdleMemoryLimit: '256MB',
+  // Force garbage collection
+  detectLeaks: false,
+  forceExit: true,
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
