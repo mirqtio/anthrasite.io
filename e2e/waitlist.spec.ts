@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test'
-import { gotoAndDismissCookies } from './helpers/test-utils'
+import { gotoAndDismissCookies, safeClick, safeFill } from './helpers/test-utils'
 
 test.describe('Waitlist Signup', () => {
   // Clean up test data - using API since E2E tests don't have direct DB access
@@ -33,13 +33,13 @@ test.describe('Waitlist Signup', () => {
     await navigateToWaitlistForm(page)
 
     // Enter domain
-    await page.fill('input[placeholder="example.com"]', 'example.com')
+    await safeFill(page, 'input[placeholder="example.com"]', 'example.com')
 
     // Enter email
-    await page.fill('input[placeholder="you@example.com"]', 'test@e2e-test.com')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@e2e-test.com')
 
     // Submit form
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show success
     await expect(page.getByText(/you're on the list!/i)).toBeVisible()
@@ -49,11 +49,11 @@ test.describe('Waitlist Signup', () => {
     await navigateToWaitlistForm(page)
 
     // Enter invalid domain
-    await page.fill('input[placeholder="example.com"]', 'not a domain')
-    await page.fill('input[placeholder="you@example.com"]', 'test@example.com')
+    await safeFill(page, 'input[placeholder="example.com"]', 'not a domain')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
 
     // Submit form with invalid domain
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show error message
     await expect(page.getByText(/something went wrong/i)).toBeVisible()
@@ -68,11 +68,11 @@ test.describe('Waitlist Signup', () => {
     await navigateToWaitlistForm(page)
 
     // Enter domain with www
-    await page.fill('input[placeholder="example.com"]', 'www.example.com')
-    await page.fill('input[placeholder="you@example.com"]', 'test@example.com')
+    await safeFill(page, 'input[placeholder="example.com"]', 'www.example.com')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
 
     // Submit form
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show success with the domain (current implementation doesn't normalize)
     await expect(page.getByText(/you're on the list!/i)).toBeVisible()
@@ -82,24 +82,25 @@ test.describe('Waitlist Signup', () => {
   test('should handle duplicate signups', async ({ page }) => {
     // First signup
     await navigateToWaitlistForm(page)
-    await page.fill('input[placeholder="example.com"]', 'duplicate-test.com')
-    await page.fill('input[placeholder="you@example.com"]', 'first@example.com')
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeFill(page, 'input[placeholder="example.com"]', 'duplicate-test.com')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'first@example.com')
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Wait for success
     await expect(page.getByText(/you're on the list!/i)).toBeVisible()
 
     // Close modal and try signup again
-    await page.getByRole('button', { name: 'Close' }).click()
+    await safeClick(page, 'button:has-text("Close")')
 
     // Second signup with same domain but different email
     await navigateToWaitlistForm(page)
-    await page.fill('input[placeholder="example.com"]', 'duplicate-test.com')
-    await page.fill(
+    await safeFill(page, 'input[placeholder="example.com"]', 'duplicate-test.com')
+    await safeFill(
+      page, 
       'input[placeholder="you@example.com"]',
       'second@example.com'
     )
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should handle the duplicate signup (either success or appropriate message)
     // The current implementation may allow multiple emails for same domain
@@ -110,20 +111,20 @@ test.describe('Waitlist Signup', () => {
     await navigateToWaitlistForm(page)
 
     // Enter valid domain
-    await page.fill('input[placeholder="example.com"]', 'example.com')
+    await safeFill(page, 'input[placeholder="example.com"]', 'example.com')
 
     // Try invalid email format (HTML5 validation should kick in)
-    await page.fill('input[placeholder="you@example.com"]', 'invalid-email')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'invalid-email')
 
     // Try to submit - should be prevented by HTML5 validation
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Form should still be visible (not submitted due to validation)
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
 
     // Now enter valid email
-    await page.fill('input[placeholder="you@example.com"]', 'valid@example.com')
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'valid@example.com')
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show success
     await expect(page.getByText(/you're on the list!/i)).toBeVisible()
@@ -144,11 +145,11 @@ test.describe('Waitlist Signup', () => {
     await navigateToWaitlistForm(page)
 
     // Fill form
-    await page.fill('input[placeholder="example.com"]', 'loading.com')
-    await page.fill('input[placeholder="you@example.com"]', 'test@loading.com')
+    await safeFill(page, 'input[placeholder="example.com"]', 'loading.com')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@loading.com')
 
     // Submit form
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show loading state on button
     await expect(page.getByText('Joining...')).toBeVisible()
@@ -172,9 +173,9 @@ test.describe('Waitlist Signup', () => {
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
 
     // Complete signup
-    await page.fill('input[placeholder="example.com"]', 'referral-test.com')
-    await page.fill('input[placeholder="you@example.com"]', 'test@referral.com')
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeFill(page, 'input[placeholder="example.com"]', 'referral-test.com')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@referral.com')
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Wait for success - referral tracking happens server-side
     await expect(page.getByText(/you're on the list!/i)).toBeVisible()
@@ -187,11 +188,11 @@ test.describe('Waitlist Signup', () => {
     await navigateToWaitlistForm(page)
 
     // Fill form
-    await page.fill('input[placeholder="example.com"]', 'error.com')
-    await page.fill('input[placeholder="you@example.com"]', 'test@example.com')
+    await safeFill(page, 'input[placeholder="example.com"]', 'error.com')
+    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
 
     // Submit form
-    await page.getByTestId('waitlist-submit-button').click()
+    await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show error message
     await expect(page.getByText(/something went wrong/i)).toBeVisible()
