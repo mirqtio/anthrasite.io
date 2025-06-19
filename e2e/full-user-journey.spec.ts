@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { generateUTMToken } from './helpers/utm-generator'
 import { mockStripeCheckout } from './helpers/stripe-mocks'
+import { safeClick, safeFill } from './helpers/test-utils'
 
 test.describe('Full User Journey - Comprehensive E2E Tests', () => {
   test.describe('Organic Visitor Flow', () => {
@@ -27,17 +28,15 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       await expect(consentBanner).not.toBeVisible()
 
       // 5. Click Get Started button to open modal
-      await page.getByTestId('open-waitlist-button').click()
+      await safeClick(page, '[data-testid="open-waitlist-button"]')
 
       // 6. Fill waitlist form in modal
       await expect(page.getByTestId('waitlist-form')).toBeVisible()
-      await page.locator('input[placeholder="example.com"]').fill('example.com')
-      await page
-        .locator('input[placeholder="you@example.com"]')
-        .fill('test@example.com')
+      await safeFill(page, 'input[placeholder="example.com"]', 'example.com')
+      await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
 
       // 7. Submit waitlist form
-      await page.getByTestId('waitlist-submit-button').click()
+      await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
       // 9. Verify success state
       await expect(page.getByText(/you're on the list/i)).toBeVisible()
