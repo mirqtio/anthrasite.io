@@ -23,6 +23,10 @@ jest.mock('@/lib/cookies/consent', () => ({
     performance: true,
     functional: true,
   })),
+  onConsentChange: jest.fn((callback) => {
+    // Return an unsubscribe function
+    return () => {}
+  }),
 }))
 
 jest.mock('@/lib/analytics/hooks/useWebVitals', () => ({
