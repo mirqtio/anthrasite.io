@@ -29,11 +29,9 @@ const customJestConfig = {
       statements: 60,
     },
   },
-  // Reduce memory issues and worker conflicts
+  // Reduce memory issues and worker conflicts  
   maxWorkers: 1,
   workerIdleMemoryLimit: '512MB',
-  // Disable parallel testing to prevent SIGBUS on macOS
-  runInBand: true,
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
