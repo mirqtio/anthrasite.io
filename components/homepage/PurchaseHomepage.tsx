@@ -11,6 +11,7 @@ import {
 } from '@/lib/monitoring/hooks'
 import { trackEvent } from '@/lib/monitoring'
 import { Logo } from '@/components/Logo'
+import { ScrollToTop } from '@/components/ScrollToTop'
 
 export function PurchaseHomepage() {
   useRenderTracking('PurchaseHomepage')
@@ -239,6 +240,9 @@ export function PurchaseHomepage() {
           © 2024 Anthrasite. All rights reserved.
         </p>
       </footer>
+
+      {/* Scroll to Top Component */}
+      <ScrollToTop />
     </>
   )
 }
