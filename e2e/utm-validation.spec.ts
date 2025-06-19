@@ -23,9 +23,11 @@ test.describe('UTM Parameter Validation', () => {
     if (businessId) {
       try {
         await prisma.utmToken.deleteMany({ where: { businessId } })
-        
+
         // Check if business exists before trying to delete
-        const business = await prisma.business.findUnique({ where: { id: businessId } })
+        const business = await prisma.business.findUnique({
+          where: { id: businessId },
+        })
         if (business) {
           await prisma.business.delete({ where: { id: businessId } })
         }

@@ -56,9 +56,11 @@ test.describe('Homepage Mode Detection', () => {
       try {
         // Delete in correct order to respect foreign key constraints
         await prisma.utmToken.deleteMany({ where: { businessId } })
-        
+
         // Check if business exists before trying to delete
-        const business = await prisma.business.findUnique({ where: { id: businessId } })
+        const business = await prisma.business.findUnique({
+          where: { id: businessId },
+        })
         if (business) {
           await prisma.business.delete({ where: { id: businessId } })
         }
