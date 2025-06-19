@@ -26,8 +26,8 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       await page.getByRole('button', { name: /accept all/i }).click()
       await expect(consentBanner).not.toBeVisible()
 
-      // 5. Click Join Waitlist button to open modal
-      await page.getByRole('button', { name: 'Join Waitlist' }).click()
+      // 5. Click Get Started button to open modal
+      await page.getByTestId('open-waitlist-button').click()
 
       // 6. Fill waitlist form in modal
       await expect(page.getByTestId('waitlist-form')).toBeVisible()

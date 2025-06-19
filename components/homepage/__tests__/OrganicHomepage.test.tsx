@@ -55,9 +55,8 @@ describe('OrganicHomepage', () => {
   it('should handle waitlist success', async () => {
     render(<OrganicHomepage />)
 
-    // First click opens modal - use the first button in the hero
-    const joinButtons = screen.getAllByText('Join Waitlist')
-    const heroButton = joinButtons[0]
+    // First click opens modal - use the Get Started button in the hero
+    const heroButton = screen.getByText('Get Started')
     fireEvent.click(heroButton)
 
     // Find the form in the modal
@@ -137,8 +136,7 @@ describe('OrganicHomepage', () => {
   it('should handle modal opening and closing', () => {
     render(<OrganicHomepage />)
 
-    const joinButtons = screen.getAllByText('Join Waitlist')
-    const heroButton = joinButtons[0]
+    const heroButton = screen.getByText('Get Started')
     fireEvent.click(heroButton)
 
     expect(screen.getByTestId('waitlist-form')).toBeInTheDocument()

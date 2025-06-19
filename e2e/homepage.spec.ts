@@ -19,7 +19,7 @@ test.describe('Homepage', () => {
       page.getByText('We find the problems costing you money')
     ).toBeVisible()
     await expect(
-      page.getByRole('button', { name: 'Join Waitlist' })
+      page.getByTestId('open-waitlist-button')
     ).toBeVisible()
   })
 })
