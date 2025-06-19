@@ -45,8 +45,7 @@ export default defineConfig({
       CI: 'true',
       SKIP_ENV_VALIDATION: 'true',
       SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1',
-      DATABASE_URL:
-        'postgresql://charlieirwin@localhost:5432/anthrasite_test',
+      DATABASE_URL: 'postgresql://charlieirwin@localhost:5432/anthrasite_test',
     },
   },
 })

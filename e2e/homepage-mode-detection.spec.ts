@@ -139,13 +139,21 @@ test.describe('Homepage Mode Detection', () => {
       await expect(page.locator('h1')).toContainText(
         'Your website has untapped potential'
       )
-      await expect(page.locator('button', { hasText: 'Join Waitlist' }).first()).toBeVisible()
+      await expect(
+        page.locator('button', { hasText: 'Join Waitlist' }).first()
+      ).toBeVisible()
 
       // Verify features section is visible
       await expect(page.locator('text=What We Analyze')).toBeVisible()
-      await expect(page.locator('h3', { hasText: 'Load Performance' })).toBeVisible()
-      await expect(page.locator('h3', { hasText: 'Mobile Experience' })).toBeVisible()
-      await expect(page.locator('h3', { hasText: 'Revenue Impact' })).toBeVisible()
+      await expect(
+        page.locator('h3', { hasText: 'Load Performance' })
+      ).toBeVisible()
+      await expect(
+        page.locator('h3', { hasText: 'Mobile Experience' })
+      ).toBeVisible()
+      await expect(
+        page.locator('h3', { hasText: 'Revenue Impact' })
+      ).toBeVisible()
 
       // Check that no purchase-specific content is shown
       await expect(
@@ -186,7 +194,9 @@ test.describe('Homepage Mode Detection', () => {
       await page.waitForLoadState('networkidle')
 
       // Should show organic homepage
-      await expect(page.locator('h1')).toContainText('Your website has untapped potential')
+      await expect(page.locator('h1')).toContainText(
+        'Your website has untapped potential'
+      )
 
       // Purchase mode cookies should be cleared
       const cookies = await context.cookies()
@@ -527,7 +537,9 @@ test.describe('Homepage Mode Detection', () => {
         await page.waitForLoadState('networkidle')
 
         await expect(page.locator('h1')).toBeVisible()
-        await expect(page.locator('button', { hasText: 'Join Waitlist' }).first()).toBeVisible()
+        await expect(
+          page.locator('button', { hasText: 'Join Waitlist' }).first()
+        ).toBeVisible()
 
         // Test purchase mode on mobile
         await page.goto(utmUrl)
