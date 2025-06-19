@@ -1,5 +1,9 @@
 import { test, expect, Page } from '@playwright/test'
-import { gotoAndDismissCookies, safeClick, safeFill } from './helpers/test-utils'
+import {
+  gotoAndDismissCookies,
+  safeClick,
+  safeFill,
+} from './helpers/test-utils'
 
 test.describe('Waitlist Signup', () => {
   // Clean up test data - using API since E2E tests don't have direct DB access
@@ -36,7 +40,11 @@ test.describe('Waitlist Signup', () => {
     await safeFill(page, 'input[placeholder="example.com"]', 'example.com')
 
     // Enter email
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@e2e-test.com')
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'test@e2e-test.com'
+    )
 
     // Submit form
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -50,7 +58,11 @@ test.describe('Waitlist Signup', () => {
 
     // Enter invalid domain
     await safeFill(page, 'input[placeholder="example.com"]', 'not a domain')
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'test@example.com'
+    )
 
     // Submit form with invalid domain
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -69,7 +81,11 @@ test.describe('Waitlist Signup', () => {
 
     // Enter domain with www
     await safeFill(page, 'input[placeholder="example.com"]', 'www.example.com')
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'test@example.com'
+    )
 
     // Submit form
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -82,8 +98,16 @@ test.describe('Waitlist Signup', () => {
   test('should handle duplicate signups', async ({ page }) => {
     // First signup
     await navigateToWaitlistForm(page)
-    await safeFill(page, 'input[placeholder="example.com"]', 'duplicate-test.com')
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'first@example.com')
+    await safeFill(
+      page,
+      'input[placeholder="example.com"]',
+      'duplicate-test.com'
+    )
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'first@example.com'
+    )
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Wait for success
@@ -94,9 +118,13 @@ test.describe('Waitlist Signup', () => {
 
     // Second signup with same domain but different email
     await navigateToWaitlistForm(page)
-    await safeFill(page, 'input[placeholder="example.com"]', 'duplicate-test.com')
     await safeFill(
-      page, 
+      page,
+      'input[placeholder="example.com"]',
+      'duplicate-test.com'
+    )
+    await safeFill(
+      page,
       'input[placeholder="you@example.com"]',
       'second@example.com'
     )
@@ -114,7 +142,11 @@ test.describe('Waitlist Signup', () => {
     await safeFill(page, 'input[placeholder="example.com"]', 'example.com')
 
     // Try invalid email format (HTML5 validation should kick in)
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'invalid-email')
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'invalid-email'
+    )
 
     // Try to submit - should be prevented by HTML5 validation
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -123,7 +155,11 @@ test.describe('Waitlist Signup', () => {
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
 
     // Now enter valid email
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'valid@example.com')
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'valid@example.com'
+    )
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show success
@@ -146,7 +182,11 @@ test.describe('Waitlist Signup', () => {
 
     // Fill form
     await safeFill(page, 'input[placeholder="example.com"]', 'loading.com')
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@loading.com')
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'test@loading.com'
+    )
 
     // Submit form
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -173,8 +213,16 @@ test.describe('Waitlist Signup', () => {
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
 
     // Complete signup
-    await safeFill(page, 'input[placeholder="example.com"]', 'referral-test.com')
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@referral.com')
+    await safeFill(
+      page,
+      'input[placeholder="example.com"]',
+      'referral-test.com'
+    )
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'test@referral.com'
+    )
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Wait for success - referral tracking happens server-side
@@ -189,7 +237,11 @@ test.describe('Waitlist Signup', () => {
 
     // Fill form
     await safeFill(page, 'input[placeholder="example.com"]', 'error.com')
-    await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
+    await safeFill(
+      page,
+      'input[placeholder="you@example.com"]',
+      'test@example.com'
+    )
 
     // Submit form
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
