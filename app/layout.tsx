@@ -6,7 +6,10 @@ import { ConsentProvider } from '@/lib/context/ConsentContext'
 import { ConsentManager } from '@/components/consent'
 import { HelpWidgetProvider } from '@/components/help'
 import { ConditionalHelpWidget } from '@/components/help/ConditionalHelpWidget'
-import { AnalyticsWrapper, AnalyticsNoScriptWrapper } from '@/app/_components/Analytics/AnalyticsWrapper'
+import {
+  AnalyticsWrapper,
+  AnalyticsNoScriptWrapper,
+} from '@/app/_components/Analytics/AnalyticsWrapper'
 import './globals.css'
 
 const inter = Inter({
