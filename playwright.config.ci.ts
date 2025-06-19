@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
+import { config } from 'dotenv'
+
+// Load test environment variables
+config({ path: '.env.test' })
 
 export default defineConfig({
   testDir: './e2e',
@@ -29,7 +33,7 @@ export default defineConfig({
 
   webServer: {
     command:
-      'DATABASE_URL="postgresql://postgres:postgres@localhost:5432/anthrasite_test" NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && DATABASE_URL="postgresql://postgres:postgres@localhost:5432/anthrasite_test" NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start',
+      'DATABASE_URL="postgresql://charlieirwin@localhost:5432/anthrasite_test" NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && DATABASE_URL="postgresql://charlieirwin@localhost:5432/anthrasite_test" NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start',
     port: 3333,
     reuseExistingServer: false,
     timeout: 180 * 1000, // 3 minutes for build + start in CI
@@ -42,7 +46,7 @@ export default defineConfig({
       SKIP_ENV_VALIDATION: 'true',
       SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1',
       DATABASE_URL:
-        'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
+        'postgresql://charlieirwin@localhost:5432/anthrasite_test',
     },
   },
 })
