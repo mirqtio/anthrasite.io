@@ -41,9 +41,23 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     // Ensure consistent rendering
     deviceScaleFactor: 1,
+    // Browser permissions for localStorage and other APIs
+    permissions: ['local-storage', 'session-storage'],
     // Disable animations globally
     launchOptions: {
-      args: ['--force-device-scale-factor=1'],
+      args: [
+        '--force-device-scale-factor=1',
+        '--disable-web-security', // Allow localStorage access
+        '--allow-file-access-from-files',
+        '--disable-features=VizDisplayCompositor',
+      ],
+    },
+    // Add browser context options for better localStorage support
+    contextOptions: {
+      // Grant permissions for storage APIs
+      permissions: ['local-storage', 'session-storage'],
+      // Bypass CSP for testing
+      bypassCSP: true,
     },
   },
 
