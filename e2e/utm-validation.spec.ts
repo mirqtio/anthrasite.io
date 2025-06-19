@@ -21,8 +21,21 @@ test.describe('UTM Parameter Validation', () => {
   // Helper to cleanup test data
   async function cleanup(businessId?: string) {
     if (businessId) {
-      await prisma.utmToken.deleteMany({ where: { businessId } })
-      await prisma.business.delete({ where: { id: businessId } })
+      try {
+        await prisma.utmToken.deleteMany({ where: { businessId } })
+        
+        // Check if business exists before trying to delete
+        const business = await prisma.business.findUnique({ where: { id: businessId } })
+        if (business) {
+          await prisma.business.delete({ where: { id: businessId } })
+        }
+      } catch (error) {
+        // Silently handle cleanup errors in CI to prevent test failures
+        if (!process.env.CI) {
+          console.error('Cleanup error:', error)
+        }
+        // Continue even if cleanup fails
+      }
     }
   }
 
