@@ -46,10 +46,10 @@ describe('PostHogProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Simplified setup for CI compatibility
     if (typeof window === 'undefined') {
-      (global as any).window = {
+      ;(global as any).window = {
         location: { href: 'http://localhost:3000' },
         navigator: { userAgent: 'test' },
         localStorage: {
