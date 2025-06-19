@@ -12,7 +12,7 @@ test.describe('SiteMode Context', () => {
     await expect(
       page.locator('h1:has-text("Your website has untapped potential")')
     ).toBeVisible()
-    await expect(page.locator('text=Join Waitlist').first()).toBeVisible()
+    await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
   })
 
   test('should switch to purchase mode with UTM parameter', async ({

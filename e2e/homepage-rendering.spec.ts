@@ -20,7 +20,7 @@ test.describe('Homepage Rendering', () => {
     ).toBeVisible()
 
     // Check for CTA
-    await expect(page.locator('button:has-text("Join Waitlist")')).toBeVisible()
+    await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
   })
 
   test('should render features section', async ({ page }) => {
@@ -39,11 +39,11 @@ test.describe('Homepage Rendering', () => {
   })
 
   test('should render waitlist form section', async ({ page }) => {
-    // Check that Join Waitlist button is visible
-    await expect(page.locator('button:has-text("Join Waitlist")')).toBeVisible()
+    // Check that Get Started button is visible
+    await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
     // Click to open modal and check form elements
-    await page.locator('button:has-text("Join Waitlist")').click()
+    await page.getByTestId('open-waitlist-button').click()
 
     // Check for form elements in modal
     await expect(page.getByTestId('waitlist-form')).toBeVisible()

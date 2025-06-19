@@ -140,7 +140,7 @@ test.describe('Homepage Mode Detection', () => {
         'Your website has untapped potential'
       )
       await expect(
-        page.locator('button', { hasText: 'Join Waitlist' }).first()
+        page.getByTestId('open-waitlist-button')
       ).toBeVisible()
 
       // Verify features section is visible
@@ -538,7 +538,7 @@ test.describe('Homepage Mode Detection', () => {
 
         await expect(page.locator('h1')).toBeVisible()
         await expect(
-          page.locator('button', { hasText: 'Join Waitlist' }).first()
+          page.getByTestId('open-waitlist-button')
         ).toBeVisible()
 
         // Test purchase mode on mobile
