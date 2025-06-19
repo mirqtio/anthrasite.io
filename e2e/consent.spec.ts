@@ -108,11 +108,14 @@ test.describe('Cookie Consent Flow', () => {
       .getByRole('button', { name: 'Manage cookie preferences' })
       .click()
 
-    // Click backdrop
+    // Wait for modal to be fully visible
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByText('Cookie Preferences')).toBeVisible()
+
+    // Click backdrop - target the backdrop specifically
     await page
-      .locator('.fixed.inset-0')
-      .first()
-      .click({ position: { x: 10, y: 10 } })
+      .locator('.fixed.inset-0.bg-black\\/50')
+      .click({ position: { x: 10, y: 10 }, force: true })
 
     // Modal should close
     await expect(page.getByRole('dialog')).not.toBeVisible()
@@ -205,9 +208,9 @@ test.describe('Cookie Consent Flow', () => {
       page.getByRole('region', { name: 'Cookie consent' })
     ).toBeVisible()
 
-    // Buttons should stack vertically on mobile
-    const buttonsContainer = page.locator('.flex-col.sm\\:flex-row')
-    await expect(buttonsContainer).toBeVisible()
+    // Buttons should stack vertically on mobile - check banner specifically
+    const bannerButtonsContainer = page.getByRole('region', { name: 'Cookie consent' }).locator('.flex-col.sm\\:flex-row')
+    await expect(bannerButtonsContainer).toBeVisible()
 
     // Open preferences
     await page
