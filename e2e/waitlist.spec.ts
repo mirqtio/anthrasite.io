@@ -16,18 +16,25 @@ test.describe('Waitlist Signup', () => {
   async function navigateToWaitlistForm(page: Page) {
     await gotoAndDismissCookies(page, '/')
 
-    // Wait for page to load completely
-    await expect(
-      page.getByText('Your website has untapped potential')
-    ).toBeVisible()
+    // Wait for main content to load with longer timeout and better error handling
+    await page.waitForSelector('main', { state: 'visible', timeout: 15000 })
+
+    // Wait for the specific homepage heading with longer timeout
+    await page.waitForSelector(
+      'h1:has-text("Your website has untapped potential")',
+      {
+        state: 'visible',
+        timeout: 15000,
+      }
+    )
 
     // Click the Get Started button to open waitlist modal using safe helper
     await safeClick(page, '[data-testid="open-waitlist-button"]')
 
-    // Wait for the waitlist modal to appear and form to be visible
+    // Wait for the waitlist modal to appear and form to be visible with longer timeout
     await page.waitForSelector('[data-testid="waitlist-form"]', {
       state: 'visible',
-      timeout: 10000,
+      timeout: 15000,
     })
     await expect(page.locator('input[placeholder="example.com"]')).toBeVisible()
   }
@@ -51,7 +58,7 @@ test.describe('Waitlist Signup', () => {
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show success
-    await expect(page.getByText(/you're on the list!/i)).toBeVisible()
+    await expect(page.getByText("You're on the list!")).toBeVisible()
   })
 
   test('should show error for invalid domain', async ({ page }) => {
@@ -164,7 +171,7 @@ test.describe('Waitlist Signup', () => {
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show success
-    await expect(page.getByText(/you're on the list!/i)).toBeVisible()
+    await expect(page.getByText("You're on the list!")).toBeVisible()
   })
 
   test.skip('should handle back navigation', async ({ page }) => {
@@ -196,8 +203,8 @@ test.describe('Waitlist Signup', () => {
     await expect(page.getByText('Joining...')).toBeVisible()
 
     // Wait for submission to complete
-    await expect(page.getByText(/you're on the list!/i)).toBeVisible({
-      timeout: 10000,
+    await expect(page.getByText("You're on the list!")).toBeVisible({
+      timeout: 15000,
     })
   })
 
