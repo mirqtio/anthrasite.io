@@ -80,6 +80,8 @@ export function PurchaseHomepage() {
         </div>
       </nav>
 
+      {/* Main Content */}
+      <main>
       {/* Hero Section */}
       <section className="hero" data-testid="purchase-homepage">
         <div className="hero-content container-narrow">
@@ -224,6 +226,8 @@ export function PurchaseHomepage() {
           </div>
         </div>
       </section>
+
+      </main>
 
       {/* Footer */}
       <footer className="py-[60px] px-10 border-t border-white/5 text-center">
