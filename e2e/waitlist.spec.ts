@@ -11,13 +11,15 @@ test.describe('Waitlist Signup', () => {
   // Helper to navigate to waitlist form
   async function navigateToWaitlistForm(page: Page) {
     await gotoAndDismissCookies(page, '/')
-    
+
     // Wait for page to load completely
-    await expect(page.getByText('Your website has untapped potential')).toBeVisible()
-    
+    await expect(
+      page.getByText('Your website has untapped potential')
+    ).toBeVisible()
+
     // Click the Join Waitlist button
     await page.getByRole('button', { name: 'Join Waitlist' }).click()
-    
+
     // Wait for the waitlist modal to appear and form to be visible
     await page.waitForSelector('[data-testid="waitlist-form"]', {
       state: 'visible',
@@ -83,17 +85,20 @@ test.describe('Waitlist Signup', () => {
     await page.fill('input[placeholder="example.com"]', 'duplicate-test.com')
     await page.fill('input[placeholder="you@example.com"]', 'first@example.com')
     await page.getByTestId('waitlist-submit-button').click()
-    
+
     // Wait for success
     await expect(page.getByText(/you're on the list!/i)).toBeVisible()
-    
+
     // Close modal and try signup again
     await page.getByRole('button', { name: 'Close' }).click()
-    
-    // Second signup with same domain but different email  
+
+    // Second signup with same domain but different email
     await navigateToWaitlistForm(page)
     await page.fill('input[placeholder="example.com"]', 'duplicate-test.com')
-    await page.fill('input[placeholder="you@example.com"]', 'second@example.com')
+    await page.fill(
+      'input[placeholder="you@example.com"]',
+      'second@example.com'
+    )
     await page.getByTestId('waitlist-submit-button').click()
 
     // Should handle the duplicate signup (either success or appropriate message)
@@ -106,20 +111,20 @@ test.describe('Waitlist Signup', () => {
 
     // Enter valid domain
     await page.fill('input[placeholder="example.com"]', 'example.com')
-    
+
     // Try invalid email format (HTML5 validation should kick in)
     await page.fill('input[placeholder="you@example.com"]', 'invalid-email')
-    
+
     // Try to submit - should be prevented by HTML5 validation
     await page.getByTestId('waitlist-submit-button').click()
-    
+
     // Form should still be visible (not submitted due to validation)
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
-    
+
     // Now enter valid email
     await page.fill('input[placeholder="you@example.com"]', 'valid@example.com')
     await page.getByTestId('waitlist-submit-button').click()
-    
+
     // Should show success
     await expect(page.getByText(/you're on the list!/i)).toBeVisible()
   })
@@ -141,7 +146,7 @@ test.describe('Waitlist Signup', () => {
     // Fill form
     await page.fill('input[placeholder="example.com"]', 'loading.com')
     await page.fill('input[placeholder="you@example.com"]', 'test@loading.com')
-    
+
     // Submit form
     await page.getByTestId('waitlist-submit-button').click()
 
@@ -156,11 +161,13 @@ test.describe('Waitlist Signup', () => {
 
   test('should track referral source', async ({ page }) => {
     await page.goto('/?ref=twitter')
-    
+
     // Wait for page to load
-    await expect(page.getByText('Your website has untapped potential')).toBeVisible()
-    
-    // Open waitlist form 
+    await expect(
+      page.getByText('Your website has untapped potential')
+    ).toBeVisible()
+
+    // Open waitlist form
     await page.getByRole('button', { name: 'Join Waitlist' }).click()
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
 
@@ -182,7 +189,7 @@ test.describe('Waitlist Signup', () => {
     // Fill form
     await page.fill('input[placeholder="example.com"]', 'error.com')
     await page.fill('input[placeholder="you@example.com"]', 'test@example.com')
-    
+
     // Submit form
     await page.getByTestId('waitlist-submit-button').click()
 

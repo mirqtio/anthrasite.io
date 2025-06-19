@@ -15,7 +15,9 @@ test.describe('Homepage Rendering', () => {
     await expect(headline).toHaveText('Your website has untapped potential')
 
     // Check for subheadline/description
-    await expect(page.getByText('We find the problems costing you money')).toBeVisible()
+    await expect(
+      page.getByText('We find the problems costing you money')
+    ).toBeVisible()
 
     // Check for CTA
     await expect(page.locator('button:has-text("Join Waitlist")')).toBeVisible()
@@ -39,10 +41,10 @@ test.describe('Homepage Rendering', () => {
   test('should render waitlist form section', async ({ page }) => {
     // Check that Join Waitlist button is visible
     await expect(page.locator('button:has-text("Join Waitlist")')).toBeVisible()
-    
+
     // Click to open modal and check form elements
     await page.locator('button:has-text("Join Waitlist")').click()
-    
+
     // Check for form elements in modal
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
     const domainInput = page.locator('input[placeholder*="example.com"]')

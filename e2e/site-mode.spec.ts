@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { gotoAndDismissCookies } from './helpers/test-utils'
 
 test.describe('Site Mode Selection', () => {
   test.describe('Production Mode', () => {
@@ -11,10 +12,13 @@ test.describe('Site Mode Selection', () => {
     test('homepage without UTM shows organic/waitlist mode', async ({
       page,
     }) => {
-      await page.goto('/')
+      await gotoAndDismissCookies(page, '/')
 
-      // Should show waitlist form
-      await expect(page.getByTestId('waitlist-form')).toBeVisible()
+      // Wait for organic homepage to appear
+      await expect(page.getByTestId('organic-homepage')).toBeVisible()
+
+      // Should show organic homepage content
+      await expect(page.getByTestId('organic-homepage')).toBeVisible()
       await expect(page.getByTestId('hero-section')).toBeVisible()
 
       // Should not show purchase content
@@ -22,11 +26,11 @@ test.describe('Site Mode Selection', () => {
     })
 
     test('invalid UTM hash redirects to homepage', async ({ page }) => {
-      await page.goto('/purchase/invalid-hash')
+      await gotoAndDismissCookies(page, '/purchase/invalid-hash')
 
       // Should redirect to homepage
       await page.waitForURL('/')
-      await expect(page.getByTestId('waitlist-form')).toBeVisible()
+      await expect(page.getByTestId('organic-homepage')).toBeVisible()
     })
   })
 
@@ -41,10 +45,13 @@ test.describe('Site Mode Selection', () => {
       page,
     }) => {
       // Set mock mode via query parameter that the app can check
-      await page.goto('/?mock=true')
+      await gotoAndDismissCookies(page, '/?mock=true')
 
-      // Should still show waitlist form even with mock mode
-      await expect(page.getByTestId('waitlist-form')).toBeVisible()
+      // Wait for organic homepage to appear
+      await expect(page.getByTestId('organic-homepage')).toBeVisible()
+
+      // Should still show organic homepage even with mock mode
+      await expect(page.getByTestId('organic-homepage')).toBeVisible()
       await expect(page.getByTestId('hero-section')).toBeVisible()
 
       // Should not show purchase content
@@ -53,7 +60,7 @@ test.describe('Site Mode Selection', () => {
 
     test('purchase URL with mock UTM shows purchase mode', async ({ page }) => {
       // Use the mock hash from our mock data as a query parameter
-      await page.goto('/purchase?utm=mock-hash-123')
+      await gotoAndDismissCookies(page, '/purchase?utm=mock-hash-123')
 
       // Should show purchase page content
       await expect(page.getByTestId('purchase-header')).toBeVisible()
@@ -73,21 +80,21 @@ test.describe('Site Mode Selection', () => {
         'Get Your Report Now'
       )
 
-      // Should not show waitlist form
-      await expect(page.getByTestId('waitlist-form')).not.toBeVisible()
+      // Should not show organic homepage
+      await expect(page.getByTestId('organic-homepage')).not.toBeVisible()
     })
 
     test('different mock hashes show different business data', async ({
       page,
     }) => {
       // Test first mock business
-      await page.goto('/purchase?utm=mock-hash-123')
+      await gotoAndDismissCookies(page, '/purchase?utm=mock-hash-123')
       await expect(page.getByTestId('purchase-header')).toContainText(
         'Acme Corp'
       )
 
       // Test second mock business
-      await page.goto('/purchase?utm=mock-hash-456')
+      await gotoAndDismissCookies(page, '/purchase?utm=mock-hash-456')
       await expect(page.getByTestId('purchase-header')).toContainText(
         'TechStartup Inc'
       )
