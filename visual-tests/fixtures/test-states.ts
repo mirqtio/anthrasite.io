@@ -47,23 +47,51 @@ export async function setupUsedUTM(page: Page) {
 }
 
 export async function setupConsentAccepted(page: Page) {
-  // Set consent preferences
+  // Set consent preferences with error handling for CI environment
   await page.evaluate((consent) => {
-    localStorage.setItem(
-      'consent-preferences',
-      JSON.stringify({
-        ...consent,
-        timestamp: new Date('2025-01-01T12:00:00Z').toISOString(),
-      })
-    )
+    try {
+      localStorage.setItem(
+        'consent-preferences',
+        JSON.stringify({
+          ...consent,
+          timestamp: new Date('2025-01-01T12:00:00Z').toISOString(),
+        })
+      )
+    } catch (error) {
+      // Fallback for CI environments where localStorage might be restricted
+      console.warn('localStorage not available, using sessionStorage fallback')
+      try {
+        sessionStorage.setItem(
+          'consent-preferences',
+          JSON.stringify({
+            ...consent,
+            timestamp: new Date('2025-01-01T12:00:00Z').toISOString(),
+          })
+        )
+      } catch (sessionError) {
+        // Final fallback: set a flag that consent is accepted
+        window.__testConsentAccepted = true
+      }
+    }
   }, mockConsentData)
 }
 
 export async function setupConsentBanner(page: Page) {
-  // Clear consent to show banner
+  // Clear consent to show banner with error handling
   await page.evaluate(() => {
-    localStorage.removeItem('consent-preferences')
-    localStorage.removeItem('consent-banner-dismissed')
+    try {
+      localStorage.removeItem('consent-preferences')
+      localStorage.removeItem('consent-banner-dismissed')
+    } catch (error) {
+      // Fallback for CI environments where localStorage might be restricted
+      try {
+        sessionStorage.removeItem('consent-preferences')
+        sessionStorage.removeItem('consent-banner-dismissed')
+      } catch (sessionError) {
+        // Clear window flag as fallback
+        window.__testConsentAccepted = false
+      }
+    }
   })
 
   await page.reload({ waitUntil: 'networkidle' })
