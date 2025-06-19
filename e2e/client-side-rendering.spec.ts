@@ -14,9 +14,10 @@ test.describe('Client-Side Rendering', () => {
     // Check that Next.js has loaded by looking for Next.js script tags
     const hasNextJs = await page.evaluate(() => {
       const scripts = Array.from(document.querySelectorAll('script'))
-      return scripts.some(script => 
-        script.src.includes('_next') || 
-        script.textContent?.includes('__next_f')
+      return scripts.some(
+        (script) =>
+          script.src.includes('_next') ||
+          script.textContent?.includes('__next_f')
       )
     })
     expect(hasNextJs).toBe(true)
@@ -47,17 +48,21 @@ test.describe('Client-Side Rendering', () => {
     await page.waitForSelector('main', { state: 'visible' })
 
     // Check that the page has interactive elements
-    const joinWaitlistButton = page.locator('button:has-text("Join Waitlist")').first()
+    const joinWaitlistButton = page
+      .locator('button:has-text("Join Waitlist")')
+      .first()
     await expect(joinWaitlistButton).toBeVisible()
 
     // Verify client-side interactivity by checking that React hydration worked
     const isInteractive = await page.evaluate(() => {
       // Check if we can find React fiber nodes (indicates hydration)
       const bodyChildren = document.body.children
-      return bodyChildren.length > 0 && 
-             Array.from(bodyChildren).some(child => 
-               child.textContent?.includes('Join Waitlist')
-             )
+      return (
+        bodyChildren.length > 0 &&
+        Array.from(bodyChildren).some((child) =>
+          child.textContent?.includes('Join Waitlist')
+        )
+      )
     })
     expect(isInteractive).toBe(true)
   })
