@@ -133,8 +133,12 @@ export function OrganicHomepage() {
                   }
                 ></div>
                 <div className="pressure-center">
-                  <button onClick={openModal} className="cta-primary">
-                    Join Waitlist
+                  <button 
+                    onClick={openModal} 
+                    className="cta-primary"
+                    data-testid="open-waitlist-button"
+                  >
+                    Get Started
                   </button>
                 </div>
               </div>

@@ -50,7 +50,7 @@ test.describe('Client-Side Rendering', () => {
 
     // Check that the page has interactive elements
     const joinWaitlistButton = page
-      .locator('button:has-text("Join Waitlist")')
+      .getByTestId('open-waitlist-button')
       .first()
     await expect(joinWaitlistButton).toBeVisible()
 
@@ -61,7 +61,7 @@ test.describe('Client-Side Rendering', () => {
       return (
         bodyChildren.length > 0 &&
         Array.from(bodyChildren).some((child) =>
-          child.textContent?.includes('Join Waitlist')
+          child.textContent?.includes('Get Started')
         )
       )
     })
@@ -76,7 +76,7 @@ test.describe('Client-Side Rendering', () => {
 
     // Check that buttons are clickable
     const joinWaitlistButton = page
-      .locator('button:has-text("Join Waitlist")')
+      .getByTestId('open-waitlist-button')
       .first()
     await expect(joinWaitlistButton).toBeVisible()
     await expect(joinWaitlistButton).toBeEnabled()
@@ -127,7 +127,7 @@ test.describe('Client-Side Rendering', () => {
 
     // Open waitlist modal first
     const joinWaitlistButton = page
-      .locator('button:has-text("Join Waitlist")')
+      .getByTestId('open-waitlist-button')
       .first()
     await joinWaitlistButton.click()
 

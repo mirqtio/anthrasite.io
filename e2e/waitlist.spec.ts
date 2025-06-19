@@ -17,8 +17,8 @@ test.describe('Waitlist Signup', () => {
       page.getByText('Your website has untapped potential')
     ).toBeVisible()
 
-    // Click the Join Waitlist button
-    await page.getByRole('button', { name: 'Join Waitlist' }).click()
+    // Click the Get Started button to open waitlist modal
+    await page.getByTestId('open-waitlist-button').click()
 
     // Wait for the waitlist modal to appear and form to be visible
     await page.waitForSelector('[data-testid="waitlist-form"]', {
@@ -168,7 +168,7 @@ test.describe('Waitlist Signup', () => {
     ).toBeVisible()
 
     // Open waitlist form
-    await page.getByRole('button', { name: 'Join Waitlist' }).click()
+    await page.getByTestId('open-waitlist-button').click()
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
 
     // Complete signup
