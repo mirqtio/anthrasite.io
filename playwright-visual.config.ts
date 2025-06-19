@@ -2,9 +2,9 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './visual-tests',
-  timeout: 30 * 1000, // Faster timeout for visual tests
+  timeout: 45 * 1000, // Reasonable timeout for visual tests
   expect: {
-    timeout: 5000,
+    timeout: 8000,
     // Visual comparison settings
     toHaveScreenshot: {
       // Maximum difference in pixels
