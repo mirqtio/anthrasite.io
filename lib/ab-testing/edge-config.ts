@@ -108,10 +108,9 @@ export async function fetchExperiments(
     }
     return experiments
   } catch (error) {
-    // Only log errors in development for debugging, suppress in tests and E2E
+    // Only log errors in development for debugging, suppress in E2E tests only
     if (
       process.env.NODE_ENV === 'development' &&
-      typeof jest === 'undefined' &&
       !process.env.E2E_TESTING
     ) {
       console.error('Failed to fetch experiments from Edge Config:', error)
@@ -121,7 +120,6 @@ export async function fetchExperiments(
     if (experimentCache) {
       if (
         process.env.NODE_ENV === 'development' &&
-        typeof jest === 'undefined' &&
         !process.env.E2E_TESTING
       ) {
         console.warn('Using stale cached experiments due to fetch error')
@@ -131,7 +129,6 @@ export async function fetchExperiments(
 
     if (
       process.env.NODE_ENV === 'development' &&
-      typeof jest === 'undefined' &&
       !process.env.E2E_TESTING
     ) {
       console.warn('Using fallback experiments')
