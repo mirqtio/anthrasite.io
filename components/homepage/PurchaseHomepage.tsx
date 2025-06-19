@@ -82,151 +82,150 @@ export function PurchaseHomepage() {
 
       {/* Main Content */}
       <main>
-      {/* Hero Section */}
-      <section className="hero" data-testid="purchase-homepage">
-        <div className="hero-content container-narrow">
-          <h1 className="text-display mb-8">
-            {businessName}, your audit is ready.
-          </h1>
-          <p className="text-[24px] font-normal opacity-70 mb-[60px] max-w-[700px] mx-auto">
-            We've identified critical improvements worth thousands in monthly
-            revenue.
-          </p>
+        {/* Hero Section */}
+        <section className="hero" data-testid="purchase-homepage">
+          <div className="hero-content container-narrow">
+            <h1 className="text-display mb-8">
+              {businessName}, your audit is ready.
+            </h1>
+            <p className="text-[24px] font-normal opacity-70 mb-[60px] max-w-[700px] mx-auto">
+              We've identified critical improvements worth thousands in monthly
+              revenue.
+            </p>
 
-          {/* Pressure Visualization with Value */}
-          <div className="pressure-visual">
-            <div
-              className="pressure-ring"
-              style={{ '--scale': 1 } as React.CSSProperties}
-            ></div>
-            <div
-              className="pressure-ring"
-              style={
-                {
-                  '--scale': 0.8,
-                  animationDelay: '0.3s',
-                } as React.CSSProperties
-              }
-            ></div>
-            <div
-              className="pressure-ring"
-              style={
-                {
-                  '--scale': 0.6,
-                  animationDelay: '0.6s',
-                } as React.CSSProperties
-              }
-            ></div>
-            <div className="pressure-center">
-              <div className="text-display-large text-accent">$12,450</div>
-              <div className="text-label mt-2">Monthly Impact</div>
-            </div>
-          </div>
-
-          <button
-            onClick={handleGetReport}
-            disabled={redirecting}
-            className="cta-primary"
-          >
-            {redirecting ? 'Loading...' : 'Get Your Report - $199'}
-          </button>
-
-          <p className="text-[17px] opacity-50 mt-4">
-            Secure payment via Stripe. Instant delivery.
-          </p>
-        </div>
-      </section>
-
-      {/* Key Findings Preview */}
-      <section id="preview" className="section">
-        <div className="max-w-[1200px] mx-auto">
-          <h2 className="text-header text-center">Your Top 3 Issues</h2>
-
-          <div className="assessment-grid">
-            <div className="text-center">
-              <ShieldIcon className="w-12 h-12 text-accent opacity-60 mx-auto mb-4" />
-              <h3 className="text-[20px] mb-3">Security Headers Missing</h3>
-              <p className="text-[14px] opacity-60 leading-[1.6]">
-                Critical headers absent. Leaving your site vulnerable to XSS
-                attacks and data breaches.
-              </p>
-              <p className="text-[16px] text-accent mt-3">
-                Impact: -15% trust score
-              </p>
-            </div>
-
-            <div className="text-center">
-              <ClockIcon className="w-12 h-12 text-accent opacity-60 mx-auto mb-4" />
-              <h3 className="text-[20px] mb-3">4.2s Load Time</h3>
-              <p className="text-[14px] opacity-60 leading-[1.6]">
-                68% slower than competitors. Every second costs you 7% in
-                conversions.
-              </p>
-              <p className="text-[16px] text-accent mt-3">
-                Impact: -$3,200/month
-              </p>
-            </div>
-
-            <div className="text-center">
-              <CheckIcon className="w-12 h-12 text-accent opacity-60 mx-auto mb-4" />
-              <h3 className="text-[20px] mb-3">Image Optimization</h3>
-              <p className="text-[14px] opacity-60 leading-[1.6]">
-                23 unoptimized images adding 2.8MB. Mobile users are bouncing
-                before load.
-              </p>
-              <p className="text-[16px] text-accent mt-3">
-                Impact: -$1,800/month
-              </p>
-            </div>
-          </div>
-
-          <p className="text-center opacity-60 text-[18px] mt-12">
-            Your full report includes specific fixes for each issue with
-            implementation priority.
-          </p>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="section">
-        <div className="container-tight">
-          <h2 className="text-header text-center">Questions</h2>
-
-          <div className="space-y-0">
-            {[
-              {
-                q: "What's in the full report?",
-                a: 'A focused 15-page PDF with your specific issues, their revenue impact, and step-by-step fixes. Plus benchmarks against your top 3 competitors.',
-              },
-              {
-                q: 'How accurate are the revenue calculations?',
-                a: 'We use your actual traffic data, industry conversion rates, and competitor analysis. Our calculations are conservative - most clients see 20-30% higher actual impact.',
-              },
-              {
-                q: 'Can I implement the fixes myself?',
-                a: 'Yes. Each recommendation includes clear technical steps. If you need help, we can connect you with pre-vetted developers who specialize in your issues.',
-              },
-              {
-                q: "What if I'm not satisfied?",
-                a: "We offer a 30-day money-back guarantee. If the report doesn't provide value, we'll refund your purchase.",
-              },
-            ].map((item, index) => (
+            {/* Pressure Visualization with Value */}
+            <div className="pressure-visual">
               <div
-                key={index}
-                className={`faq-item ${activeFaq === index ? 'active' : ''}`}
-                onClick={() => toggleFaq(index)}
-              >
-                <div className="faq-question">
-                  {item.q}
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">{item.a}</div>
+                className="pressure-ring"
+                style={{ '--scale': 1 } as React.CSSProperties}
+              ></div>
+              <div
+                className="pressure-ring"
+                style={
+                  {
+                    '--scale': 0.8,
+                    animationDelay: '0.3s',
+                  } as React.CSSProperties
+                }
+              ></div>
+              <div
+                className="pressure-ring"
+                style={
+                  {
+                    '--scale': 0.6,
+                    animationDelay: '0.6s',
+                  } as React.CSSProperties
+                }
+              ></div>
+              <div className="pressure-center">
+                <div className="text-display-large text-accent">$12,450</div>
+                <div className="text-label mt-2">Monthly Impact</div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
 
+            <button
+              onClick={handleGetReport}
+              disabled={redirecting}
+              className="cta-primary"
+            >
+              {redirecting ? 'Loading...' : 'Get Your Report - $199'}
+            </button>
+
+            <p className="text-[17px] opacity-50 mt-4">
+              Secure payment via Stripe. Instant delivery.
+            </p>
+          </div>
+        </section>
+
+        {/* Key Findings Preview */}
+        <section id="preview" className="section">
+          <div className="max-w-[1200px] mx-auto">
+            <h2 className="text-header text-center">Your Top 3 Issues</h2>
+
+            <div className="assessment-grid">
+              <div className="text-center">
+                <ShieldIcon className="w-12 h-12 text-accent opacity-60 mx-auto mb-4" />
+                <h3 className="text-[20px] mb-3">Security Headers Missing</h3>
+                <p className="text-[14px] opacity-60 leading-[1.6]">
+                  Critical headers absent. Leaving your site vulnerable to XSS
+                  attacks and data breaches.
+                </p>
+                <p className="text-[16px] text-accent mt-3">
+                  Impact: -15% trust score
+                </p>
+              </div>
+
+              <div className="text-center">
+                <ClockIcon className="w-12 h-12 text-accent opacity-60 mx-auto mb-4" />
+                <h3 className="text-[20px] mb-3">4.2s Load Time</h3>
+                <p className="text-[14px] opacity-60 leading-[1.6]">
+                  68% slower than competitors. Every second costs you 7% in
+                  conversions.
+                </p>
+                <p className="text-[16px] text-accent mt-3">
+                  Impact: -$3,200/month
+                </p>
+              </div>
+
+              <div className="text-center">
+                <CheckIcon className="w-12 h-12 text-accent opacity-60 mx-auto mb-4" />
+                <h3 className="text-[20px] mb-3">Image Optimization</h3>
+                <p className="text-[14px] opacity-60 leading-[1.6]">
+                  23 unoptimized images adding 2.8MB. Mobile users are bouncing
+                  before load.
+                </p>
+                <p className="text-[16px] text-accent mt-3">
+                  Impact: -$1,800/month
+                </p>
+              </div>
+            </div>
+
+            <p className="text-center opacity-60 text-[18px] mt-12">
+              Your full report includes specific fixes for each issue with
+              implementation priority.
+            </p>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section id="faq" className="section">
+          <div className="container-tight">
+            <h2 className="text-header text-center">Questions</h2>
+
+            <div className="space-y-0">
+              {[
+                {
+                  q: "What's in the full report?",
+                  a: 'A focused 15-page PDF with your specific issues, their revenue impact, and step-by-step fixes. Plus benchmarks against your top 3 competitors.',
+                },
+                {
+                  q: 'How accurate are the revenue calculations?',
+                  a: 'We use your actual traffic data, industry conversion rates, and competitor analysis. Our calculations are conservative - most clients see 20-30% higher actual impact.',
+                },
+                {
+                  q: 'Can I implement the fixes myself?',
+                  a: 'Yes. Each recommendation includes clear technical steps. If you need help, we can connect you with pre-vetted developers who specialize in your issues.',
+                },
+                {
+                  q: "What if I'm not satisfied?",
+                  a: "We offer a 30-day money-back guarantee. If the report doesn't provide value, we'll refund your purchase.",
+                },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className={`faq-item ${activeFaq === index ? 'active' : ''}`}
+                  onClick={() => toggleFaq(index)}
+                >
+                  <div className="faq-question">
+                    {item.q}
+                    <span className="faq-toggle">+</span>
+                  </div>
+                  <div className="faq-answer">{item.a}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}

@@ -126,11 +126,15 @@ test.describe('Client-Side Rendering', () => {
     await page.waitForSelector('main', { state: 'visible' })
 
     // Open waitlist modal first
-    const joinWaitlistButton = page.locator('button:has-text("Join Waitlist")').first()
+    const joinWaitlistButton = page
+      .locator('button:has-text("Join Waitlist")')
+      .first()
     await joinWaitlistButton.click()
 
     // Type in the waitlist form (first input is domain)
-    const domainInput = page.locator('input[placeholder*="https://example.com"]')
+    const domainInput = page.locator(
+      'input[placeholder*="https://example.com"]'
+    )
     await domainInput.fill('test.com')
 
     // Verify the input maintains its value
