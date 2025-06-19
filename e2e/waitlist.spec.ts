@@ -21,12 +21,13 @@ test.describe('Waitlist Signup', () => {
       page.getByText('Your website has untapped potential')
     ).toBeVisible()
 
-    // Click the Get Started button to open waitlist modal
-    await page.getByTestId('open-waitlist-button').click()
+    // Click the Get Started button to open waitlist modal using safe helper
+    await safeClick(page, '[data-testid="open-waitlist-button"]')
 
     // Wait for the waitlist modal to appear and form to be visible
     await page.waitForSelector('[data-testid="waitlist-form"]', {
       state: 'visible',
+      timeout: 10000,
     })
     await expect(page.locator('input[placeholder="example.com"]')).toBeVisible()
   }
@@ -209,7 +210,7 @@ test.describe('Waitlist Signup', () => {
     ).toBeVisible()
 
     // Open waitlist form
-    await page.getByTestId('open-waitlist-button').click()
+    await safeClick(page, '[data-testid="open-waitlist-button"]')
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
 
     // Complete signup
