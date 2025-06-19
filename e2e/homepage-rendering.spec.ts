@@ -16,7 +16,7 @@ test.describe('Homepage Rendering', () => {
 
     // Check for subheadline/description
     await expect(
-      page.getByText('We find the problems costing you money')
+      page.getByText('We analyze thousands of data points to show you what to fix and what it\'s worth.')
     ).toBeVisible()
 
     // Check for CTA
@@ -33,9 +33,9 @@ test.describe('Homepage Rendering', () => {
     await expect(page.locator('text=Revenue Impact')).toBeVisible()
 
     // Check that feature descriptions are visible
-    await expect(page.locator('text=Core Web Vitals')).toBeVisible()
-    await expect(page.locator('text=SSL configuration')).toBeVisible()
-    await expect(page.locator('text=Meta tags')).toBeVisible()
+    await expect(page.getByText('How fast your site loads on real devices')).toBeVisible()
+    await expect(page.getByText('Where mobile visitors fail to convert')).toBeVisible()
+    await expect(page.getByText('Estimated monthly revenue loss from technical issues')).toBeVisible()
   })
 
   test('should render waitlist form section', async ({ page }) => {
