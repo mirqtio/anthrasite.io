@@ -10,36 +10,32 @@ jest.mock('@/lib/cookies/consent', () => ({
   })),
 }))
 
-// Mock dynamic import
-jest.mock(
-  'posthog-js',
-  () => ({
-    init: jest.fn(),
-    capture: jest.fn(),
-    identify: jest.fn(),
-    reset: jest.fn(),
-    getFeatureFlag: jest.fn(),
-    isFeatureEnabled: jest.fn(),
-    onFeatureFlags: jest.fn(),
-    reloadFeatureFlags: jest.fn(),
-    group: jest.fn(),
-    setPersonProperties: jest.fn(),
-    opt_in_capturing: jest.fn(),
-    opt_out_capturing: jest.fn(),
-    has_opted_out_capturing: jest.fn(),
-    clear_opt_in_out_capturing: jest.fn(),
-    register: jest.fn(),
-    unregister: jest.fn(),
-    get_distinct_id: jest.fn(),
-    alias: jest.fn(),
-    set_config: jest.fn(),
-    get_config: jest.fn(),
-    get_property: jest.fn(),
-    toString: jest.fn(),
-    _send_request: jest.fn(),
-  }),
-  { virtual: true }
-)
+// Simplified mock for CI compatibility
+jest.mock('posthog-js', () => ({
+  init: jest.fn(),
+  capture: jest.fn(),
+  identify: jest.fn(),
+  reset: jest.fn(),
+  getFeatureFlag: jest.fn(),
+  isFeatureEnabled: jest.fn(),
+  onFeatureFlags: jest.fn(),
+  reloadFeatureFlags: jest.fn(),
+  group: jest.fn(),
+  setPersonProperties: jest.fn(),
+  opt_in_capturing: jest.fn(),
+  opt_out_capturing: jest.fn(),
+  has_opted_out_capturing: jest.fn(),
+  clear_opt_in_out_capturing: jest.fn(),
+  register: jest.fn(),
+  unregister: jest.fn(),
+  get_distinct_id: jest.fn(),
+  alias: jest.fn(),
+  set_config: jest.fn(),
+  get_config: jest.fn(),
+  get_property: jest.fn(),
+  toString: jest.fn(),
+  _send_request: jest.fn(),
+}))
 
 // Get the mock after jest.mock has been processed
 const mockPostHog = require('posthog-js')
@@ -50,28 +46,20 @@ describe('PostHogProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    // Reset all mock implementations thoroughly
-    Object.keys(mockPostHog).forEach((key) => {
-      if (
-        typeof mockPostHog[key] === 'function' &&
-        mockPostHog[key].mockReset
-      ) {
-        mockPostHog[key].mockReset()
+    
+    // Simplified setup for CI compatibility
+    if (typeof window === 'undefined') {
+      (global as any).window = {
+        location: { href: 'http://localhost:3000' },
+        navigator: { userAgent: 'test' },
+        localStorage: {
+          getItem: jest.fn().mockReturnValue(null),
+          setItem: jest.fn(),
+          removeItem: jest.fn(),
+        },
       }
-    })
-
-    // Ensure window object is available for tests - critical for CI
-    ;(global as any).window = {
-      location: { href: 'http://localhost:3000' },
-      navigator: { userAgent: 'test' },
-      localStorage: {
-        getItem: jest.fn().mockReturnValue(null),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
-      },
     }
 
-    // Create fresh provider instance for each test to avoid state pollution
     provider = new PostHogProvider(apiKey)
   })
 
