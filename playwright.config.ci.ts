@@ -8,17 +8,18 @@ config({ path: '.env.test.local', override: true })
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 45 * 1000, // Reasonable test timeout for CI
+  timeout: 30 * 1000, // Reduced timeout for faster CI
   expect: {
-    timeout: 8000, // Reasonable expect timeout
+    timeout: 5000, // Reduced expect timeout
   },
   fullyParallel: true, // Run tests in parallel for speed
   forbidOnly: true,
-  retries: 0, // No retries for speed (tests should be reliable)
-  workers: 2, // Use 2 workers for parallel execution
+  retries: 0, // No retries for speed
+  workers: 1, // Single worker for CI stability and speed
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    actionTimeout: 8000, // Reasonable action timeout
+    actionTimeout: 5000, // Reduced action timeout
+    navigationTimeout: 10000, // Reduced navigation timeout
     baseURL: 'http://localhost:3333',
     trace: 'off', // Disable trace for speed
     screenshot: 'only-on-failure',
@@ -34,11 +35,10 @@ export default defineConfig({
   ],
 
   webServer: {
-    command:
-      'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run build && NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start',
+    command: 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run start',
     port: 3333,
     reuseExistingServer: false,
-    timeout: 180 * 1000, // 3 minutes for build + start in CI
+    timeout: 60 * 1000, // 1 minute for start only (build done separately)
     stdout: 'pipe',
     stderr: 'pipe',
     env: {
