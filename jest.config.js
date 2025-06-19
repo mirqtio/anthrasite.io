@@ -29,7 +29,7 @@ const customJestConfig = {
       statements: 60,
     },
   },
-  // Reduce memory issues and worker conflicts  
+  // Reduce memory issues and worker conflicts
   maxWorkers: 1,
   workerIdleMemoryLimit: '512MB',
 }
