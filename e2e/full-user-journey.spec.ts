@@ -33,7 +33,11 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       // 6. Fill waitlist form in modal
       await expect(page.getByTestId('waitlist-form')).toBeVisible()
       await safeFill(page, 'input[placeholder="example.com"]', 'example.com')
-      await safeFill(page, 'input[placeholder="you@example.com"]', 'test@example.com')
+      await safeFill(
+        page,
+        'input[placeholder="you@example.com"]',
+        'test@example.com'
+      )
 
       // 7. Submit waitlist form
       await safeClick(page, '[data-testid="waitlist-submit-button"]')
