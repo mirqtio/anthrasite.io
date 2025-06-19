@@ -109,28 +109,19 @@ export async function fetchExperiments(
     return experiments
   } catch (error) {
     // Only log errors in development for debugging, suppress in E2E tests only
-    if (
-      process.env.NODE_ENV === 'development' &&
-      !process.env.E2E_TESTING
-    ) {
+    if (process.env.NODE_ENV === 'development' && !process.env.E2E_TESTING) {
       console.error('Failed to fetch experiments from Edge Config:', error)
     }
 
     // Return cached data if available, otherwise fallback
     if (experimentCache) {
-      if (
-        process.env.NODE_ENV === 'development' &&
-        !process.env.E2E_TESTING
-      ) {
+      if (process.env.NODE_ENV === 'development' && !process.env.E2E_TESTING) {
         console.warn('Using stale cached experiments due to fetch error')
       }
       return experimentCache.data
     }
 
-    if (
-      process.env.NODE_ENV === 'development' &&
-      !process.env.E2E_TESTING
-    ) {
+    if (process.env.NODE_ENV === 'development' && !process.env.E2E_TESTING) {
       console.warn('Using fallback experiments')
     }
     return new Map(Object.entries(FALLBACK_EXPERIMENTS))
