@@ -3,7 +3,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies for Playwright
+# Install dependencies for Playwright and canvas
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -13,7 +13,14 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont \
     nodejs \
-    yarn
+    yarn \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    pango-dev \
+    giflib-dev \
+    jpeg-dev
 
 # Tell Playwright to use installed Chromium
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
@@ -22,18 +29,17 @@ ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Copy package files
 COPY package*.json ./
 
+# Copy Prisma schema first (needed for postinstall hook)
+COPY prisma/ ./prisma/
+
 # Install dependencies (using npm ci like CI)
 RUN npm ci
 
-# Install Playwright
-RUN npx playwright install-deps
+# Install Playwright (skip deps since we installed them manually)
 RUN npx playwright install
 
 # Copy application files
 COPY . .
-
-# Generate Prisma client
-RUN npx prisma generate
 
 # Default command
 CMD ["npm", "test"]
