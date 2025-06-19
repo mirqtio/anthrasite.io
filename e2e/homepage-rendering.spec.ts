@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { gotoAndDismissCookies } from './helpers/test-utils'
+import { gotoAndDismissCookies, safeClick } from './helpers/test-utils'
 
 test.describe('Homepage Rendering', () => {
   test.beforeEach(async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe('Homepage Rendering', () => {
     await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
     // Click to open modal and check form elements
-    await page.getByTestId('open-waitlist-button').click()
+    await safeClick(page, '[data-testid="open-waitlist-button"]')
 
     // Check for form elements in modal
     await expect(page.getByTestId('waitlist-form')).toBeVisible()
