@@ -49,9 +49,7 @@ test.describe('Client-Side Rendering', () => {
     await page.waitForSelector('main', { state: 'visible' })
 
     // Check that the page has interactive elements
-    const joinWaitlistButton = page
-      .getByTestId('open-waitlist-button')
-      .first()
+    const joinWaitlistButton = page.getByTestId('open-waitlist-button').first()
     await expect(joinWaitlistButton).toBeVisible()
 
     // Verify client-side interactivity by checking that React hydration worked
@@ -75,9 +73,7 @@ test.describe('Client-Side Rendering', () => {
     await page.waitForSelector('main', { state: 'visible' })
 
     // Check that buttons are clickable
-    const joinWaitlistButton = page
-      .getByTestId('open-waitlist-button')
-      .first()
+    const joinWaitlistButton = page.getByTestId('open-waitlist-button').first()
     await expect(joinWaitlistButton).toBeVisible()
     await expect(joinWaitlistButton).toBeEnabled()
 
@@ -126,9 +122,7 @@ test.describe('Client-Side Rendering', () => {
     await page.waitForSelector('main', { state: 'visible' })
 
     // Open waitlist modal first
-    const joinWaitlistButton = page
-      .getByTestId('open-waitlist-button')
-      .first()
+    const joinWaitlistButton = page.getByTestId('open-waitlist-button').first()
     await joinWaitlistButton.click()
 
     // Type in the waitlist form (first input is domain)

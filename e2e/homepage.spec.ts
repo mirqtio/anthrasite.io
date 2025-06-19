@@ -18,8 +18,6 @@ test.describe('Homepage', () => {
     await expect(
       page.getByText('We find the problems costing you money')
     ).toBeVisible()
-    await expect(
-      page.getByTestId('open-waitlist-button')
-    ).toBeVisible()
+    await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
   })
 })
