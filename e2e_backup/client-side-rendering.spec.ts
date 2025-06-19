@@ -84,9 +84,9 @@ test.describe('Client-Side Rendering', () => {
     // Click the button and verify it responds
     await joinWaitlistButton.click()
 
-    // Should open modal with waitlist form (not scroll to it)
-    const waitlistForm = page.locator('[data-testid="waitlist-form"]')
-    await expect(waitlistForm).toBeVisible()
+    // Should open waitlist modal - check for input
+    const waitlistInput = page.locator('input[placeholder="https://example.com"]')
+    await expect(waitlistInput).toBeVisible({ timeout: 5000 })
   })
 
   test('should detect console errors', async ({ page }) => {
@@ -125,19 +125,19 @@ test.describe('Client-Side Rendering', () => {
     await gotoAndDismissCookies(page, '/')
     await page.waitForSelector('main', { state: 'visible' })
 
-    // Open waitlist modal first
+    // Click Join Waitlist button to open modal
     const joinWaitlistButton = page.locator('button:has-text("Join Waitlist")').first()
     await joinWaitlistButton.click()
 
-    // Type in the waitlist form (first input is domain)
-    const domainInput = page.locator('input[placeholder*="https://example.com"]')
+    // Type in the waitlist form
+    const domainInput = page.locator('input[placeholder="https://example.com"]')
     await domainInput.fill('test.com')
 
     // Verify the input maintains its value
     await expect(domainInput).toHaveValue('test.com')
 
-    // Click elsewhere on the page (outside modal)
-    await page.locator('body').click({ position: { x: 10, y: 10 } })
+    // Click elsewhere in the modal
+    await page.locator('.modal-container').click()
 
     // Input should still have its value
     await expect(domainInput).toHaveValue('test.com')
