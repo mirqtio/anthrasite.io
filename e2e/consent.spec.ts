@@ -58,13 +58,11 @@ test.describe('Cookie Consent Flow', () => {
   })
 
   test('should open preferences modal', async ({ page }) => {
-    await page
-      .getByRole('button', { name: 'Manage cookie preferences' })
-      .click()
+    await page.getByTestId('cookie-preferences-button').click()
 
     // Modal should be visible
     await expect(page.getByRole('dialog')).toBeVisible()
-    await expect(page.getByText('Cookie Preferences')).toBeVisible()
+    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible()
 
     // Categories should be shown
     await expect(page.getByText('Essential Cookies')).toBeVisible()
@@ -76,9 +74,7 @@ test.describe('Cookie Consent Flow', () => {
   })
 
   test('should save custom preferences', async ({ page }) => {
-    await page
-      .getByRole('button', { name: 'Manage cookie preferences' })
-      .click()
+    await page.getByTestId('cookie-preferences-button').click()
 
     // Toggle analytics on
     await page.getByRole('switch', { name: /Analytics Cookies/ }).click()
@@ -104,9 +100,7 @@ test.describe('Cookie Consent Flow', () => {
   test('should close preferences modal when clicking backdrop', async ({
     page,
   }) => {
-    await page
-      .getByRole('button', { name: 'Manage cookie preferences' })
-      .click()
+    await page.getByTestId('cookie-preferences-button').click()
 
     // Wait for modal to be fully visible
     await expect(page.getByRole('dialog')).toBeVisible()
@@ -215,9 +209,7 @@ test.describe('Cookie Consent Flow', () => {
     await expect(bannerButtonsContainer).toBeVisible()
 
     // Open preferences
-    await page
-      .getByRole('button', { name: 'Manage cookie preferences' })
-      .click()
+    await page.getByTestId('cookie-preferences-button').click()
 
     // Modal should fit mobile screen
     await expect(page.getByRole('dialog')).toBeVisible()

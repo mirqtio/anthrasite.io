@@ -90,6 +90,7 @@ export function ConsentBanner() {
               size="md"
               onClick={openPreferences}
               aria-label="Manage cookie preferences"
+              data-testid="cookie-preferences-button"
             >
               Manage cookie preferences
             </Button>
