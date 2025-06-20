@@ -13,8 +13,8 @@ export default function TestPurchasePage() {
   const [mockTokens, setMockTokens] = useState<any[]>([])
 
   useEffect(() => {
-    // Check if we're in development mode
-    const isDev = process.env.NODE_ENV === 'development'
+    // Check if we're in development or test mode
+    const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
     setIsDevMode(isDev)
 
     if (isDev) {
@@ -33,7 +33,7 @@ export default function TestPurchasePage() {
               Access Denied
             </h1>
             <p className="text-gray-600 mb-6">
-              This page is only available in development mode.
+              This page is only available in development or test mode.
             </p>
             <Link
               href="/"
