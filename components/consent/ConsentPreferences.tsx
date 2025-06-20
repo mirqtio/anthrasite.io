@@ -106,7 +106,12 @@ export function ConsentPreferences() {
           // Simplified for E2E test reliability - no complex transforms during testing
           transform: 'translate(-50%, -50%) scale(1)',
           // Force full opacity and visibility during tests to avoid Playwright visibility issues
-          opacity: process.env.NODE_ENV === 'test' && isVisible ? 1 : (isVisible && !isExiting ? 1 : 0),
+          opacity:
+            process.env.NODE_ENV === 'test' && isVisible
+              ? 1
+              : isVisible && !isExiting
+                ? 1
+                : 0,
           visibility: isVisible ? 'visible' : 'hidden',
           // Only animate in production, not during tests
           transition:
