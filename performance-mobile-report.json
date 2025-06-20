@@ -1,0 +1,77 @@
+{
+  "performance": {
+    "desktop": {
+      "loadTime": "1254ms",
+      "metrics": {
+        "domContentLoaded": 0,
+        "loadComplete": 0,
+        "firstPaint": 84,
+        "firstContentfulPaint": 460,
+        "totalBlockingTime": 0
+      },
+      "resources": {
+        "jsSize": "3093.71 KB",
+        "cssSize": "13.83 KB",
+        "imageSize": "5.12 KB",
+        "totalSize": "3160.25 KB",
+        "requestCount": 11
+      }
+    }
+  },
+  "mobile": {
+    "iPhone 12": {
+      "hasViewportMeta": true,
+      "hasHorizontalScroll": true,
+      "touchTargets": {
+        "total": 19,
+        "tooSmall": 16
+      },
+      "textReadability": {
+        "totalTextElements": 131,
+        "tooSmall": 0
+      },
+      "imageOptimization": {
+        "total": 2,
+        "notOptimized": 2
+      }
+    },
+    "Samsung Galaxy S21": {
+      "hasViewportMeta": true,
+      "hasHorizontalScroll": true,
+      "touchTargets": {
+        "total": 19,
+        "tooSmall": 16
+      },
+      "textReadability": {
+        "totalTextElements": 131,
+        "tooSmall": 0
+      },
+      "imageOptimization": {
+        "total": 2,
+        "notOptimized": 2
+      }
+    },
+    "iPad": {
+      "hasViewportMeta": true,
+      "hasHorizontalScroll": false,
+      "touchTargets": {
+        "total": 19,
+        "tooSmall": 16
+      },
+      "textReadability": {
+        "totalTextElements": 131,
+        "tooSmall": 0
+      },
+      "imageOptimization": {
+        "total": 2,
+        "notOptimized": 2
+      }
+    }
+  },
+  "recommendations": [
+    "📦 Reduce total page size (currently > 3MB)",
+    "📱 Fix horizontal scroll on iPhone 12",
+    "👆 Increase size of touch targets for mobile (min 44x44px)",
+    "📱 Fix horizontal scroll on Samsung Galaxy S21"
+  ]
+}

@@ -101,12 +101,6 @@ export function OrganicHomepage() {
           </div>
           <div className="flex items-center space-x-8">
             <button 
-              onClick={() => scrollToSection('assessment')} 
-              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
-            >
-              Assessment
-            </button>
-            <button 
               onClick={() => scrollToSection('faq')} 
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
             >

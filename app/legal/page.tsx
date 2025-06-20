@@ -36,9 +36,6 @@ export default function LegalPage() {
             </a>
           </div>
           <div className="flex items-center space-x-8">
-            <a href="/#assessment" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
-              Assessment
-            </a>
             <a href="/#faq" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
               FAQ
             </a>
