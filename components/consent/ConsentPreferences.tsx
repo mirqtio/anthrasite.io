@@ -124,15 +124,12 @@ export function ConsentPreferences() {
         aria-labelledby="preferences-title"
       >
         <div
-          className="bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className={`bg-white rounded-2xl shadow-2xl overflow-hidden ${
+            process.env.NODE_ENV === 'test' ? 'test-force-visible' : ''
+          }`}
           style={{
             backgroundColor: colors.anthracite.white,
             borderRadius: radii.xl,
-            // Force all child content to be visible in test environment
-            ...(process.env.NODE_ENV === 'test' && {
-              visibility: 'visible !important',
-              opacity: '1 !important',
-            }),
           }}
         >
           {/* Header */}
