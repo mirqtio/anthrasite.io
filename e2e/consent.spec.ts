@@ -56,7 +56,9 @@ test.describe('Cookie Consent Flow', () => {
 
     // Wait for modal to be visible with proper timeout
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 15000 })
-    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({
+      timeout: 15000,
+    })
 
     // Categories should be shown
     await expect(page.getByText('Essential Cookies')).toBeVisible()
@@ -72,7 +74,9 @@ test.describe('Cookie Consent Flow', () => {
 
     // Wait for modal to fully open with proper timeout
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 15000 })
-    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({
+      timeout: 15000,
+    })
 
     // Toggle analytics on
     await page.getByRole('switch', { name: /Analytics Cookies/ }).click()
@@ -102,7 +106,9 @@ test.describe('Cookie Consent Flow', () => {
 
     // Wait for modal to be fully visible with proper timeout
     await expect(page.getByRole('dialog')).toBeVisible({ timeout: 15000 })
-    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({
+      timeout: 15000,
+    })
 
     // Click backdrop - target the backdrop specifically
     await page
