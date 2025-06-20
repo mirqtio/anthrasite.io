@@ -28,6 +28,13 @@ export interface WelcomeEmailData extends BaseEmailData {
   businessDomain: string
 }
 
+// Cart recovery email data
+export interface CartRecoveryEmailData extends BaseEmailData {
+  businessName: string
+  amount: string
+  recoveryUrl: string
+}
+
 // Email template types
 export type EmailTemplate =
   | 'orderConfirmation'
