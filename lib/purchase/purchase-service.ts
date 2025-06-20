@@ -14,7 +14,8 @@ import {
 // Check if we're in development mode and should use mock data
 const isDevelopmentMode = () => {
   return (
-    (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') &&
+    (process.env.NODE_ENV === 'development' ||
+      process.env.NODE_ENV === 'test') &&
     process.env.NEXT_PUBLIC_USE_MOCK_PURCHASE === 'true'
   )
 }

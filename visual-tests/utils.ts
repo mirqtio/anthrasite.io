@@ -144,7 +144,10 @@ export async function hideDynamicContent(page: Page) {
     })
   } catch (error) {
     // If page is closed or unavailable, continue gracefully
-    console.warn('Failed to hide dynamic content, continuing with test:', error instanceof Error ? error.message : String(error))
+    console.warn(
+      'Failed to hide dynamic content, continuing with test:',
+      error instanceof Error ? error.message : String(error)
+    )
   }
 }
 
@@ -169,7 +172,10 @@ export async function preparePageForScreenshot(page: Page) {
   try {
     await page.evaluate(() => window.scrollTo(0, 0))
   } catch (error) {
-    console.warn('Failed to scroll to top, continuing:', error instanceof Error ? error.message : String(error))
+    console.warn(
+      'Failed to scroll to top, continuing:',
+      error instanceof Error ? error.message : String(error)
+    )
   }
 
   // Final stabilization wait

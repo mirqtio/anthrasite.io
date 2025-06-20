@@ -14,7 +14,8 @@ export default function TestPurchasePage() {
 
   useEffect(() => {
     // Check if we're in development or test mode
-    const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
+    const isDev =
+      process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
     setIsDevMode(isDev)
 
     if (isDev) {
