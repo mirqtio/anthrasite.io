@@ -61,33 +61,15 @@ export function OrganicHomepage() {
 
   return (
     <>
-      {/* Navigation */}
+      {/* Logo Mark Only - No Navigation Menu per PRD */}
       <nav className="nav-fixed">
-        <div className="max-w-[1200px] mx-auto px-10 py-5 flex justify-between items-center pointer-events-none">
-          <div className="pointer-events-auto">
+        <div className="max-w-[1200px] mx-auto px-10 py-5">
+          <div>
             <Logo />
             <div className="text-[17px] font-light tracking-[0.3em] opacity-70 mt-[2px] text-center">
               VALUE, CRYSTALLIZED
             </div>
           </div>
-          <ul className="hidden md:flex gap-10 list-none pointer-events-auto">
-            <li>
-              <a
-                href="#assessment"
-                className="text-white no-underline text-[24px] font-normal opacity-70 hover:opacity-100 transition-opacity duration-300"
-              >
-                What We Do
-              </a>
-            </li>
-            <li>
-              <a
-                href="#faq"
-                className="text-white no-underline text-[24px] font-normal opacity-70 hover:opacity-100 transition-opacity duration-300"
-              >
-                FAQ
-              </a>
-            </li>
-          </ul>
         </div>
       </nav>
 
