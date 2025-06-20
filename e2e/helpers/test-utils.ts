@@ -28,6 +28,23 @@ export async function gotoAndDismissCookies(page: Page, url: string = '/') {
 }
 
 /**
+ * Helper to open cookie preferences modal with proper waiting
+ */
+export async function openCookiePreferences(page: Page) {
+  // Click the cookie preferences button
+  await safeClick(page, '[data-testid="cookie-preferences-button"]')
+  
+  // Wait extra time for modal animations and state updates
+  await page.waitForTimeout(1000)
+  
+  // Wait for dialog role to be visible
+  await page.waitForSelector('[role="dialog"]', { state: 'visible', timeout: 10000 })
+  
+  // Wait additional time for content to be fully visible
+  await page.waitForTimeout(500)
+}
+
+/**
  * Helper to click an element after ensuring cookie consent is dismissed
  */
 export async function clickAfterCookieDismissal(page: Page, selector: string) {
