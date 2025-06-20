@@ -1,5 +1,11 @@
 @import 'tailwindcss';
 
+/* E2E test helper classes */
+.test-force-visible * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 @theme {
   /* Carbon color system */
   --color-carbon: #0a0a0a;
