@@ -58,7 +58,7 @@ jobs:
 
           # Verify database connection
           echo "Testing database connectivity..."
-          npx prisma db seed --preview-feature || echo "No seed script found, continuing..."
+          npx prisma db seed || echo "No seed script found, continuing..."
 
           # Test a simple query to ensure connection works
           node -e "
