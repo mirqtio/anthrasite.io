@@ -33,14 +33,10 @@ export function OrganicHomepage() {
     setEmail('')
   }
 
-  const handleDomainSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!domain) return
-    setStep('email')
-  }
-
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!domain || !email) return
+
     setError('')
     setIsSubmitting(true)
 
@@ -247,8 +243,8 @@ export function OrganicHomepage() {
             to know when we expand.
           </p>
 
-          {step === 'domain' && (
-            <form onSubmit={handleDomainSubmit} data-testid="waitlist-form">
+          {step !== 'success' && (
+            <form onSubmit={handleEmailSubmit} data-testid="waitlist-form">
               <div className="form-group">
                 <label className="form-label">Your website URL</label>
                 <input
@@ -262,19 +258,6 @@ export function OrganicHomepage() {
                   data-testid="waitlist-domain-input"
                 />
               </div>
-              <button
-                type="submit"
-                disabled={!domain}
-                className="cta-primary button-full"
-                data-testid="waitlist-continue-button"
-              >
-                Continue
-              </button>
-            </form>
-          )}
-
-          {step === 'email' && (
-            <form onSubmit={handleEmailSubmit} data-testid="waitlist-form">
               <div className="form-group">
                 <label className="form-label">Your email</label>
                 <input
@@ -284,24 +267,16 @@ export function OrganicHomepage() {
                   placeholder="you@example.com"
                   required
                   className="form-input"
-                  autoFocus
                   data-testid="waitlist-email-input"
                 />
               </div>
               <button
                 type="submit"
-                disabled={isSubmitting || !email}
+                disabled={isSubmitting || !email || !domain}
                 className="cta-primary button-full"
                 data-testid="waitlist-submit-button"
               >
                 {isSubmitting ? 'Joining...' : 'Join Waitlist'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep('domain')}
-                className="mt-4 text-center w-full text-sm opacity-70 hover:opacity-100"
-              >
-                Back
               </button>
             </form>
           )}
