@@ -21,8 +21,10 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
         })
       ).toBeVisible()
 
-      // 5. Click Get Started button to open modal
-      await safeClick(page, '[data-testid="open-waitlist-button"]')
+      // 5. Click Get Started button to open modal with animation wait
+      await safeClick(page, '[data-testid="open-waitlist-button"]', { 
+        waitForAnimations: true 
+      })
 
       // 6. Fill waitlist form in modal
       await expect(page.getByTestId('waitlist-form')).toBeVisible()
