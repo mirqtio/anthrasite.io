@@ -59,9 +59,8 @@ export function ConsentPreferences() {
         analytics: preferences?.analytics ?? false,
         functional: preferences?.functional ?? true,
       })
-      // Reduce delay for faster test execution
-      const timer = setTimeout(() => setIsVisible(true), 10)
-      return () => clearTimeout(timer)
+      // Immediate visibility for test reliability
+      setIsVisible(true)
     } else {
       setIsExiting(true)
       const timer = setTimeout(() => {
