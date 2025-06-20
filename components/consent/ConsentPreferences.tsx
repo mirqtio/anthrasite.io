@@ -108,7 +108,10 @@ export function ConsentPreferences() {
           opacity: isVisible && !isExiting ? 1 : 0,
           visibility: isVisible ? 'visible' : 'hidden',
           // Only animate in production, not during tests
-          transition: process.env.NODE_ENV === 'test' ? 'none' : `all ${animation.duration.normal} ${animation.easing.easeOut}`,
+          transition:
+            process.env.NODE_ENV === 'test'
+              ? 'none'
+              : `all ${animation.duration.normal} ${animation.easing.easeOut}`,
         }}
         role="dialog"
         aria-modal="true"
