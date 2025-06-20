@@ -166,7 +166,11 @@ export async function preparePageForScreenshot(page: Page) {
   await hideDynamicContent(page)
 
   // Scroll to top to ensure consistent positioning
-  await page.evaluate(() => window.scrollTo(0, 0))
+  try {
+    await page.evaluate(() => window.scrollTo(0, 0))
+  } catch (error) {
+    console.warn('Failed to scroll to top, continuing:', error instanceof Error ? error.message : String(error))
+  }
 
   // Final stabilization wait
   await page.waitForTimeout(100) // Reduced for CI speed

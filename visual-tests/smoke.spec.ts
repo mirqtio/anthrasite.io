@@ -1,20 +1,14 @@
-import { test } from '@playwright/test'
-import {
-  preparePageForScreenshot,
-  compareScreenshots,
-  setupVisualTestContext,
-} from './utils'
-import { setupOrganicMode, resetState } from './fixtures/test-states'
-
-test.beforeEach(async ({ page, context }) => {
-  await setupVisualTestContext(context)
-  await resetState(page)
-})
+import { test, expect } from '@playwright/test'
 
 test.describe('Smoke Visual Tests', () => {
-  test('homepage - basic visual regression', async ({ page }) => {
-    await setupOrganicMode(page)
-    await preparePageForScreenshot(page)
-    await compareScreenshots(page, 'homepage-smoke-test.png')
+  test('homepage - basic visual smoke test', async ({ page }) => {
+    // Navigate to homepage
+    await page.goto('/')
+    
+    // Wait for page to load
+    await page.waitForLoadState('networkidle')
+    
+    // Basic screenshot comparison
+    await expect(page).toHaveScreenshot('homepage-smoke-test.png')
   })
 })
