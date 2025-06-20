@@ -1,4 +1,5 @@
-import * as Sentry from '@sentry/nextjs'
+// Temporarily disable Sentry while fixing site
+// import * as Sentry from '@sentry/nextjs'
 import { initDatadog, logError as ddLogError, trackAction } from './datadog'
 
 // Initialize monitoring services
@@ -13,12 +14,8 @@ export const initMonitoring = () => {
 
 // Error tracking
 export const captureError = (error: Error, context?: Record<string, any>) => {
-  // Send to Sentry
-  Sentry.captureException(error, {
-    contexts: {
-      custom: context,
-    },
-  })
+  // Temporarily log to console instead of Sentry
+  console.error('Error captured:', error, context)
 
   // Send to Datadog
   if (typeof window !== 'undefined') {
@@ -26,22 +23,20 @@ export const captureError = (error: Error, context?: Record<string, any>) => {
   }
 }
 
-// Custom error boundary
-export const ErrorBoundary = Sentry.ErrorBoundary
+// Custom error boundary - temporary fallback
+export const ErrorBoundary = ({ children, fallback }: any) => children
 
 // Performance monitoring
 export const startTransaction = (name: string, op: string = 'navigation') => {
-  return Sentry.startSpan({ name, op }, () => {
-    return {
+  return {
+    setStatus: (status: string) => {},
+    setData: (key: string, value: any) => {},
+    finish: () => {},
+    startChild: (options: any) => ({
       setStatus: (status: string) => {},
-      setData: (key: string, value: any) => {},
       finish: () => {},
-      startChild: (options: any) => ({
-        setStatus: (status: string) => {},
-        finish: () => {},
-      }),
-    }
-  })
+    }),
+  }
 }
 
 // User identification
@@ -50,12 +45,8 @@ export const identifyUser = (user: {
   email?: string
   name?: string
 }) => {
-  // Sentry
-  Sentry.setUser({
-    id: user.id,
-    email: user.email,
-    username: user.name,
-  })
+  // Temporarily log instead of Sentry
+  console.log('User identified:', user.id)
 
   // Datadog
   if (typeof window !== 'undefined') {
@@ -66,19 +57,14 @@ export const identifyUser = (user: {
 
 // Clear user on logout
 export const clearUser = () => {
-  Sentry.setUser(null)
+  console.log('User cleared')
   // Datadog clears automatically on session end
 }
 
 // Custom events
 export const trackEvent = (name: string, data?: Record<string, any>) => {
-  // Sentry breadcrumb
-  Sentry.addBreadcrumb({
-    message: name,
-    category: 'custom',
-    level: 'info',
-    data,
-  })
+  // Temporarily log instead of Sentry
+  console.log('Event tracked:', name, data)
 
   // Datadog action
   if (typeof window !== 'undefined') {

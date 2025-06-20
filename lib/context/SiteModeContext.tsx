@@ -37,10 +37,15 @@ export function SiteModeProvider({
   const [businessId, setBusinessId] = useState<string | null>(
     initialBusinessId || null
   )
-  // Always start in loading state to prevent hydration mismatches
-  const [isLoading, setIsLoading] = useState(true)
+  // Start with loading false unless we need to detect mode
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      return
+    }
+
     // If we have initial props, don't do any client-side detection
     if (hasInitialProps) {
       setIsLoading(false)

@@ -1,0 +1,158 @@
+name: Visual Regression Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  visual-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run visual tests (shard ${{ matrix.shard }}/4)
+        run: npm run test:visual -- --shard=${{ matrix.shard }}/4
+        env:
+          CI: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-test-results-shard-${{ matrix.shard }}
+          path: |
+            visual-test-results.json
+            playwright-visual-report/
+          retention-days: 30
+
+      - name: Upload failed screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-test-failures-shard-${{ matrix.shard }}
+          path: |
+            visual-tests/**/*-actual.png
+            visual-tests/**/*-diff.png
+          retention-days: 30
+
+  merge-reports:
+    if: always()
+    needs: visual-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: visual-test-results-shard-*
+          merge-multiple: true
+
+      - name: Merge test reports
+        run: npx playwright merge-reports --reporter html ./playwright-visual-report
+
+      - name: Upload merged report
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-test-report
+          path: playwright-visual-report/
+          retention-days: 30
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('visual-test-results.json', 'utf8'));
+
+            const passed = results.stats.expected;
+            const failed = results.stats.unexpected;
+            const flaky = results.stats.flaky;
+            const skipped = results.stats.skipped;
+
+            const comment = `## Visual Regression Test Results
+
+            ${failed === 0 ? '✅' : '❌'} **${passed} passed**, **${failed} failed**, **${flaky} flaky**, **${skipped} skipped**
+
+            ${failed > 0 ? '### Failed Tests\n' + results.errors.map(e => `- ${e.test}: ${e.message}`).join('\n') : ''}
+
+            [View full report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  update-baselines:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: visual-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Update baseline screenshots
+        run: npm run test:visual:update
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if [[ -n $(git status --porcelain visual-tests/screenshots) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit updated baselines
+        if: steps.check-changes.outputs.changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add visual-tests/screenshots
+          git commit -m "chore: update visual regression baselines"
+          git push
