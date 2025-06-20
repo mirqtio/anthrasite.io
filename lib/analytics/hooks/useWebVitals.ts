@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { onCLS, onFCP, onFID, onLCP, onTTFB, Metric } from 'web-vitals'
+import { onCLS, onFCP, onINP, onLCP, onTTFB, Metric } from 'web-vitals'
 
 /**
  * Hook to track Web Vitals metrics
@@ -18,7 +18,7 @@ export function useWebVitals() {
     // Register handlers for each metric
     onCLS(handleMetric)
     onFCP(handleMetric)
-    onFID(handleMetric)
+    onINP(handleMetric)
     onLCP(handleMetric)
     onTTFB(handleMetric)
   }, [])
