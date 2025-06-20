@@ -86,10 +86,13 @@ jobs:
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
+        if: github.event_name == 'pull_request' || env.CODECOV_TOKEN != ''
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
