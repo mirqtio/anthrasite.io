@@ -41,7 +41,7 @@ export async function clickAfterCookieDismissal(page: Page, selector: string) {
 export async function safeClick(
   page: Page,
   selector: string,
-  options?: { timeout?: number }
+  options?: { timeout?: number; waitForAnimations?: boolean }
 ) {
   const element = page.locator(selector)
 
@@ -66,6 +66,11 @@ export async function safeClick(
   } catch (error) {
     // Retry with force if initial click fails
     await element.click({ force: true, timeout: 2000 })
+  }
+
+  // Wait for modal animations to complete if requested
+  if (options?.waitForAnimations) {
+    await page.waitForTimeout(400) // Wait slightly longer than CSS transition (300ms)
   }
 }
 
