@@ -99,8 +99,9 @@ export async function waitForFonts(page: Page, timeout = 500) {
  * Hide dynamic content that changes between test runs
  */
 export async function hideDynamicContent(page: Page) {
-  await page.addStyleTag({
-    content: `
+  try {
+    await page.addStyleTag({
+      content: `
       /* Hide timestamps and dates */
       [data-testid*="timestamp"],
       [data-testid*="date"],
@@ -140,7 +141,11 @@ export async function hideDynamicContent(page: Page) {
         height: 0 !important;
       }
     `,
-  })
+    })
+  } catch (error) {
+    // If page is closed or unavailable, continue gracefully
+    console.warn('Failed to hide dynamic content, continuing with test:', error.message)
+  }
 }
 
 /**

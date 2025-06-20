@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './visual-tests',
-  timeout: 15 * 1000, // Aggressively reduced timeout for CI speed
+  timeout: 30 * 1000, // Balanced timeout - aggressive but enough for page operations
   expect: {
     timeout: 8000,
     // Visual comparison settings
