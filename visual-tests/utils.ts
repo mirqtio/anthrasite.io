@@ -24,7 +24,7 @@ const ANIMATION_SELECTORS = [
 /**
  * Wait for all animations and transitions to complete
  */
-export async function waitForAnimations(page: Page, timeout = 5000) {
+export async function waitForAnimations(page: Page, timeout = 1000) {
   try {
     // Wait for CSS animations and transitions with reduced timeout
     await page.waitForFunction(
@@ -35,7 +35,7 @@ export async function waitForAnimations(page: Page, timeout = 5000) {
           animations.every((animation) => animation.playState === 'finished')
         )
       },
-      { timeout: Math.min(timeout, 3000) } // Cap at 3 seconds max
+      { timeout: Math.min(timeout, 500) } // Cap at 500ms max for speed
     )
   } catch (error) {
     // If animations timeout, continue anyway - they might be infinite animations
@@ -63,7 +63,7 @@ export async function waitForAnimations(page: Page, timeout = 5000) {
 /**
  * Wait for all images to load
  */
-export async function waitForImages(page: Page, timeout = 10000) {
+export async function waitForImages(page: Page, timeout = 3000) {
   try {
     await page.waitForFunction(
       () => {
@@ -86,7 +86,7 @@ export async function waitForImages(page: Page, timeout = 10000) {
 /**
  * Wait for all fonts to load
  */
-export async function waitForFonts(page: Page, timeout = 5000) {
+export async function waitForFonts(page: Page, timeout = 2000) {
   await page.waitForFunction(
     () => {
       return document.fonts.ready.then(() => true)
@@ -164,7 +164,7 @@ export async function preparePageForScreenshot(page: Page) {
   await page.evaluate(() => window.scrollTo(0, 0))
 
   // Final stabilization wait
-  await page.waitForTimeout(200) // Reduced from 500ms
+  await page.waitForTimeout(100) // Reduced for CI speed
 }
 
 /**
