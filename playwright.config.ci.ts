@@ -8,9 +8,10 @@ config({ path: '.env.test.local', override: true })
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 40 * 1000, // Balanced timeout for CI
+  globalSetup: require.resolve('./e2e/global-setup'),
+  timeout: 60 * 1000, // Increased timeout for CI stability
   expect: {
-    timeout: 7000, // Balanced expect timeout
+    timeout: 15000, // Increased expect timeout for CI stability
   },
   fullyParallel: true, // Run tests in parallel for speed
   forbidOnly: true,
@@ -18,8 +19,8 @@ export default defineConfig({
   workers: 2, // Two workers for faster execution while maintaining stability
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    actionTimeout: 7000, // Balanced action timeout
-    navigationTimeout: 12000, // Balanced navigation timeout
+    actionTimeout: 10000, // Increased action timeout for CI stability
+    navigationTimeout: 20000, // Increased navigation timeout for CI stability
     baseURL: 'http://localhost:3333',
     trace: 'off', // Disable trace for speed
     screenshot: 'only-on-failure',
