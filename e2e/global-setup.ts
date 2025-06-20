@@ -6,7 +6,7 @@ async function globalSetup(config: FullConfig) {
   const browser = await chromium.launch()
   const context = await browser.newContext()
   const page = await context.newPage()
-  
+
   try {
     // Navigate to the site to clear localStorage
     await page.goto(baseURL!)

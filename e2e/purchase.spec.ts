@@ -42,13 +42,17 @@ test.describe('Purchase Page', () => {
     if (hasPurchaseHeader > 0) {
       // Check for heading containing business name
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-      
+
       // Check for price elements (mock data shows $2,400 value)
-      const priceElement = page.getByText('$2,400').or(page.locator('text=$2,400'))
+      const priceElement = page
+        .getByText('$2,400')
+        .or(page.locator('text=$2,400'))
       await expect(priceElement).toBeVisible()
-      
+
       // Check for checkout button with flexible text matching
-      const checkoutButton = page.getByRole('button').filter({ hasText: /Report|Checkout|Get/i })
+      const checkoutButton = page
+        .getByRole('button')
+        .filter({ hasText: /Report|Checkout|Get/i })
       await expect(checkoutButton.first()).toBeVisible()
     }
   })
