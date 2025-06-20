@@ -1,0 +1,36 @@
+﻿2025-06-19T11:08:45.2052064Z ##[group]Run npm ci
+2025-06-19T11:08:45.2052337Z [36;1mnpm ci[0m
+2025-06-19T11:08:45.2143260Z shell: /usr/bin/bash -e {0}
+2025-06-19T11:08:45.2143521Z env:
+2025-06-19T11:08:45.2143695Z   NODE_ENV: test
+2025-06-19T11:08:45.2143899Z ##[endgroup]
+2025-06-19T11:08:52.0189218Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2025-06-19T11:08:52.2351909Z npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+2025-06-19T11:08:52.2600202Z npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2025-06-19T11:08:52.4368513Z npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+2025-06-19T11:08:52.4393263Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-06-19T11:08:52.4402706Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-06-19T11:08:57.9858265Z npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+2025-06-19T11:09:05.6271295Z 
+2025-06-19T11:09:05.6271945Z > anthrasite.io@1.0.0 postinstall
+2025-06-19T11:09:05.6272432Z > prisma generate
+2025-06-19T11:09:05.6272635Z 
+2025-06-19T11:09:06.2735128Z Prisma schema loaded from prisma/schema.prisma
+2025-06-19T11:09:06.5499468Z 
+2025-06-19T11:09:06.5500884Z ✔ Generated Prisma Client (v6.9.0) to ./node_modules/@prisma/client in 89ms
+2025-06-19T11:09:06.5501546Z 
+2025-06-19T11:09:06.5502242Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+2025-06-19T11:09:06.5502860Z 
+2025-06-19T11:09:06.5503389Z Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+2025-06-19T11:09:06.5503738Z 
+2025-06-19T11:09:06.5931594Z 
+2025-06-19T11:09:06.5932367Z > anthrasite.io@1.0.0 prepare
+2025-06-19T11:09:06.5932839Z > husky
+2025-06-19T11:09:06.5933007Z 
+2025-06-19T11:09:06.6897044Z 
+2025-06-19T11:09:06.6897772Z added 1400 packages, and audited 1401 packages in 21s
+2025-06-19T11:09:06.6898182Z 
+2025-06-19T11:09:06.6898455Z 280 packages are looking for funding
+2025-06-19T11:09:06.6898866Z   run `npm fund` for details
+2025-06-19T11:09:06.6912038Z 
+2025-06-19T11:09:06.6912271Z found 0 vulnerabilities

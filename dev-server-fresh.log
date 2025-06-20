@@ -1,0 +1,19 @@
+
+> anthrasite.io@1.0.0 dev /Users/charlieirwin/Documents/GitHub/anthrasite.io
+> next dev -p 3333
+
+  ▲ Next.js 14.2.30
+  - Local:        http://localhost:3333
+  - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1342ms
+ ✓ Compiled /middleware in 238ms (125 modules)
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling / ...
+ ✓ Compiled / in 3.5s (2015 modules)
+ GET / 200 in 3726ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+[?25h

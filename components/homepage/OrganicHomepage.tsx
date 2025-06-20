@@ -6,7 +6,7 @@ import { Logo } from '@/components/Logo'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
 export function OrganicHomepage() {
-  useRenderTracking('OrganicHomepage')
+  // useRenderTracking('OrganicHomepage')
   const [activeFaq, setActiveFaq] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [step, setStep] = useState<'domain' | 'email' | 'success'>('domain')
@@ -17,6 +17,15 @@ export function OrganicHomepage() {
 
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index)
+  }
+
+  const scrollToSection = (sectionId: string) => {
+    const elements = document.querySelectorAll(`#${sectionId}`)
+    // Get the second instance (visible one)
+    const targetElement = elements[1] || elements[0]
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   const openModal = () => {
@@ -60,15 +69,49 @@ export function OrganicHomepage() {
   }
 
   return (
-    <>
-      {/* Logo Mark Only - No Navigation Menu per PRD */}
+    <div id="organic-homepage-wrapper">
+      {/* Navigation */}
       <nav className="nav-fixed">
-        <div className="max-w-[1200px] mx-auto px-10 py-5">
+        <div className="max-w-[1200px] mx-auto px-10 py-5 flex items-center justify-between">
           <div>
-            <Logo />
-            <div className="text-[17px] font-light tracking-[0.3em] opacity-70 mt-[2px] text-center">
-              VALUE, CRYSTALLIZED
-            </div>
+            <a href="#top" className="flex flex-col">
+              <Logo size="medium" />
+              <div className="text-[13px] font-light opacity-70 mt-1 flex justify-between" style={{ width: '264px' }}>
+                <span>V</span>
+                <span>A</span>
+                <span>L</span>
+                <span>U</span>
+                <span>E</span>
+                <span>,</span>
+                <span>&nbsp;</span>
+                <span>C</span>
+                <span>R</span>
+                <span>Y</span>
+                <span>S</span>
+                <span>T</span>
+                <span>A</span>
+                <span>L</span>
+                <span>L</span>
+                <span>I</span>
+                <span>Z</span>
+                <span>E</span>
+                <span>D</span>
+              </div>
+            </a>
+          </div>
+          <div className="flex items-center space-x-8">
+            <button 
+              onClick={() => scrollToSection('assessment')} 
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
+            >
+              Assessment
+            </button>
+            <button 
+              onClick={() => scrollToSection('faq')} 
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
+            >
+              FAQ
+            </button>
           </div>
         </div>
       </nav>
@@ -120,7 +163,7 @@ export function OrganicHomepage() {
                     className="cta-primary"
                     data-testid="open-waitlist-button"
                   >
-                    Get Started
+                    Join Waitlist
                   </button>
                 </div>
               </div>
@@ -184,19 +227,59 @@ export function OrganicHomepage() {
               {[
                 {
                   q: 'What exactly do I get?',
-                  a: 'A focused report showing your 2-3 biggest website issues, their specific impact on your revenue, and exactly what needs to be fixed. One page of critical insights, not 50 pages of data dumps.',
+                  a: `Synthesis. A revenue-focused website audit you can act on today. We run several assessments across performance, SEO, trust, UX, mobile, and social signals, then package the results into:
+
+1. Prioritized findings. The handful of issues costing you the most money, ranked by estimated revenue impact.
+
+2. Executable plan. Developer-ready issue descriptions so you can fix each issue quickly.
+
+3. Full assessment appendix. A detailed breakdown of all checks we ran—no fluff, just the data that backs our recommendations.
+
+The deliverable is a concise report, not a 50-page data dump. Most clients recoup multiples of the report with a single high-impact fix.`,
                 },
                 {
                   q: 'How is this different from free tools?',
-                  a: "Free tools show you hundreds of issues without context. We analyze your specific business, calculate actual revenue impact, and show only what matters. It's the difference between a medical encyclopedia and a doctor's diagnosis.",
+                  a: `Free scanners list every technical warning they can find—often hundreds per site—and leave you to guess which ones matter. We go several steps further:
+
+1. Business-aware scoring. We estimate the likely revenue impact of each issue using industry benchmarks, location data, and detailed studies, so you see problems ranked by dollars, not jargon.
+
+2. Actionable focus. Instead of a wall of red flags, you get a short list of high-leverage issues with clear solutions.
+
+3. Complete transparency. An appendix shows every check we ran and the data behind each estimate, so you can judge our recommendations for yourself.
+
+Think of free tools as a medical encyclopedia and our audit as the doctor who interprets the symptoms, prioritizes the treatment, and hands you a clear prescription—without pretending it's a guaranteed cure.`,
                 },
                 {
-                  q: 'When will I get my report?',
-                  a: "We're currently in early access. Join the waitlist and we'll analyze your site as soon as we launch. Early access members get 50% off their first audit.",
+                  q: 'How do I get my report?',
+                  a: "We're currently in early access. Join the waitlist and we'll analyze your site and send you an email as soon as we launch.",
                 },
                 {
-                  q: 'What if I need help implementing fixes?',
-                  a: 'Your report includes clear next steps. If you need professional help, we can connect you with vetted agencies who specialize in your specific issues.',
+                  q: 'How do you calculate revenue impact?',
+                  a: `We combine four data layers to estimate the annual revenue-per-point for your ZIP × industry:
+
+1. Local revenue baseline – We start with the latest U.S. Census County & ZIP Business Patterns (2022; 2023 release scheduled June 25 2025) and BLS Quarterly Census of Employment & Wages (Q4 2024) to size typical payroll and head-count for businesses like yours.
+   census.gov
+   bls.gov
+
+2. Payroll-to-revenue bridge – Payroll is converted to revenue using Bureau of Economic Analysis small-business bridging ratios (≈ 2.2 × on average for SMBs).
+
+3. Digital uplift curves – For each of our six score categories (performance, SEO, trust, UX, mobile, social) we apply peer-reviewed elasticity models. Examples:
+
+   • 100 ms faster LCP → 2-4 % conversion lift (Chrome UX Report, 2024)
+
+   • Moving from Google position 5 → 3 roughly doubles click-through (Backlinko CTR Study, 2024)
+
+   • Adding a well-placed trust badge lifts checkout completion ≈ 14 % (Baymard Institute, 2023)
+
+   • Better review volume boosts local pack calls ≈ 10 % (BrightLocal, 2024)
+
+   • Case study: 80 % INP reduction yielded +36 % conversions (QuintoAndar, Jan 2025)
+     web.dev
+
+4. Industry channel mix – Finally, we weight each uplift by your NAICS segment's online-revenue share from the Adobe Digital Economy Index (May 2025) so, for example, a landscaping firm isn't benchmarked like a pure-play e-commerce store.
+   business.adobe.com
+
+The result is an evidence-based estimate of how much one score point is likely to move your annual revenue. It isn't a guarantee, but it lets you see—in plain dollars—which fixes are poised to pay for themselves first.`,
                 },
               ].map((item, index) => (
                 <div
@@ -208,7 +291,7 @@ export function OrganicHomepage() {
                     {item.q}
                     <span className="faq-toggle">+</span>
                   </div>
-                  <div className="faq-answer">{item.a}</div>
+                  <div className="faq-answer whitespace-pre-line">{item.a}</div>
                 </div>
               ))}
             </div>
@@ -219,12 +302,11 @@ export function OrganicHomepage() {
       {/* Footer */}
       <footer className="py-[60px] px-10 border-t border-white/5 text-center">
         <div className="footer-links">
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of Service</a>
-          <a href="/contact">Contact</a>
+          <a href="/legal">Privacy & Terms</a>
+          <a href="mailto:hello@anthrasite.io">Contact</a>
         </div>
         <p className="text-tiny opacity-30">
-          © 2024 Anthrasite. All rights reserved.
+          © {new Date().getFullYear()} Anthrasite. All rights reserved.
         </p>
       </footer>
 
@@ -248,7 +330,7 @@ export function OrganicHomepage() {
               <div className="form-group">
                 <label className="form-label">Your website URL</label>
                 <input
-                  type="url"
+                  type="text"
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
                   placeholder="example.com"
@@ -276,7 +358,7 @@ export function OrganicHomepage() {
                 className="cta-primary button-full"
                 data-testid="waitlist-submit-button"
               >
-                {isSubmitting ? 'Joining...' : 'Join Waitlist'}
+                {isSubmitting ? 'Submitting...' : 'Submit'}
               </button>
             </form>
           )}
@@ -301,6 +383,6 @@ export function OrganicHomepage() {
 
       {/* Scroll to Top Component */}
       <ScrollToTop />
-    </>
+    </div>
   )
 }
