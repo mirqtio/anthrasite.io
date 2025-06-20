@@ -1,0 +1,74 @@
+name: E2E Tests Phase 6 - Complete Core Suite
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  e2e-phase6:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: anthrasite_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup test database
+        run: |
+          npx prisma generate
+          npx prisma db push
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Phase 6 E2E tests - Complete Core Suite (monitoring + basic + homepage + css-loading)
+        run: npx playwright test e2e/monitoring.spec.ts e2e/basic.spec.ts e2e/homepage.spec.ts e2e/css-loading.spec.ts
+        timeout-minutes: 15
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          NODE_ENV: test
+          CI: true
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
+          SKIP_ENV_VALIDATION: true
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
+          SENDGRID_API_KEY: test_key_mock
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-phase6-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+      - name: Phase 6 Complete Core Suite success confirmation
+        run: echo "🎯 E2E Phase 6 Complete Core Suite tests completed successfully!"
