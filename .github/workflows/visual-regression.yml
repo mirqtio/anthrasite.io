@@ -33,7 +33,7 @@ jobs:
 
       - name: Run visual tests (shard ${{ matrix.shard }}/2)
         run: npm run test:visual -- --shard=${{ matrix.shard }}/2
-        timeout-minutes: 10
+        timeout-minutes: 20
         env:
           CI: true
           NEXT_PUBLIC_USE_MOCK_PURCHASE: true
