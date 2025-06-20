@@ -57,11 +57,11 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run Core Business Logic Tests
+      - name: Run ALL E2E Tests
         run: |
-          echo "Testing critical business functionality..."
-          # Core functionality tests (proven working)
-          npx playwright test e2e/basic.spec.ts e2e/homepage.spec.ts e2e/monitoring.spec.ts e2e/css-loading.spec.ts --config=playwright.config.ci.ts
+          echo "Running comprehensive E2E test suite..."
+          # Run all E2E tests
+          npx playwright test --config=playwright.config.ci.ts
         timeout-minutes: 8
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
@@ -84,4 +84,4 @@ jobs:
           retention-days: 30
 
       - name: Comprehensive E2E success confirmation
-        run: echo "✅ Comprehensive E2E tests completed - Core business functionality validated (11/11 tests, 100% success rate)!"
+        run: echo "✅ Comprehensive E2E tests completed - All tests executed!"
