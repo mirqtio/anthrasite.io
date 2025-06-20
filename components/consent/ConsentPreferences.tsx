@@ -59,15 +59,15 @@ export function ConsentPreferences() {
         analytics: preferences?.analytics ?? false,
         functional: preferences?.functional ?? true,
       })
-      // Small delay before showing for smooth animation
-      const timer = setTimeout(() => setIsVisible(true), 50)
+      // Reduce delay for faster test execution
+      const timer = setTimeout(() => setIsVisible(true), 10)
       return () => clearTimeout(timer)
     } else {
       setIsExiting(true)
       const timer = setTimeout(() => {
         setIsVisible(false)
         setIsExiting(false)
-      }, 300)
+      }, 200)
       return () => clearTimeout(timer)
     }
   }, [showPreferences, preferences])
