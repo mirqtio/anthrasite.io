@@ -59,8 +59,9 @@ export function ConsentPreferences() {
         analytics: preferences?.analytics ?? false,
         functional: preferences?.functional ?? true,
       })
-      // Immediate visibility for test reliability
+      // Immediate visibility for test reliability - no delays
       setIsVisible(true)
+      setIsExiting(false)
     } else {
       setIsExiting(true)
       const timer = setTimeout(() => {
@@ -108,6 +109,8 @@ export function ConsentPreferences() {
               : 'translate(-50%, -50%) scale(0.95)',
           opacity: isVisible && !isExiting ? 1 : 0,
           transitionTimingFunction: animation.easing.easeOut,
+          // Ensure content is immediately visible for E2E tests
+          visibility: isVisible ? 'visible' : 'hidden',
         }}
         role="dialog"
         aria-modal="true"
