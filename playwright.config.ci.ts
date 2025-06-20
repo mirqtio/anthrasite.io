@@ -1,10 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
-import { config } from 'dotenv'
 
-// Load test environment variables
-config({ path: '.env.test' })
-// Load local overrides if they exist
-config({ path: '.env.test.local', override: true })
+// Next.js automatically loads environment variables
+// No need to manually load dotenv
 
 export default defineConfig({
   testDir: './e2e',

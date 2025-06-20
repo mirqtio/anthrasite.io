@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.vercel-test
+    ports:
+      - "3333:3333"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:3333
+    volumes:
+      # Mount .env file if it exists
+      - ./.env:/app/.env:ro
+    command: sh -c "pnpm build && pnpm start"

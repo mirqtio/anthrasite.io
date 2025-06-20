@@ -90,12 +90,14 @@ export const sendAlert = (type: AlertType, details: Record<string, any>) => {
   }
 
   // Critical alerts go to Sentry as warnings
-  Sentry.captureMessage(`Alert: ${type}`, {
-    level: 'warning',
-    contexts: {
-      alert: alertData,
-    },
-  })
+  // Temporarily disabled while fixing site
+  // Sentry.captureMessage(`Alert: ${type}`, {
+  //   level: 'warning',
+  //   contexts: {
+  //     alert: alertData,
+  //   },
+  // })
+  console.warn(`Alert: ${type}`, alertData)
 
   // Also track in Datadog
   if (typeof window !== 'undefined') {

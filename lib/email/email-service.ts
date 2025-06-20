@@ -4,16 +4,14 @@ import { emailQueue } from './queue'
 import { orderConfirmationTemplate } from './templates/orderConfirmation'
 import { reportReadyTemplate } from './templates/reportReady'
 import { welcomeEmailTemplate } from './templates/welcomeEmail'
-import {
-  cartRecoveryEmail,
-  CartRecoveryEmailData,
-} from './templates/cartRecovery'
+import { cartRecoveryEmail } from './templates/cartRecovery'
 import type {
   EmailDeliveryResult,
   EmailOptions,
   OrderConfirmationData,
   ReportReadyData,
   WelcomeEmailData,
+  CartRecoveryEmailData,
   EmailMetadata,
 } from './types'
 

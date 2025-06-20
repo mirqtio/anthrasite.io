@@ -1,0 +1,32 @@
+# Use Node.js 18.x like Vercel does
+FROM node:18-alpine
+
+# Install pnpm globally
+RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies with frozen lockfile (CI mode)
+RUN pnpm install --frozen-lockfile
+
+# Copy prisma schema
+COPY prisma ./prisma
+
+# Copy all source files
+COPY . .
+
+# Generate Prisma client
+RUN pnpm prisma generate
+
+# Build the application
+RUN pnpm build
+
+# Expose port
+EXPOSE 3333
+
+# Start the application
+CMD ["pnpm", "start"]
