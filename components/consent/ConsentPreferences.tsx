@@ -264,7 +264,12 @@ export function ConsentPreferences() {
             className="px-6 py-4 border-t flex flex-col sm:flex-row gap-3 sm:justify-end"
             style={{ borderColor: colors.anthracite.gray[100] }}
           >
-            <Button variant="ghost" size="md" onClick={rejectAll}>
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={rejectAll}
+              data-testid="preferences-reject-all-button"
+            >
               Reject all
             </Button>
             <Button variant="secondary" size="md" onClick={acceptAll}>
