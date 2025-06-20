@@ -1,0 +1,133 @@
+name: Comprehensive E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  comprehensive-e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: anthrasite_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup test database
+        run: |
+          npx prisma generate
+          npx prisma db push
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Core Business Logic Tests
+        run: |
+          echo "Testing critical business functionality..."
+          # Core functionality tests (proven working)
+          npx playwright test e2e/basic.spec.ts e2e/homepage.spec.ts e2e/monitoring.spec.ts e2e/css-loading.spec.ts --config=playwright.config.ci.ts
+        timeout-minutes: 8
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          NODE_ENV: test
+          CI: true
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
+          SKIP_ENV_VALIDATION: true
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
+          SENDGRID_API_KEY: test_key_mock
+
+      - name: Run Purchase Flow Tests (Critical Business)
+        run: |
+          echo "Testing purchase functionality - critical for business..."
+          npx playwright test e2e/purchase.spec.ts e2e/utm-validation.spec.ts --config=playwright.config.ci.ts --retries=1
+        timeout-minutes: 10
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          NODE_ENV: test
+          CI: true
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
+          SKIP_ENV_VALIDATION: true
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
+          SENDGRID_API_KEY: test_key_mock
+
+      - name: Run Waitlist and User Journey Tests
+        run: |
+          echo "Testing waitlist and user journeys..."
+          npx playwright test e2e/waitlist.spec.ts e2e/full-user-journey.spec.ts --config=playwright.config.ci.ts --retries=1
+        timeout-minutes: 10
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          NODE_ENV: test
+          CI: true
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
+          SKIP_ENV_VALIDATION: true
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
+          SENDGRID_API_KEY: test_key_mock
+
+      - name: Run Site Mode and Rendering Tests
+        run: |
+          echo "Testing site modes and rendering..."
+          npx playwright test e2e/site-mode.spec.ts e2e/client-side-rendering.spec.ts e2e/homepage-rendering.spec.ts --config=playwright.config.ci.ts --retries=1
+        timeout-minutes: 10
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          NODE_ENV: test
+          CI: true
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
+          SKIP_ENV_VALIDATION: true
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
+          SENDGRID_API_KEY: test_key_mock
+
+      - name: Run Consent Tests (GDPR Compliance)
+        run: |
+          echo "Testing consent functionality for GDPR compliance..."
+          npx playwright test e2e/consent.spec.ts --config=playwright.config.ci.ts --workers=1 --retries=1
+        timeout-minutes: 15
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          NODE_ENV: test
+          CI: true
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
+          SKIP_ENV_VALIDATION: true
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
+          SENDGRID_API_KEY: test_key_mock
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: comprehensive-e2e-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+      - name: Comprehensive E2E success confirmation
+        run: echo "✅ Comprehensive E2E tests completed - ALL critical business functionality tested!"
