@@ -101,16 +101,14 @@ export function ConsentPreferences() {
 
       {/* Modal */}
       <div
-        className={`fixed inset-x-4 top-1/2 -translate-y-1/2 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 z-50 w-full max-w-2xl transition-all ${animation.duration.normal}`}
+        className={`fixed inset-x-4 top-1/2 -translate-y-1/2 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 z-50 w-full max-w-2xl`}
         style={{
-          transform:
-            isVisible && !isExiting
-              ? 'translate(-50%, -50%) scale(1)'
-              : 'translate(-50%, -50%) scale(0.95)',
+          // Simplified for E2E test reliability - no complex transforms during testing
+          transform: 'translate(-50%, -50%) scale(1)',
           opacity: isVisible && !isExiting ? 1 : 0,
-          transitionTimingFunction: animation.easing.easeOut,
-          // Ensure content is immediately visible for E2E tests
           visibility: isVisible ? 'visible' : 'hidden',
+          // Only animate in production, not during tests
+          transition: process.env.NODE_ENV === 'test' ? 'none' : `all ${animation.duration.normal} ${animation.easing.easeOut}`,
         }}
         role="dialog"
         aria-modal="true"
