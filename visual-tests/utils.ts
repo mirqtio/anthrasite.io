@@ -144,7 +144,7 @@ export async function hideDynamicContent(page: Page) {
     })
   } catch (error) {
     // If page is closed or unavailable, continue gracefully
-    console.warn('Failed to hide dynamic content, continuing with test:', error.message)
+    console.warn('Failed to hide dynamic content, continuing with test:', error instanceof Error ? error.message : String(error))
   }
 }
 
