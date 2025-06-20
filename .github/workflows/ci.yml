@@ -88,9 +88,8 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/lcov.info
-          fail_ci_if_error: false
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-        continue-on-error: true
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -105,9 +104,9 @@ jobs:
           SKIP_ENV_VALIDATION: true
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
 
-      - name: Run E2E tests (stable core suite)
+      - name: Run E2E tests (full suite)
         run: |
-          echo "Starting E2E tests with environment verification..."
+          echo "Starting FULL E2E test suite with environment verification..."
           echo "DATABASE_URL: $DATABASE_URL"
           echo "NODE_ENV: $NODE_ENV"
 
@@ -123,8 +122,8 @@ jobs:
             });
           "
 
-          # Run the proven stable core test suite (98.2% pass rate)
-          npx playwright test e2e/monitoring.spec.ts e2e/basic.spec.ts e2e/homepage.spec.ts e2e/css-loading.spec.ts --config=playwright.config.ci.ts
+          # Run ALL E2E tests - no bypassing, fix what breaks
+          npx playwright test --config=playwright.config.ci.ts
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           NODE_ENV: test
