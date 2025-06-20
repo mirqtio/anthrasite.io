@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { openCookiePreferences } from './helpers/test-utils'
 
 test.describe('Cookie Consent Flow', () => {
   test.beforeEach(async ({ page, context }) => {
@@ -52,12 +53,11 @@ test.describe('Cookie Consent Flow', () => {
   })
 
   test('should open preferences modal', async ({ page }) => {
-    await page.getByTestId('cookie-preferences-button').click()
+    await openCookiePreferences(page)
 
-    // Wait for modal to be visible with proper timeout
-    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 15000 })
+    // Verify modal content is visible
     await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({
-      timeout: 15000,
+      timeout: 5000,
     })
 
     // Categories should be shown
@@ -70,12 +70,11 @@ test.describe('Cookie Consent Flow', () => {
   })
 
   test('should save custom preferences', async ({ page }) => {
-    await page.getByTestId('cookie-preferences-button').click()
+    await openCookiePreferences(page)
 
-    // Wait for modal to fully open with proper timeout
-    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 15000 })
+    // Verify modal content is visible
     await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({
-      timeout: 15000,
+      timeout: 5000,
     })
 
     // Toggle analytics on
@@ -102,12 +101,11 @@ test.describe('Cookie Consent Flow', () => {
   test('should close preferences modal when clicking backdrop', async ({
     page,
   }) => {
-    await page.getByTestId('cookie-preferences-button').click()
+    await openCookiePreferences(page)
 
-    // Wait for modal to be fully visible with proper timeout
-    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 15000 })
+    // Verify modal content is visible
     await expect(page.getByTestId('cookie-preferences-title')).toBeVisible({
-      timeout: 15000,
+      timeout: 5000,
     })
 
     // Click backdrop - target the backdrop specifically
