@@ -3,9 +3,17 @@ import { openCookiePreferences } from './helpers/test-utils'
 
 test.describe('Cookie Consent Flow', () => {
   test.beforeEach(async ({ page, context }) => {
-    // Clear cookies before each test
+    // Clear cookies and localStorage before each test
     await context.clearCookies()
     await page.goto('/')
+    // Clear localStorage after navigation to ensure banner shows
+    await page.evaluate(() => {
+      localStorage.clear()
+      sessionStorage.clear()
+    })
+    await page.reload()
+    // Wait for React hydration
+    await page.waitForTimeout(1000)
   })
 
   test('should show consent banner on first visit', async ({ page }) => {
