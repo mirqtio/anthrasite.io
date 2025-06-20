@@ -28,8 +28,10 @@ test.describe('Waitlist Signup', () => {
       }
     )
 
-    // Click the Get Started button to open waitlist modal using safe helper
-    await safeClick(page, '[data-testid="open-waitlist-button"]')
+    // Click the Get Started button to open waitlist modal and wait for animations
+    await safeClick(page, '[data-testid="open-waitlist-button"]', { 
+      waitForAnimations: true 
+    })
 
     // Wait for the waitlist modal to appear and form to be visible with longer timeout
     await page.waitForSelector('[data-testid="waitlist-form"]', {
