@@ -119,9 +119,7 @@ export class AbandonedCartService {
       to: cart.customerEmail,
       businessName: cart.business.name,
       amount: (cart.amount / 100).toFixed(2),
-      currency: cart.currency.toUpperCase(),
       recoveryUrl,
-      expiresAt: cart.sessionExpiresAt,
     })
 
     // Mark email as sent

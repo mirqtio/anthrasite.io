@@ -1,0 +1,14 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🚀 Running pre-push checks..."
+
+# Run the Vercel-equivalent tests
+./vercel-local-test.sh
+
+if [ $? -ne 0 ]; then
+    echo "❌ Pre-push checks failed! Fix the issues before pushing."
+    exit 1
+fi
+
+echo "✅ All pre-push checks passed!"
