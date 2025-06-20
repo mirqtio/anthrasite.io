@@ -1,0 +1,82 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+test-results/
+playwright-report/
+CI_logs/
+logs_*/
+
+# Next.js
+.next/
+out/
+build/
+
+# Production
+dist/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files
+.env*.local
+.env
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+
+# Test artifacts
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.html
+lighthouse-report*.json
+homepage-*.png
+debug-*.png
+design-*.png
+test-results*.json
+e2e_backup/
+components_backup/
+*.patch
+*.tar.gz
+*.log
+0_test.txt
+coverage-*.txt
+
+# Documentation reports
+*_REPORT.md
+*_SUMMARY.md
+PROGRESS.md
+MISSION_ACCOMPLISHED.md
+NETWORK_TROUBLESHOOTING_COMPLETE.md
+DESIGN_IMPLEMENTATION.md
+IMPLEMENTATION_SUMMARY.md
+FIX_SUMMARY.md
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore

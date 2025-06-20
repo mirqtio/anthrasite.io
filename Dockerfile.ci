@@ -1,7 +1,7 @@
 # Exact CI environment replication
 FROM node:20
 
-# Install dependencies needed for Playwright
+# Install dependencies needed for Playwright and Canvas
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -38,7 +38,15 @@ RUN apt-get update && apt-get install -y \
     libxss1 \
     libxtst6 \
     lsb-release \
-    xdg-utils
+    xdg-utils \
+    # Canvas dependencies
+    build-essential \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev \
+    pkg-config
 
 WORKDIR /app
 
