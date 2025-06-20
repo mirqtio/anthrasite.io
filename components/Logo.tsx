@@ -28,28 +28,14 @@ export function Logo({
       className={cn(
         'flex items-center',
         sizeClasses[size],
-        colorClasses,
         className
       )}
     >
-      <svg
-        data-testid="logo-svg"
-        viewBox="0 0 200 40"
+      <img 
+        src="/logo_full_white.svg" 
+        alt="Anthrasite" 
         className="w-auto h-full"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <text
-          x="0"
-          y="30"
-          fontSize="24"
-          fontFamily="Inter, sans-serif"
-          fontWeight="600"
-          fill="currentColor"
-        >
-          ANTHRASITE
-        </text>
-      </svg>
-      <img src="/logo_full_black.svg" alt="Anthrasite" className="hidden" />
+      />
     </div>
   )
 

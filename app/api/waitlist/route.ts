@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { validateDomain, validateEmail } from '@/lib/waitlist/domain-validation'
-import { addToWaitlist, getWaitlistPosition } from '@/lib/waitlist/service'
-import { withRateLimit } from '@/lib/utm/rate-limit'
-import { withMonitoring } from '@/lib/monitoring/api-middleware'
 
-async function handleWaitlistSignup(request: NextRequest) {
+// In-memory storage for development
+// In production, this could be replaced with Vercel KV or another service
+const waitlistEntries = new Map<string, any>()
+
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { domain, email, referralSource } = body
+    const { domain, email } = body
 
-    // Validate required fields
+    // Basic validation
     if (!domain || !email) {
       return NextResponse.json(
         { error: 'Domain and email are required' },
@@ -17,97 +17,54 @@ async function handleWaitlistSignup(request: NextRequest) {
       )
     }
 
-    // Validate email format
-    if (!validateEmail(email)) {
+    // Simple email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: 'Invalid email format' },
         { status: 400 }
       )
     }
 
-    // Validate domain
-    const domainValidation = await validateDomain(domain)
+    // Normalize domain (remove protocol if included)
+    const normalizedDomain = domain
+      .toLowerCase()
+      .replace(/^https?:\/\//, '')
+      .replace(/^www\./, '')
+      .replace(/\/$/, '')
 
-    if (!domainValidation.isValid) {
-      return NextResponse.json(
-        {
-          error: domainValidation.error || 'Invalid domain',
-          suggestion: domainValidation.suggestion,
-        },
-        { status: 400 }
-      )
+    // Store the entry
+    const entryId = Date.now().toString()
+    const entry = {
+      id: entryId,
+      domain: normalizedDomain,
+      email: email.toLowerCase(),
+      timestamp: new Date().toISOString(),
     }
 
-    // Add to waitlist
-    const result = await addToWaitlist({
-      domain: domainValidation.normalizedDomain,
-      email,
-      referralSource,
-    })
+    waitlistEntries.set(entryId, entry)
 
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 })
-    }
+    // Log for visibility
+    console.log('New waitlist submission:', entry)
 
     return NextResponse.json({
       success: true,
-      position: result.position,
-      normalizedDomain: domainValidation.normalizedDomain,
+      position: waitlistEntries.size,
+      normalizedDomain,
     })
   } catch (error) {
     console.error('Waitlist signup error:', error)
-
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to process submission' },
       { status: 500 }
     )
   }
 }
 
-async function handleGetPosition(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const domain = searchParams.get('domain')
-
-    if (!domain) {
-      return NextResponse.json({ error: 'Domain is required' }, { status: 400 })
-    }
-
-    const position = await getWaitlistPosition(domain)
-
-    if (!position) {
-      return NextResponse.json(
-        { error: 'Domain not found in waitlist' },
-        { status: 404 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      position,
-    })
-  } catch (error) {
-    console.error('Get position error:', error)
-
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
-  }
+export async function GET() {
+  // Return current waitlist size
+  return NextResponse.json({
+    count: waitlistEntries.size,
+    entries: Array.from(waitlistEntries.values()),
+  })
 }
-
-// POST /api/waitlist - Add to waitlist
-export const POST = withRateLimit(
-  withMonitoring(handleWaitlistSignup, 'waitlist_signup', {
-    alertOnError: true,
-    alertThreshold: 5000,
-  })
-)
-
-// GET /api/waitlist - Get position
-export const GET = withRateLimit(
-  withMonitoring(handleGetPosition, 'waitlist_position', {
-    alertOnError: true,
-    alertThreshold: 2000,
-  })
-)
