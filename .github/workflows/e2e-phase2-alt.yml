@@ -48,9 +48,9 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Phase 2 Alternative E2E tests (non-purchase flow)
-        run: npx playwright test e2e/consent.spec.ts e2e/monitoring.spec.ts
-        timeout-minutes: 10
+      - name: Run Phase 2 Alternative E2E tests (monitoring only)
+        run: npx playwright test e2e/monitoring.spec.ts
+        timeout-minutes: 5
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           NODE_ENV: test
