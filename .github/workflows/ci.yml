@@ -55,11 +55,11 @@ jobs:
           echo "Setting up test database..."
           npx prisma generate
           npx prisma db push
-          
+
           # Verify database connection
           echo "Testing database connectivity..."
           npx prisma db seed --preview-feature || echo "No seed script found, continuing..."
-          
+
           # Test a simple query to ensure connection works
           node -e "
             const { PrismaClient } = require('@prisma/client');
@@ -110,7 +110,7 @@ jobs:
           echo "Starting E2E tests with environment verification..."
           echo "DATABASE_URL: $DATABASE_URL"
           echo "NODE_ENV: $NODE_ENV"
-          
+
           # Verify database is accessible before starting tests
           node -e "
             const { PrismaClient } = require('@prisma/client');
@@ -122,7 +122,7 @@ jobs:
               process.exit(1);
             });
           "
-          
+
           # Run the actual E2E tests
           npm run test:e2e:ci
         env:
