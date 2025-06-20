@@ -48,7 +48,7 @@ jobs:
         run: npm run lint || echo "⚠️ Lint warnings found but continuing"
         continue-on-error: true
 
-      - name: Run unit tests  
+      - name: Run unit tests
         run: npm test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
