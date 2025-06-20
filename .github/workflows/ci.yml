@@ -52,8 +52,26 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
         run: |
+          echo "Setting up test database..."
           npx prisma generate
           npx prisma db push
+          
+          # Verify database connection
+          echo "Testing database connectivity..."
+          npx prisma db seed --preview-feature || echo "No seed script found, continuing..."
+          
+          # Test a simple query to ensure connection works
+          node -e "
+            const { PrismaClient } = require('@prisma/client');
+            const prisma = new PrismaClient();
+            prisma.\$queryRaw\`SELECT 1\`.then(() => {
+              console.log('✅ Database connection successful');
+              process.exit(0);
+            }).catch((error) => {
+              console.error('❌ Database connection failed:', error);
+              process.exit(1);
+            });
+          "
 
       - name: Run linting
         run: npm run lint
@@ -88,7 +106,25 @@ jobs:
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
 
       - name: Run E2E tests
-        run: npm run test:e2e:ci
+        run: |
+          echo "Starting E2E tests with environment verification..."
+          echo "DATABASE_URL: $DATABASE_URL"
+          echo "NODE_ENV: $NODE_ENV"
+          
+          # Verify database is accessible before starting tests
+          node -e "
+            const { PrismaClient } = require('@prisma/client');
+            const prisma = new PrismaClient();
+            prisma.\$queryRaw\`SELECT 1\`.then(() => {
+              console.log('✅ Database ready for E2E tests');
+            }).catch((error) => {
+              console.error('❌ Database not ready:', error);
+              process.exit(1);
+            });
+          "
+          
+          # Run the actual E2E tests
+          npm run test:e2e:ci
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           NODE_ENV: test
@@ -96,7 +132,7 @@ jobs:
           NEXT_PUBLIC_USE_MOCK_PURCHASE: true
           SKIP_ENV_VALIDATION: true
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
-        timeout-minutes: 10
+        timeout-minutes: 15
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4

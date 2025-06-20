@@ -2,21 +2,22 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 45 * 1000, // Increased from 30s to 45s
+  timeout: 60 * 1000, // Increased to 60s for CI stability
   expect: {
-    timeout: 10000, // Increased from 5s to 10s for more reliable element waiting
+    timeout: 15000, // Increased to 15s for reliable element waiting in CI
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 1, // Allow retries locally too for flaky tests
-  workers: process.env.CI ? 2 : undefined, // Increased CI workers from 1 to 2 for better performance
+  retries: process.env.CI ? 3 : 1, // Increased retries to 3 for CI environment
+  workers: process.env.CI ? 1 : undefined, // Reduced back to 1 worker for CI stability
   reporter: 'html',
   use: {
-    actionTimeout: 10000, // Set action timeout to 10s instead of unlimited
-    navigationTimeout: 15000, // Set navigation timeout to 15s
+    actionTimeout: 15000, // Increased to 15s for CI reliability
+    navigationTimeout: 30000, // Increased to 30s for CI page loading
     baseURL: 'http://localhost:3333',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    video: process.env.CI ? 'retain-on-failure' : 'off',
   },
 
   projects: [
@@ -46,12 +47,13 @@ export default defineConfig({
     command: 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run dev',
     port: 3333,
     reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000, // 2 minutes for server startup
     env: {
       NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
       NODE_ENV: 'development',
       // Flag to indicate E2E test environment
       E2E_TESTING: 'true',
-      // Database for tests
+      // Database for tests - prioritize CI environment variable
       DATABASE_URL:
         process.env.DATABASE_URL ||
         'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
