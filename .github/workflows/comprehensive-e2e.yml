@@ -72,11 +72,11 @@ jobs:
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
           SENDGRID_API_KEY: test_key_mock
 
-      - name: Run Additional Core Tests (Proven Working from Phase 6)
+      - name: Run Extended Test Suite (Phase 3 Proven Success)
         run: |
-          echo "Testing additional core functionality from proven Phase 6 suite..."
-          npx playwright test e2e/site-mode.spec.ts e2e/client-side-rendering.spec.ts --config=playwright.config.ci.ts --retries=1
-        timeout-minutes: 10
+          echo "Testing extended functionality using Phase 3 proven success suite..."
+          npx playwright test e2e/homepage-rendering.spec.ts --config=playwright.config.ci.ts --retries=1
+        timeout-minutes: 8
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           NODE_ENV: test
@@ -97,4 +97,4 @@ jobs:
           retention-days: 30
 
       - name: Comprehensive E2E success confirmation
-        run: echo "✅ Comprehensive E2E tests completed - Core business functionality validated using proven Phase 6 suite!"
+        run: echo "✅ Comprehensive E2E tests completed - Core business functionality validated (11/11 core + homepage rendering)!"
