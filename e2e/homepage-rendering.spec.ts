@@ -51,8 +51,8 @@ test.describe('Homepage Rendering', () => {
     await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
     // Click to open modal and check form elements with animation wait
-    await safeClick(page, '[data-testid="open-waitlist-button"]', { 
-      waitForAnimations: true 
+    await safeClick(page, '[data-testid="open-waitlist-button"]', {
+      waitForAnimations: true,
     })
 
     // Check for form elements in modal
