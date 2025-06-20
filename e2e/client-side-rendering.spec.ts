@@ -122,8 +122,8 @@ test.describe('Client-Side Rendering', () => {
     await page.waitForSelector('main', { state: 'visible' })
 
     // Open waitlist modal first with animation wait
-    await safeClick(page, '[data-testid="open-waitlist-button"]', { 
-      waitForAnimations: true 
+    await safeClick(page, '[data-testid="open-waitlist-button"]', {
+      waitForAnimations: true,
     })
 
     // Type in the waitlist form (first input is domain)
