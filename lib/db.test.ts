@@ -2,10 +2,11 @@ import { prisma } from './db'
 
 describe('Database Schema', () => {
   beforeEach(async () => {
-    // Clean up database before each test
+    // Clean up database before each test (order matters for foreign key constraints)
     await prisma.analyticsEvent.deleteMany()
     await prisma.purchase.deleteMany()
     await prisma.utmToken.deleteMany()
+    await prisma.abandonedCart?.deleteMany().catch(() => {}) // Optional table, ignore if doesn't exist
     await prisma.business.deleteMany()
     await prisma.waitlistEntry.deleteMany()
   })

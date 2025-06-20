@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { gotoAndDismissCookies } from './helpers/test-utils'
+import { gotoAndDismissCookies, safeClick } from './helpers/test-utils'
 
 test.describe('Client-Side Rendering', () => {
   test('should properly hydrate React on client side', async ({ page }) => {
@@ -121,9 +121,10 @@ test.describe('Client-Side Rendering', () => {
     await gotoAndDismissCookies(page, '/')
     await page.waitForSelector('main', { state: 'visible' })
 
-    // Open waitlist modal first
-    const joinWaitlistButton = page.getByTestId('open-waitlist-button').first()
-    await joinWaitlistButton.click()
+    // Open waitlist modal first with animation wait
+    await safeClick(page, '[data-testid="open-waitlist-button"]', { 
+      waitForAnimations: true 
+    })
 
     // Type in the waitlist form (first input is domain)
     const domainInput = page.locator('input[placeholder="example.com"]')
