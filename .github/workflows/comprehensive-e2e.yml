@@ -72,7 +72,6 @@ jobs:
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
           SENDGRID_API_KEY: test_key_mock
 
-
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
