@@ -72,7 +72,7 @@ test.describe('UTM Parameter Validation', () => {
         const data = await apiResponse.json()
         expect(data.valid).toBe(true)
         expect(data.businessId).toBe(business.id)
-        expect(data.businessName).toBe('Test Business')
+        expect(data.businessName).toBe(business.name)
 
         // Check that purchase mode cookie is set
         const cookies = await page.context().cookies()
