@@ -16,7 +16,7 @@ test.describe('Cookie Consent Flow', () => {
 
     // All buttons should be present
     await expect(page.getByTestId('accept-all-cookies-button')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Reject all' })).toBeVisible()
+    await expect(page.getByTestId('banner-reject-all-button')).toBeVisible()
     await expect(page.getByTestId('cookie-preferences-button')).toBeVisible()
   })
 
@@ -36,7 +36,7 @@ test.describe('Cookie Consent Flow', () => {
   })
 
   test('should hide banner after rejecting all cookies', async ({ page }) => {
-    await page.getByRole('button', { name: 'Reject all' }).click()
+    await page.getByTestId('banner-reject-all-button').click()
 
     // Banner should disappear
     await expect(
@@ -105,7 +105,7 @@ test.describe('Cookie Consent Flow', () => {
 
     // Wait for modal to be fully visible
     await expect(page.getByRole('dialog')).toBeVisible()
-    await expect(page.getByText('Cookie Preferences')).toBeVisible()
+    await expect(page.getByTestId('cookie-preferences-title')).toBeVisible()
 
     // Click backdrop - target the backdrop specifically
     await page

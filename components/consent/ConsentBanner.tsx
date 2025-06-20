@@ -99,6 +99,7 @@ export function ConsentBanner() {
               size="md"
               onClick={rejectAll}
               aria-label="Reject all cookies"
+              data-testid="banner-reject-all-button"
             >
               Reject all
             </Button>
