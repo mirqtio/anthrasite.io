@@ -1,156 +1,23 @@
-   ▲ Next.js 15.3.4
-   - Local:        http://localhost:3333
-   - Network:      http://192.168.10.20:3333
-   - Environments: .env.local, .env
 
- ✓ Starting...
- ⚠ Invalid next.config.js options detected: 
- ⚠     Unrecognized key(s) in object: 'swcMinify'
- ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
-It looks like you're trying to use TypeScript but do not have the required package(s) installed.
-Installing dependencies
+> anthrasite.io@1.0.0 dev /Users/charlieirwin/Documents/GitHub/anthrasite.io
+> next dev -p 3333
 
-If you are not trying to use TypeScript, please remove the tsconfig.json file from your package root (and any TypeScript files in your app and pages directories).
-
-
-Installing devDependencies (pnpm):
-- typescript
-- @types/react
-- @types/node
-
- WARN  Moving @storybook/addon-docs that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @storybook/addon-onboarding that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @storybook/nextjs that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @testing-library/jest-dom that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @testing-library/react that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @typescript-eslint/eslint-plugin that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @typescript-eslint/parser that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving canvas that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving eslint that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving husky that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving jest that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving jest-axe that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving jest-environment-jsdom that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving postcss that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving lint-staged that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving tailwindcss that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @datadog/browser-logs that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @datadog/browser-rum that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @prisma/client that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @sendgrid/mail that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving @vercel/edge-config that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving class-variance-authority that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving clsx that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving framer-motion that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving lucide-react that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving posthog-js that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving posthog-node that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving prisma that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving react that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving react-dom that was installed by a different package manager to "node_modules/.ignored"
- WARN  Moving stripe that was installed by a different package manager to "node_modules/.ignored"
-Progress: resolved 1, reused 0, downloaded 0, added 0
-
-   ╭──────────────────────────────────────────╮
-   │                                          │
-   │   Update available! 10.10.0 → 10.12.1.   │
-   │   Changelog: https://pnpm.io/v/10.12.1   │
-   │     To update, run: pnpm add -g pnpm     │
-   │                                          │
-   ╰──────────────────────────────────────────╯
-
- WARN  deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
-Progress: resolved 40, reused 3, downloaded 27, added 0
-Progress: resolved 64, reused 10, downloaded 43, added 0
-Progress: resolved 114, reused 14, downloaded 83, added 0
-Progress: resolved 206, reused 47, downloaded 132, added 0
-Progress: resolved 235, reused 48, downloaded 158, added 0
-Progress: resolved 337, reused 61, downloaded 219, added 0
-Progress: resolved 411, reused 65, downloaded 265, added 0
-Progress: resolved 547, reused 98, downloaded 357, added 0
-Progress: resolved 653, reused 101, downloaded 456, added 0
-Progress: resolved 781, reused 125, downloaded 524, added 0
-Progress: resolved 922, reused 157, downloaded 626, added 0
-Progress: resolved 1087, reused 187, downloaded 751, added 0
-Progress: resolved 1228, reused 199, downloaded 873, added 0
-Progress: resolved 1278, reused 200, downloaded 983, added 0
-Progress: resolved 1278, reused 200, downloaded 984, added 0
-Progress: resolved 1279, reused 200, downloaded 984, added 0
- WARN  5 deprecated subdependencies found: @humanwhocodes/config-array@0.13.0, @humanwhocodes/object-schema@2.0.3, glob@7.2.3, inflight@1.0.6, rimraf@3.0.2
-Packages: +1189
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Progress: resolved 1288, reused 200, downloaded 994, added 211
-Progress: resolved 1288, reused 200, downloaded 994, added 638
-Progress: resolved 1288, reused 200, downloaded 994, added 1056
-Progress: resolved 1288, reused 200, downloaded 994, added 1186
-Progress: resolved 1288, reused 200, downloaded 994, added 1189, done
-
-dependencies:
-+ @datadog/browser-logs 6.12.2
-+ @datadog/browser-rum 6.12.2
-+ @prisma/client 6.10.1
-+ @sendgrid/mail 8.1.5
-+ @sentry/nextjs 9.30.0
-+ @stripe/stripe-js 7.3.1
-+ @tailwindcss/postcss 4.1.10
-+ @vercel/edge-config 1.4.0
-+ class-variance-authority 0.7.1
-+ clsx 2.1.1
-+ framer-motion 12.18.1
-+ lru-cache 11.1.0
-+ lucide-react 0.516.0 (0.518.0 is available)
-+ next 14.2.30 (15.3.4 is available)
-+ posthog-js 1.255.0
-+ posthog-node 5.1.1
-+ prisma 6.10.1
-+ react 18.3.1 (19.1.0 is available)
-+ react-dom 18.3.1 (19.1.0 is available)
-+ stripe 18.2.1
-+ tailwind-merge 3.3.1
-+ web-vitals 5.0.3
-+ zod 3.25.67
-
-devDependencies:
-+ @playwright/test 1.53.1
-+ @storybook/addon-docs 9.0.12
-+ @storybook/addon-onboarding 9.0.12
-+ @storybook/nextjs 9.0.12
-+ @testing-library/jest-dom 6.6.3
-+ @testing-library/react 16.3.0
-+ @types/jest 30.0.0
-+ @types/node 24.0.3
-+ @types/react 19.1.8
-+ @types/react-dom 19.1.6
-+ @typescript-eslint/eslint-plugin 8.34.1
-+ @typescript-eslint/parser 8.34.1
-+ autoprefixer 10.4.21
-+ canvas 3.1.1
-+ eslint 8.57.1 (9.29.0 is available) deprecated
-+ eslint-config-next 14.2.30 (15.3.4 is available)
-+ eslint-plugin-storybook 9.0.12
-+ husky 9.1.7
-+ jest 30.0.2
-+ jest-axe 10.0.0
-+ jest-environment-jsdom 30.0.2
-+ lint-staged 16.1.2
-+ postcss 8.5.6
-+ prettier 3.5.3
-+ storybook 9.0.12
-+ tailwindcss 4.1.10
-+ tsx 4.20.3
-+ typescript 5.8.3
-
-╭ Warning ─────────────────────────────────────────────────────────────────────╮
-│                                                                              │
-│   Ignored build scripts: @prisma/client, @prisma/engines, @sentry/cli,       │
-│   @tailwindcss/oxide, canvas, core-js, core-js-pure, esbuild, prisma,        │
-│   unrs-resolver.                                                             │
-│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
-│   to run scripts.                                                            │
-│                                                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-
-Done in 22s using pnpm v10.10.0
-
- ○ Compiling /instrumentation ...
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3333
+    at Server.setupListenHandle [as _listen2] (node:net:1939:16)
+    at listenInCluster (node:net:1996:12)
+    at Server.listen (node:net:2101:7)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:280:16
+    at new Promise (<anonymous>)
+    at startServer (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:191:11)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:310:52
+    at Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:26)
+    at process.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:310:35)
+    at process.emit (node:events:518:28) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3333
+}
 [?25h
