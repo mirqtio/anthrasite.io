@@ -4,12 +4,16 @@ import React, { useState } from 'react'
 import { useRenderTracking } from '@/lib/monitoring/hooks'
 import { Logo } from '@/components/Logo'
 import { ScrollToTop } from '@/components/ScrollToTop'
-import { WaitlistForm } from '@/components/waitlist/WaitlistForm'
 
 export function OrganicHomepage() {
   useRenderTracking('OrganicHomepage')
   const [activeFaq, setActiveFaq] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [step, setStep] = useState<'domain' | 'email' | 'success'>('domain')
+  const [domain, setDomain] = useState('')
+  const [email, setEmail] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index)
@@ -23,6 +27,40 @@ export function OrganicHomepage() {
   const closeModal = () => {
     setShowModal(false)
     document.body.style.overflow = ''
+    setError('')
+    setStep('domain')
+    setDomain('')
+    setEmail('')
+  }
+
+  const handleDomainSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!domain) return
+    setStep('email')
+  }
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, domain }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to join waitlist')
+      }
+
+      setStep('success')
+    } catch (err) {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -209,7 +247,80 @@ export function OrganicHomepage() {
             to know when we expand.
           </p>
 
-          <WaitlistForm />
+          {step === 'domain' && (
+            <form onSubmit={handleDomainSubmit} data-testid="waitlist-form">
+              <div className="form-group">
+                <label className="form-label">Your website URL</label>
+                <input
+                  type="url"
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                  placeholder="example.com"
+                  required
+                  className="form-input"
+                  autoFocus
+                  data-testid="waitlist-domain-input"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!domain}
+                className="cta-primary button-full"
+                data-testid="waitlist-continue-button"
+              >
+                Continue
+              </button>
+            </form>
+          )}
+
+          {step === 'email' && (
+            <form onSubmit={handleEmailSubmit} data-testid="waitlist-form">
+              <div className="form-group">
+                <label className="form-label">Your email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  className="form-input"
+                  autoFocus
+                  data-testid="waitlist-email-input"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting || !email}
+                className="cta-primary button-full"
+                data-testid="waitlist-submit-button"
+              >
+                {isSubmitting ? 'Joining...' : 'Join Waitlist'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep('domain')}
+                className="mt-4 text-center w-full text-sm opacity-70 hover:opacity-100"
+              >
+                Back
+              </button>
+            </form>
+          )}
+
+          {step === 'success' && (
+            <div className="carbon-container text-center">
+              <h3 className="text-[24px] mb-4">You're on the list!</h3>
+              <p className="text-body">
+                We'll analyze {domain} and send the report when we launch.
+              </p>
+              <button onClick={closeModal} className="cta-primary mt-6">
+                Close
+              </button>
+            </div>
+          )}
+
+          {error && (
+            <p className="mt-4 text-sm text-red-500 text-center">{error}</p>
+          )}
         </div>
       </div>
 
