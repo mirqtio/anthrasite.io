@@ -19,6 +19,7 @@
     "test:visual:report": "playwright show-report playwright-visual-report",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
     "postinstall": "prisma generate",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
