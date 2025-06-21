@@ -276,6 +276,8 @@
     justify-content: center;
     position: relative;
     padding: calc(80px + var(--spacing-5xl)) var(--spacing-3xl) var(--spacing-3xl);
+    overflow: visible;
+    overflow-x: clip;
   }
 
   .hero-content {
@@ -983,10 +985,20 @@
 
   /* Mobile Fixes */
   @media (max-width: 768px) {
-    /* Fix horizontal scroll */
-    body {
-      overflow-x: hidden;
+    /* Allow rings to bleed off screen but prevent horizontal scroll */
+    html, body {
+      overflow-x: clip;
       width: 100%;
+    }
+
+    /* Allow hero section to show overflowing rings */
+    .hero {
+      overflow: visible !important;
+      overflow-x: clip;
+    }
+
+    .hero-content {
+      overflow: visible !important;
     }
 
     /* Mobile arrow adjustments */
