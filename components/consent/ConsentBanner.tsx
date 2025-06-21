@@ -14,14 +14,13 @@ import {
 
 export function ConsentBanner() {
   const { showBanner, acceptAll, rejectAll, openPreferences } = useConsent()
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(false) // Always start with false
   const [isExiting, setIsExiting] = useState(false)
 
   useEffect(() => {
     if (showBanner) {
-      // Reduce delay for faster test execution
-      const timer = setTimeout(() => setIsVisible(true), 10)
-      return () => clearTimeout(timer)
+      // Show immediately for better user experience
+      setIsVisible(true)
     } else {
       setIsExiting(true)
       const timer = setTimeout(() => {
