@@ -265,11 +265,6 @@ export function OrganicHomepage() {
             <div className="relative inline-block" data-testid="hero-section">
               <div
                 className="pressure-visual"
-                style={{
-                  width: '400px',
-                  height: '400px',
-                  margin: '0 auto',
-                }}
               >
                 <div
                   className="pressure-ring"
