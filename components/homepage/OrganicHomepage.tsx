@@ -160,7 +160,7 @@ export function OrganicHomepage() {
             <h1 className="text-display mb-8">
               Your website has untapped potential
             </h1>
-            <p className="text-header opacity-70 mb-[60px] max-w-[900px] mx-auto">
+            <p className="text-subheader opacity-70 mb-[60px] max-w-[900px] mx-auto">
               We analyze thousands of data points to show you what to fix and
               what it's worth.
             </p>
