@@ -348,7 +348,7 @@ export function OrganicHomepage() {
               </div>
             </div>
 
-            <p className="text-center text-[24px] md:text-[24px] text-[18px] font-normal opacity-70 reveal-tagline" data-delay="450">
+            <p className="text-center text-[24px] md:text-[24px] text-[20px] font-normal opacity-70 reveal-tagline" data-delay="450">
               No fluff. No 50-page reports. Just what's broken and what it's
               worth to fix it.
             </p>
