@@ -10,7 +10,7 @@ export function OrganicHomepage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
-  const [step, setStep] = useState<'domain' | 'email' | 'success'>('domain')
+  const [step, setStep] = useState<'domain' | 'success'>('domain')
   const [domain, setDomain] = useState('')
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -51,11 +51,18 @@ export function OrganicHomepage() {
     setError('')
     setIsSubmitting(true)
 
+    // Normalize the domain - accept any format
+    let normalizedDomain = domain.trim()
+    // Remove protocol if present
+    normalizedDomain = normalizedDomain.replace(/^https?:\/\//, '')
+    // Remove trailing slash
+    normalizedDomain = normalizedDomain.replace(/\/$/, '')
+
     try {
       const response = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, domain }),
+        body: JSON.stringify({ email, domain: normalizedDomain }),
       })
 
       if (!response.ok) {
@@ -210,7 +217,7 @@ export function OrganicHomepage() {
           <div className="max-w-[1200px] mx-auto">
             <h2 className="text-header text-center">What We Analyze</h2>
 
-            <div className="assessment-grid">
+            <div className="assessment-grid" style={{ justifyContent: 'center' }}>
               <div className="text-center">
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
@@ -342,7 +349,9 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
       </main>
 
       {/* Modal */}
-      <div className={`modal ${showModal ? 'active' : ''}`}>
+      <div className={`modal ${showModal ? 'active' : ''}`} onClick={(e) => {
+        if (e.target === e.currentTarget) closeModal()
+      }}>
         <div className="modal-container container-form">
           <button className="modal-close" onClick={closeModal}>
             ×
@@ -350,13 +359,11 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
           {step === 'domain' && (
             <>
-              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">Let's analyze your site</h3>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  if (domain) setStep('email')
-                }}
-              >
+              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">Join the Waitlist</h3>
+              <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
+                We're currently assessing targeted SMB websites. Provide your information below and we'll review your site and contact you as soon as we launch.
+              </p>
+              <form onSubmit={handleEmailSubmit}>
                 <div className="form-group">
                   <label className="form-label">Your website URL</label>
                   <input
@@ -368,21 +375,6 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
                     required
                   />
                 </div>
-                <button type="submit" className="cta-primary button-full">
-                  Continue
-                </button>
-              </form>
-            </>
-          )}
-
-          {step === 'email' && (
-            <>
-              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">Almost there!</h3>
-              <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
-                We'll send your personalized report to this email when we
-                launch.
-              </p>
-              <form onSubmit={handleEmailSubmit}>
                 <div className="form-group">
                   <label className="form-label">Business email</label>
                   <input
