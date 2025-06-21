@@ -215,8 +215,8 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
                 </div>
-                <h3 className="text-[24px] mb-3">Load Performance</h3>
-                <p className="text-[17px] opacity-60 leading-[1.6]">
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Load Performance</h3>
+                <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   How fast your site loads on real devices, and what it's
                   costing you in lost customers.
                 </p>
@@ -226,8 +226,8 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#DC2626' }}>
                   47%
                 </div>
-                <h3 className="text-[24px] mb-3">Mobile Experience</h3>
-                <p className="text-[17px] opacity-60 leading-[1.6]">
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Mobile Experience</h3>
+                <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   Where mobile visitors fail to convert, with specific
                   breakpoints identified.
                 </p>
@@ -237,15 +237,15 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#22C55E' }}>
                   $$
                 </div>
-                <h3 className="text-[24px] mb-3">Revenue Impact</h3>
-                <p className="text-[17px] opacity-60 leading-[1.6]">
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Revenue Impact</h3>
+                <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   Estimated monthly revenue loss from technical issues,
                   calculated for your specific market.
                 </p>
               </div>
             </div>
 
-            <p className="text-center text-[24px] font-normal opacity-70">
+            <p className="text-center text-[24px] md:text-[24px] text-[18px] font-normal opacity-70">
               No fluff. No 50-page reports. Just what's broken and what it's
               worth to fix it.
             </p>
@@ -329,7 +329,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
         {/* Footer */}
         <footer className="py-[60px] border-t border-smoke">
           <div className="container-narrow text-center">
-            <Logo size="medium" />
+            {/* Logo removed from footer */}
             <div className="footer-links mt-[30px]">
               <a href="/legal">Privacy & Terms</a>
               <a href="mailto:hello@anthrasite.io">Contact</a>
@@ -350,7 +350,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
           {step === 'domain' && (
             <>
-              <h3 className="text-[32px] mb-6">Let's analyze your site</h3>
+              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">Let's analyze your site</h3>
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
@@ -377,8 +377,8 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
           {step === 'email' && (
             <>
-              <h3 className="text-[32px] mb-6">Almost there!</h3>
-              <p className="text-[17px] opacity-70 mb-8">
+              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">Almost there!</h3>
+              <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
                 We'll send your personalized report to this email when we
                 launch.
               </p>
@@ -410,8 +410,8 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
           {step === 'success' && (
             <div className="text-center">
-              <h3 className="text-[32px] mb-6">You're on the list!</h3>
-              <p className="text-[17px] opacity-70 mb-8">
+              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">You're on the list!</h3>
+              <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
                 We'll analyze {domain} and send your report to {email} as soon
                 as we launch.
               </p>
