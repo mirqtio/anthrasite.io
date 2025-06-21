@@ -860,6 +860,11 @@
     display: none !important;
   }
 
+  /* Fix duplicate content on about page */
+  #about-page-wrapper:first-of-type {
+    display: none !important;
+  }
+
   /* Arrow styles */
   .arrow-container {
     position: relative;
