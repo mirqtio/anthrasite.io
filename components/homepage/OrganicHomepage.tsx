@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRenderTracking } from '@/lib/monitoring/hooks'
 import { Logo } from '@/components/Logo'
 import { ScrollToTop } from '@/components/ScrollToTop'
@@ -15,6 +15,42 @@ export function OrganicHomepage() {
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const observerRef = useRef<IntersectionObserver | null>(null)
+
+  // Set up Intersection Observer for reveal animations
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const target = entry.target as HTMLElement
+              const delay = parseInt(target.dataset.delay || '0')
+              
+              setTimeout(() => {
+                target.classList.add('revealed')
+              }, delay)
+              
+              // Stop observing once revealed
+              observerRef.current?.unobserve(target)
+            }
+          })
+        },
+        {
+          threshold: 0.2,
+          rootMargin: '0px 0px -50px 0px'
+        }
+      )
+
+      // Observe all reveal elements
+      const revealElements = document.querySelectorAll('.reveal-card, .reveal-tagline')
+      revealElements.forEach(el => observerRef.current?.observe(el))
+    }
+
+    return () => {
+      observerRef.current?.disconnect()
+    }
+  }, [])
 
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index)
@@ -209,16 +245,23 @@ export function OrganicHomepage() {
                 </div>
               </div>
             </div>
+            
+            {/* Animated Arrow */}
+            <div className="arrow-container" aria-hidden="true">
+              <div className="scroll-arrow">
+                <span></span>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Assessment Section */}
-        <section id="assessment" className="section">
+        <section id="assessment" className="section examples-section">
           <div className="max-w-[1200px] mx-auto">
             <h2 className="text-header text-center">What We Analyze</h2>
 
             <div className="assessment-grid">
-              <div className="text-center">
+              <div className="text-center reveal-card" data-delay="0">
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
                 </div>
@@ -229,7 +272,7 @@ export function OrganicHomepage() {
                 </p>
               </div>
 
-              <div className="text-center">
+              <div className="text-center reveal-card" data-delay="150">
                 <div className="text-number" style={{ color: '#DC2626' }}>
                   47%
                 </div>
@@ -240,7 +283,7 @@ export function OrganicHomepage() {
                 </p>
               </div>
 
-              <div className="text-center">
+              <div className="text-center reveal-card" data-delay="300">
                 <div className="text-number" style={{ color: '#22C55E' }}>
                   $$
                 </div>
@@ -252,7 +295,7 @@ export function OrganicHomepage() {
               </div>
             </div>
 
-            <p className="text-center text-[24px] md:text-[24px] text-[18px] font-normal opacity-70">
+            <p className="text-center text-[24px] md:text-[24px] text-[18px] font-normal opacity-70 reveal-tagline" data-delay="450">
               No fluff. No 50-page reports. Just what's broken and what it's
               worth to fix it.
             </p>
