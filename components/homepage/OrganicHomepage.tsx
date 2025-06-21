@@ -9,6 +9,7 @@ export function OrganicHomepage() {
   // useRenderTracking('OrganicHomepage')
   const [activeFaq, setActiveFaq] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [step, setStep] = useState<'domain' | 'email' | 'success'>('domain')
   const [domain, setDomain] = useState('')
   const [email, setEmail] = useState('')
@@ -26,6 +27,7 @@ export function OrganicHomepage() {
     if (targetElement) {
       targetElement.scrollIntoView({ behavior: 'smooth' })
     }
+    setShowMobileMenu(false)
   }
 
   const openModal = () => {
@@ -72,11 +74,11 @@ export function OrganicHomepage() {
     <div id="organic-homepage-wrapper">
       {/* Navigation */}
       <nav className="nav-fixed">
-        <div className="max-w-[1200px] mx-auto px-10 py-5 flex items-center justify-between">
-          <div>
+        <div className="max-w-[1200px] mx-auto px-5 md:px-10 py-4 md:py-5 flex items-center justify-between">
+          <div className="logo-container">
             <a href="#top" className="flex flex-col">
-              <Logo size="medium" />
-              <div className="text-[13px] font-light opacity-70 mt-1 flex justify-between" style={{ width: '264px' }}>
+              <Logo size="medium" className="logo-mobile" />
+              <div className="tagline text-[10px] md:text-[13px] font-light opacity-70 mt-1 flex justify-between">
                 <span>V</span>
                 <span>A</span>
                 <span>L</span>
@@ -99,7 +101,15 @@ export function OrganicHomepage() {
               </div>
             </a>
           </div>
-          <div className="flex items-center space-x-8">
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <a 
+              href="/about" 
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+            >
+              About Us
+            </a>
             <button 
               onClick={() => scrollToSection('faq')} 
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
@@ -107,7 +117,39 @@ export function OrganicHomepage() {
               FAQ
             </button>
           </div>
+
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="md:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5"
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? 'rotate-45 translate-y-2' : ''}`}></span>
+            <span className={`block w-6 h-0.5 bg-white transition-opacity ${showMobileMenu ? 'opacity-0' : ''}`}></span>
+            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {showMobileMenu && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-carbon border-t border-smoke">
+            <div className="flex flex-col py-4">
+              <a 
+                href="/about" 
+                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                About Us
+              </a>
+              <button 
+                onClick={() => scrollToSection('faq')} 
+                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity text-left"
+              >
+                FAQ
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Main Content */}
@@ -127,7 +169,11 @@ export function OrganicHomepage() {
             <div className="relative inline-block" data-testid="hero-section">
               <div
                 className="pressure-visual"
-                style={{ width: '400px', height: '400px', margin: '0 auto' }}
+                style={{
+                  width: '400px',
+                  height: '400px',
+                  margin: '0 auto',
+                }}
               >
                 <div
                   className="pressure-ring"
@@ -136,19 +182,13 @@ export function OrganicHomepage() {
                 <div
                   className="pressure-ring"
                   style={
-                    {
-                      '--scale': 0.8,
-                      animationDelay: '0.3s',
-                    } as React.CSSProperties
+                    { '--scale': 0.8, animationDelay: '0.3s' } as React.CSSProperties
                   }
                 ></div>
                 <div
                   className="pressure-ring"
                   style={
-                    {
-                      '--scale': 0.6,
-                      animationDelay: '0.6s',
-                    } as React.CSSProperties
+                    { '--scale': 0.6, animationDelay: '0.6s' } as React.CSSProperties
                   }
                 ></div>
                 <div className="pressure-center">
@@ -260,122 +300,129 @@ Think of free tools as a medical encyclopedia and our audit as the doctor who in
 3. Digital uplift curves – For each of our six score categories (performance, SEO, trust, UX, mobile, social) we apply peer-reviewed elasticity models. Examples:
 
    • 100 ms faster LCP → 2-4 % conversion lift (Chrome UX Report, 2024)
+   • First-page ranking → 30 % click rate vs < 2 % page 2 (Backlinko CTR Study, 2023)
+   • Missing trust signals → 42 % abandonment rate (Baymard Institute, 2024)
+   • Mobile responsive → 67 % traffic shift (StatCounter, US, 2024)
+   • Poor mobile UX → 3.5 × higher bounce (Think with Google, 2023)
 
-   • Moving from Google position 5 → 3 roughly doubles click-through (Backlinko CTR Study, 2024)
+4. Industry channel mix – We adjust for your specific industry's digital reliance. A plumber gets 20 % of leads online while SaaS runs closer to 95 %.
 
-   • Adding a well-placed trust badge lifts checkout completion ≈ 14 % (Baymard Institute, 2023)
-
-   • Better review volume boosts local pack calls ≈ 10 % (BrightLocal, 2024)
-
-   • Case study: 80 % INP reduction yielded +36 % conversions (QuintoAndar, Jan 2025)
-     web.dev
-
-4. Industry channel mix – Finally, we weight each uplift by your NAICS segment's online-revenue share from the Adobe Digital Economy Index (May 2025) so, for example, a landscaping firm isn't benchmarked like a pure-play e-commerce store.
-   business.adobe.com
-
-The result is an evidence-based estimate of how much one score point is likely to move your annual revenue. It isn't a guarantee, but it lets you see—in plain dollars—which fixes are poised to pay for themselves first.`,
+Result: revenue-per-point lets us rank every issue by its likely dollar impact on your specific business.`,
                 },
-              ].map((item, index) => (
+              ].map((faq, index) => (
                 <div
                   key={index}
                   className={`faq-item ${activeFaq === index ? 'active' : ''}`}
                   onClick={() => toggleFaq(index)}
                 >
                   <div className="faq-question">
-                    {item.q}
+                    {faq.q}
                     <span className="faq-toggle">+</span>
                   </div>
-                  <div className="faq-answer whitespace-pre-line">{item.a}</div>
+                  <div className="faq-answer whitespace-pre-line">{faq.a}</div>
                 </div>
               ))}
             </div>
           </div>
         </section>
+
+        {/* Footer */}
+        <footer className="py-[60px] border-t border-smoke">
+          <div className="container-narrow text-center">
+            <Logo size="medium" />
+            <div className="footer-links mt-[30px]">
+              <a href="/legal">Privacy & Terms</a>
+              <a href="mailto:hello@anthrasite.io">Contact</a>
+            </div>
+            <p className="text-[14px] opacity-30 mt-[20px]">
+              © {new Date().getFullYear()} Anthrasite. All rights reserved.
+            </p>
+          </div>
+        </footer>
       </main>
 
-      {/* Footer */}
-      <footer className="py-[60px] px-10 border-t border-white/5 text-center">
-        <div className="footer-links">
-          <a href="/legal">Privacy & Terms</a>
-          <a href="mailto:hello@anthrasite.io">Contact</a>
-        </div>
-        <p className="text-tiny opacity-30">
-          © {new Date().getFullYear()} Anthrasite. All rights reserved.
-        </p>
-      </footer>
-
-      {/* Waitlist Modal */}
-      <div
-        className={`modal ${showModal ? 'active' : ''}`}
-        onClick={(e) => e.target === e.currentTarget && closeModal()}
-      >
+      {/* Modal */}
+      <div className={`modal ${showModal ? 'active' : ''}`}>
         <div className="modal-container container-form">
           <button className="modal-close" onClick={closeModal}>
-            &times;
+            ×
           </button>
 
-          <p className="text-body mb-8">
-            We are currently only analyzing targeted sites. Be among the first
-            to know when we expand.
-          </p>
-
-          {step !== 'success' && (
-            <form onSubmit={handleEmailSubmit} data-testid="waitlist-form">
-              <div className="form-group">
-                <label className="form-label">Your website URL</label>
-                <input
-                  type="text"
-                  value={domain}
-                  onChange={(e) => setDomain(e.target.value)}
-                  placeholder="example.com"
-                  required
-                  className="form-input"
-                  autoFocus
-                  data-testid="waitlist-domain-input"
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Your email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  className="form-input"
-                  data-testid="waitlist-email-input"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isSubmitting || !email || !domain}
-                className="cta-primary button-full"
-                data-testid="waitlist-submit-button"
+          {step === 'domain' && (
+            <>
+              <h3 className="text-[32px] mb-6">Let's analyze your site</h3>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (domain) setStep('email')
+                }}
               >
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </button>
-            </form>
+                <div className="form-group">
+                  <label className="form-label">Your website URL</label>
+                  <input
+                    type="text"
+                    value={domain}
+                    onChange={(e) => setDomain(e.target.value)}
+                    placeholder="example.com"
+                    className="form-input"
+                    required
+                  />
+                </div>
+                <button type="submit" className="cta-primary button-full">
+                  Continue
+                </button>
+              </form>
+            </>
+          )}
+
+          {step === 'email' && (
+            <>
+              <h3 className="text-[32px] mb-6">Almost there!</h3>
+              <p className="text-[17px] opacity-70 mb-8">
+                We'll send your personalized report to this email when we
+                launch.
+              </p>
+              <form onSubmit={handleEmailSubmit}>
+                <div className="form-group">
+                  <label className="form-label">Business email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@company.com"
+                    className="form-input"
+                    required
+                  />
+                </div>
+                {error && (
+                  <p className="text-red-500 text-sm mb-4">{error}</p>
+                )}
+                <button
+                  type="submit"
+                  className="cta-primary button-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                </button>
+              </form>
+            </>
           )}
 
           {step === 'success' && (
-            <div className="carbon-container text-center">
-              <h3 className="text-[24px] mb-4">You're on the list!</h3>
-              <p className="text-body">
-                We'll analyze {domain} and send the report when we launch.
+            <div className="text-center">
+              <h3 className="text-[32px] mb-6">You're on the list!</h3>
+              <p className="text-[17px] opacity-70 mb-8">
+                We'll analyze {domain} and send your report to {email} as soon
+                as we launch.
               </p>
-              <button onClick={closeModal} className="cta-primary mt-6">
-                Close
+              <button onClick={closeModal} className="cta-primary">
+                Done
               </button>
             </div>
-          )}
-
-          {error && (
-            <p className="mt-4 text-sm text-red-500 text-center">{error}</p>
           )}
         </div>
       </div>
 
-      {/* Scroll to Top Component */}
       <ScrollToTop />
     </div>
   )
