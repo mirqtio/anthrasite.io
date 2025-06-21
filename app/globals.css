@@ -1047,18 +1047,22 @@
       width: 100%;
       display: flex;
       justify-content: center;
+      overflow: visible !important;
     }
 
-    /* Fix pressure visualization overflow - let rings bleed off edges */
+    /* Fix pressure visualization - let rings bleed off edges */
     .pressure-visual {
       width: 400px !important;
+      height: 400px !important;
       margin-left: auto;
       margin-right: auto;
+      overflow: visible !important;
     }
 
     .pressure-ring {
-      width: 100%;
-      height: 100%;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
     }
 
     /* Ensure touch targets meet minimum size */
@@ -1195,7 +1199,7 @@
     }
 
     /* General section text */
-    .section p {
+    .section p:not(.reveal-tagline) {
       font-size: 16px;
     }
 
