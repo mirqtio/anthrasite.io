@@ -192,7 +192,7 @@ export function OrganicHomepage() {
               onClick={() => scrollToSection('assessment')} 
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
             >
-              Examples
+              Method
             </button>
             <button 
               onClick={() => scrollToSection('faq')} 
@@ -228,7 +228,7 @@ export function OrganicHomepage() {
                 onClick={() => scrollToSection('assessment')} 
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity text-left"
               >
-                Examples
+                Method
               </button>
               <button 
                 onClick={() => scrollToSection('faq')} 
@@ -253,16 +253,16 @@ export function OrganicHomepage() {
         {/* Hero Section */}
         <section className="hero" data-testid="organic-homepage">
           <div className="hero-content container-narrow">
-            <h1 className="text-display mb-8">
+            <h1 className="text-[64px] md:text-[80px] leading-[0.9] font-thin mb-8">
               Your website has untapped potential
             </h1>
-            <p className="text-subheader opacity-70 mb-[60px] max-w-[900px] mx-auto">
-              We analyze thousands of data points to show you what to fix and
+            <p className="text-header opacity-70 mb-0 max-w-[900px] mx-auto">
+              We analyze hundreds of data points to show you what to fix and
               what it's worth.
             </p>
 
             {/* CTA Button with Pulsing Rings */}
-            <div className="relative inline-block" data-testid="hero-section">
+            <div className="relative inline-block -mt-[200px] md:-mt-[80px]" data-testid="hero-section">
               <div
                 className="pressure-visual"
               >
@@ -306,14 +306,14 @@ export function OrganicHomepage() {
         {/* Assessment Section */}
         <section id="assessment" className="section examples-section">
           <div className="max-w-[1200px] mx-auto">
-            <h2 className="text-header text-center">What This Looks Like:</h2>
+            <h2 className="text-header text-center">What This Looks Like</h2>
 
             <div className="assessment-grid">
               <div className="text-center reveal-card" data-delay="0">
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
                 </div>
-                <h3 className="text-header-small mb-3">Load Performance</h3>
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Load Performance</h3>
                 <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   How fast your site loads on real devices, and what it's
                   costing you in lost customers.
@@ -324,7 +324,7 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#DC2626' }}>
                   47%
                 </div>
-                <h3 className="text-header-small mb-3">Mobile Experience</h3>
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Mobile Experience</h3>
                 <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   Where mobile visitors fail to convert, with specific
                   breakpoints identified.
@@ -335,7 +335,7 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#22C55E' }}>
                   $$
                 </div>
-                <h3 className="text-header-small mb-3">Revenue Impact</h3>
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Revenue Impact</h3>
                 <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   Estimated monthly revenue loss from technical issues,
                   calculated for your specific market.
@@ -343,7 +343,7 @@ export function OrganicHomepage() {
               </div>
             </div>
 
-            <p className="text-center text-header-small opacity-70 reveal-tagline" data-delay="450">
+            <p className="text-center text-[24px] md:text-[24px] text-[20px] font-normal opacity-70 reveal-tagline" data-delay="450">
               No fluff. No 50-page reports. Just what's broken and what it's
               worth to fix it.
             </p>
