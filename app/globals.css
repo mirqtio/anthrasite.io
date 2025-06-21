@@ -253,7 +253,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: var(--spacing-5xl) var(--spacing-3xl) var(--spacing-3xl);
+    padding: calc(80px + var(--spacing-5xl)) var(--spacing-3xl) var(--spacing-3xl);
   }
 
   .hero-content {
@@ -278,7 +278,7 @@
 
   @media (max-width: 768px) {
     .hero {
-      padding: var(--spacing-4xl) var(--spacing-xl);
+      padding: calc(60px + var(--spacing-4xl)) var(--spacing-xl) var(--spacing-4xl);
     }
 
     .section {
@@ -837,9 +837,18 @@
       padding: 0;
     }
 
-    /* Hide navigation links on mobile - need hamburger menu */
-    .nav-fixed .flex.items-center.space-x-8 {
-      display: none;
+    /* Logo and tagline scaling */
+    .logo-container {
+      max-width: 200px;
+    }
+
+    .logo-mobile img {
+      height: 24px !important;
+    }
+
+    .tagline {
+      width: 200px !important;
+      font-size: 10px !important;
     }
 
     /* Fix hero content overflow */

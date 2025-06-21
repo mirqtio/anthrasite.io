@@ -1,18 +1,20 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Logo } from '@/components/Logo'
 
 export default function LegalPage() {
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
+
   return (
     <div>
       {/* Navigation */}
       <nav className="nav-fixed">
-        <div className="max-w-[1200px] mx-auto px-10 py-5 flex items-center justify-between">
-          <div>
+        <div className="max-w-[1200px] mx-auto px-5 md:px-10 py-4 md:py-5 flex items-center justify-between">
+          <div className="logo-container">
             <a href="/" className="flex flex-col">
-              <Logo size="medium" />
-              <div className="text-[13px] font-light opacity-70 mt-1 flex justify-between" style={{ width: '264px' }}>
+              <Logo size="medium" className="logo-mobile" />
+              <div className="tagline text-[10px] md:text-[13px] font-light opacity-70 mt-1 flex justify-between">
                 <span>V</span>
                 <span>A</span>
                 <span>L</span>
@@ -35,12 +37,50 @@ export default function LegalPage() {
               </div>
             </a>
           </div>
-          <div className="flex items-center space-x-8">
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <a href="/about" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
+              About Us
+            </a>
             <a href="/#faq" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
               FAQ
             </a>
           </div>
+
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="md:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5"
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? 'rotate-45 translate-y-2' : ''}`}></span>
+            <span className={`block w-6 h-0.5 bg-white transition-opacity ${showMobileMenu ? 'opacity-0' : ''}`}></span>
+            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {showMobileMenu && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-carbon border-t border-smoke">
+            <div className="flex flex-col py-4">
+              <a 
+                href="/about" 
+                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                About Us
+              </a>
+              <a 
+                href="/#faq" 
+                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                FAQ
+              </a>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Main Content */}
