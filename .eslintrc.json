@@ -2,8 +2,7 @@
   "extends": [
     "next/core-web-vitals",
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:storybook/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
@@ -16,7 +15,6 @@
     "@typescript-eslint/no-require-imports": "off",
     "react/no-unescaped-entities": "off",
     "no-extra-semi": "warn",
-    "storybook/no-renderer-packages": "off",
     "@typescript-eslint/no-empty-object-type": "warn"
   }
 }
