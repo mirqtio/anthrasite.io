@@ -1,8 +1,15 @@
 import { AnalyticsProvider, EventProperties } from '../types'
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void
+    dataLayer?: any[]
+  }
+}
+
 /**
  * Google Analytics 4 Provider
- * This is a minimal stub implementation
+ * Integrates with Google Analytics 4 using gtag.js
  */
 export class GoogleAnalytics4Provider implements AnalyticsProvider {
   private measurementId: string
@@ -17,34 +24,64 @@ export class GoogleAnalytics4Provider implements AnalyticsProvider {
   async initialize(): Promise<void> {
     if (this.initialized || typeof window === 'undefined') return
 
-    // In a real implementation, this would load the GA4 script
+    // Wait for gtag to be available (loaded by Analytics component)
+    await this.waitForGtag()
+    
     console.debug('GA4 Provider initialized with:', this.measurementId)
     this.initialized = true
   }
 
-  track(eventName: string, properties?: EventProperties): void {
-    if (!this.initialized) return
+  private async waitForGtag(timeout = 5000): Promise<void> {
+    const startTime = Date.now()
+    
+    while (!window.gtag) {
+      if (Date.now() - startTime > timeout) {
+        console.warn('Timeout waiting for gtag to load')
+        return
+      }
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+  }
 
-    // In a real implementation, this would send the event to GA4
-    console.debug('GA4 track:', eventName, properties)
+  track(eventName: string, properties?: EventProperties): void {
+    if (!this.initialized || !window.gtag) return
+
+    // Send custom event to GA4
+    window.gtag('event', eventName, {
+      ...properties,
+      event_category: properties?.category || 'engagement',
+      send_to: this.measurementId,
+    })
   }
 
   page(properties?: EventProperties): void {
-    if (!this.initialized) return
+    if (!this.initialized || !window.gtag) return
 
-    // In a real implementation, this would send a page view to GA4
-    console.debug('GA4 page view:', properties)
+    // Send page view to GA4
+    window.gtag('event', 'page_view', {
+      page_path: properties?.path || window.location.pathname,
+      page_title: properties?.title || document.title,
+      page_location: properties?.url || window.location.href,
+      send_to: this.measurementId,
+    })
   }
 
   identify(userId: string, traits?: EventProperties): void {
-    if (!this.initialized) return
+    if (!this.initialized || !window.gtag) return
 
-    // In a real implementation, this would set the user ID in GA4
-    console.debug('GA4 identify:', userId, traits)
+    // Set user ID in GA4
+    window.gtag('config', this.measurementId, {
+      user_id: userId,
+      user_properties: traits,
+    })
   }
 
   reset(): void {
-    // In a real implementation, this would clear the user data
-    console.debug('GA4 reset')
+    if (!window.gtag) return
+    
+    // Clear user data by resetting the user_id
+    window.gtag('config', this.measurementId, {
+      user_id: null,
+    })
   }
 }
