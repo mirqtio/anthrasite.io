@@ -2,7 +2,7 @@
 
 import { ConsentPreferences } from '@/lib/context/ConsentContext'
 
-const CONSENT_KEY = 'cookie-consent'
+const CONSENT_KEY = 'anthrasite_cookie_consent'
 
 export function getCookieConsent(): ConsentPreferences {
   if (typeof window === 'undefined') {
@@ -19,12 +19,23 @@ export function getCookieConsent(): ConsentPreferences {
     const stored = localStorage.getItem(CONSENT_KEY)
     if (stored) {
       const parsed = JSON.parse(stored)
+      // Check if it has the version/preferences structure
+      if (parsed.version && parsed.preferences) {
+        return {
+          analytics: parsed.preferences.analytics ?? false,
+          marketing: parsed.preferences.marketing ?? false,
+          performance: parsed.preferences.performance ?? false,
+          functional: parsed.preferences.functional ?? true,
+          timestamp: parsed.preferences.timestamp ?? new Date().toISOString(),
+        }
+      }
+      // Fall back to direct structure for backward compatibility
       return {
-        analytics: parsed.preferences?.analytics ?? false,
-        marketing: parsed.preferences?.marketing ?? false,
-        performance: parsed.preferences?.performance ?? false,
-        functional: parsed.preferences?.functional ?? true,
-        timestamp: parsed.preferences?.timestamp ?? new Date().toISOString(),
+        analytics: parsed.analytics ?? false,
+        marketing: parsed.marketing ?? false,
+        performance: parsed.performance ?? false,
+        functional: parsed.functional ?? true,
+        timestamp: parsed.timestamp ?? new Date().toISOString(),
       }
     }
   } catch (error) {
