@@ -961,4 +961,71 @@
       padding: 14px 20px;
     }
   }
+
+  /* Mobile text scaling for sections */
+  @media (max-width: 768px) {
+    /* Assessment section text */
+    .assessment-grid h3 {
+      font-size: 20px;
+    }
+
+    .assessment-grid p {
+      font-size: 15px;
+    }
+
+    .text-number {
+      font-size: 36px !important;
+    }
+
+    /* Section headers */
+    .section h2 {
+      font-size: 36px;
+    }
+
+    /* FAQ section */
+    .faq-question {
+      font-size: 18px;
+    }
+
+    .faq-answer {
+      font-size: 15px;
+    }
+
+    /* General section text */
+    .section p {
+      font-size: 16px;
+    }
+
+    /* Footer text */
+    .footer-links a {
+      font-size: 15px;
+    }
+  }
+
+  /* Extra small devices */
+  @media (max-width: 390px) {
+    .assessment-grid h3 {
+      font-size: 18px;
+    }
+
+    .assessment-grid p {
+      font-size: 14px;
+    }
+
+    .text-number {
+      font-size: 32px !important;
+    }
+
+    .section h2 {
+      font-size: 32px;
+    }
+
+    .faq-question {
+      font-size: 16px;
+    }
+
+    .faq-answer {
+      font-size: 14px;
+    }
+  }
 }

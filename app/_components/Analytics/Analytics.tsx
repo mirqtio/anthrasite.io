@@ -110,16 +110,6 @@ export function Analytics() {
 }
 
 export function AnalyticsNoScript() {
-  // Fallback for users with JavaScript disabled
-  return (
-    <noscript>
-      <img
-        height="1"
-        width="1"
-        style={{ display: 'none' }}
-        alt=""
-        src={`https://www.google-analytics.com/collect?v=1&t=pageview&tid=${process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID}&cid=no-js&dp=${encodeURIComponent('/')}`}
-      />
-    </noscript>
-  )
+  // Disabled noscript GA4 tracking to prevent preload warnings
+  return null
 }
