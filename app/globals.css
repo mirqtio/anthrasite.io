@@ -338,8 +338,8 @@
 
   /* Pressure visualization */
   .pressure-visual {
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
     margin: var(--spacing-4xl) auto;
     position: relative;
   }
@@ -367,8 +367,12 @@
 
   @media (max-width: 768px) {
     .pressure-visual {
-      width: 300px;
-      height: 300px;
+      width: 120vw;
+      height: 120vw;
+      max-width: 500px;
+      max-height: 500px;
+      margin-left: -10vw;
+      margin-right: -10vw;
     }
   }
 
@@ -1062,20 +1066,7 @@
       overflow: visible !important;
     }
 
-    /* Fix pressure visualization - let rings bleed off edges */
-    .pressure-visual {
-      width: 400px !important;
-      height: 400px !important;
-      margin-left: auto;
-      margin-right: auto;
-      overflow: visible !important;
-    }
-
-    .pressure-ring {
-      width: 100% !important;
-      height: 100% !important;
-      border-radius: 50% !important;
-    }
+    /* Remove all mobile constraints on pressure visual */
 
     /* Ensure touch targets meet minimum size */
     button, a, [role="button"] {
