@@ -217,7 +217,7 @@ export function OrganicHomepage() {
           <div className="max-w-[1200px] mx-auto">
             <h2 className="text-header text-center">What We Analyze</h2>
 
-            <div className="assessment-grid" style={{ justifyContent: 'center' }}>
+            <div className="assessment-grid">
               <div className="text-center">
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
