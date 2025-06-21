@@ -274,6 +274,12 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--spacing-4xl);
     margin-bottom: var(--spacing-5xl);
+    justify-items: center;
+  }
+
+  .assessment-grid > div {
+    max-width: 400px;
+    width: 100%;
   }
 
   @media (max-width: 768px) {
