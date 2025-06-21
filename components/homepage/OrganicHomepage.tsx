@@ -63,7 +63,15 @@ export function OrganicHomepage() {
           // Get the second instance (visible one) due to duplicate content fix
           const targetElement = elements[1] || elements[0]
           if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth' })
+            const navbarHeight = 80 // Height of fixed navbar
+            const extraOffset = hash === 'assessment' ? 120 : 0 // Extra offset for Examples section
+            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset
+            const offsetPosition = elementPosition - navbarHeight - extraOffset
+            
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            })
           }
         }, 100)
       }
@@ -86,7 +94,15 @@ export function OrganicHomepage() {
     // Get the second instance (visible one)
     const targetElement = elements[1] || elements[0]
     if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' })
+      const navbarHeight = 80 // Height of fixed navbar
+      const extraOffset = sectionId === 'assessment' ? 120 : 0 // Extra offset for Examples section
+      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset
+      const offsetPosition = elementPosition - navbarHeight - extraOffset
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
     }
     setShowMobileMenu(false)
   }
