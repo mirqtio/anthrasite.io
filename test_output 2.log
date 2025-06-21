@@ -1,0 +1,34 @@
+
+Running 7 tests using 5 workers
+
+[1A[2K[2m[WebServer] [22mSyntaxError: Unexpected end of JSON input
+[2m[WebServer] [22m    at JSON.parse (<anonymous>)
+[2m[WebServer] [22m    at patchIncorrectLockfile [90m(/Users/charlieirwin/Documents/GitHub/anthrasite.io/[39mnode_modules/[4mnext[24m/dist/lib/patch-incorrect-lockfile.js:94:33[90m)[39m
+
+[1A[2K[2m[WebServer] [22m[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+
+[1A[2K[1/7] [chromium] › e2e/client-side-rendering.spec.ts:71:7 › Client-Side Rendering › should have interactive elements after hydration
+[1A[2K[2/7] [chromium] › e2e/client-side-rendering.spec.ts:45:7 › Client-Side Rendering › should handle client-side navigation
+[1A[2K[3/7] [chromium] › e2e/client-side-rendering.spec.ts:27:7 › Client-Side Rendering › should not show loading state indefinitely
+[1A[2K[4/7] [chromium] › e2e/client-side-rendering.spec.ts:5:7 › Client-Side Rendering › should properly hydrate React on client side
+[1A[2K[5/7] [chromium] › e2e/client-side-rendering.spec.ts:92:7 › Client-Side Rendering › should detect console errors
+[1A[2K[2m[WebServer] [22mFailed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+
+[1A[2K[2m[WebServer] [22mUsing fallback experiments
+
+[1A[2K[2m[WebServer] [22mFailed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+
+[1A[2K[2m[WebServer] [22mUsing fallback experiments
+
+[1A[2K[2m[WebServer] [22mFailed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+
+[1A[2K[2m[WebServer] [22mUsing fallback experiments
+
+[1A[2K[2m[WebServer] [22mFailed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+
+[1A[2K[2m[WebServer] [22mUsing fallback experiments
+
+[1A[2K[2m[WebServer] [22mFailed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+
+[1A[2K[2m[WebServer] [22mUsing fallback experiments
+
