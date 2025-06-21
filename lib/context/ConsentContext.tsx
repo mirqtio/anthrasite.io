@@ -49,7 +49,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
   const [preferences, setPreferences] = useState<ConsentPreferences | null>(
     null
   )
-  const [showBanner, setShowBanner] = useState(false)
+  const [showBanner, setShowBanner] = useState(true) // Start with true, will be hidden if consent exists
   const [showPreferences, setShowPreferences] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
@@ -67,7 +67,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
           // Check if stored consent is for current version
           if (parsed.version === CONSENT_VERSION) {
             setPreferences(parsed.preferences)
-            setShowBanner(false)
+            setShowBanner(false) // Only hide banner if valid consent exists
           } else {
             // Version mismatch, show banner again
             setShowBanner(true)
@@ -91,7 +91,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
         // Check if stored consent is for current version
         if (parsed.version === CONSENT_VERSION) {
           setPreferences(parsed.preferences)
-          setShowBanner(false)
+          setShowBanner(false) // Only hide banner if valid consent exists
         } else {
           // Version mismatch, show banner again
           setShowBanner(true)
