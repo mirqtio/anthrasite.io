@@ -340,7 +340,7 @@
   .pressure-visual {
     width: 400px;
     height: 400px;
-    margin: var(--spacing-4xl) auto;
+    margin: 0 auto;
     position: relative;
   }
 
@@ -922,7 +922,7 @@
   }
 
   .scroll-arrow {
-    animation: scrollBounce 2s ease-in-out 1.5s infinite;
+    animation: scrollBounce 3s ease-in-out 1.5s infinite;
   }
 
   .scroll-arrow:hover span::before,
@@ -1007,7 +1007,7 @@
 
     /* Mobile arrow adjustments */
     .arrow-container {
-      margin-top: 30px;
+      margin-top: -90px;
       margin-bottom: 40px;
     }
 
@@ -1141,9 +1141,6 @@
       padding: 0 15px;
     }
 
-    .text-display {
-      font-size: 32px;
-    }
 
     .text-header {
       font-size: 28px;
@@ -1161,10 +1158,7 @@
 
   /* Mobile text scaling for sections */
   @media (max-width: 768px) {
-    /* Hero text scaling */
-    .text-display {
-      font-size: 40px;
-    }
+    /* Hero text scaling - using clamp from root */
 
     .text-header {
       font-size: 32px;
@@ -1174,10 +1168,11 @@
       font-size: 18px;
     }
 
-    /* Assessment section text */
-    .assessment-grid h3 {
-      font-size: 20px;
+    .text-header-small {
+      font-size: 28px;
     }
+
+    /* Assessment section text */
 
     .assessment-grid p {
       font-size: 15px;
@@ -1214,9 +1209,6 @@
 
   /* Extra small devices */
   @media (max-width: 390px) {
-    .assessment-grid h3 {
-      font-size: 18px;
-    }
 
     .assessment-grid p {
       font-size: 14px;
