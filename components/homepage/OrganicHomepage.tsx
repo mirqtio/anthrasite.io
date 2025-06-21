@@ -258,7 +258,7 @@ export function OrganicHomepage() {
         {/* Assessment Section */}
         <section id="assessment" className="section examples-section">
           <div className="max-w-[1200px] mx-auto">
-            <h2 className="text-header text-center">What We Analyze</h2>
+            <h2 className="text-header text-center">What This Looks Like:</h2>
 
             <div className="assessment-grid">
               <div className="text-center reveal-card" data-delay="0">
