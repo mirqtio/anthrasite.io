@@ -270,16 +270,16 @@
 
   /* Grid layouts */
   .assessment-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--spacing-4xl);
     margin-bottom: var(--spacing-5xl);
-    justify-items: center;
+    justify-content: center;
   }
 
   .assessment-grid > div {
+    flex: 0 1 300px;
     max-width: 400px;
-    width: 100%;
   }
 
   @media (max-width: 768px) {
@@ -292,8 +292,11 @@
     }
 
     .assessment-grid {
-      grid-template-columns: 1fr;
       gap: var(--spacing-3xl);
+    }
+
+    .assessment-grid > div {
+      flex: 1 1 100%;
     }
   }
 
