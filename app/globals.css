@@ -949,11 +949,11 @@
     }
 
     .text-display {
-      font-size: 36px;
+      font-size: 32px;
     }
 
     .text-header {
-      font-size: 28px;
+      font-size: 18px;
     }
 
     .cta-primary {
@@ -964,6 +964,15 @@
 
   /* Mobile text scaling for sections */
   @media (max-width: 768px) {
+    /* Hero text scaling */
+    .text-display {
+      font-size: 40px;
+    }
+
+    .text-header {
+      font-size: 20px;
+    }
+
     /* Assessment section text */
     .assessment-grid h3 {
       font-size: 20px;
