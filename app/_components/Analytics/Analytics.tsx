@@ -80,9 +80,18 @@ export function Analytics() {
       }
 
       // Create script element
+      const measurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+      if (!measurementId) {
+        console.error('GA4 Measurement ID is not defined')
+        return
+      }
+      
       const script = document.createElement('script')
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID}`
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`
       script.async = true
+      script.onload = () => {
+        console.log('[GA4] Script loaded successfully')
+      }
       document.head.appendChild(script)
 
       // Initialize gtag
@@ -92,10 +101,11 @@ export function Analytics() {
       }
       window.gtag = gtag
       gtag('js', new Date())
-      gtag('config', process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID, {
+      gtag('config', measurementId, {
         page_path: window.location.pathname,
-        send_page_view: false,
+        send_page_view: false, // We'll send page views manually through analytics manager
       })
+      console.log('[GA4] Initialized with measurement ID:', measurementId)
     }
 
     // Load after a short delay to prioritize critical resources

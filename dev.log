@@ -1,5 +1,5 @@
 
-> anthrasite.io@1.0.0 dev /Users/charlieirwin/Documents/GitHub/anthrasite.io
+> anthrasite.io@1.0.0 dev
 > next dev -p 3333
 
   ▲ Next.js 14.2.30
@@ -7,189 +7,51 @@
   - Environments: .env.local, .env
 
  ✓ Starting...
- ✓ Ready in 1895ms
- ○ Compiling /_not-found ...
- ✓ Compiled /middleware in 4.3s (2053 modules)
+ ✓ Ready in 1385ms
+ ✓ Compiled /middleware in 213ms (125 modules)
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
- ⚠ Fast Refresh had to perform a full reload due to a runtime error.
- GET /_next/static/webpack/f64f53147a5cdc5b.webpack.hot-update.json 404 in 4483ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- POST /__nextjs_original-stack-frames 404 in 26ms
  ○ Compiling / ...
- ✓ Compiled / in 1639ms (2009 modules)
- GET / 200 in 1676ms
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ ✓ Compiled / in 3.5s (2011 modules)
+ GET / 200 in 3731ms
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
- ⚠ Fast Refresh had to perform a full reload due to a runtime error.
- GET /_next/static/webpack/f64f53147a5cdc5b.webpack.hot-update.json 404 in 11ms
- GET / 200 in 8ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 12ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled /icon.svg in 114ms (1071 modules)
- GET /icon.svg?8b187ce0d5af04b7 200 in 149ms
+ ✓ Compiled in 474ms (2002 modules)
+ ✓ Compiled in 337ms (2002 modules)
+ ✓ Compiled in 283ms (2002 modules)
+ ✓ Compiled in 237ms (2002 modules)
+ ✓ Compiled in 201ms (2002 modules)
+ ✓ Compiled in 408ms (966 modules)
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
 Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
 Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET / 200 in 80ms
+ GET / 200 in 115ms
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
- GET /icon.svg?8b187ce0d5af04b7 200 in 6ms
- ✓ Compiled in 551ms (2006 modules)
+ GET / 200 in 19ms
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
+ ✓ Compiled /_not-found in 417ms (1991 modules)
 Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
 Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET / 200 in 181ms
+ GET /pricing 404 in 499ms
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
+ GET /faq 404 in 20ms
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
- ✓ Compiled /icon.svg in 191ms (1070 modules)
- GET /icon.svg?8b187ce0d5af04b7 200 in 248ms
- ✓ Compiled in 632ms (2038 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 541ms (2006 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 446ms (2006 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 599ms (2006 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 323ms (2006 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled /_not-found in 385ms (1995 modules)
+ ✓ Compiled /about in 183ms (1997 modules)
 Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
 Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /about 200 in 229ms
 Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
 Using fallback experiments
- GET /privacy 404 in 476ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 35ms
- ✓ Compiled in 656ms (2006 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled /_not-found in 322ms (1995 modules)
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET /terms 404 in 417ms
- ✓ Compiled in 259ms (2009 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET /terms 404 in 51ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 29ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET /contact 404 in 24ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 17ms
- ✓ Compiled in 549ms (2006 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 255ms (2006 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled /_not-found in 139ms (1995 modules)
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET /legal 404 in 173ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 36ms
- ✓ Compiled in 259ms (2009 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET /legal 404 in 44ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 38ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 654ms (2119 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled /legal in 274ms (1998 modules)
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET /legal 200 in 404ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 35ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled /icon.svg in 76ms (1074 modules)
- GET /icon.svg?8b187ce0d5af04b7 200 in 110ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET /icon.svg?8b187ce0d5af04b7 200 in 10ms
- ✓ Compiled in 422ms (2012 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 247ms (2012 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 255ms (2012 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 412ms (2012 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 284ms (2012 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- ✓ Compiled in 446ms (2012 modules)
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
-Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
- GET /legal 200 in 156ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
- GET / 200 in 25ms
-Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
-Using fallback experiments
+ ✓ Compiled in 193ms (970 modules)
+ ✓ Compiled in 469ms (2004 modules)
+ ✓ Compiled in 240ms (2004 modules)
+ ✓ Compiled in 207ms (2004 modules)
