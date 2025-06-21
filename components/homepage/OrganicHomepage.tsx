@@ -52,6 +52,31 @@ export function OrganicHomepage() {
     }
   }, [])
 
+  // Handle hash navigation from other pages
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1) // Remove #
+      if (hash) {
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          const elements = document.querySelectorAll(`#${hash}`)
+          // Get the second instance (visible one) due to duplicate content fix
+          const targetElement = elements[1] || elements[0]
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' })
+          }
+        }, 100)
+      }
+    }
+
+    // Check on mount
+    handleHashChange()
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index)
   }
