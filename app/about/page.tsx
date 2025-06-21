@@ -42,7 +42,7 @@ export default function AboutPage() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <a href="/#assessment" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
-              Examples
+              Method
             </a>
             <a href="/#faq" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
               FAQ
@@ -73,7 +73,7 @@ export default function AboutPage() {
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
-                Examples
+                Method
               </a>
               <a 
                 href="/#faq" 
