@@ -63,3 +63,6 @@ Using fallback experiments
  ✓ Compiled in 377ms (2006 modules)
  ✓ Compiled in 332ms (969 modules)
  ✓ Compiled in 600ms (2117 modules)
+   Reload env: .env.local
+ ✓ Compiled in 3s (2140 modules)
+ ✓ Compiled in 404ms (2117 modules)
