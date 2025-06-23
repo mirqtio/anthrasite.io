@@ -100,15 +100,23 @@ export default function AboutPage() {
           
           <div className="space-y-6 text-[20px] opacity-80 leading-relaxed">
             <p>
-              We analyze your website and tell you exactly what's costing you money—and how to fix it.
+              If technical issues are quietly eating into your revenue, we get it.
             </p>
             
             <p>
-              No jargon. No fluff. Just clear, actionable insights backed by real data.
+              We're a team of seasoned technologists who've spent decades driving measurable business results for Fortune 500 companies. Through that work, we discovered how subtle inefficiencies—slow load times, broken mobile experiences, outdated SEO—can cost businesses thousands in lost revenue every month.
             </p>
 
             <p>
-              Get in touch: <a href="mailto:hello@anthrasite.io" className="opacity-100 hover:opacity-70 transition-opacity">hello@anthrasite.io</a>
+              Today, we're using enterprise-grade diagnostics and AI-powered analysis to help small and medium businesses uncover these same insights—at a fraction of the traditional cost. Our approach: run a comprehensive site audit, translate technical findings into dollar impact, and deliver a prioritized action plan you can implement immediately.
+            </p>
+
+            <p>
+              No technical jargon. No 50-page reports. Just clear, revenue-focused recommendations.
+            </p>
+
+            <p className="italic">
+              – The Anthrasite Team
             </p>
           </div>
         </div>
