@@ -15,6 +15,7 @@ Add the following environment variables for **Production** environment:
 NEXT_PUBLIC_GA4_MEASUREMENT_ID = [Your GA4 Measurement ID from .env.local]
 NEXT_PUBLIC_POSTHOG_KEY = [Your PostHog API key from .env.local]
 NEXT_PUBLIC_POSTHOG_HOST = https://app.posthog.com
+NEXT_PUBLIC_HOTJAR_SITE_ID = [Your Hotjar Site ID - optional]
 ```
 
 #### Monitoring - Sentry
