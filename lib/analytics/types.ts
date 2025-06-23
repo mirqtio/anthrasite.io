@@ -41,4 +41,7 @@ export interface AnalyticsConfig {
     applicationId: string
     clientToken: string
   }
+  hotjar?: {
+    siteId: string
+  }
 }

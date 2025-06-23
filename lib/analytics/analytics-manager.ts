@@ -1,5 +1,6 @@
 import { GoogleAnalytics4Provider } from './providers/ga4'
 import { PostHogProvider } from './providers/posthog'
+import { HotjarProvider } from './providers/hotjar'
 import {
   AnalyticsProvider,
   EventProperties,
@@ -58,6 +59,13 @@ export class AnalyticsManager {
       const posthog = new PostHogProvider(this.config.posthog.apiKey)
       await posthog.initialize()
       this.providers.set('posthog', posthog)
+    }
+
+    // Initialize Hotjar
+    if (this.config.hotjar) {
+      const hotjar = new HotjarProvider(this.config.hotjar.siteId)
+      await hotjar.initialize()
+      this.providers.set('hotjar', hotjar)
     }
 
     // Initialize Datadog RUM (already configured separately)
