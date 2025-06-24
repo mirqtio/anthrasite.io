@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// In-memory storage for development
-// In production, this could be replaced with Vercel KV or another service
-const waitlistEntries = new Map<string, any>()
+import { addToWaitlist, getWaitlistStats } from '@/lib/waitlist/service'
+import { validateEmail } from '@/lib/waitlist/domain-validation'
+import { trackEvent } from '@/lib/monitoring'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { domain, email } = body
+    const { domain, email, referralSource } = body
 
     // Basic validation
     if (!domain || !email) {
@@ -17,43 +16,45 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Simple email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
+    // Validate email format
+    if (!validateEmail(email)) {
       return NextResponse.json(
         { error: 'Invalid email format' },
         { status: 400 }
       )
     }
 
-    // Normalize domain (remove protocol if included)
-    const normalizedDomain = domain
-      .toLowerCase()
-      .replace(/^https?:\/\//, '')
-      .replace(/^www\./, '')
-      .replace(/\/$/, '')
+    // Add to waitlist using the service
+    const result = await addToWaitlist({
+      domain,
+      email,
+      referralSource,
+    })
 
-    // Store the entry
-    const entryId = Date.now().toString()
-    const entry = {
-      id: entryId,
-      domain: normalizedDomain,
-      email: email.toLowerCase(),
-      timestamp: new Date().toISOString(),
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error || 'Failed to join waitlist' },
+        { status: 500 }
+      )
     }
 
-    waitlistEntries.set(entryId, entry)
-
-    // Log for visibility
-    console.log('New waitlist submission:', entry)
+    // Track successful signup
+    trackEvent('api.waitlist_signup', {
+      domain,
+      position: result.position?.position,
+    })
 
     return NextResponse.json({
       success: true,
-      position: waitlistEntries.size,
-      normalizedDomain,
+      position: result.position,
+      normalizedDomain: domain,
     })
   } catch (error) {
     console.error('Waitlist signup error:', error)
+    trackEvent('api.waitlist_signup_error', {
+      error: (error as Error).message,
+    })
+    
     return NextResponse.json(
       { error: 'Failed to process submission' },
       { status: 500 }
@@ -62,9 +63,21 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  // Return current waitlist size
-  return NextResponse.json({
-    count: waitlistEntries.size,
-    entries: Array.from(waitlistEntries.values()),
-  })
+  try {
+    // Get waitlist statistics
+    const stats = await getWaitlistStats()
+    
+    return NextResponse.json({
+      count: stats.totalCount,
+      todayCount: stats.todayCount,
+      weekCount: stats.weekCount,
+    })
+  } catch (error) {
+    console.error('Waitlist stats error:', error)
+    
+    return NextResponse.json(
+      { error: 'Failed to get waitlist stats' },
+      { status: 500 }
+    )
+  }
 }
