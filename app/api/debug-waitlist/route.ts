@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db'
 export async function GET() {
   try {
     // Test database connection
-    let dbTest = { connected: false, error: null }
+    let dbTest: { connected: boolean; error: string | null } = { connected: false, error: null }
     try {
       await prisma.$queryRaw`SELECT 1`
       dbTest.connected = true
@@ -36,7 +36,7 @@ export async function GET() {
     }
 
     // Try a test insert (with immediate rollback)
-    let testInsert = { success: false, error: null }
+    let testInsert: { success: boolean; error: string | null } = { success: false, error: null }
     try {
       await prisma.$transaction(async (tx) => {
         await tx.waitlistEntry.create({
