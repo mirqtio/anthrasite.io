@@ -15,23 +15,44 @@ export class HotjarProvider implements AnalyticsProvider {
   async initialize(): Promise<void> {
     if (this.initialized || typeof window === 'undefined') return
 
-    const siteId = this.siteId
-    
-    // Hotjar Tracking Code
-    ;(function(h: any, o: any, t: any, j: any, a?: any, r?: any) {
-      h.hj = h.hj || function() {
-        (h.hj.q = h.hj.q || []).push(arguments)
+    try {
+      // Check if Hotjar is already loaded
+      if (window.hj) {
+        console.debug('Hotjar already loaded')
+        this.initialized = true
+        return
       }
-      h._hjSettings = { hjid: parseInt(siteId), hjsv: 6 }
-      a = o.getElementsByTagName('head')[0]
-      r = o.createElement('script')
-      r.async = 1
-      r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv
-      a.appendChild(r)
-    })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=')
 
-    console.debug('Hotjar Provider initialized with site ID:', this.siteId)
-    this.initialized = true
+      // Initialize Hotjar
+      const hj = function (...args: any[]) {
+        const hjQueue = (hj as any).q = (hj as any).q || []
+        hjQueue.push(args)
+      }
+      ;(hj as any).q = []
+      window.hj = hj
+      window._hjSettings = { hjid: parseInt(this.siteId), hjsv: 6 }
+
+      // Create and append script
+      const script = document.createElement('script')
+      script.async = true
+      script.src = `https://static.hotjar.com/c/hotjar-${window._hjSettings.hjid}.js?sv=${window._hjSettings.hjsv}`
+
+      // Add error handling
+      script.onerror = () => {
+        console.error('Failed to load Hotjar script')
+      }
+
+      script.onload = () => {
+        console.log('Hotjar script loaded successfully')
+      }
+
+      document.head.appendChild(script)
+
+      console.log('Hotjar Provider initialized with site ID:', this.siteId)
+      this.initialized = true
+    } catch (error) {
+      console.error('Error initializing Hotjar:', error)
+    }
   }
 
   track(eventName: string, properties?: EventProperties): void {
@@ -40,15 +61,18 @@ export class HotjarProvider implements AnalyticsProvider {
     // Hotjar uses virtual page views for tracking events
     // You can also use hj('trigger', eventName) for feedback polls/surveys
     window.hj('event', eventName)
-    
+
     // For custom data, use identify
     if (properties) {
-      const attributes = Object.entries(properties).reduce((acc, [key, value]) => {
-        // Hotjar only accepts string values
-        acc[key] = String(value)
-        return acc
-      }, {} as Record<string, string>)
-      
+      const attributes = Object.entries(properties).reduce(
+        (acc, [key, value]) => {
+          // Hotjar only accepts string values
+          acc[key] = String(value)
+          return acc
+        },
+        {} as Record<string, string>
+      )
+
       window.hj('identify', null, attributes)
     }
   }
@@ -64,10 +88,15 @@ export class HotjarProvider implements AnalyticsProvider {
     if (!this.initialized || !window.hj) return
 
     // Convert traits to string values (Hotjar requirement)
-    const attributes = traits ? Object.entries(traits).reduce((acc, [key, value]) => {
-      acc[key] = String(value)
-      return acc
-    }, {} as Record<string, string>) : {}
+    const attributes = traits
+      ? Object.entries(traits).reduce(
+          (acc, [key, value]) => {
+            acc[key] = String(value)
+            return acc
+          },
+          {} as Record<string, string>
+        )
+      : {}
 
     // Identify user in Hotjar
     window.hj('identify', userId, attributes)
