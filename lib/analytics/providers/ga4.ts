@@ -1,12 +1,5 @@
 import { AnalyticsProvider, EventProperties } from '../types'
 
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void
-    dataLayer?: any[]
-  }
-}
-
 /**
  * Google Analytics 4 Provider
  * Integrates with Google Analytics 4 using gtag.js

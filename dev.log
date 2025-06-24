@@ -66,3 +66,10 @@ Using fallback experiments
    Reload env: .env.local
  ✓ Compiled in 3s (2140 modules)
  ✓ Compiled in 404ms (2117 modules)
+ ✓ Compiled in 606ms (969 modules)
+ ✓ Compiled in 2.2s (2006 modules)
+ ✓ Compiled in 284ms (969 modules)
+ ✓ Compiled in 331ms (2006 modules)
+ ✓ Compiled in 404ms (2006 modules)
+ ✓ Compiled in 305ms (969 modules)
+ ✓ Compiled in 183ms (969 modules)
