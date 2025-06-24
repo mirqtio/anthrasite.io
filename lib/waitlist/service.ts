@@ -5,6 +5,7 @@
 import { prisma } from '@/lib/db'
 import { captureError, trackEvent } from '@/lib/monitoring'
 import { normalizeDomain } from './domain-validation'
+import { fallbackStorage, isUsingFallbackStorage } from './fallback-storage'
 
 export interface WaitlistSignupData {
   domain: string
@@ -47,6 +48,23 @@ export async function getWaitlistPosition(
   try {
     const normalizedDomain = normalizeDomain(domain)
 
+    // Use fallback storage if database is unavailable
+    if (isUsingFallbackStorage()) {
+      const entry = await fallbackStorage.findByDomain(normalizedDomain)
+      if (!entry) {
+        return null
+      }
+
+      const position = (await fallbackStorage.countBefore(entry.createdAt)) + 1
+      const totalCount = await fallbackStorage.count()
+
+      return {
+        position,
+        totalCount,
+        estimatedDate: calculateEstimatedDate(position),
+      }
+    }
+
     const entry = await prisma.waitlistEntry.findFirst({
       where: { domain: normalizedDomain },
       orderBy: { createdAt: 'asc' },
@@ -88,6 +106,52 @@ export async function addToWaitlist(
 ): Promise<WaitlistSignupResult> {
   try {
     const normalizedDomain = normalizeDomain(data.domain)
+
+    // Use fallback storage if database is unavailable
+    if (isUsingFallbackStorage()) {
+      const existing = await fallbackStorage.findByDomain(normalizedDomain)
+
+      if (existing) {
+        // Get position for existing entry
+        const position = await getWaitlistPosition(normalizedDomain)
+
+        trackEvent('waitlist.duplicate_signup', {
+          domain: normalizedDomain,
+          position: position?.position,
+        })
+
+        return {
+          success: true,
+          position: position || undefined,
+        }
+      }
+
+      // Create new waitlist entry
+      await fallbackStorage.create({
+        domain: normalizedDomain,
+        email: data.email.toLowerCase(),
+        referralSource: data.referralSource,
+      })
+
+      // Get position for new entry
+      const position = await getWaitlistPosition(normalizedDomain)
+
+      trackEvent('waitlist.signup', {
+        domain: normalizedDomain,
+        position: position?.position,
+        referralSource: data.referralSource,
+      })
+
+      console.log('Waitlist entry created (fallback storage):', {
+        domain: normalizedDomain,
+        position: position?.position,
+      })
+
+      return {
+        success: true,
+        position: position || undefined,
+      }
+    }
 
     // Check if already on waitlist
     const existing = await prisma.waitlistEntry.findFirst({
@@ -135,6 +199,43 @@ export async function addToWaitlist(
     }
   } catch (error) {
     captureError(error as Error, { data })
+    
+    // Log more details about the error
+    console.error('Waitlist signup database error:', {
+      message: (error as Error).message,
+      code: (error as any).code,
+      data,
+    })
+
+    // Check if this is a database connection error and fallback to in-memory storage
+    if ((error as any).code === 'P1001' || (error as any).code === 'P1002' || (error as any).code === 'P2021') {
+      console.log('Database unavailable, using fallback storage')
+      
+      // Retry with fallback storage
+      const normalizedDomain = normalizeDomain(data.domain)
+      const existing = await fallbackStorage.findByDomain(normalizedDomain)
+
+      if (!existing) {
+        await fallbackStorage.create({
+          domain: normalizedDomain,
+          email: data.email.toLowerCase(),
+          referralSource: data.referralSource,
+        })
+      }
+
+      const position = await getWaitlistPosition(normalizedDomain)
+
+      trackEvent('waitlist.signup_fallback', {
+        domain: normalizedDomain,
+        position: position?.position,
+        referralSource: data.referralSource,
+      })
+
+      return {
+        success: true,
+        position: position || undefined,
+      }
+    }
 
     return {
       success: false,
@@ -170,6 +271,11 @@ export async function getWaitlistStats(): Promise<{
   weekCount: number
 }> {
   try {
+    // Use fallback storage if database is unavailable
+    if (isUsingFallbackStorage()) {
+      return await fallbackStorage.getStats()
+    }
+
     const now = new Date()
     const todayStart = new Date(
       now.getFullYear(),
@@ -207,6 +313,12 @@ export async function getWaitlistStats(): Promise<{
     }
   } catch (error) {
     captureError(error as Error)
+
+    // Try fallback storage if database fails
+    if ((error as any).code === 'P1001' || (error as any).code === 'P1002' || (error as any).code === 'P2021') {
+      console.log('Database unavailable for stats, using fallback storage')
+      return await fallbackStorage.getStats()
+    }
 
     return {
       totalCount: 0,
