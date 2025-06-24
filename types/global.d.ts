@@ -8,6 +8,11 @@ interface Window {
   dataLayer?: any[]
   gtag?: (command: string, ...args: any[]) => void
   posthog?: any
+  hj?: (...args: any[]) => void
+  _hjSettings?: {
+    hjid: number
+    hjsv: number
+  }
   // Test-specific properties
   __testConsentAccepted?: boolean
 }

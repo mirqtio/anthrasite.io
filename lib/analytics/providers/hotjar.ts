@@ -1,15 +1,5 @@
 import { AnalyticsProvider, EventProperties } from '../types'
 
-declare global {
-  interface Window {
-    hj?: (...args: any[]) => void
-    _hjSettings?: {
-      hjid: number
-      hjsv: number
-    }
-  }
-}
-
 /**
  * Hotjar Provider
  * Integrates with Hotjar for heatmaps, session recordings, and feedback
@@ -25,12 +15,14 @@ export class HotjarProvider implements AnalyticsProvider {
   async initialize(): Promise<void> {
     if (this.initialized || typeof window === 'undefined') return
 
+    const siteId = this.siteId
+    
     // Hotjar Tracking Code
     ;(function(h: any, o: any, t: any, j: any, a?: any, r?: any) {
       h.hj = h.hj || function() {
         (h.hj.q = h.hj.q || []).push(arguments)
       }
-      h._hjSettings = { hjid: parseInt(this.siteId), hjsv: 6 }
+      h._hjSettings = { hjid: parseInt(siteId), hjsv: 6 }
       a = o.getElementsByTagName('head')[0]
       r = o.createElement('script')
       r.async = 1
