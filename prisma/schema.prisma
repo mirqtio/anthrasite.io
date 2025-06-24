@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // Core business entities
@@ -32,10 +33,10 @@ model WaitlistEntry {
   id           String   @id @default(uuid())
   domain       String
   email        String
-  ipLocation   Json?
-  variantData  Json?
+  ipLocation   Json?    @map("ip_location")
+  variantData  Json?    @map("variant_data")
   position     Int      @default(autoincrement())
-  createdAt    DateTime @default(now())
+  createdAt    DateTime @default(now()) @map("created_at")
   
   @@index([domain])
   @@index([createdAt])
