@@ -64,7 +64,11 @@ class FallbackWaitlistStorage {
     weekCount: number
   }> {
     const now = new Date()
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    )
     const weekStart = new Date(
       now.getFullYear(),
       now.getMonth(),
@@ -94,6 +98,8 @@ export const fallbackStorage = new FallbackWaitlistStorage()
 
 // Export a flag to check if we're using fallback storage
 export const isUsingFallbackStorage = (): boolean => {
-  return process.env.USE_FALLBACK_STORAGE === 'true' || 
-         process.env.NODE_ENV === 'development'
+  // Only use fallback storage if explicitly set or if DATABASE_URL is not configured
+  return (
+    process.env.USE_FALLBACK_STORAGE === 'true' || !process.env.DATABASE_URL
+  )
 }
