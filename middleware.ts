@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https: blob:; " +
-        "connect-src 'self' https://www.google-analytics.com https://api.stripe.com https://datadoghq-browser-agent.com https://*.sentry.io https://app.posthog.com https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com; " +
+        "connect-src 'self' https://www.google-analytics.com https://api.stripe.com https://datadoghq-browser-agent.com https://*.datadoghq.com https://browser-intake-us5-datadoghq.com https://*.sentry.io https://app.posthog.com https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com; " +
         'frame-src https://js.stripe.com https://hooks.stripe.com https://vars.hotjar.com; ' +
         "child-src 'self' blob:;"
     )
