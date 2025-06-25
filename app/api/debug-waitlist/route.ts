@@ -4,7 +4,10 @@ import { prisma } from '@/lib/db'
 export async function GET() {
   try {
     // Test database connection
-    let dbTest: { connected: boolean; error: string | null } = { connected: false, error: null }
+    const dbTest: { connected: boolean; error: string | null } = {
+      connected: false,
+      error: null,
+    }
     try {
       await prisma.$queryRaw`SELECT 1`
       dbTest.connected = true
@@ -15,13 +18,13 @@ export async function GET() {
     // Check table structure
     let tableStructure = null
     try {
-      const columns = await prisma.$queryRaw`
+      const columns = (await prisma.$queryRaw`
         SELECT column_name, data_type, is_nullable 
         FROM information_schema.columns 
         WHERE table_schema = 'public' 
         AND table_name = 'waitlist'
         ORDER BY ordinal_position
-      ` as any[]
+      `) as any[]
       tableStructure = columns
     } catch (e) {
       tableStructure = { error: (e as Error).message }
@@ -36,14 +39,17 @@ export async function GET() {
     }
 
     // Try a test insert (with immediate rollback)
-    let testInsert: { success: boolean; error: string | null } = { success: false, error: null }
+    const testInsert: { success: boolean; error: string | null } = {
+      success: false,
+      error: null,
+    }
     try {
       await prisma.$transaction(async (tx) => {
         await tx.waitlistEntry.create({
           data: {
             domain: 'test-debug.com',
             email: 'debug@test.com',
-          }
+          },
         })
         // Rollback by throwing an error
         throw new Error('ROLLBACK_TEST')
@@ -64,8 +70,8 @@ export async function GET() {
       environment: {
         NODE_ENV: process.env.NODE_ENV,
         USE_FALLBACK_STORAGE: process.env.USE_FALLBACK_STORAGE,
-        hasDbUrl: !!process.env.DATABASE_URL
-      }
+        hasDbUrl: !!process.env.DATABASE_URL,
+      },
     })
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 })
