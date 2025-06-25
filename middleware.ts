@@ -40,12 +40,13 @@ export async function middleware(request: NextRequest) {
     response.headers.set(
       'Content-Security-Policy',
       "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://js.stripe.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://js.stripe.com https://static.hotjar.com https://script.hotjar.com; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https: blob:; " +
-        "connect-src 'self' https://www.google-analytics.com https://api.stripe.com https://datadoghq-browser-agent.com https://*.sentry.io https://app.posthog.com; " +
-        'frame-src https://js.stripe.com https://hooks.stripe.com;'
+        "connect-src 'self' https://www.google-analytics.com https://api.stripe.com https://datadoghq-browser-agent.com https://*.sentry.io https://app.posthog.com https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com; " +
+        'frame-src https://js.stripe.com https://hooks.stripe.com https://vars.hotjar.com; ' +
+        "child-src 'self' blob:;"
     )
   }
 
