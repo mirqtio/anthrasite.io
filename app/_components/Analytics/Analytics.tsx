@@ -22,7 +22,7 @@ export function Analytics() {
     setHasAnalyticsConsent(initialConsent.analytics)
 
     if (initialConsent.analytics) {
-      initializeAnalytics({
+      const manager = initializeAnalytics({
         ga4: {
           measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID!,
           apiSecret: process.env.GA4_API_SECRET,
@@ -36,6 +36,11 @@ export function Analytics() {
             }
           : undefined,
       })
+      
+      // Force initialization to complete
+      manager.initialize().then(() => {
+        console.log('[Analytics] Manager initialized successfully')
+      })
     }
 
     // Listen for consent changes
@@ -43,7 +48,7 @@ export function Analytics() {
       setHasAnalyticsConsent(newConsent.analytics)
 
       if (newConsent.analytics) {
-        initializeAnalytics({
+        const manager = initializeAnalytics({
           ga4: {
             measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID!,
             apiSecret: process.env.GA4_API_SECRET,
@@ -56,6 +61,11 @@ export function Analytics() {
                 siteId: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID,
               }
             : undefined,
+        })
+        
+        // Force initialization to complete
+        manager.initialize().then(() => {
+          console.log('[Analytics] Manager initialized on consent change')
         })
       }
     })
