@@ -1,0 +1,89 @@
+name: Vercel Deployment Check
+
+on:
+  push:
+    branches: [main]
+  deployment_status:
+
+jobs:
+  check-deployment:
+    if: github.event_name == 'deployment_status'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check deployment status
+        if: github.event.deployment_status.state == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployment = context.payload.deployment_status;
+            const creator = context.payload.deployment.creator.login;
+            
+            // Create an issue for deployment failure
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Vercel Deployment Failed - ${new Date().toISOString()}`,
+              body: `## Deployment Failure Alert
+              
+              The Vercel deployment has failed!
+              
+              **Details:**
+              - Environment: ${deployment.environment}
+              - Deployment URL: ${deployment.target_url}
+              - Triggered by: @${creator}
+              - Time: ${deployment.created_at}
+              
+              **Action Required:**
+              1. Check the [Vercel deployment logs](${deployment.target_url})
+              2. Fix the issues locally
+              3. Run \`pnpm build\` to verify the fix
+              4. Push the fixes to main
+              
+              cc @${creator}`,
+              labels: ['bug', 'deployment-failure', 'urgent']
+            });
+
+  build-check:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10.x
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Run type check
+        run: pnpm typecheck
+        
+      - name: Run linter
+        run: pnpm lint
+        
+      - name: Run build
+        run: pnpm build
+        
+      - name: Comment on commit if build fails
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: commit } = await github.rest.repos.getCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha
+            });
+            
+            await github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `⚠️ **Build Failed!**\n\nThis commit has build errors that will cause Vercel deployment to fail.\n\nRun \`pnpm build\` locally to see the errors.`
+            });
