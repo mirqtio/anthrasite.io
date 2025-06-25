@@ -23,6 +23,7 @@ if (SENTRY_DSN) {
         maskAllText: false,
         blockAllMedia: false,
       }),
+      Sentry.browserTracingIntegration(),
     ],
 
     // Filtering

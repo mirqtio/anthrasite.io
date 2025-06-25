@@ -1,5 +1,4 @@
-// Temporarily disable Sentry to get the site running
-// const { withSentryConfig } = require('@sentry/nextjs')
+const { withSentryConfig } = require('@sentry/nextjs')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,23 +20,20 @@ const nextConfig = {
   },
 }
 
-// Temporarily export without Sentry
-module.exports = nextConfig
-
-// Wrap with Sentry config when dependencies are installed
-// module.exports = withSentryConfig(
-//   nextConfig,
-//   {
-//     // Sentry webpack plugin options
-//     silent: true,
-//     org: process.env.SENTRY_ORG,
-//     project: process.env.SENTRY_PROJECT,
-//   },
-//   {
-//     // Upload source maps only in production
-//     widenClientFileUpload: true,
-//     transpileClientSDK: true,
-//     hideSourceMaps: true,
-//     disableLogger: true,
-//   }
-// )
+// Wrap with Sentry config
+module.exports = withSentryConfig(
+  nextConfig,
+  {
+    // Sentry webpack plugin options
+    silent: true,
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+  },
+  {
+    // Upload source maps only in production
+    widenClientFileUpload: true,
+    transpileClientSDK: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+  }
+)
