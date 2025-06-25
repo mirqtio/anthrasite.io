@@ -65,16 +65,21 @@ export function Analytics() {
 
   // Track page views on route change
   useEffect(() => {
-    if (hasAnalyticsConsent) {
-      const url =
-        pathname +
-        (searchParams.toString() ? `?${searchParams.toString()}` : '')
+    if (hasAnalyticsConsent && pathname) {
+      // Skip the initial page view since GA4 will track it automatically
+      const isInitialLoad = !window.gtag
+      
+      if (!isInitialLoad) {
+        const url =
+          pathname +
+          (searchParams.toString() ? `?${searchParams.toString()}` : '')
 
-      trackPageView({
-        path: pathname,
-        url: url,
-        title: document.title,
-      })
+        trackPageView({
+          path: pathname,
+          url: url,
+          title: document.title,
+        })
+      }
     }
   }, [pathname, searchParams, hasAnalyticsConsent])
 
@@ -113,16 +118,17 @@ export function Analytics() {
       gtag('js', new Date())
       gtag('config', measurementId, {
         page_path: window.location.pathname,
-        send_page_view: false, // We'll send page views manually through analytics manager
+        send_page_view: true, // Enable automatic page view tracking
       })
       console.log('[GA4] Initialized with measurement ID:', measurementId)
     }
 
-    // Load after a short delay to prioritize critical resources
-    if (document.readyState === 'complete') {
-      setTimeout(loadGA4, 1000)
+    // Load GA4 immediately after consent is given
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadGA4)
     } else {
-      window.addEventListener('load', () => setTimeout(loadGA4, 1000))
+      // DOM is already loaded, load GA4 immediately
+      loadGA4()
     }
   }, [hasAnalyticsConsent])
 
