@@ -29,6 +29,7 @@ export function Analytics() {
         },
         posthog: {
           apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY!,
+          host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
         },
         hotjar: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID
           ? {
@@ -55,6 +56,7 @@ export function Analytics() {
           },
           posthog: {
             apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY!,
+            host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
           },
           hotjar: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID
             ? {
