@@ -61,7 +61,10 @@ export class AnalyticsManager {
     // Initialize PostHog
     if (this.config.posthog) {
       console.log('[AnalyticsManager] Initializing PostHog')
-      const posthog = new PostHogProvider(this.config.posthog.apiKey)
+      const posthog = new PostHogProvider(
+        this.config.posthog.apiKey,
+        this.config.posthog.host
+      )
       await posthog.initialize()
       this.providers.set('posthog', posthog)
       console.log('[AnalyticsManager] PostHog initialized')

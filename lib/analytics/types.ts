@@ -36,6 +36,7 @@ export interface AnalyticsConfig {
   }
   posthog?: {
     apiKey: string
+    host?: string
   }
   datadog?: {
     applicationId: string
