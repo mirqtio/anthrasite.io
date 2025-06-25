@@ -118,30 +118,36 @@ export function Analytics() {
       script.async = true
       script.onload = () => {
         console.log('[GA4] Script loaded successfully')
+        
+        // Initialize gtag after script loads
+        window.dataLayer = window.dataLayer || []
+        // Define gtag function - IMPORTANT: must use arguments, not spread operator
+        // eslint-disable-next-line prefer-rest-params
+        window.gtag = function() {
+          // eslint-disable-next-line prefer-rest-params
+          window.dataLayer!.push(arguments)
+        }
+        // Call the global gtag function
+        window.gtag('js', new Date())
+        window.gtag('config', measurementId, {
+          page_path: window.location.pathname,
+          send_page_view: true, // Enable automatic page view tracking
+          debug_mode: true, // Enable debug mode to see events in real-time
+        })
+        console.log('[GA4] Initialized with measurement ID:', measurementId)
+
+        // Send a test event to verify GA4 is working
+        window.gtag('event', 'analytics_initialized', {
+          event_category: 'engagement',
+          event_label: 'GA4 Script Loaded',
+          value: 1,
+        })
+        console.log('[GA4] Test event sent')
+      }
+      script.onerror = () => {
+        console.error('[GA4] Failed to load script')
       }
       document.head.appendChild(script)
-
-      // Initialize gtag
-      window.dataLayer = window.dataLayer || []
-      function gtag(...args: any[]) {
-        window.dataLayer!.push(args)
-      }
-      window.gtag = gtag
-      gtag('js', new Date())
-      gtag('config', measurementId, {
-        page_path: window.location.pathname,
-        send_page_view: true, // Enable automatic page view tracking
-        debug_mode: true, // Enable debug mode to see events in real-time
-      })
-      console.log('[GA4] Initialized with measurement ID:', measurementId)
-
-      // Send a test event to verify GA4 is working
-      gtag('event', 'analytics_initialized', {
-        event_category: 'engagement',
-        event_label: 'GA4 Script Loaded',
-        value: 1,
-      })
-      console.log('[GA4] Test event sent')
     }
 
     // Load GA4 immediately after consent is given
