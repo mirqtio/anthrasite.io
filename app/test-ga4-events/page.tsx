@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from 'react'
 
+declare global {
+  interface Window {
+    dataLayer?: any[]
+  }
+}
+
 export default function TestGA4Events() {
   const [events, setEvents] = useState<string[]>([])
   const [dataLayer, setDataLayer] = useState<any[]>([])
@@ -33,12 +39,15 @@ export default function TestGA4Events() {
         value: Date.now(),
         debug_mode: true,
       })
-      setEvents([...events, `${eventName} sent at ${new Date().toLocaleTimeString()}`])
+      setEvents([
+        ...events,
+        `${eventName} sent at ${new Date().toLocaleTimeString()}`,
+      ])
       console.log(`Event sent: ${eventName}`)
-      
+
       // Update dataLayer display
       setTimeout(() => {
-        setDataLayer([...window.dataLayer])
+        setDataLayer([...(window.dataLayer || [])])
       }, 100)
     } else {
       console.error('gtag not available')
@@ -50,15 +59,23 @@ export default function TestGA4Events() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">GA4 Event Testing</h1>
-        
+
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">GA4 Configuration</h2>
           <pre className="bg-gray-100 p-4 rounded overflow-auto text-sm">
-            {JSON.stringify({
-              gtag: typeof window !== 'undefined' ? typeof window.gtag : 'SSR',
-              dataLayerLength: typeof window !== 'undefined' ? window.dataLayer?.length || 0 : 'SSR',
-              measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID,
-            }, null, 2)}
+            {JSON.stringify(
+              {
+                gtag:
+                  typeof window !== 'undefined' ? typeof window.gtag : 'SSR',
+                dataLayerLength:
+                  typeof window !== 'undefined'
+                    ? window.dataLayer?.length || 0
+                    : 'SSR',
+                measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID,
+              },
+              null,
+              2
+            )}
           </pre>
         </div>
 
@@ -93,14 +110,18 @@ export default function TestGA4Events() {
               <li className="text-gray-500">No events sent yet</li>
             ) : (
               events.map((event, i) => (
-                <li key={i} className="text-sm font-mono">{event}</li>
+                <li key={i} className="text-sm font-mono">
+                  {event}
+                </li>
               ))
             )}
           </ul>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">DataLayer Contents (Last {dataLayer.length} items)</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            DataLayer Contents (Last {dataLayer.length} items)
+          </h2>
           <pre className="bg-gray-100 p-4 rounded overflow-auto text-xs max-h-96">
             {JSON.stringify(dataLayer.slice(-10), null, 2)}
           </pre>
