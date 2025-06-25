@@ -37,7 +37,7 @@ export function Analytics() {
             }
           : undefined,
       })
-      
+
       // Force initialization to complete
       manager.initialize().then(() => {
         console.log('[Analytics] Manager initialized successfully')
@@ -64,7 +64,7 @@ export function Analytics() {
               }
             : undefined,
         })
-        
+
         // Force initialization to complete
         manager.initialize().then(() => {
           console.log('[Analytics] Manager initialized on consent change')
@@ -80,7 +80,7 @@ export function Analytics() {
     if (hasAnalyticsConsent && pathname) {
       // Skip the initial page view since GA4 will track it automatically
       const isInitialLoad = !window.gtag
-      
+
       if (!isInitialLoad) {
         const url =
           pathname +
@@ -112,7 +112,7 @@ export function Analytics() {
         console.error('GA4 Measurement ID is not defined')
         return
       }
-      
+
       const script = document.createElement('script')
       script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`
       script.async = true
@@ -131,8 +131,17 @@ export function Analytics() {
       gtag('config', measurementId, {
         page_path: window.location.pathname,
         send_page_view: true, // Enable automatic page view tracking
+        debug_mode: true, // Enable debug mode to see events in real-time
       })
       console.log('[GA4] Initialized with measurement ID:', measurementId)
+
+      // Send a test event to verify GA4 is working
+      gtag('event', 'analytics_initialized', {
+        event_category: 'engagement',
+        event_label: 'GA4 Script Loaded',
+        value: 1,
+      })
+      console.log('[GA4] Test event sent')
     }
 
     // Load GA4 immediately after consent is given
