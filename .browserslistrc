@@ -1,0 +1,19 @@
+# Target modern browsers only - no legacy polyfills needed
+# This eliminates ~24KB of unnecessary polyfills
+
+# Production browsers
+[production]
+chrome >= 90
+firefox >= 88
+safari >= 14
+edge >= 90
+ios >= 14
+# Exclude IE completely
+not ie > 0
+not dead
+
+# Development can be more permissive
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version

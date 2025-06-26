@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { initializeAnalytics } from '@/lib/analytics/analytics-manager'
+import { initializeAnalytics } from '@/lib/analytics/analytics-manager-optimized'
 import { trackPageView } from '@/lib/analytics/analytics-client'
 import { getCookieConsent, onConsentChange } from '@/lib/cookies/consent'
 import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'

@@ -1,7 +1,15 @@
 'use client'
 
-import { Suspense } from 'react'
-import { Analytics, AnalyticsNoScript } from './Analytics'
+import { Suspense, lazy } from 'react'
+
+// Lazy load analytics to reduce initial bundle size
+const Analytics = lazy(() => 
+  import('./Analytics').then(mod => ({ default: mod.Analytics }))
+)
+
+const AnalyticsNoScript = lazy(() => 
+  import('./Analytics').then(mod => ({ default: mod.AnalyticsNoScript }))
+)
 
 function AnalyticsFallback() {
   return null // No fallback needed for analytics
