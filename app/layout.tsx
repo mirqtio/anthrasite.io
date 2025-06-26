@@ -40,6 +40,14 @@ export default function RootLayout({
         />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+        {/* Preload critical assets */}
+        <link
+          rel="preload"
+          href="/logo_full_white.svg"
+          as="image"
+          type="image/svg+xml"
+        />
       </head>
       <body className={`${inter.variable} font-sans`}>
         <MonitoringProvider>
