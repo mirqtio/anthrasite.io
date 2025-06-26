@@ -16,6 +16,9 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-inter',
+  display: 'swap', // Use font-display: swap for better performance
+  preload: true, // Preload the font
+  adjustFontFallback: true, // Reduce CLS
 })
 
 export const metadata: Metadata = {
