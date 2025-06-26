@@ -1,8 +1,24 @@
 'use client'
 
 import { OrganicHomepage } from '@/components/homepage/OrganicHomepage'
-import { PurchaseHomepage } from '@/components/homepage/PurchaseHomepage'
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
+
+// Lazy load PurchaseHomepage to prevent it from being included in the main bundle
+const PurchaseHomepage = lazy(() =>
+  import('@/components/homepage/PurchaseHomepage').then((mod) => ({
+    default: mod.PurchaseHomepage,
+  }))
+)
+
+function LoadingFallback() {
+  return (
+    <main className="min-h-screen bg-carbon flex items-center justify-center">
+      <div className="animate-fade-in">
+        <div className="w-8 h-8 bg-white animate-pulse" />
+      </div>
+    </main>
+  )
+}
 
 export default function PreviewPage() {
   const [mode, setMode] = useState<'organic' | 'purchase'>('organic')
@@ -20,7 +36,13 @@ export default function PreviewPage() {
         </label>
       </div>
 
-      {mode === 'organic' ? <OrganicHomepage /> : <PurchaseHomepage />}
+      {mode === 'organic' ? (
+        <OrganicHomepage />
+      ) : (
+        <Suspense fallback={<LoadingFallback />}>
+          <PurchaseHomepage />
+        </Suspense>
+      )}
     </div>
   )
 }
