@@ -1,12 +1,13 @@
 // Temporarily disable Sentry while fixing site
 // import * as Sentry from '@sentry/nextjs'
-import { initDatadog, logError as ddLogError, trackAction } from './datadog'
+import { logError as ddLogError, trackAction } from './datadog'
+import { initMonitoringLazy } from './lazy-loader'
 
 // Initialize monitoring services
 export const initMonitoring = () => {
-  // Initialize Datadog
+  // Use lazy loading for monitoring libraries
   if (typeof window !== 'undefined') {
-    initDatadog()
+    initMonitoringLazy()
   }
 
   // Sentry is initialized automatically via config files

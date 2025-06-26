@@ -1,0 +1,20 @@
+# Target modern browsers only to reduce bundle size
+# This excludes legacy browsers that need polyfills
+
+# Production browsers
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
+
+# Mobile browsers
+last 2 iOS versions
+last 2 ChromeAndroid versions
+
+# Exclude old browsers
+not IE 11
+not dead
+not op_mini all
+
+# Coverage target: >1% global usage
+> 1% and last 2 versions
