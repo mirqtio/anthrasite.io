@@ -7,6 +7,7 @@ const nextConfig = {
   // Sentry error page optimization
   excludeDefaultMomentLocales: true,
   productionBrowserSourceMaps: false,
+  // CSS optimization - removed experimental flag that's causing build issues
   // Performance optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

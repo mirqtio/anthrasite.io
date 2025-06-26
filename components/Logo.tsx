@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 interface LogoProps {
@@ -25,15 +26,14 @@ export function Logo({
   const logoElement = (
     <div
       data-testid="logo"
-      className={cn(
-        'flex items-center',
-        sizeClasses[size],
-        className
-      )}
+      className={cn('flex items-center', sizeClasses[size], className)}
     >
-      <img 
-        src="/logo_full_white.svg" 
-        alt="Anthrasite" 
+      <Image
+        src="/logo_full_white.svg"
+        alt="Anthrasite"
+        width={140}
+        height={40}
+        priority
         className="w-auto h-full"
       />
     </div>
