@@ -63,7 +63,10 @@ export class AnalyticsManager {
     if (this.config.ga4) {
       initPromises.push(
         loadGA4Provider().then(GA4Provider => {
-          const ga4 = new GA4Provider(this.config.ga4!)
+          const ga4 = new GA4Provider(
+            this.config.ga4!.measurementId,
+            this.config.ga4!.apiSecret
+          )
           this.providers.set('ga4', ga4)
           return ga4.initialize()
         })
@@ -74,7 +77,10 @@ export class AnalyticsManager {
     if (this.config.posthog) {
       initPromises.push(
         loadPostHogProvider().then(PostHogProvider => {
-          const posthog = new PostHogProvider(this.config.posthog!)
+          const posthog = new PostHogProvider(
+            this.config.posthog!.apiKey,
+            this.config.posthog!.host
+          )
           this.providers.set('posthog', posthog)
           return posthog.initialize()
         })
@@ -85,7 +91,7 @@ export class AnalyticsManager {
     if (this.config.hotjar) {
       initPromises.push(
         loadHotjarProvider().then(HotjarProvider => {
-          const hotjar = new HotjarProvider(this.config.hotjar!)
+          const hotjar = new HotjarProvider(this.config.hotjar!.siteId)
           this.providers.set('hotjar', hotjar)
           return hotjar.initialize()
         })
