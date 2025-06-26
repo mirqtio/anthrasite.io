@@ -113,33 +113,50 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // Homepage mode detection
+  // Homepage mode detection and redirect
   if (pathname === '/') {
     const utm = searchParams.get('utm')
-    const siteMode = request.cookies.get('site_mode')?.value
-
-    if (utm) {
-      // Validate UTM for homepage
-      const validation = await validateUTMToken(utm)
-
-      if (validation.valid) {
-        // Set purchase mode
-        response = NextResponse.next(response)
-        response.cookies.set('site_mode', 'purchase', {
-          httpOnly: true,
-          sameSite: 'lax',
-          maxAge: 30 * 60, // 30 minutes
-        })
-        response.cookies.set('business_id', validation.payload!.businessId, {
-          httpOnly: true,
-          sameSite: 'lax',
-          maxAge: 30 * 60, // 30 minutes
-        })
-        return response
+    const utmSource = searchParams.get('utm_source')
+    const utmCampaign = searchParams.get('utm_campaign')
+    
+    // Check for any UTM parameters that indicate purchase intent
+    if (utm || utmCampaign === 'purchase' || utmSource) {
+      // Validate UTM token if present
+      if (utm) {
+        const validation = await validateUTMToken(utm)
+        
+        if (validation.valid) {
+          // Redirect to dedicated purchase page with UTM params
+          const purchaseUrl = new URL('/purchase-dedicated', request.url)
+          purchaseUrl.search = searchParams.toString()
+          
+          response = NextResponse.redirect(purchaseUrl, 307) // Temporary redirect to preserve analytics
+          
+          // Set cookies for the purchase session
+          response.cookies.set('site_mode', 'purchase', {
+            httpOnly: true,
+            sameSite: 'lax',
+            maxAge: 30 * 60, // 30 minutes
+          })
+          response.cookies.set('business_id', validation.payload!.businessId, {
+            httpOnly: true,
+            sameSite: 'lax',
+            maxAge: 30 * 60, // 30 minutes
+          })
+          
+          return response
+        }
+      } else if (utmCampaign === 'purchase' || utmSource) {
+        // Generic UTM params without token - still redirect to purchase page
+        const purchaseUrl = new URL('/purchase-dedicated', request.url)
+        purchaseUrl.search = searchParams.toString()
+        
+        return NextResponse.redirect(purchaseUrl, 307)
       }
     }
 
     // No UTM or invalid UTM - ensure organic mode
+    const siteMode = request.cookies.get('site_mode')?.value
     if (siteMode === 'purchase' && !utm) {
       response = NextResponse.next(response)
       response.cookies.delete('site_mode')
