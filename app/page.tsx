@@ -1,27 +1,14 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useSiteMode } from '@/lib/context/SiteModeContext'
+import { OrganicHomepage } from '@/components/homepage/OrganicHomepage'
+import { Suspense, lazy } from 'react'
 
-// Dynamically import homepage components
-const OrganicHomepage = dynamic(
-  () =>
-    import('@/components/homepage/OrganicHomepage').then((mod) => ({
-      default: mod.OrganicHomepage,
-    })),
-  {
-    loading: () => <HomepageLoading />,
-  }
-)
-
-const PurchaseHomepage = dynamic(
-  () =>
-    import('@/components/homepage/PurchaseHomepage').then((mod) => ({
-      default: mod.PurchaseHomepage,
-    })),
-  {
-    loading: () => <HomepageLoading />,
-  }
+// Lazy load PurchaseHomepage only when needed
+const PurchaseHomepage = lazy(() =>
+  import('@/components/homepage/PurchaseHomepage').then((mod) => ({
+    default: mod.PurchaseHomepage,
+  }))
 )
 
 function HomepageLoading() {
@@ -34,16 +21,23 @@ function HomepageLoading() {
   )
 }
 
-// export const dynamic = 'force-dynamic'
-
 export default function HomePage() {
-  const { mode } = useSiteMode()
+  const { mode, isLoading } = useSiteMode()
 
-  // Render appropriate homepage based on site mode without blocking
-  // The dynamic import will handle its own loading state
+  // Show loading while determining mode
+  if (isLoading) {
+    return <HomepageLoading />
+  }
+
+  // For organic traffic (the common case), render directly without lazy loading
   if (mode === 'organic') {
     return <OrganicHomepage />
-  } else {
-    return <PurchaseHomepage />
   }
+
+  // For purchase traffic (rare case), use lazy loading
+  return (
+    <Suspense fallback={<HomepageLoading />}>
+      <PurchaseHomepage />
+    </Suspense>
+  )
 }
