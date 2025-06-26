@@ -113,9 +113,9 @@ export class AnalyticsManager {
     }
 
     // Validate event schema
-    const validation = validateEventSchema(eventName, properties)
-    if (!validation.valid) {
-      console.error('[AnalyticsManager] Invalid event:', validation.errors)
+    const isValid = validateEventSchema(eventName, properties)
+    if (!isValid) {
+      console.error('[AnalyticsManager] Invalid event:', eventName, properties)
       return
     }
 
