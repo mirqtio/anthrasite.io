@@ -18,6 +18,18 @@ const nextConfig = {
     // Allow warnings to not fail the lint process
     dirs: ['app', 'components', 'lib', 'middleware.ts'],
   },
+  // Webpack optimization
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Skip polyfills for modern browsers
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Skip core-js polyfills
+        'core-js': false,
+      }
+    }
+    return config
+  },
 }
 
 // Wrap with Sentry config
