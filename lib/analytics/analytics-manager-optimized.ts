@@ -103,7 +103,7 @@ export class AnalyticsManager {
     console.log('[AnalyticsManager] All providers initialized')
   }
 
-  async trackEvent(
+  async track(
     eventName: string,
     properties?: EventProperties
   ): Promise<void> {
@@ -127,16 +127,16 @@ export class AnalyticsManager {
     }
 
     // Track with all providers
-    const promises = Array.from(this.providers.values()).map((provider) =>
-      provider.trackEvent(eventName, enrichedProperties).catch((error) => {
+    this.providers.forEach((provider) => {
+      try {
+        provider.track(eventName, enrichedProperties)
+      } catch (error) {
         console.error('[AnalyticsManager] Provider error:', error)
-      })
-    )
-
-    await Promise.all(promises)
+      }
+    })
   }
 
-  async trackPageView(url: string, properties?: EventProperties): Promise<void> {
+  page(properties?: EventProperties): void {
     if (!this.initialized) return
 
     const enrichedProperties = {
@@ -145,20 +145,25 @@ export class AnalyticsManager {
       timestamp: new Date().toISOString(),
     }
 
-    const promises = Array.from(this.providers.values()).map((provider) =>
-      provider.trackPageView(url, enrichedProperties).catch((error) => {
-        console.error('[AnalyticsManager] Provider error:', error)
-      })
-    )
-
-    await Promise.all(promises)
-  }
-
-  updateConsent(consent: ConsentStatus): void {
     this.providers.forEach((provider) => {
-      provider.updateConsent(consent)
+      try {
+        provider.page(enrichedProperties)
+      } catch (error) {
+        console.error('[AnalyticsManager] Provider error:', error)
+      }
     })
   }
+
+  identify(userId: string, traits?: EventProperties): void {
+    this.providers.forEach((provider) => {
+      try {
+        provider.identify(userId, traits)
+      } catch (error) {
+        console.error('[AnalyticsManager] Failed to identify user:', error)
+      }
+    })
+  }
+
 
   reset(): void {
     this.providers.forEach((provider) => {
@@ -167,6 +172,50 @@ export class AnalyticsManager {
     this.providers.clear()
     this.initialized = false
     this.sessionId = this.generateSessionId()
+  }
+
+  // A/B Testing specific methods
+  getFeatureFlag(flagKey: string): boolean | string | undefined {
+    // Import type dynamically to avoid circular dependency
+    const posthog = this.providers.get('posthog') as any
+    if (!posthog || !posthog.getFeatureFlag) return undefined
+    return posthog.getFeatureFlag(flagKey)
+  }
+
+  isFeatureEnabled(flagKey: string): boolean {
+    const posthog = this.providers.get('posthog') as any
+    if (!posthog || !posthog.isFeatureEnabled) return false
+    return posthog.isFeatureEnabled(flagKey)
+  }
+
+  // Funnel tracking
+  trackFunnelStep(
+    funnelName: string,
+    step: number,
+    stepName: string,
+    properties?: EventProperties
+  ): void {
+    this.track('funnel_step', {
+      funnel_name: funnelName,
+      funnel_step: step,
+      step_name: stepName,
+      ...properties,
+    })
+  }
+
+  // E-commerce tracking
+  trackPurchase(
+    orderId: string,
+    amount: number,
+    currency: string = 'USD',
+    properties?: EventProperties
+  ): void {
+    this.track('purchase', {
+      transaction_id: orderId,
+      value: amount,
+      currency,
+      ...properties,
+    })
   }
 
   private generateSessionId(): string {
@@ -188,4 +237,17 @@ export function initializeAnalytics(config: AnalyticsConfig): AnalyticsManager {
 
 export function getAnalytics(): AnalyticsManager | null {
   return managerInstance
+}
+
+// Export compatible methods for existing code
+export async function trackEvent(eventName: string, properties?: EventProperties): Promise<void> {
+  if (managerInstance) {
+    return managerInstance.track(eventName, properties)
+  }
+}
+
+export async function trackPageView(url: string, properties?: EventProperties): Promise<void> {
+  if (managerInstance) {
+    managerInstance.page({ ...properties, page_path: url })
+  }
 }

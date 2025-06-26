@@ -1,6 +1,6 @@
 'use client'
 
-import { getAnalytics } from './analytics-manager'
+import { getAnalytics } from './analytics-manager-optimized'
 import { EventProperties } from './types'
 import { ANALYTICS_EVENTS } from './event-schemas'
 
