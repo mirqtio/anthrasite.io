@@ -40,7 +40,7 @@ describe('HomePage', () => {
     const loadingContainer = screen.getByRole('main')
     expect(loadingContainer).toHaveClass(
       'min-h-screen',
-      'bg-white',
+      'bg-carbon',
       'flex',
       'items-center',
       'justify-center'
@@ -48,7 +48,7 @@ describe('HomePage', () => {
 
     // Check for the animated square
     const animatedSquare = loadingContainer.querySelector(
-      '.bg-anthracite-black'
+      '.bg-white'
     )
     expect(animatedSquare).toBeInTheDocument()
     expect(animatedSquare).toHaveClass('w-8', 'h-8', 'animate-pulse')
