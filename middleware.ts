@@ -59,6 +59,29 @@ export async function middleware(request: NextRequest) {
     // Check for UTM parameter
     const utm = searchParams.get('utm')
 
+    // Development/Test bypass
+    const bypassToken = process.env.UTM_BYPASS_TOKEN
+    const isTestMode = 
+      process.env.NODE_ENV === 'development' ||
+      process.env.ENABLE_TEST_MODE === 'true' ||
+      process.env.VERCEL_ENV === 'preview'
+    
+    if (isTestMode && utm === bypassToken && bypassToken) {
+      // Allow bypass with test business data
+      response = NextResponse.next(response)
+      response.cookies.set('site_mode', 'purchase', {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 30 * 60, // 30 minutes
+      })
+      response.cookies.set('business_id', 'test-business-001', {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 30 * 60, // 30 minutes
+      })
+      return response
+    }
+
     if (!utm) {
       // Redirect to homepage with error
       response = NextResponse.redirect(new URL('/', request.url))
