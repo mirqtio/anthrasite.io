@@ -13,6 +13,7 @@ const PUBLIC_PATHS = [
   '/robots.txt',
   '/sitemap.xml',
   '/dev', // Development routes bypass middleware
+  '/purchase-preview', // Preview route for internal testing
 ]
 
 export async function middleware(request: NextRequest) {
