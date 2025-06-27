@@ -114,7 +114,7 @@ export default function DevPurchasePage() {
       <main className="flex-1 flex items-center justify-center py-6 px-5">
         <StripeErrorBoundary>
           <motion.div
-            className="max-w-[640px] w-full bg-white/[0.02] border border-white/5 rounded-xl px-12 py-10 text-center"
+            className="max-w-[640px] w-full bg-white/[0.02] border border-white/5 rounded-xl px-6 md:px-12 py-10 text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -124,8 +124,8 @@ export default function DevPurchasePage() {
             </h1>
 
             {/* CTA Button with Pulsing Rings - EXACT COPY from OrganicHomepage */}
-            <div className="relative inline-block -mt-[200px] md:-mt-[80px]">
-              <div className="pressure-visual">
+            <div className="relative flex justify-center -mt-[200px] md:-mt-[80px]">
+              <div className="pressure-visual mx-auto">
                 <div
                   className="pressure-ring"
                   style={{ '--scale': 1 } as React.CSSProperties}
@@ -186,22 +186,23 @@ export default function DevPurchasePage() {
               We identified opportunities worth
             </p>
 
-            <div className="text-[48px] font-thin text-green-500 mb-2">
-              {mockReportPreview.estimatedValue}
+            <div className="text-[36px] md:text-[48px] font-thin text-green-500 mb-2 whitespace-nowrap">
+              <span className="inline-block">{mockReportPreview.estimatedValue.split('-')[0]}-</span>
+              <span className="inline-block">{mockReportPreview.estimatedValue.split('-')[1]}</span>
             </div>
             <p className="text-[20px] md:text-[24px] mb-10">
               in revenue improvement
             </p>
 
             {/* Score Display - 2x3 Grid */}
-            <div className="grid grid-cols-3 gap-x-12 gap-y-8 max-w-[500px] mx-auto">
+            <div className="grid grid-cols-3 gap-x-4 md:gap-x-12 gap-y-6 md:gap-y-8 max-w-[500px] mx-auto">
               <div className="text-center">
                 <div
                   className={`text-[48px] font-thin leading-none mb-2 ${getScoreColor(mockReportPreview.metrics.performanceScore)}`}
                 >
                   {mockReportPreview.metrics.performanceScore}
                 </div>
-                <div className="text-[20px] md:text-[24px]">Performance</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">Performance</div>
               </div>
               <div className="text-center">
                 <div
@@ -209,7 +210,7 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.visualScore}
                 </div>
-                <div className="text-[20px] md:text-[24px]">Visual</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">Visual</div>
               </div>
               <div className="text-center">
                 <div
@@ -217,7 +218,7 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.seoScore}
                 </div>
-                <div className="text-[20px] md:text-[24px]">SEO</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">SEO</div>
               </div>
               <div className="text-center">
                 <div
@@ -225,7 +226,7 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.trustScore}
                 </div>
-                <div className="text-[20px] md:text-[24px]">Trust</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">Trust</div>
               </div>
               <div className="text-center">
                 <div
@@ -233,7 +234,7 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.socialScore}
                 </div>
-                <div className="text-[20px] md:text-[24px]">Social/Reviews</div>
+                <div className="text-[14px] md:text-[24px] leading-tight break-words">Social/<wbr/>Reviews</div>
               </div>
               <div className="text-center">
                 <div
@@ -241,7 +242,7 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.mobileScore}
                 </div>
-                <div className="text-[20px] md:text-[24px]">Mobile</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">Mobile</div>
               </div>
             </div>
           </motion.div>
