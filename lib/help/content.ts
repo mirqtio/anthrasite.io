@@ -56,53 +56,52 @@ export const GENERAL_FAQS: FAQItem[] = [
  */
 export const PURCHASE_FAQS: FAQItem[] = [
   {
-    id: 'pricing',
-    question: 'How much does a report cost?',
+    id: 'what-will-i-get',
+    question: 'What exactly will I get in my report?',
     answer:
-      'A comprehensive Anthrasite report costs $79. This one-time payment gives you lifetime access to your report, including all detailed analyses, recommendations, and the ability to re-run specific tests.',
+      'A PDF audit tailored to your site: overall health score, estimated revenue opportunity, side-by-side mock-up, prioritized fix list, and detailed technical findings for performance, SEO, design, and reviews.',
     category: FAQCategory.PURCHASE,
-    tags: ['pricing', 'cost', 'payment'],
+    tags: ['features', 'included', 'report', 'pdf'],
   },
   {
-    id: 'whats-included',
-    question: "What's included in the $79 report?",
+    id: 'dollar-impact',
+    question: 'How do you calculate the dollar impact?',
     answer:
-      'You get a complete performance audit including Core Web Vitals analysis, detailed recommendations, competitor benchmarking, technical SEO audit, accessibility report, security assessment, and priority-ranked action items with implementation guides.',
+      'We blend your traffic estimates with industry-standard conversion data and benchmark uplift from similar fixes. The range is directional—meant to size opportunity, not promise revenue.',
     category: FAQCategory.PURCHASE,
-    tags: ['features', 'included', 'value'],
-    relatedQuestions: ['pricing', 'report-updates'],
+    tags: ['revenue', 'calculation', 'impact', 'methodology'],
   },
   {
-    id: 'payment-methods',
-    question: 'What payment methods do you accept?',
+    id: 'audit-timeframe',
+    question: 'How long does the audit take once I purchase?',
     answer:
-      'We accept all major credit cards (Visa, Mastercard, American Express, Discover) and debit cards through our secure Stripe payment processing. All transactions are encrypted and PCI-compliant.',
+      'The report is auto-generated and delivered to your inbox usually within 5 minutes.',
     category: FAQCategory.PURCHASE,
-    tags: ['payment', 'credit-card', 'security'],
+    tags: ['delivery', 'timing', 'fast', 'automated'],
   },
   {
-    id: 'refund-policy',
-    question: "What's your refund policy?",
+    id: 'technical-skills',
+    question: 'Do I need any technical skills to act on the findings?',
     answer:
-      "We offer a 30-day money-back guarantee. If you're not satisfied with your report, contact us within 30 days of purchase for a full refund. No questions asked.",
+      'No, though it may help. We make the specific issues as clear as possible, but you may want help from whomever built your site to implement the fixes.',
     category: FAQCategory.PURCHASE,
-    tags: ['refund', 'guarantee', 'policy'],
+    tags: ['technical', 'implementation', 'skills', 'requirements'],
   },
   {
-    id: 'report-updates',
-    question: 'Can I update my report after purchase?',
+    id: 'data-privacy',
+    question: 'Is my website data safe and private?',
     answer:
-      'Yes! You can re-run specific tests within your report for 90 days after purchase to track improvements. Full report regeneration is available at a 50% discount.',
+      'Yes. We only analyze publicly available pages and store results on secure, encrypted servers.',
     category: FAQCategory.PURCHASE,
-    tags: ['updates', 'refresh', 'tracking'],
+    tags: ['security', 'privacy', 'data', 'safe'],
   },
   {
     id: 'team-sharing',
-    question: 'Can I share the report with my team?',
+    question: 'Can I share the report with my team or agency?',
     answer:
-      'Absolutely! Your report includes a secure sharing link that you can send to team members, developers, or stakeholders. You control access and can revoke sharing at any time.',
+      'Absolutely. The PDF has no viewing limits—forward, print, or upload it to your project workspace as needed.',
     category: FAQCategory.PURCHASE,
-    tags: ['sharing', 'team', 'collaboration'],
+    tags: ['sharing', 'team', 'collaboration', 'pdf'],
   },
 ]
 

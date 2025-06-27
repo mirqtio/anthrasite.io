@@ -114,11 +114,7 @@ export class FAQService {
         ]
 
       case PageContext.PURCHASE:
-        return [
-          ...PURCHASE_FAQS,
-          ...GENERAL_FAQS.filter((f) => f.tags?.includes('getting-started')),
-          ...REPORT_FAQS.slice(0, 2),
-        ]
+        return [...PURCHASE_FAQS]
 
       case PageContext.CHECKOUT:
         return [
