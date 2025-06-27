@@ -1,23 +1,16 @@
 'use client'
 
-import { notFound } from 'next/navigation'
 import { StripeErrorBoundary } from '@/components/purchase/StripeErrorBoundary'
 import { Logo } from '@/components/Logo'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 
-// Development-only purchase page that bypasses middleware
-export default function DevPurchasePage() {
+export default function PurchasePreviewPage() {
   const [isProcessing, setIsProcessing] = useState(false)
 
-  // Only allow in development
-  if (process.env.NODE_ENV === 'production') {
-    notFound()
-  }
-
-  // Mock business data for development
+  // Mock business data for preview
   const mockBusiness = {
-    id: 'dev-business-123',
+    id: 'preview-business-123',
     name: 'Acme Corporation',
     domain: 'acme.example.com',
     email: 'contact@acme.example.com',
@@ -46,10 +39,10 @@ export default function DevPurchasePage() {
     setIsProcessing(true)
 
     try {
-      // In development, just simulate a checkout
-      console.log('Dev checkout triggered', {
+      // In preview, just simulate a checkout
+      console.log('Preview checkout triggered', {
         business: mockBusiness,
-        utm: 'dev-test-utm',
+        utm: 'preview-test-utm',
       })
 
       // Simulate processing time
@@ -72,11 +65,6 @@ export default function DevPurchasePage() {
 
   return (
     <div className="min-h-screen bg-carbon text-white flex flex-col">
-      {/* Dev Mode Indicator */}
-      <div className="fixed top-4 right-4 bg-yellow-500 text-black px-3 py-1 rounded text-sm font-bold z-50">
-        DEV MODE
-      </div>
-
       {/* Header */}
       <header className="py-6 px-10 border-b border-white/5 bg-white/[0.02]">
         <div className="max-w-[1200px] mx-auto">
@@ -247,20 +235,6 @@ export default function DevPurchasePage() {
           </motion.div>
         </StripeErrorBoundary>
       </main>
-
-      {/* Development info panel */}
-      <div className="fixed bottom-4 left-4 bg-white/10 backdrop-blur-sm rounded-lg p-4 max-w-sm">
-        <h3 className="font-semibold mb-2">Development Info</h3>
-        <div className="text-sm space-y-1 opacity-70">
-          <p>Business: {mockBusiness.name}</p>
-          <p>Domain: {mockBusiness.domain}</p>
-          <p>
-            Stripe:{' '}
-            {process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.substring(0, 20)}
-            ...
-          </p>
-        </div>
-      </div>
     </div>
   )
 }
