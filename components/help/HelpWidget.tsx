@@ -86,7 +86,7 @@ const FAQItemComponent: React.FC<{
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="overflow-hidden"
           >
-            <p className="pb-4 text-label text-white/80 leading-relaxed">
+            <p className="pb-4 text-base font-normal text-white/60 leading-relaxed">
               {faq.answer}
             </p>
           </motion.div>
@@ -187,7 +187,7 @@ export const HelpWidget: React.FC = () => {
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
             className="fixed bottom-6 right-6 w-help-button h-help-button 
-                     bg-anthracite-blue text-white rounded-full shadow-help
+                     bg-anthracite-blue text-white shadow-help
                      flex items-center justify-center spring-scale
                      focus-minimal transition-all duration-200 hover:opacity-80"
             aria-label={ARIA_LABELS.HELP_BUTTON}

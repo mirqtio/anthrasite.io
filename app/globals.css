@@ -151,24 +151,7 @@
   }
 }
 
-/* Pressure ring animation */
-@keyframes pressureExpand {
-  0% {
-    transform: scale(var(--scale, 1));
-    opacity: 0.8;
-    border-color: rgba(0, 102, 255, 0.4);
-  }
-  50% {
-    transform: scale(calc(var(--scale, 1) * 1.1));
-    opacity: 0.2;
-    border-color: rgba(0, 102, 255, 0.1);
-  }
-  100% {
-    transform: scale(var(--scale, 1));
-    opacity: 0.8;
-    border-color: rgba(0, 102, 255, 0.4);
-  }
-}
+/* Pressure ring animation - removed duplicate, see line 194 */
 
 /* Fade animations */
 @keyframes fadeIn {
@@ -188,6 +171,24 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes pressureExpand {
+  0% {
+    transform: scale(var(--scale, 1));
+    opacity: 0.8;
+    border-color: rgba(0, 102, 255, 0.4);
+  }
+  50% {
+    transform: scale(calc(var(--scale, 1) * 1.1));
+    opacity: 0.2;
+    border-color: rgba(0, 102, 255, 0.1);
+  }
+  100% {
+    transform: scale(var(--scale, 1));
+    opacity: 0.8;
+    border-color: rgba(0, 102, 255, 0.4);
   }
 }
 
