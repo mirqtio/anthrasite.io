@@ -189,7 +189,7 @@ export const HelpWidget: React.FC = () => {
             className="fixed bottom-6 right-6 w-help-button h-help-button 
                      bg-anthracite-blue text-white shadow-help
                      flex items-center justify-center spring-scale
-                     focus-minimal transition-all duration-200 hover:opacity-80"
+                     focus-minimal transition-all duration-200 hover:opacity-80 z-[9998]"
             aria-label={ARIA_LABELS.HELP_BUTTON}
           >
             <span className="text-[24px] font-normal">?</span>
@@ -208,7 +208,7 @@ export const HelpWidget: React.FC = () => {
             exit="hidden"
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="fixed bottom-6 right-6 bg-carbon rounded-2xl shadow-help border border-white/5
-                     w-help-panel-mobile md:w-help-panel max-h-[600px] overflow-hidden"
+                     w-help-panel-mobile md:w-help-panel max-h-[600px] overflow-hidden z-[9999]"
             role="dialog"
             aria-label="Help menu"
             aria-modal="true"
