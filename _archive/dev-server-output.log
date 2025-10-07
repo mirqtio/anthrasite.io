@@ -1,0 +1,1090 @@
+
+> anthrasite.io@1.0.0 dev /Users/charlieirwin/Documents/GitHub/anthrasite.io
+> next dev -p 3333
+
+  ▲ Next.js 14.2.30
+  - Local:        http://localhost:3333
+  - Environments: .env.local, .env
+  - Experiments (use with caution):
+    · instrumentationHook
+
+ ✓ Starting...
+warn  - It seems like you don't have a global error handler set up. It is recommended that you add a global-error.js file with Sentry instrumentation so that React rendering errors are reported to Sentry. Read more: https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#react-render-errors-in-app-router (you can suppress this warning by setting SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1 as environment variable)
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+ ○ Compiling /instrumentation ...
+ ✓ Compiled /instrumentation in 1566ms (900 modules)
+ ✓ Ready in 2.8s
+ ✓ Compiled /middleware in 459ms (471 modules)
+ ○ Compiling /dev/purchase ...
+ ✓ Compiled /dev/purchase in 4.8s (4276 modules)
+ GET /dev/purchase 200 in 5175ms
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (253kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ GET /dev/purchase 200 in 73ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 895ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 942ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 309ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?8b187ce0d5af04b7 200 in 9ms
+ ✓ Compiled in 1391ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 114ms
+ ✓ Compiled in 950ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 58ms
+ ✓ Compiled in 833ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 40ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 242ms
+ GET /dev/purchase 200 in 52ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 1150ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 1201ms
+ ✓ Compiled in 1390ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 172ms
+ ✓ Compiled in 841ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 108ms
+ ✓ Compiled in 593ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 24ms
+ ✓ Compiled in 370ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 18ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 101ms
+ GET /dev/purchase 200 in 41ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 929ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 995ms
+ ✓ Compiled in 1036ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 117ms
+ ✓ Compiled in 980ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 62ms
+ ✓ Compiled in 958ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 68ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 137ms
+ GET /dev/purchase 200 in 42ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 732ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 779ms
+ ✓ Compiled in 754ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 112ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 175ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled /icon.svg in 490ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 533ms
+ ✓ Compiled in 1027ms (4299 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 130ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 60ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?8b187ce0d5af04b7 200 in 9ms
+ GET /dev/purchase 200 in 15ms
+ ✓ Compiled in 1025ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 111ms
+ ✓ Compiled in 394ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 30ms
+ ✓ Compiled in 793ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 52ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 94ms
+ ✓ Compiled in 959ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 26ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 65ms
+ GET /dev/purchase 200 in 39ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 590ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 646ms
+ ✓ Compiled in 970ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 108ms
+ ✓ Compiled in 583ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 48ms
+ ✓ Compiled in 549ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 31ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 163ms
+ ✓ Compiled in 751ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 25ms
+ ✓ Compiled in 1013ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 20ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 94ms
+ GET /dev/purchase 200 in 39ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 536ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 577ms
+ ✓ Compiled in 1000ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 65ms
+ ✓ Compiled in 979ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 26ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 90ms
+ GET /dev/purchase 200 in 55ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 615ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 663ms
+ ✓ Compiled in 1367ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 125ms
+ ✓ Compiled in 679ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 40ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 87ms
+ ✓ Compiled in 2.4s (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 185ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 175ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 781ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 839ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 175ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?8b187ce0d5af04b7 200 in 13ms
+ ✓ Compiled in 1024ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 208ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 133ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 789ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 825ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 160ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?8b187ce0d5af04b7 200 in 24ms
+ GET /dev/purchase 200 in 24ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?8b187ce0d5af04b7 200 in 8ms
+ ✓ Compiled in 1789ms (4299 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 156ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 162ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?8b187ce0d5af04b7 200 in 45ms
+ ✓ Compiled in 1527ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 198ms
+ ✓ Compiled in 2.1s (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 165ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 191ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 963ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 1006ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /icon.svg?8b187ce0d5af04b7 200 in 47ms
+ ✓ Compiled in 557ms (1295 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 133ms
+ ✓ Compiled in 309ms (1295 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 22ms
+ GET /dev/purchase?_rsc=2s61l 200 in 7ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled in 1447ms (4738 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /dev/purchase 200 in 1041ms
+ GET /dev/purchase?_rsc=2s61l 200 in 11ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled /icon.svg in 266ms (3004 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 308ms
+ ✓ Compiled in 1647ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 188ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 761ms (4256 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /_next/static/css/app/layout.css?v=1751045623262 404 in 883ms
+ ✓ Compiled in 216ms (1297 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 14ms
+ GET /_next/static/css/app/layout.css?v=1751045626755 404 in 16ms
+ ✓ Compiled in 377ms (1297 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 10ms
+ GET /_next/static/css/app/layout.css?v=1751045672243 404 in 18ms
+ ✓ Compiled in 1992ms (4267 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 149ms
+ ✓ Compiled /_not-found in 359ms (4256 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /_next/static/css/app/layout.css?v=1751045805920 404 in 516ms
+ ✓ Compiled in 224ms (1297 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 17ms
+ GET /_next/static/css/app/layout.css?v=1751045823945 404 in 13ms
+ ✓ Compiled in 280ms (1297 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 15ms
+ GET /_next/static/css/app/layout.css?v=1751045842291 404 in 16ms
+ ✓ Compiled in 765ms (1766 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 14ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 592ms (4256 modules)
+ ⨯ TypeError: Cannot read properties of undefined (reading 'call')
+    at Object.t [as require] (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:1:511)
+    at JSON.parse (<anonymous>)
+digest: "3980670242"
+TypeError: Cannot read properties of undefined (reading 'call')
+    at Object.t [as require] (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:1:511)
+    at require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+    at I (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:96670
+    at F._fromJSON (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97108)
+    at JSON.parse (<anonymous>)
+    at O (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94085)
+    at t (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:100584)
+ ⨯ TypeError: Cannot read properties of undefined (reading 'call')
+    at Object.t [as require] (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:1:511)
+    at require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+    at I (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:96670
+    at F._fromJSON (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97108)
+    at JSON.parse (<anonymous>)
+    at O (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94085)
+    at t (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:100584)
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1042ms (4768 modules)
+ GET /_next/static/css/app/layout.css?v=1751046435400 500 in 2837ms
+ GET /dev/purchase?_rsc=2s61l 200 in 777ms
+ GET /dev/purchase?_rsc=2s61l 200 in 10ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /_next/static/css/app/layout.css?v=1751046438383 404 in 114ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/_ssr_app__components_Analytics_Analytics_tsx.js'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './_ssr_app__components_Analytics_Analytics_tsx' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/_ssr_app__components_Analytics_Analytics_tsx.js', but to 'Error: Can't resolve './_ssr_app__components_Analytics_Analytics_tsx' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./_ssr_app__components_Analytics_Analytics_tsx (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/_ssr_app__components_Analytics_Analytics_tsx.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/web-vitals@5.0.3' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/web-vitals@5.0.3.js', but to 'Error: Can't resolve './vendor-chunks/web-vitals@5.0.3' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/web-vitals@5.0.3 (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/web-vitals@5.0.3.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/clsx@2.1.1' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/clsx@2.1.1.js', but to 'Error: Can't resolve './vendor-chunks/clsx@2.1.1' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/clsx@2.1.1 (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/clsx@2.1.1.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/class-variance-authority@0.7.1' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/class-variance-authority@0.7.1.js', but to 'Error: Can't resolve './vendor-chunks/class-variance-authority@0.7.1' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/class-variance-authority@0.7.1 (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/class-variance-authority@0.7.1.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/handle-externals.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (253kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/_ssr_app__components_Analytics_Analytics_tsx.js'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './_ssr_app__components_Analytics_Analytics_tsx' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/_ssr_app__components_Analytics_Analytics_tsx.js', but to 'Error: Can't resolve './_ssr_app__components_Analytics_Analytics_tsx' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./_ssr_app__components_Analytics_Analytics_tsx (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/_ssr_app__components_Analytics_Analytics_tsx.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/web-vitals@5.0.3' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/web-vitals@5.0.3.js', but to 'Error: Can't resolve './vendor-chunks/web-vitals@5.0.3' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/web-vitals@5.0.3 (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/web-vitals@5.0.3.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/clsx@2.1.1' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/clsx@2.1.1.js', but to 'Error: Can't resolve './vendor-chunks/clsx@2.1.1' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/clsx@2.1.1 (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/clsx@2.1.1.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+ ✓ Compiled in 799ms (1766 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 19ms
+ ✓ Compiled in 1151ms (4777 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 88ms
+ ✓ Compiled in 1117ms (4777 modules)
+ GET /dev/purchase?_rsc=2s61l 200 in 60ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ✓ Compiled /_not-found in 452ms (4766 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 660ms
+ GET /_next/static/chunks/index.client.js.map 404 in 18ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/web-vitals@5.0.3.js'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/web-vitals@5.0.3' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/web-vitals@5.0.3.js', but to 'Error: Can't resolve './vendor-chunks/web-vitals@5.0.3' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/web-vitals@5.0.3 (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/web-vitals@5.0.3.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/icon.svg/route.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/icon.svg/route.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/zod@3.25.67' in /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server for build dependencies doesn't lead to expected result '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/zod@3.25.67.js', but to 'Error: Can't resolve './vendor-chunks/zod@3.25.67' in '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/zod@3.25.67 (expected /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/vendor-chunks/zod@3.25.67.js)
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/icon.svg/route.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/icon.svg/route.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+ GET /dev/purchase 200 in 131ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 63ms
+ GET /_next/static/chunks/main-app.js?v=1751046960836 404 in 117ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 115ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 1388ms (3044 modules)
+ GET /icon.svg?8b187ce0d5af04b7 200 in 1436ms
+ ⨯ Error: Cannot find module './6353.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/icon.svg/route.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/dev/purchase/page.js:1:11911
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/dev/purchase/page.js:1:11996)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:84
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36)
+    at async DevServer.findPageComponents (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:1910:24)
+    at async DevServer.renderToResponseImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:818:17)
+    at async /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:359:24)
+    at async requestHandlerImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/icon.svg/route.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ],
+  page: '/dev/purchase'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1038ms (4800 modules)
+ ⨯ Error: Cannot find module './4594.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js:1:708
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js:1:751)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:72:65
+    at async Promise.all (index 0)
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:71:33)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ GET /dev/purchase 500 in 1072ms
+ ⨯ Error: Cannot find module './6353.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4297
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4359)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:84
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36)
+    at async DevServer.findPageComponents (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2090:30)
+    at async pipe.req.req (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2056:30)
+    at async DevServer.pipeImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:922:25)
+    at async /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:374:24)
+    at async requestHandlerImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './6353.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4297
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4359)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:84
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36)
+    at async DevServer.findPageComponents (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2090:30)
+    at async pipe.req.req (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2056:30)
+    at async DevServer.pipeImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:922:25)
+    at async /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:374:24)
+    at async requestHandlerImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './6353.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4297
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4359)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:84
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36)
+    at async DevServer.findPageComponents (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2090:30)
+    at async pipe.req.req (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2056:30)
+    at async DevServer.pipeImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:922:25)
+    at async /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:374:24)
+    at async requestHandlerImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ GET /_next/static/chunks/fallback/webpack.js?ts=1751047017039 500 in 15ms
+ GET /_next/static/chunks/fallback/react-refresh.js?ts=1751047017039 500 in 15ms
+ GET /_next/static/chunks/fallback/main.js?ts=1751047017039 500 in 15ms
+Failed to fetch experiments from Edge Config: [Error: @vercel/edge-config: No connection string provided]
+Using fallback experiments
+ ⨯ Error: Cannot find module './6353.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4297
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4359)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:84
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36)
+    at async DevServer.findPageComponents (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2090:30)
+    at async pipe.req.req (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2056:30)
+    at async DevServer.pipeImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:922:25)
+    at async /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:374:24)
+    at async requestHandlerImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './6353.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4297
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4359)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:84
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36)
+    at async DevServer.findPageComponents (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2090:30)
+    at async pipe.req.req (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2056:30)
+    at async DevServer.pipeImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:922:25)
+    at async /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:374:24)
+    at async requestHandlerImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './6353.js'
+Require stack:
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js
+- /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:233:34)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:206:28)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:119:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:118:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js:170:22)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4297
+    at Object.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/app/_not-found/page.js:1:4359)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require-hook.js:65:28)
+    at Module.patchedRequire (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:256:27)
+    at Hook._require.Module.require (webpack-internal:///(instrument)/./node_modules/.pnpm/require-in-the-middle@7.5.2/node_modules/require-in-the-middle/index.js:181:27)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js:109:84)
+    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:84
+    at async loadComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js:103:26)
+    at async DevServer.findPageComponentsImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/next-server.js:714:36)
+    at async DevServer.findPageComponents (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2090:30)
+    at async pipe.req.req (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:2056:30)
+    at async DevServer.pipeImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/base-server.js:922:25)
+    at async /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:179:21)
+    at async handleRequest (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:374:24)
+    at async requestHandlerImpl (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js:383:13)
+    at async Server.requestListener (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/webpack-runtime.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/.next/server/pages/_document.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/require.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/load-components.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/build/utils.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/router-server.js',
+    '/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js'
+  ]
+}
+ GET /.well-known/appspecific/com.chrome.devtools.json 500 in 8ms
+ GET /_next/static/chunks/fallback/pages/_app.js?ts=1751047017039 500 in 9ms
+ GET /_next/static/chunks/fallback/pages/_error.js?ts=1751047017039 500 in 10ms
+ ✓ Compiled in 2.6s (5248 modules)
+ ✓ Compiled in 1835ms (5248 modules)
+ ✓ Compiled in 1454ms (5248 modules)
+ ✓ Compiled in 176ms (1766 modules)
+ ✓ Compiled in 412ms (1766 modules)
+ ✓ Compiled in 369ms (1766 modules)
+[?25h

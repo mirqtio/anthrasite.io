@@ -3,10 +3,21 @@
 import { StripeErrorBoundary } from '@/components/purchase/StripeErrorBoundary'
 import { Logo } from '@/components/Logo'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { getStripe } from '@/lib/stripe/client'
+import { trackEvent } from '@/lib/analytics/analytics-client'
 
-export default function PurchasePreviewPage() {
+// Force dynamic rendering since we use useSearchParams()
+export const dynamic = 'force-dynamic'
+
+function PurchasePreviewContent() {
   const [isProcessing, setIsProcessing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  
+  // Get UTM from URL or use preview default
+  const utm = searchParams.get('utm') || 'preview-test-utm'
 
   // Mock business data for preview
   const mockBusiness = {
@@ -34,24 +45,60 @@ export default function PurchasePreviewPage() {
     estimatedValue: '$2,500-$5,000/month',
   }
 
-  // Mock checkout handler
   const handleCheckout = async () => {
     setIsProcessing(true)
+    setError(null)
 
     try {
-      // In preview, just simulate a checkout
-      console.log('Preview checkout triggered', {
-        business: mockBusiness,
-        utm: 'preview-test-utm',
+      // Track checkout attempt
+      trackEvent('preview_checkout_started', {
+        businessId: mockBusiness.id,
+        domain: mockBusiness.domain,
+        utm,
       })
 
-      // Simulate processing time
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Create checkout session
+      const response = await fetch('/api/checkout/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          utm,
+          businessId: mockBusiness.id,
+        }),
+      })
 
-      // In a real implementation, this would redirect to Stripe
-      alert('Checkout would redirect to Stripe here')
-    } catch (error) {
-      console.error('Checkout error:', error)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create checkout session')
+      }
+
+      const { sessionId } = await response.json()
+
+      // Redirect to Stripe Checkout
+      const stripe = await getStripe()
+      if (!stripe) {
+        throw new Error('Failed to load Stripe')
+      }
+
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId,
+      })
+
+      if (stripeError) {
+        throw stripeError
+      }
+    } catch (err) {
+      console.error('Checkout error:', err)
+      setError(err instanceof Error ? err.message : 'An error occurred during checkout')
+      
+      // Track error
+      trackEvent('preview_checkout_error', {
+        error: err instanceof Error ? err.message : 'Unknown error',
+        businessId: mockBusiness.id,
+        utm,
+      })
     } finally {
       setIsProcessing(false)
     }
@@ -170,6 +217,13 @@ export default function PurchasePreviewPage() {
               </div>
             </div>
 
+            {/* Error message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+                <p className="text-sm text-red-400">{error}</p>
+              </div>
+            )}
+
             <p className="text-[20px] md:text-[24px] mb-3">
               We identified opportunities worth
             </p>
@@ -237,5 +291,20 @@ export default function PurchasePreviewPage() {
         </StripeErrorBoundary>
       </main>
     </div>
+  )
+}
+
+export default function PurchasePreviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-carbon text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+          <p className="mt-4 text-white/60">Loading preview...</p>
+        </div>
+      </div>
+    }>
+      <PurchasePreviewContent />
+    </Suspense>
   )
 }
