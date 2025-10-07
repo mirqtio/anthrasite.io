@@ -1,0 +1,12 @@
+
+> anthrasite.io@1.0.0 dev /Users/charlieirwin/Documents/GitHub/anthrasite.io
+> next dev -p 3333
+
+  ▲ Next.js 14.2.30
+  - Local:        http://localhost:3333
+  - Environments: .env.local, .env
+  - Experiments (use with caution):
+    · instrumentationHook
+
+ ✓ Starting...
+[?25h
