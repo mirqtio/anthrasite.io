@@ -6,6 +6,7 @@ import {
   TrustSignals,
   PricingCard,
 } from '@/components/purchase'
+import { PaymentElementWrapper } from '@/components/purchase/PaymentElementWrapper'
 import {
   fetchBusinessByUTM,
   getReportPreview,
@@ -41,10 +42,14 @@ async function PurchaseContent({
 
   const { business, isValid } = purchaseData
 
-  // Check if we should show interstitial page (preview param, or invalid token)
-  const showInterstitial = preview === 'true' || !isValid
+  // Check if Payment Element is enabled
+  const usePaymentElement =
+    process.env.NEXT_PUBLIC_USE_PAYMENT_ELEMENT === 'true'
 
-  // If valid and no override, go directly to Stripe
+  // Check if we should show interstitial page (preview param, invalid token, or Payment Element enabled)
+  const showInterstitial = preview === 'true' || !isValid || usePaymentElement
+
+  // If valid and no override and not using Payment Element, go directly to Stripe Checkout
   if (!showInterstitial) {
     try {
       // Track direct checkout attempt
@@ -132,11 +137,24 @@ async function PurchaseContent({
 
       <TrustSignals />
 
-      <PricingCard
-        businessName={business.name}
-        utm={utm}
-        onCheckout={handleCheckout}
-      />
+      {/* Conditional rendering: Payment Element (new) vs Redirect flow (legacy) */}
+      {usePaymentElement && isValid ? (
+        <section className="py-12 md:py-16">
+          <div className="px-10 max-w-[600px] mx-auto">
+            <PaymentElementWrapper
+              businessId={business.id}
+              businessName={business.name}
+              utm={utm}
+            />
+          </div>
+        </section>
+      ) : (
+        <PricingCard
+          businessName={business.name}
+          utm={utm}
+          onCheckout={handleCheckout}
+        />
+      )}
 
       {/* Warning if UTM has been used */}
       {!isValid && (

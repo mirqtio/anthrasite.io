@@ -97,6 +97,56 @@ export async function POST(request: NextRequest) {
         break
       }
 
+      case 'payment_intent.succeeded': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent
+
+        // Extract metadata
+        const purchaseUid = paymentIntent.metadata?.purchaseUid
+        const businessId = paymentIntent.metadata?.businessId
+        const domain = paymentIntent.metadata?.domain
+
+        if (!purchaseUid) {
+          console.error('Missing purchaseUid in PaymentIntent metadata')
+          break
+        }
+
+        // Find existing Purchase record (created when PaymentIntent was generated)
+        const existingPurchase = await prisma.purchase.findUnique({
+          where: { id: purchaseUid },
+          include: { business: true },
+        })
+
+        if (!existingPurchase) {
+          console.error(`Purchase not found for purchaseUid: ${purchaseUid}`)
+          break
+        }
+
+        // Update purchase to completed status
+        const purchase = await prisma.purchase.update({
+          where: { id: purchaseUid },
+          data: {
+            status: 'completed',
+          },
+          include: {
+            business: true,
+          },
+        })
+
+        // Track successful purchase
+        await trackEvent('purchase_completed', {
+          businessId,
+          domain,
+          purchaseId: purchase.id,
+          amount: purchase.amount,
+          paymentIntentId: paymentIntent.id,
+        })
+
+        // Send confirmation email (D3 implementation with idempotency)
+        await sendPurchaseConfirmationEmail(purchase, { eventId: event.id })
+
+        break
+      }
+
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
 

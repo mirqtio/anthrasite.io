@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { validateUTMToken } from '@/lib/utm/crypto'
 import { prisma } from '@/lib/db'
 import { trackEvent } from '@/lib/analytics/analytics-server'
+import { REPORT_PRICE } from '@/lib/stripe/config'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-05-28.basil',
@@ -39,41 +40,40 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 })
     }
 
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Anthrasite Website Audit',
-              description: `Comprehensive performance audit for ${business.domain}`,
-              metadata: {
-                businessId: business.id,
-                domain: business.domain,
-              },
-            },
-            unit_amount: 39900, // $399.00 in cents
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/purchase?utm=${utm}`,
-      customer_email: business.email || undefined,
-      metadata: {
+    // Create Purchase record with pending status
+    const purchase = await prisma.purchase.create({
+      data: {
         businessId: business.id,
-        utm,
+        amount: REPORT_PRICE.amount,
+        currency: REPORT_PRICE.currency,
+        status: 'pending',
+        utmToken: utm,
+        customerEmail: business.email,
+      },
+    })
+
+    // Create Stripe PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: REPORT_PRICE.amount,
+      currency: REPORT_PRICE.currency,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        purchaseUid: purchase.id,
+        businessId: business.id,
+        utmId: utm,
+        sku: 'AUDIT_399_V1',
+        tier: 'standard',
         domain: business.domain,
       },
-      payment_intent_data: {
-        metadata: {
-          businessId: business.id,
-          utm,
-          domain: business.domain,
-        },
+    })
+
+    // Update purchase with PaymentIntent ID
+    await prisma.purchase.update({
+      where: { id: purchase.id },
+      data: {
+        stripePaymentIntentId: paymentIntent.id,
       },
     })
 
@@ -81,16 +81,17 @@ export async function POST(request: NextRequest) {
     await trackEvent('checkout_started', {
       businessId: business.id,
       domain: business.domain,
-      price: 399,
-      sessionId: session.id,
+      price: REPORT_PRICE.amount / 100,
+      purchaseId: purchase.id,
+      paymentIntentId: paymentIntent.id,
     })
 
     return NextResponse.json({
-      sessionId: session.id,
-      url: session.url,
+      clientSecret: paymentIntent.client_secret,
+      purchaseUid: purchase.id,
     })
   } catch (error) {
-    console.error('Checkout session creation error:', error)
+    console.error('Payment intent creation error:', error)
 
     // Track error
     await trackEvent('checkout_error', {
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: 'Failed to create payment intent' },
       { status: 500 }
     )
   }

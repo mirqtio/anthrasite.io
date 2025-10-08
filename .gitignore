@@ -52,3 +52,11 @@ node_modules
 
 *storybook.log
 storybook-static
+
+# Serena MCP (keep project.yml, ignore cache/logs/memories)
+.serena/cache/
+.serena/logs/
+.serena/memories/
+
+# Claude Code MCP configuration (project-specific)
+.mcp.json

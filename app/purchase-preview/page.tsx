@@ -15,7 +15,7 @@ function PurchasePreviewContent() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const searchParams = useSearchParams()
-  
+
   // Get UTM from URL or use preview default
   const utm = searchParams.get('utm') || 'preview-test-utm'
 
@@ -74,25 +74,20 @@ function PurchasePreviewContent() {
         throw new Error(errorData.error || 'Failed to create checkout session')
       }
 
-      const { sessionId } = await response.json()
+      const { url } = await response.json()
 
-      // Redirect to Stripe Checkout
-      const stripe = await getStripe()
-      if (!stripe) {
-        throw new Error('Failed to load Stripe')
-      }
-
-      const { error: stripeError } = await stripe.redirectToCheckout({
-        sessionId,
-      })
-
-      if (stripeError) {
-        throw stripeError
+      // Redirect to Stripe Checkout URL
+      if (url) {
+        window.location.href = url
+      } else {
+        throw new Error('No checkout URL returned')
       }
     } catch (err) {
       console.error('Checkout error:', err)
-      setError(err instanceof Error ? err.message : 'An error occurred during checkout')
-      
+      setError(
+        err instanceof Error ? err.message : 'An error occurred during checkout'
+      )
+
       // Track error
       trackEvent('preview_checkout_error', {
         error: err instanceof Error ? err.message : 'Unknown error',
@@ -229,8 +224,12 @@ function PurchasePreviewContent() {
             </p>
 
             <div className="text-[36px] md:text-[48px] font-thin text-green-500 mb-2 whitespace-nowrap">
-              <span className="inline-block">{mockReportPreview.estimatedValue.split('-')[0]}-</span>
-              <span className="inline-block">{mockReportPreview.estimatedValue.split('-')[1]}</span>
+              <span className="inline-block">
+                {mockReportPreview.estimatedValue.split('-')[0]}-
+              </span>
+              <span className="inline-block">
+                {mockReportPreview.estimatedValue.split('-')[1]}
+              </span>
             </div>
             <p className="text-[20px] md:text-[24px] mb-10">
               in revenue improvement
@@ -244,7 +243,9 @@ function PurchasePreviewContent() {
                 >
                   {mockReportPreview.metrics.performanceScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Performance</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Performance
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -252,7 +253,9 @@ function PurchasePreviewContent() {
                 >
                   {mockReportPreview.metrics.visualScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Visual</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Visual
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -260,7 +263,9 @@ function PurchasePreviewContent() {
                 >
                   {mockReportPreview.metrics.seoScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">SEO</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  SEO
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -268,7 +273,9 @@ function PurchasePreviewContent() {
                 >
                   {mockReportPreview.metrics.trustScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Trust</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Trust
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -276,7 +283,11 @@ function PurchasePreviewContent() {
                 >
                   {mockReportPreview.metrics.socialScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight break-words">Social/<wbr/>Reviews</div>
+                <div className="text-[14px] md:text-[24px] leading-tight break-words">
+                  Social/
+                  <wbr />
+                  Reviews
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -284,7 +295,9 @@ function PurchasePreviewContent() {
                 >
                   {mockReportPreview.metrics.mobileScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Mobile</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Mobile
+                </div>
               </div>
             </div>
           </motion.div>
@@ -296,14 +309,16 @@ function PurchasePreviewContent() {
 
 export default function PurchasePreviewPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-carbon text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-          <p className="mt-4 text-white/60">Loading preview...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-carbon text-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+            <p className="mt-4 text-white/60">Loading preview...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <PurchasePreviewContent />
     </Suspense>
   )

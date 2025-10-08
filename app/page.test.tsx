@@ -47,9 +47,7 @@ describe('HomePage', () => {
     )
 
     // Check for the animated square
-    const animatedSquare = loadingContainer.querySelector(
-      '.bg-white'
-    )
+    const animatedSquare = loadingContainer.querySelector('.bg-white')
     expect(animatedSquare).toBeInTheDocument()
     expect(animatedSquare).toHaveClass('w-8', 'h-8', 'animate-pulse')
 

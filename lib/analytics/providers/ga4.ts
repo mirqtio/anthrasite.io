@@ -19,20 +19,20 @@ export class GoogleAnalytics4Provider implements AnalyticsProvider {
 
     // Wait for gtag to be available (loaded by Analytics component)
     await this.waitForGtag()
-    
+
     console.debug('GA4 Provider initialized with:', this.measurementId)
     this.initialized = true
   }
 
   private async waitForGtag(timeout = 5000): Promise<void> {
     const startTime = Date.now()
-    
+
     while (!window.gtag) {
       if (Date.now() - startTime > timeout) {
         console.warn('Timeout waiting for gtag to load')
         return
       }
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise((resolve) => setTimeout(resolve, 100))
     }
   }
 
@@ -71,7 +71,7 @@ export class GoogleAnalytics4Provider implements AnalyticsProvider {
 
   reset(): void {
     if (!window.gtag) return
-    
+
     // Clear user data by resetting the user_id
     window.gtag('config', this.measurementId, {
       user_id: null,

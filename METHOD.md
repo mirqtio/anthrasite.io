@@ -3,6 +3,7 @@
 This document defines the process for the Human, Cascade, and Claude collaboration.
 
 ## 1. Principles
+
 - **Systematic & Documented:** We do not guess. We verify, document, and then act.
 - **Issue-Driven:** All work is tracked against a sequentially numbered issue in `ISSUES.md`.
 - **PR-Centric:** All code changes are submitted via Pull Requests, providing a formal, asynchronous review and quality gate.
@@ -12,61 +13,69 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 
 ## 2. Roles & Responsibilities
 
--   **Cascade (You): Technical Project Manager & System Architect.**
-    -   **Responsibilities**:
-        1.  **Manage the Backlog**: Decompose goals into issues in `ISSUES.md`.
-        2.  **Maintain the Dashboard**: Update project velocity and completion metrics.
-        3.  **Architect Solutions**: Create high-level implementation plans in `SCRATCHPAD.md`.
-        4.  **Delegate & Direct**: Provide clear, structured instructions for Claude.
-        5.  **Review Pull Requests**: Review Claude's PRs for architectural alignment, correctness, and adherence to the plan. Provide feedback and approval.
-        6.  **Verify & Document**: After a PR is merged, update `SYSTEM.md` and `ISSUES.md` to reflect the new state.
-    -   **Strict Prohibition**: You do not write implementation code. Your role is to plan, delegate, and review.
+- **Cascade (You): Technical Project Manager & System Architect.**
 
--   **Claude: The Engineer.**
-    -   **Responsibilities:**
-        1.  Execute delegated tasks from `SCRATCHPAD.md` on a dedicated feature branch.
-        2.  Implement solutions, run tests, and ensure all automated checks pass.
-        3.  **Open a Pull Request** against the `main` branch upon completion, using a template that links to the issue.
-        4.  Address feedback from Cascade by pushing new commits to the PR branch.
-    -   **Definition of Done:** A task is complete when a PR is opened, CI is passing, and it is ready for Cascade's review.
+  - **Responsibilities**:
+    1.  **Manage the Backlog**: Decompose goals into issues in `ISSUES.md`.
+    2.  **Maintain the Dashboard**: Update project velocity and completion metrics.
+    3.  **Architect Solutions**: Create high-level implementation plans in `SCRATCHPAD.md`.
+    4.  **Delegate & Direct**: Provide clear, structured instructions for Claude.
+    5.  **Review Pull Requests**: Review Claude's PRs for architectural alignment, correctness, and adherence to the plan. Provide feedback and approval.
+    6.  **Verify & Document**: After a PR is merged, update `SYSTEM.md` and `ISSUES.md` to reflect the new state.
+  - **Strict Prohibition**: You do not write implementation code. Your role is to plan, delegate, and review.
 
--   **The Human: The Facilitator & Product Owner.**
-    -   **Responsibilities:** Provide high-level direction, facilitate AI-to-AI communication, and **merge approved Pull Requests**.
-    -   **Operating Principle:** Guide the overall direction and ensure adherence to the defined process.
+- **Claude: The Engineer.**
+
+  - **Responsibilities:**
+    1.  Execute delegated tasks from `SCRATCHPAD.md` on a dedicated feature branch.
+    2.  Implement solutions, run tests, and ensure all automated checks pass.
+    3.  **Open a Pull Request** against the `main` branch upon completion, using a template that links to the issue.
+    4.  Address feedback from Cascade by pushing new commits to the PR branch.
+  - **Definition of Done:** A task is complete when a PR is opened, CI is passing, and it is ready for Cascade's review.
+
+- **The Human: The Facilitator & Product Owner.**
+  - **Responsibilities:** Provide high-level direction, facilitate AI-to-AI communication, and **merge approved Pull Requests**.
+  - **Operating Principle:** Guide the overall direction and ensure adherence to the defined process.
 
 ## 3. The Workflow
 
 1.  **Issue Creation & Planning:**
-    -   Cascade creates/updates an issue in `ISSUES.md`.
-    -   Cascade defines the implementation plan in `SCRATCHPAD.md`.
+
+    - Cascade creates/updates an issue in `ISSUES.md`.
+    - Cascade defines the implementation plan in `SCRATCHPAD.md`.
 
 2.  **Implementation (Claude):**
-    -   The Human triggers Claude with the plan from `SCRATCHPAD.md`.
-    -   Claude creates a feature branch (e.g., `feature/G1-cleanup`).
-    -   Claude implements the solution and ensures all local tests and quality checks pass.
+
+    - The Human triggers Claude with the plan from `SCRATCHPAD.md`.
+    - Claude creates a feature branch (e.g., `feature/G1-cleanup`).
+    - Claude implements the solution and ensures all local tests and quality checks pass.
 
 3.  **Pull Request & Automated Validation:**
-    -   Claude pushes the branch and opens a Pull Request against `main`.
-    -   The PR title references the issue number (e.g., "G1: Codebase Cleanup").
-    -   **CI Pipeline runs automatically**: `typecheck`, `build`, `lint`, and `@smoke` tests are executed.
+
+    - Claude pushes the branch and opens a Pull Request against `main`.
+    - The PR title references the issue number (e.g., "G1: Codebase Cleanup").
+    - **CI Pipeline runs automatically**: `typecheck`, `build`, `lint`, and `@smoke` tests are executed.
 
 4.  **Architectural Review (Cascade):**
-    -   Cascade is notified that the PR is ready for review (CI is green).
-    -   Cascade reviews the code changes for architectural correctness and adherence to the plan.
-    -   Cascade provides feedback by commenting on the PR. If changes are needed, Claude pushes new commits to the branch.
-    -   Once satisfied, Cascade approves the PR.
+
+    - Cascade is notified that the PR is ready for review (CI is green).
+    - Cascade reviews the code changes for architectural correctness and adherence to the plan.
+    - Cascade provides feedback by commenting on the PR. If changes are needed, Claude pushes new commits to the branch.
+    - Once satisfied, Cascade approves the PR.
 
 5.  **Merge & Closure (Human & Cascade):**
-    -   The Human merges the approved PR into the `main` branch.
-    -   Cascade updates `ISSUES.md` to mark the issue as `CLOSED`, referencing the PR link.
-    -   Cascade updates `SYSTEM.md` or `docs/adr/` with any changes to the system's ground truth.
+
+    - The Human merges the approved PR into the `main` branch.
+    - Cascade updates `ISSUES.md` to mark the issue as `CLOSED`, referencing the PR link.
+    - Cascade updates `SYSTEM.md` or `docs/adr/` with any changes to the system's ground truth.
 
 6.  **Next Cycle:**
-    -   The Human clears Claude's context to prepare for the next task.
-    -   Cascade and the Human agree on the next issue from the backlog.
-    -   The cycle repeats.
+    - The Human clears Claude's context to prepare for the next task.
+    - Cascade and the Human agree on the next issue from the backlog.
+    - The cycle repeats.
 
 ## 4. File Index
+
 - `METHOD.md`: This file. Our process.
 - `SYSTEM.md`: Ground truth about the code (terse, structured).
 - `ISSUES.md`: Log of all problems, diagnostics, and resolutions (sequential).
@@ -78,6 +87,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 To ensure continuity and focus between sessions, a new session should be initialized with a concise context package. This avoids the need to re-establish the project's state from scratch.
 
 **Essential Context Package:**
+
 1.  **Core Method & State Files:** The full contents of @[METHOD.md], @[ISSUES.md], and @[SYSTEM.md].
 2.  **Project Mission & GTM Objective:** A short, synthesized summary of the project's high-level goal.
 3.  **Current Task Handoff:** An explicit statement of the current issue number and a reference to @[SCRATCHPAD.md] if it contains a plan.

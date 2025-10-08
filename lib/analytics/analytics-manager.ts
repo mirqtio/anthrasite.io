@@ -45,10 +45,13 @@ export class AnalyticsManager {
 
   private async initializeProviders(): Promise<void> {
     console.log('[AnalyticsManager] Initializing providers...')
-    
+
     // Initialize GA4
     if (this.config.ga4) {
-      console.log('[AnalyticsManager] Initializing GA4 with ID:', this.config.ga4.measurementId)
+      console.log(
+        '[AnalyticsManager] Initializing GA4 with ID:',
+        this.config.ga4.measurementId
+      )
       const ga4 = new GoogleAnalytics4Provider(
         this.config.ga4.measurementId,
         this.config.ga4.apiSecret
@@ -72,15 +75,21 @@ export class AnalyticsManager {
 
     // Initialize Hotjar
     if (this.config.hotjar) {
-      console.log('[AnalyticsManager] Initializing Hotjar with site ID:', this.config.hotjar.siteId)
+      console.log(
+        '[AnalyticsManager] Initializing Hotjar with site ID:',
+        this.config.hotjar.siteId
+      )
       const hotjar = new HotjarProvider(this.config.hotjar.siteId)
       await hotjar.initialize()
       this.providers.set('hotjar', hotjar)
       console.log('[AnalyticsManager] Hotjar initialized')
     }
 
-    console.log('[AnalyticsManager] All providers initialized. Total:', this.providers.size)
-    
+    console.log(
+      '[AnalyticsManager] All providers initialized. Total:',
+      this.providers.size
+    )
+
     // Initialize Datadog RUM (already configured separately)
     // Just track that analytics is initialized
     this.track('analytics_initialized', {

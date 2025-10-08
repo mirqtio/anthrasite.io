@@ -22,7 +22,9 @@ test.describe('Marketing Smoke Test @smoke', () => {
       await expect(heroTitle).toBeVisible({ timeout: 10000 })
     } else {
       // Fallback: check for tagline text
-      await expect(page.getByText('VALUE, CRYSTALLIZED')).toBeVisible({ timeout: 10000 })
+      await expect(page.getByText('VALUE, CRYSTALLIZED')).toBeVisible({
+        timeout: 10000,
+      })
     }
 
     // 3. Footer/navigation present

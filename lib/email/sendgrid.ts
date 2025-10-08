@@ -22,6 +22,6 @@ export interface SendEmailOptions {
 export async function sendEmail(options: SendEmailOptions): Promise<void> {
   throw new Error(
     'ARCHIVED_PROVIDER: SendGrid is disabled. Use Gmail SMTP via lib/email/gmail.ts. ' +
-    'See _archive/lib/email/sendgrid.ts for the original implementation.'
+      'See _archive/lib/email/sendgrid.ts for the original implementation.'
   )
 }

@@ -38,13 +38,19 @@ export default function AboutPage() {
               </div>
             </a>
           </div>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/#assessment" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
+            <a
+              href="/#assessment"
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+            >
               Method
             </a>
-            <a href="/#faq" className="text-[17px] opacity-70 hover:opacity-100 transition-opacity">
+            <a
+              href="/#faq"
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+            >
               FAQ
             </a>
             <a href="/about" className="text-[17px] opacity-100">
@@ -58,9 +64,15 @@ export default function AboutPage() {
             className="md:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5"
             aria-label="Toggle menu"
           >
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? 'rotate-45 translate-y-2' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-white transition-opacity ${showMobileMenu ? 'opacity-0' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? '-rotate-45 -translate-y-2' : ''}`}></span>
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? 'rotate-45 translate-y-2' : ''}`}
+            ></span>
+            <span
+              className={`block w-6 h-0.5 bg-white transition-opacity ${showMobileMenu ? 'opacity-0' : ''}`}
+            ></span>
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? '-rotate-45 -translate-y-2' : ''}`}
+            ></span>
           </button>
         </div>
 
@@ -68,24 +80,21 @@ export default function AboutPage() {
         {showMobileMenu && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-carbon border-t border-smoke">
             <div className="flex flex-col py-4">
-              <a 
-                href="/#assessment" 
+              <a
+                href="/#assessment"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
                 Method
               </a>
-              <a 
-                href="/#faq" 
+              <a
+                href="/#faq"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
                 FAQ
               </a>
-              <a 
-                href="/about" 
-                className="px-5 py-3 text-[17px] opacity-100"
-              >
+              <a href="/about" className="px-5 py-3 text-[17px] opacity-100">
                 About Us
               </a>
             </div>
@@ -97,27 +106,36 @@ export default function AboutPage() {
       <main className="pt-[120px] pb-[60px] px-5 md:px-10">
         <div className="max-w-[800px] mx-auto">
           <h1 className="text-[48px] font-light mb-8">About Anthrasite</h1>
-          
+
           <div className="space-y-6 text-[20px] opacity-80 leading-relaxed">
             <p>
-              If technical issues are quietly eating into your revenue, we get it.
-            </p>
-            
-            <p>
-              We're a team of seasoned technologists who've spent decades driving measurable business results for Fortune 500 companies. Through that work, we discovered how subtle inefficiencies—slow load times, broken mobile experiences, outdated SEO—can cost businesses thousands in lost revenue every month.
+              If technical issues are quietly eating into your revenue, we get
+              it.
             </p>
 
             <p>
-              Today, we're using enterprise-grade diagnostics and AI-powered analysis to help small and medium businesses uncover these same insights—at a fraction of the traditional cost. Our approach: run a comprehensive site audit, translate technical findings into dollar impact, and deliver a prioritized action plan you can implement immediately.
+              We're a team of seasoned technologists who've spent decades
+              driving measurable business results for Fortune 500 companies.
+              Through that work, we discovered how subtle inefficiencies—slow
+              load times, broken mobile experiences, outdated SEO—can cost
+              businesses thousands in lost revenue every month.
             </p>
 
             <p>
-              No technical jargon. No 50-page reports. Just clear, revenue-focused recommendations.
+              Today, we're using enterprise-grade diagnostics and AI-powered
+              analysis to help small and medium businesses uncover these same
+              insights—at a fraction of the traditional cost. Our approach: run
+              a comprehensive site audit, translate technical findings into
+              dollar impact, and deliver a prioritized action plan you can
+              implement immediately.
             </p>
 
-            <p className="italic">
-              – The Anthrasite Team
+            <p>
+              No technical jargon. No 50-page reports. Just clear,
+              revenue-focused recommendations.
             </p>
+
+            <p className="italic">– The Anthrasite Team</p>
           </div>
         </div>
       </main>

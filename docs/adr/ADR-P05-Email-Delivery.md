@@ -9,25 +9,28 @@ Once the PDF report is generated, it must be delivered to the customer via email
 We will use our existing **Google Workspace account's SMTP server** for sending reports. The implementation will include a **switchable provider interface** to make it easy to migrate to a dedicated transactional email service (like Postmark or SendGrid) in the future.
 
 **Consequences**:
+
 - **Pros**:
-    - **Low cost**: Uses our existing Google Workspace subscription.
-    - **Good initial deliverability**: Emails come from our trusted domain.
-    - The provider abstraction makes future upgrades straightforward.
+  - **Low cost**: Uses our existing Google Workspace subscription.
+  - **Good initial deliverability**: Emails come from our trusted domain.
+  - The provider abstraction makes future upgrades straightforward.
 - **Cons**:
-    - **Sending limits**: Google Workspace has daily sending limits (e.g., 2000 emails/day) that we may eventually exceed.
-    - **Limited analytics**: Lacks the detailed delivery tracking and analytics of a dedicated transactional email service.
+  - **Sending limits**: Google Workspace has daily sending limits (e.g., 2000 emails/day) that we may eventually exceed.
+  - **Limited analytics**: Lacks the detailed delivery tracking and analytics of a dedicated transactional email service.
 
 ---
 
 ## Implementation Notes
 
 **G3 Archive (2025-10-07):**
+
 - All legacy SendGrid files archived to `_archive/lib/email/` (10 files)
 - Implemented Gmail SMTP provider using `nodemailer` in `lib/email/gmail.ts`
 - Created error stub at `lib/email/sendgrid.ts` to catch legacy imports
 - Webhook email integration deferred to D3 (pending Gmail credentials)
 
 **Active Implementation:**
+
 - Provider: `lib/email/gmail.ts`
 - Functions: `sendEmail()`, `sendPurchaseConfirmation()`
 - Transport: Gmail SMTP via `nodemailer` (smtp.gmail.com:587)
