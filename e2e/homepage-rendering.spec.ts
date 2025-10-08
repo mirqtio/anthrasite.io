@@ -17,7 +17,7 @@ test.describe('Homepage Rendering', () => {
     // Check for subheadline/description
     await expect(
       page.getByText(
-        "We analyze thousands of data points to show you what to fix and what it's worth."
+        "We analyze hundreds of data points to show you what to fix and what it's worth."
       )
     ).toBeVisible()
 
@@ -27,12 +27,18 @@ test.describe('Homepage Rendering', () => {
 
   test('should render features section', async ({ page }) => {
     // Check for section title
-    await expect(page.locator('h2:has-text("What We Analyze")')).toBeVisible()
+    await expect(page.locator('h2:has-text("What This Looks Like")')).toBeVisible()
 
-    // Check for feature cards based on actual implementation
-    await expect(page.locator('text=Load Performance')).toBeVisible()
-    await expect(page.locator('text=Mobile Experience')).toBeVisible()
-    await expect(page.locator('text=Revenue Impact')).toBeVisible()
+    // Check for feature cards - wait for reveal animations (up to 300ms delay + animation time)
+    await expect(page.locator('h3:has-text("Load Performance")')).toBeVisible({
+      timeout: 10000,
+    })
+    await expect(page.locator('h3:has-text("Mobile Experience")')).toBeVisible({
+      timeout: 10000,
+    })
+    await expect(page.locator('h3:has-text("Revenue Impact")')).toBeVisible({
+      timeout: 10000,
+    })
 
     // Check that feature descriptions are visible
     await expect(
@@ -65,7 +71,7 @@ test.describe('Homepage Rendering', () => {
 
     // Wait for button text to stabilize
     await page.waitForTimeout(200)
-    await expect(submitButton).toHaveText('Join Waitlist')
+    await expect(submitButton).toHaveText('Submit')
   })
 
   test('should not show only icons without text', async ({ page }) => {

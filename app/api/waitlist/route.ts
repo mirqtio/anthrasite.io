@@ -71,6 +71,4 @@ async function waitlistHandler(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-export const POST = withMonitoring(waitlistHandler, {
-  operationName: 'waitlist.signup',
-})
+export const POST = withMonitoring(waitlistHandler, 'waitlist.signup')
