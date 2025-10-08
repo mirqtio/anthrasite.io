@@ -1,8 +1,8 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
-- **Total Effort (Estimated)**: 92 Story Points
+- **Total Effort (Estimated)**: 100 Story Points
 - **Completed Points**: 24 Points
-- **Remaining Points**: 68 Points
+- **Remaining Points**: 76 Points
 - **Estimated Completion**: ~10 Workdays
 
 ---
@@ -83,12 +83,12 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **F6 (1 pt)**: Support tooling (MVP)
 - **F7 (2 pts - OPTIONAL)**: Privacy compliance
 
-### EPIC H - Hardening & CI/CD - (16 pts)
+### EPIC H - Hardening & CI/CD - (24 pts)
 
 **Goal:** Ensure the repository is secure and the CI/CD pipeline is reliable before public launch.
 
 - **H1 (3 pts)**: Integrate GitGuardian for secret scanning. _(**Next Task** - High Priority Security)_
-- **H2 (5 pts)**: Review and update CI/CD to run correct E2E and unit tests.
+- **H2 (13 pts)**: Review and update CI/CD to run correct E2E and unit tests.
 - **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
 
 ---
