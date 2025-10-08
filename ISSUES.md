@@ -30,6 +30,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 **Goal:** On-page payment; branded receipts; robust tests.
 
 - **A1 (2 pts)**: Switch to Payment Element
+- **Status**: `IN_PROGRESS`
 - **A2 (2 pts)**: Price tiers (server allowlist)
 - **A3 (2 pts)**: Stripe receipts + business identity
 - **A4 (1 pt)**: Feature flag control
@@ -86,7 +87,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 
 **Goal:** Ensure the repository is secure and the CI/CD pipeline is reliable before public launch.
 
-- **H1 (3 pts)**: Integrate GitGuardian for secret scanning.
+- **H1 (3 pts)**: Integrate GitGuardian for secret scanning. _(**Next Task** - High Priority Security)_
 - **H2 (5 pts)**: Review and update CI/CD to run correct E2E and unit tests.
 - **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
 
