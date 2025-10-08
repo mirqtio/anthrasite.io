@@ -1,0 +1,43 @@
+version: 2
+
+# GitGuardian Configuration
+# Helps reduce false positives and configure secret detection
+
+# Paths to exclude from scanning
+paths-ignore:
+  - '**/__tests__/**'
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/test/**'
+  - '**/tests/**'
+  - '**/__mocks__/**'
+  - '**/coverage/**'
+  - '**/node_modules/**'
+  - '**/.next/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/CI_logs/**'
+  - '**/logs_**/**'
+  - '**/playwright-report/**'
+  - '**/test-results/**'
+  - '**/_archive/**'
+
+# Patterns to ignore (known test values and false positives)
+matches-ignore:
+  - name: Test/Example Passwords
+    match: 'password|test-password|fake-password|example-password|placeholder|your-.*-here|REDACTED'
+
+  - name: Database Test URLs
+    match: 'postgresql://user:password@localhost'
+
+  - name: Example Email Addresses
+    match: 'user@example\.com|test@test\.com|hello@anthrasite\.io'
+
+# Minimum secret entropy threshold
+# Increase to reduce false positives, decrease for more thorough detection
+minimum-secret-entropy: 3.0
+
+# Exit code behavior
+# Set to 0 to not fail CI on secrets found (just warn)
+exit-zero: false
