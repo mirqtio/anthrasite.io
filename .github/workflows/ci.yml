@@ -113,6 +113,7 @@ jobs:
         env:
           CI: 'true'
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
         run: pnpm run build
@@ -152,7 +153,8 @@ jobs:
         env:
           CI: 'true'
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-        run: pnpm run test:unit -- --reporters=default --reporters=jest-junit
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+        run: pnpm run test:unit
       - name: Upload unit test report
         if: always()
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
@@ -200,11 +202,13 @@ jobs:
       - name: Setup test database
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
         run: pnpm exec prisma db push
       - name: Build Next.js app
         env:
           CI: 'true'
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
         run: pnpm run build
@@ -212,6 +216,7 @@ jobs:
         env:
           CI: 'true'
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           PLAYWRIGHT_HEADLESS: '1'
           NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true'
           SKIP_ENV_VALIDATION: 'true'

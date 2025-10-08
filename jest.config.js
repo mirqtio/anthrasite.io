@@ -44,11 +44,10 @@ const customJestConfig = {
   detectLeaks: false,
   forceExit: true,
   // JUnit reporter for CI artifact generation (requires jest-junit package)
-  // Will be activated by CI via command line args: --reporters=jest-junit
-  // reporters: [
-  //   'default',
-  //   ['jest-junit', { outputDirectory: 'test-results', outputName: 'junit-unit.xml' }],
-  // ],
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: 'test-results', outputName: 'junit-unit.xml' }],
+  ],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
