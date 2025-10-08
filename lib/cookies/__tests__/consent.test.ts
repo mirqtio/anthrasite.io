@@ -23,6 +23,7 @@ describe('Cookie Consent', () => {
 
     it('should parse and return stored consent from localStorage', () => {
       const storedConsent = {
+        version: '1.0',
         preferences: {
           analytics: true,
           marketing: false,
