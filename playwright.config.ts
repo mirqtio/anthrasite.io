@@ -46,7 +46,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'NEXT_PUBLIC_USE_MOCK_PURCHASE=true npm run dev',
+    command: 'NEXT_PUBLIC_USE_MOCK_PURCHASE=false npm run dev',
     port: 3333,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes for server startup
