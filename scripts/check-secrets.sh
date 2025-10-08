@@ -27,7 +27,13 @@ PATTERNS=(
   # GitHub
   "ghp_[0-9a-zA-Z]{36}"
   "gho_[0-9a-zA-Z]{36}"
-  
+
+  # Sentry
+  "sntryu_[0-9a-zA-Z]{64}"
+
+  # Datadog
+  "DD_API_KEY[\"']?\s*[:=]\s*[\"']?[0-9a-f]{32}"
+
   # Private keys
   "-----BEGIN (RSA|EC|DSA) PRIVATE KEY-----"
 )
@@ -43,6 +49,7 @@ for pattern in "${PATTERNS[@]}"; do
     --include="*.js" \
     --include="*.jsx" \
     --include="*.json" \
+    --include=".env*" \
     --exclude-dir=node_modules \
     --exclude-dir=.next \
     --exclude-dir=.git \
@@ -62,6 +69,8 @@ SENSITIVE_FILES=(
   ".env.local"
   ".env.production"
   ".env.development"
+  ".env.example"
+  ".env.test"
   "secrets.json"
   "credentials.json"
 )
