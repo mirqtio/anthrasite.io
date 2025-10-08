@@ -72,14 +72,12 @@ export async function safeFill(
  * Open cookie preferences modal
  */
 export async function openCookiePreferences(page: Page) {
-  // Try to find and click the cookie preferences/settings button
-  const preferencesButton = page.locator(
-    'button:has-text("Cookie Settings"), button:has-text("Cookie Preferences"), button:has-text("Manage Cookies")'
-  ).first()
+  // Use testid for reliability
+  const preferencesButton = page.getByTestId('cookie-preferences-button')
 
-  if (await preferencesButton.isVisible({ timeout: 2000 })) {
-    await preferencesButton.click()
-  } else {
-    throw new Error('Cookie preferences button not found')
-  }
+  await preferencesButton.waitFor({ state: 'visible', timeout: 5000 })
+  await preferencesButton.click()
+
+  // Wait for modal to appear
+  await page.waitForTimeout(300)
 }

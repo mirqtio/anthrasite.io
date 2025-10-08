@@ -90,7 +90,7 @@ export function ConsentPreferences() {
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/50 z-50 transition-opacity ${animation.duration.normal}`}
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity ${animation.duration.normal}`}
         style={{
           opacity: isVisible && !isExiting ? 1 : 0,
           transitionTimingFunction: animation.easing.easeOut,
@@ -112,7 +112,12 @@ export function ConsentPreferences() {
               : isVisible && !isExiting
                 ? 1
                 : 0,
-          visibility: isVisible ? 'visible' : 'hidden',
+          visibility:
+            process.env.NEXT_PUBLIC_E2E_TESTING === 'true' && isVisible
+              ? 'visible'
+              : isVisible
+                ? 'visible'
+                : 'hidden',
           // Only animate in production, not during tests
           transition:
             process.env.NEXT_PUBLIC_E2E_TESTING === 'true'
