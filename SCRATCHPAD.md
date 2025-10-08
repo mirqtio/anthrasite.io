@@ -201,6 +201,175 @@ Archived workflows preserved in `_archive/` for historical reference.
 
 ---
 
+---
+
+## 🔧 CI/CD Pipeline Fixes - IN PROGRESS
+
+**Date**: 2025-10-08
+**Status**: ⚠️ Pipeline configured but failing, fixes applied
+
+### Issues Found and Fixed:
+
+1. **Package Manager Mismatch** ✅ FIXED
+   - **Problem**: CI configured for npm but project uses pnpm
+   - **Error**: `package-lock.json not found`
+   - **Fix**: Updated all 7 jobs to use pnpm
+     - Added `pnpm/action-setup@v4.0.0` to all jobs
+     - Changed `cache: 'npm'` → `cache: 'pnpm'`
+     - Changed `npm ci` → `pnpm install --frozen-lockfile`
+     - Changed `npm run` → `pnpm run`
+     - Changed `npx` → `pnpm exec`
+     - Updated Playwright cache key to use `pnpm-lock.yaml`
+   - **Commit**: b3109af
+
+2. **Lockfile Out of Sync** ✅ FIXED
+   - **Problem**: `pnpm-lock.yaml` didn't include `jest-junit` added in H1
+   - **Error**: `Cannot install with "frozen-lockfile" because pnpm-lock.yaml is not up to date`
+   - **Fix**: Ran `pnpm install` to update lockfile
+   - **Commit**: 39a7623
+
+3. **Invalid GitHub Action SHA** ✅ FIXED
+   - **Problem**: `upload-artifact@v4.5.0` had wrong SHA (b4b15b8...)
+   - **Error**: `An action could not be found at the URI`
+   - **Fix**: Corrected SHA to 6f51ac03b9356f520e9adb1b1b7802705f340c2b
+   - **Commit**: a76477b
+
+### Current CI Status:
+
+**Jobs Passing (4/7):**
+- ✅ setup (1m9s)
+- ✅ typecheck (33s)
+- ✅ lint (34s)
+- ✅ build (~2min)
+
+**Jobs Failing (3/7):**
+- ❌ unit - 33 failing tests (quarantined, should pass with continue-on-error)
+- ❌ e2e - Unknown reason, investigating
+- ❌ gate - Fails because e2e failed
+
+### CI Analysis Completed:
+
+**Comprehensive report generated covering:**
+- 7 job pipeline architecture
+- ~989 unit tests across 36 files
+- ~313 e2e tests across 21 files
+- Test coverage analysis (what's tested, what's not)
+- Redundancies identified (build runs twice, setup unused)
+- Configuration issues (5 browsers configured, 1 tested)
+- Security assessment (good: pinned SHAs, gaps: no API tests)
+
+**Critical Findings:**
+1. 🔴 **Build runs twice** - Wastes 2min per run (build job + e2e job both build)
+2. 🔴 **No API route testing** - Payment endpoints, webhooks untested
+3. 🟡 **Browser matrix mismatch** - Config says 5 browsers, CI tests 1
+4. 🟡 **33 failing unit tests** - Hidden by quarantine policy
+
+**Optimization Plan (Phased Approach):**
+
+**Phase 1: Low-Risk Configuration Fixes** ✅ IMPLEMENTING
+1. Update `playwright.config.ci.ts` to only test chromium (honest browser scope)
+2. Tighten lint warnings from 999 to 50 (incremental quality improvement)
+3. Validate CI still passes
+
+**Phase 2: Build Optimization** 📋 PLANNED
+4. Share Next.js build artifacts between jobs (eliminate duplicate build)
+5. Remove unused `setup` job
+6. Keep PostgreSQL services in jobs that need them
+7. Validate CI passes and is ~2min faster
+
+**Phase 3: Test Coverage Expansion** 📋 FUTURE
+8. Create API test files under `tests/api/`
+9. Add API tests job to CI
+10. Add migration validation job
+11. Add security scanning job (OSV)
+12. Optional: Enable cross-browser matrix
+
+**Rejected from external proposal:**
+- ❌ Using `corepack enable` without explicit pnpm/action-setup (less reliable)
+- ❌ Wrong artifact action SHAs (already fixed correctly)
+- ❌ Uploading `node_modules/.prisma` (pnpm symlinks, better to regenerate)
+- ❌ Adding jobs for non-existent test files (would fail immediately)
+
+---
+
+## 🔒 GitGuardian Secret Remediation - COMPLETED (with issues)
+
+**Date**: 2025-10-08
+**Status**: ✅ Secrets removed from codebase/history | ⚠️ Operational mistake requiring fix
+
+### Work Done:
+
+1. **Configured GitGuardian Pre-commit Hook**:
+   - ✅ Created `scripts/check-secrets-gitguardian.sh` with auto-install of ggshield
+   - ✅ Updated `.husky/pre-commit` to use GitGuardian scanner
+   - ✅ Handles macOS externally-managed Python (pipx, --break-system-packages)
+
+2. **Full Repository Scan**:
+   - ✅ Scanned `.env.example`, `.env.local.example`, API routes, configs
+   - ✅ Found 2 GitGuardian incidents:
+     - **#20391538 (Critical)**: Valid Sentry auth token in `.env.example`
+     - **#20391496 (High)**: Generic password patterns (94 occurrences, mostly test data)
+
+3. **Secret Removal**:
+   - ✅ Removed Sentry token from `.env.example` (commit 72232e0)
+   - ✅ Removed Datadog API key from `.env.example`
+   - ✅ Cleaned **315 commits** from git history using `git filter-repo`
+   - ✅ Force-pushed cleaned history to `feature/H1-H2-security-hardening`
+   - ✅ Verified 0 occurrences in current codebase and history
+
+4. **False Positive Reduction**:
+   - ✅ Created `.gitguardian.yaml` configuration
+   - ✅ Excluded test directories, build artifacts
+   - ✅ Whitelisted test patterns (`password`, `postgresql://user:password@localhost`)
+
+### ⚠️ Critical Issue Identified:
+
+**Problem**: Removed secrets from `.env.example` WITHOUT migrating to `.env` first
+- Resulted in lost secrets (Sentry token, Datadog API key)
+- Application would fail without these credentials
+- Poor operational thinking - focused on git cleanup without considering runtime needs
+
+**Fix Applied**:
+- ✅ Recovered secrets from git history and security reports
+- ✅ Added to `.env` with warnings that they're COMPROMISED
+- ✅ Application functional again, but secrets need rotation ASAP
+
+**Root Cause**: Narrow focus on "remove from git" task without considering:
+- Where secrets need to exist for app to function (.env)
+- Proper migration workflow (copy to .env FIRST, then clean git)
+- Better alternative: Add `.env.example` to `.gitignore` temporarily
+
+### Outstanding User Actions:
+
+1. **GitGuardian Dashboard** (Manual - MCP token is read-only):
+   - Close incident #20391538 as "Secret Revoked"
+   - Close incident #20391496 as "Test Data / False Positive"
+   - URLs: https://dashboard.gitguardian.com/workspace/748593/incidents/
+
+2. **Rotate Compromised Secrets** (CRITICAL):
+   - Sentry token: `sntryu_d527...c9a8f7` (confirmed leaked, evidence in logs)
+   - Datadog API key: `2f12bd36...` (exposed in git history)
+   - All other API keys as precaution before production
+
+3. **Team Coordination**:
+   - After merging, team members may need to re-clone (git history rewritten)
+
+### Files Modified:
+- `.env.example` - Secrets removed, placeholders added
+- `.env` - Secrets recovered and added (COMPROMISED, need rotation)
+- `.gitguardian.yaml` - Created
+- `.husky/pre-commit` - Updated
+- `scripts/check-secrets-gitguardian.sh` - Created
+- Git history - 315 commits cleaned
+
+### Lessons Learned:
+- ❌ Don't remove secrets from code without ensuring they're preserved in proper location first
+- ✅ Think through full operational workflow, not just immediate task
+- ✅ `.env` (gitignored) is where real secrets belong, `.env.example` should only have placeholders
+- ✅ Git history cleanup is permanent - verify migration BEFORE cleanup
+
+---
+
 ## 📚 Related Documentation
 
 - **PR #6**: https://github.com/mirqtio/anthrasite.io/pull/6

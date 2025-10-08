@@ -1,12 +1,23 @@
-import { defineConfig } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test'
 import base from './playwright.config'
 
 /**
  * CI-specific Playwright configuration
  * Extends base config with settings optimized for GitHub Actions
+ *
+ * NOTE: CI only tests Chromium for speed and reliability.
+ * Base config includes 5 browsers for local development.
+ * Enable cross-browser matrix in CI when needed.
  */
 export default defineConfig({
   ...base,
+  // CI only tests Chromium (override base config's 5-browser matrix)
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
   webServer: base.webServer
     ? {
         ...base.webServer,

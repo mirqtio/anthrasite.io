@@ -6,7 +6,7 @@
     "dev": "next dev -p 3333",
     "build": "prisma generate && next build",
     "start": "next start -p 3333",
-    "lint": "next lint",
+    "lint": "next lint --max-warnings=300",
     "test": "jest",
     "test:unit": "jest --ci",
     "test:unit:coverage": "jest --ci --coverage",
