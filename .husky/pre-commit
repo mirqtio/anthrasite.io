@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Check for secrets first
-echo "🔍 Checking for secrets..."
-./scripts/check-secrets.sh
+# Check for secrets with GitGuardian
+echo "🔍 Checking for secrets with GitGuardian..."
+./scripts/check-secrets-gitguardian.sh
 if [ $? -ne 0 ]; then
   echo "❌ Secret check failed! Please remove any hardcoded secrets."
   exit 1
