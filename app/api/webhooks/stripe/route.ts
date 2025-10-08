@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { prisma } from '@/lib/db'
 import { trackEvent } from '@/lib/analytics/analytics-server'
-// ARCHIVED: SendGrid provider removed in G3
-// import { sendEmail } from '@/lib/email/sendgrid'
-// TODO (D3): Import Gmail SMTP provider
-// import { sendPurchaseConfirmation } from '@/lib/email/gmail'
+import { sendPurchaseConfirmationEmail } from '@/lib/email'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-05-28.basil',
@@ -24,10 +21,7 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
   } catch (error) {
     console.error('Webhook signature verification failed:', error)
-    return NextResponse.json(
-      { error: 'Invalid signature' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
   try {
@@ -35,7 +29,7 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
-        
+
         // Extract metadata
         const businessId = session.metadata?.businessId
         const utm = session.metadata?.utm
@@ -46,7 +40,32 @@ export async function POST(request: NextRequest) {
           break
         }
 
-        // Create purchase record
+        // Extract customer email from Stripe session
+        // Priority: customer_details.email > customer_email > business.email (fallback)
+        let customerEmail =
+          session.customer_details?.email || session.customer_email || null
+
+        // If no email from Stripe, fallback to business email with warning
+        if (!customerEmail) {
+          const business = await prisma.business.findUnique({
+            where: { id: businessId },
+            select: { email: true },
+          })
+
+          if (business?.email) {
+            customerEmail = business.email
+            console.warn(
+              JSON.stringify({
+                event: 'customer_email_fallback_to_business',
+                purchaseId: 'pending',
+                businessId,
+                reason: 'No customer_email in Stripe session',
+              })
+            )
+          }
+        }
+
+        // Create purchase record with customer email
         const purchase = await prisma.purchase.create({
           data: {
             businessId,
@@ -56,11 +75,12 @@ export async function POST(request: NextRequest) {
             currency: session.currency!,
             status: 'completed',
             utmToken: utm,
+            customerEmail,
+          },
+          include: {
+            business: true,
           },
         })
-
-        // Business record already linked via purchase.businessId
-        // No need to update business - purchase status tracked in Purchase model
 
         // Track successful purchase
         await trackEvent('purchase_completed', {
@@ -71,29 +91,15 @@ export async function POST(request: NextRequest) {
           utm,
         })
 
-        // TODO (D3): Send confirmation email via Gmail SMTP
-        // const business = await prisma.business.findUnique({
-        //   where: { id: businessId },
-        // })
-        //
-        // if (business?.email) {
-        //   await sendPurchaseConfirmation({
-        //     to: business.email,
-        //     businessName: business.name,
-        //     domain: business.domain,
-        //     purchaseId: purchase.id,
-        //     amount: purchase.amount,
-        //   })
-        // }
-
-        console.log('Purchase confirmation email disabled - implement Gmail SMTP in D3')
+        // Send confirmation email (awaited for reliability in Vercel Node runtime)
+        await sendPurchaseConfirmationEmail(purchase, { eventId: event.id })
 
         break
       }
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        
+
         const businessId = paymentIntent.metadata?.businessId
         if (businessId) {
           // Track failed payment
@@ -165,7 +171,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true })
   } catch (error) {
     console.error('Webhook processing error:', error)
-    
+
     // Return success to avoid Stripe retries for processing errors
     // Log the error for monitoring
     await trackEvent('webhook_error', {

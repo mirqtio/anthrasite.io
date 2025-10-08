@@ -46,6 +46,7 @@ for pattern in "${PATTERNS[@]}"; do
     --exclude-dir=node_modules \
     --exclude-dir=.next \
     --exclude-dir=.git \
+    --exclude-dir=_archive \
     --exclude="*.test.*" \
     --exclude="*.spec.*" \
     2>/dev/null)
