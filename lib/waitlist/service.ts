@@ -199,7 +199,7 @@ export async function addToWaitlist(
     }
   } catch (error) {
     captureError(error as Error, { data })
-    
+
     // Log more details about the error
     console.error('Waitlist signup database error:', {
       message: (error as Error).message,
@@ -208,9 +208,13 @@ export async function addToWaitlist(
     })
 
     // Check if this is a database connection error and fallback to in-memory storage
-    if ((error as any).code === 'P1001' || (error as any).code === 'P1002' || (error as any).code === 'P2021') {
+    if (
+      (error as any).code === 'P1001' ||
+      (error as any).code === 'P1002' ||
+      (error as any).code === 'P2021'
+    ) {
       console.log('Database unavailable, using fallback storage')
-      
+
       // Retry with fallback storage
       const normalizedDomain = normalizeDomain(data.domain)
       const existing = await fallbackStorage.findByDomain(normalizedDomain)
@@ -315,7 +319,11 @@ export async function getWaitlistStats(): Promise<{
     captureError(error as Error)
 
     // Try fallback storage if database fails
-    if ((error as any).code === 'P1001' || (error as any).code === 'P1002' || (error as any).code === 'P2021') {
+    if (
+      (error as any).code === 'P1001' ||
+      (error as any).code === 'P1002' ||
+      (error as any).code === 'P2021'
+    ) {
       console.log('Database unavailable for stats, using fallback storage')
       return await fallbackStorage.getStats()
     }

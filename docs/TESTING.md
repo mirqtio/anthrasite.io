@@ -73,6 +73,7 @@ curl -X POST https://your-site.com/api/admin/generate-utm \
 ### 3. Test Harness Page (Production-Safe)
 
 Visit `/test-harness` with authentication to:
+
 - Generate test tokens
 - Access all test scenarios
 - Get direct links for testing
@@ -102,16 +103,19 @@ TEST_ENV=production PROD_ADMIN_API_KEY=xxx npm run test:e2e
 ### Critical User Flows
 
 1. **Organic Visitor Flow**
+
    - Visit homepage without UTM → See organic content
    - Click "Join Waitlist" → Modal appears
    - Submit email → Success message
 
 2. **Purchase Flow (Valid UTM)**
+
    - Visit with valid UTM → See purchase homepage
    - Click "Get Report" → Redirect to /purchase
    - See pricing → Click checkout → Redirect to Stripe
 
 3. **Purchase Flow (Invalid UTM)**
+
    - Visit with invalid UTM → Redirect to homepage
    - Visit with expired UTM → Redirect to /link-expired
 
@@ -138,6 +142,7 @@ TEST_ENV=production PROD_ADMIN_API_KEY=xxx npm run test:e2e
 ## Monitoring Test Impact
 
 Track test sessions separately:
+
 - Use specific business IDs for tests (prefix with "test-")
 - Filter analytics by test user agents
 - Monitor for anomalies in conversion data
@@ -150,7 +155,7 @@ name: E2E Tests
 on:
   pull_request:
   deployment_status:
-    
+
 jobs:
   test:
     if: github.event.deployment_status.state == 'success'
@@ -172,14 +177,17 @@ jobs:
 ### Common Issues
 
 1. **"Unauthorized" error from admin API**
+
    - Check ADMIN_API_KEY is set correctly
    - Verify environment allows token generation
 
 2. **Middleware redirects in development**
+
    - Ensure UTM_BYPASS_TOKEN is set
    - Check ENABLE_TEST_MODE=true
 
 3. **Test harness not accessible**
+
    - Verify NEXT_PUBLIC_ENABLE_TEST_HARNESS=true
    - Check authentication key is correct
 

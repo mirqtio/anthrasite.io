@@ -118,12 +118,12 @@ export function Analytics() {
       script.async = true
       script.onload = () => {
         console.log('[GA4] Script loaded successfully')
-        
+
         // Initialize gtag after script loads
         window.dataLayer = window.dataLayer || []
         // Define gtag function - IMPORTANT: must use arguments, not spread operator
         // eslint-disable-next-line prefer-rest-params
-        window.gtag = function() {
+        window.gtag = function () {
           // eslint-disable-next-line prefer-rest-params
           window.dataLayer!.push(arguments)
         }

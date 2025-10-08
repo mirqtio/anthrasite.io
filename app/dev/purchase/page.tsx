@@ -187,8 +187,12 @@ export default function DevPurchasePage() {
             </p>
 
             <div className="text-[36px] md:text-[48px] font-thin text-green-500 mb-2 whitespace-nowrap">
-              <span className="inline-block">{mockReportPreview.estimatedValue.split('-')[0]}-</span>
-              <span className="inline-block">{mockReportPreview.estimatedValue.split('-')[1]}</span>
+              <span className="inline-block">
+                {mockReportPreview.estimatedValue.split('-')[0]}-
+              </span>
+              <span className="inline-block">
+                {mockReportPreview.estimatedValue.split('-')[1]}
+              </span>
             </div>
             <p className="text-[20px] md:text-[24px] mb-10">
               in revenue improvement
@@ -202,7 +206,9 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.performanceScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Performance</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Performance
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -210,7 +216,9 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.visualScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Visual</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Visual
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -218,7 +226,9 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.seoScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">SEO</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  SEO
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -226,7 +236,9 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.trustScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Trust</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Trust
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -234,7 +246,11 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.socialScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight break-words">Social/<wbr/>Reviews</div>
+                <div className="text-[14px] md:text-[24px] leading-tight break-words">
+                  Social/
+                  <wbr />
+                  Reviews
+                </div>
               </div>
               <div className="text-center">
                 <div
@@ -242,7 +258,9 @@ export default function DevPurchasePage() {
                 >
                   {mockReportPreview.metrics.mobileScore}
                 </div>
-                <div className="text-[14px] md:text-[24px] leading-tight">Mobile</div>
+                <div className="text-[14px] md:text-[24px] leading-tight">
+                  Mobile
+                </div>
               </div>
             </div>
           </motion.div>

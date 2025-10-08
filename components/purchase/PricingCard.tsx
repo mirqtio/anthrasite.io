@@ -149,7 +149,7 @@ export function PricingCard({
                 {isLoading ? (
                   <span className="opacity-60">Processing...</span>
                 ) : (
-                  'Get Your Report for $99'
+                  'Get Your Report for $399'
                 )}
               </button>
             </div>

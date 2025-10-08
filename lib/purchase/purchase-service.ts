@@ -3,7 +3,8 @@ import { Business } from '@prisma/client'
 import { validateUTMToken } from '@/lib/utm/crypto'
 import { createCheckoutSession as createStripeSession } from '@/lib/stripe/checkout'
 import { headers } from 'next/headers'
-import { AbandonedCartService } from '@/lib/abandoned-cart/service'
+// ARCHIVED: Abandoned cart service removed in G3
+// import { AbandonedCartService } from '@/lib/abandoned-cart/service'
 import {
   fetchBusinessByUTMDev,
   createCheckoutSessionDev,
@@ -125,13 +126,14 @@ export async function createCheckoutSession(
       baseUrl,
     })
 
-    // Track abandoned cart
-    const abandonedCartService = new AbandonedCartService({ baseUrl })
-    await abandonedCartService.trackAbandonedSession({
-      session,
-      businessId,
-      utmToken: utm,
-    })
+    // ARCHIVED (G3): Abandoned cart tracking disabled
+    // TODO (D4): Re-implement abandoned cart with Gmail SMTP
+    // const abandonedCartService = new AbandonedCartService({ baseUrl })
+    // await abandonedCartService.trackAbandonedSession({
+    //   session,
+    //   businessId,
+    //   utmToken: utm,
+    // })
 
     return {
       id: session.id,

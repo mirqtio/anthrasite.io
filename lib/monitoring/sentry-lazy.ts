@@ -54,7 +54,7 @@ export async function initSentryLazy() {
         return event
       },
     })
-    
+
     sentryInitialized = true
   })
 

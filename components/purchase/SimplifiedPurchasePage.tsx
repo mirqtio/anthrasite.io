@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Logo } from '@/components/Logo'
 import { ReportPreviewData } from '@/lib/purchase/purchase-service'
-import { Business } from '@prisma/client'
+import type { Business } from '@prisma/client'
 import { useState } from 'react'
 
 interface SimplifiedPurchasePageProps {

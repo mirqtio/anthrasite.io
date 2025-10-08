@@ -8,10 +8,7 @@ export async function POST(request: NextRequest) {
     const { domain } = body
 
     if (!domain) {
-      return NextResponse.json(
-        { error: 'Domain is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Domain is required' }, { status: 400 })
     }
 
     // Validate the domain
