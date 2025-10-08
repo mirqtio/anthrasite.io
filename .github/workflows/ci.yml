@@ -155,7 +155,7 @@ jobs:
         run: pnpm run test:unit -- --reporters=default --reporters=jest-junit
       - name: Upload unit test report
         if: always()
-        uses: actions/upload-artifact@b4b15b8c7c6f8f88b1a9d2b4f06c5c2b2b06af3c # v4.5.0
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: junit-unit
           path: test-results/junit-unit.xml
@@ -220,7 +220,7 @@ jobs:
         timeout-minutes: 15
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@b4b15b8c7c6f8f88b1a9d2b4f06c5c2b2b06af3c # v4.5.0
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: playwright-report
           path: playwright-report
