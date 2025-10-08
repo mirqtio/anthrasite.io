@@ -70,6 +70,7 @@ model Purchase {
   amount                Int       // Amount in cents
   currency              String    @default("usd")
   customerEmail         String?
+  confirmationEmailSentAt DateTime?
   status                String    // pending, completed, failed
   metadata              Json?
   createdAt             DateTime  @default(now())

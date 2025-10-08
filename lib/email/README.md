@@ -1,214 +1,204 @@
 # Email Integration
 
-This module provides SendGrid email integration for Anthrasite.io, handling transactional emails for orders, reports, and customer communications.
+This module provides Gmail SMTP email integration for Anthrasite.io, handling purchase confirmation emails.
 
 ## Features
 
-- **Email Templates**: Pre-built responsive HTML email templates
-- **Automatic Retry**: Failed emails are queued and retried with exponential backoff
-- **Event Tracking**: Track email delivery, opens, clicks, bounces, and complaints
-- **Webhook Integration**: Process SendGrid events to update email status
-- **Type Safety**: Full TypeScript support with comprehensive types
+- **Gmail SMTP**: Reliable email delivery via Gmail's SMTP server
+- **Idempotent Sends**: Purchase confirmation emails sent exactly once per purchase
+- **Feature Flags**: Enable/disable emails and dry-run mode via environment variables
+- **Dry-Run Mode**: Test email flow without sending real emails
+- **Safe Logging**: Only logs purchase IDs and event IDs (no PII)
+- **Type Safety**: Full TypeScript support
 
 ## Configuration
 
 Set the following environment variables:
 
 ```env
-# Required
-SENDGRID_API_KEY=your-api-key
+# Required for Gmail SMTP
+GMAIL_USER=your-email@anthrasite.io
+GMAIL_APP_PASSWORD=your-app-specific-password
 
-# Optional (with defaults)
-SENDGRID_FROM_EMAIL=noreply@anthrasite.io
-SENDGRID_FROM_NAME=Anthrasite
-SENDGRID_REPLY_TO_EMAIL=support@anthrasite.io
-SENDGRID_REPLY_TO_NAME=Anthrasite Support
-
-# For webhook signature verification
-SENDGRID_WEBHOOK_KEY=your-webhook-key
-SENDGRID_WEBHOOK_PUBLIC_KEY=your-public-key
-
-# Development mode
-SENDGRID_SANDBOX_MODE=true  # Set to false to send real emails in dev
+# Feature flags
+EMAIL_CONFIRMATION_ENABLED=false  # Set to 'true' to enable emails
+EMAIL_DRY_RUN=true                # Set to 'false' for real sends
 ```
+
+### Gmail App Password Setup
+
+1. Enable 2-factor authentication on your Google account
+2. Go to https://myaccount.google.com/apppasswords
+3. Generate an app-specific password for "Mail"
+4. Use this password (not your regular password) in `GMAIL_APP_PASSWORD`
+
+See: https://support.google.com/accounts/answer/185833
 
 ## Usage
 
-### Sending Emails
+### Sending Purchase Confirmation Emails
+
+The email facade is automatically called by the Stripe webhook handler:
 
 ```typescript
-import {
-  sendOrderConfirmation,
-  sendReportReady,
-  sendWelcomeEmail,
-} from '@/lib/email'
+import { sendPurchaseConfirmationEmail } from '@/lib/email'
 
-// Send order confirmation
-await sendOrderConfirmation({
-  to: 'customer@example.com',
-  customerName: 'John Doe',
-  orderId: 'order-123',
-  businessDomain: 'example.com',
-  amount: 9900,
-  currency: 'usd',
-  purchaseDate: new Date(),
-})
-
-// Send report ready notification
-await sendReportReady({
-  to: 'customer@example.com',
-  customerName: 'John Doe',
-  orderId: 'order-123',
-  businessDomain: 'example.com',
-  reportUrl: 'https://anthrasite.io/reports/123',
-  expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-})
-
-// Send welcome email
-await sendWelcomeEmail({
-  to: 'customer@example.com',
-  customerName: 'John Doe',
-  businessDomain: 'example.com',
-})
+// Called automatically in webhook (app/api/webhooks/stripe/route.ts)
+await sendPurchaseConfirmationEmail(purchase, { eventId: event.id })
 ```
 
-### Email Queue
+### Idempotency
 
-Failed emails are automatically queued for retry:
+Emails are sent exactly once per purchase using the `Purchase.confirmationEmailSentAt` timestamp:
 
-```typescript
-import { getEmailQueueStats, processRetryQueue } from '@/lib/email'
+- If `confirmationEmailSentAt` is already set → email skipped (logged)
+- If null → email sent and timestamp set
+- Replaying the same Stripe event will not send duplicate emails
 
-// Get queue statistics
-const stats = getEmailQueueStats()
-console.log(`Pending emails: ${stats.pending}`)
-console.log(`Failed emails: ${stats.failed}`)
+### Dry-Run Mode
 
-// Manually process retry queue (normally automatic)
-await processRetryQueue()
-```
+When `EMAIL_DRY_RUN=true`, instead of sending emails, the system writes two files to `/tmp/mailbox/`:
 
-## Email Templates
+1. `[timestamp]_[purchaseUid].meta.json` - Email metadata (to, from, subject)
+2. `[timestamp]_[purchaseUid].eml` - Full email in EML format
 
-### Available Templates
+This allows testing the entire email flow without actual SMTP calls.
 
-1. **Order Confirmation** (`orderConfirmation`)
+## Email Template
 
-   - Sent immediately after successful payment
-   - Includes order details and next steps
+Purchase confirmation emails include:
 
-2. **Report Ready** (`reportReady`)
+- **Subject**: "Your Anthrasite Website Audit - Order Confirmation"
+- **Content**:
+  - Order details (Order ID, amount, website domain)
+  - Next steps (analysis timeline, report delivery)
+  - Support contact information
+- **Formats**: Both plain text and HTML versions
 
-   - Sent when the business report is ready
-   - Includes download link with expiration warning
-
-3. **Welcome Email** (`welcomeEmail`)
-   - Sent to first-time customers
-   - Explains Anthrasite features and benefits
-
-### Template Structure
-
-All templates use a consistent base template with:
-
-- Responsive design (mobile-friendly)
-- Dark mode support
-- Consistent header/footer
-- Call-to-action buttons
-- Proper email client compatibility
-
-## Webhook Integration
-
-### SendGrid Events
-
-Configure SendGrid to send events to:
+## Architecture
 
 ```
-https://your-domain.com/api/sendgrid/webhook
+Stripe Webhook (checkout.session.completed)
+  ↓
+Extract customer email from session
+  ↓
+Create Purchase record (with customerEmail)
+  ↓
+sendPurchaseConfirmationEmail()
+  ├─ Check EMAIL_CONFIRMATION_ENABLED flag
+  ├─ Check confirmationEmailSentAt (idempotency)
+  ├─ If EMAIL_DRY_RUN=true → Write to /tmp/mailbox/
+  ├─ Else → Send via Gmail SMTP
+  └─ Update Purchase.confirmationEmailSentAt
 ```
 
-The webhook processes these events:
+## Logging
 
-- `delivered`: Email successfully delivered
-- `bounce`: Email bounced (hard/soft)
-- `complaint`: Spam complaint
-- `unsubscribed`: User unsubscribed
-- `open`: Email opened
-- `click`: Link clicked
+All logs use structured JSON and exclude PII:
 
-### Purchase Metadata
-
-Email events update the purchase record metadata:
-
-```typescript
+```json
 {
-  // Delivery status
-  emailDelivered: boolean
-  emailDeliveredAt: string
-
-  // Bounce information
-  emailBounced: boolean
-  emailBouncedAt: string
-  emailBounceReason: string
-  emailBounceType: 'hard' | 'soft'
-
-  // Engagement metrics
-  emailOpened: boolean
-  emailOpenCount: number
-  emailLastOpenedAt: string
-  emailClicked: boolean
-  emailClicks: Array<{ url: string; timestamp: string }>
-  emailLastClickedAt: string
-
-  // Complaints
-  emailComplaint: boolean
-  emailComplaintAt: string
+  "event": "purchase_confirmation_sent",
+  "purchaseUid": "550e8400-e29b-41d4-a716-446655440000",
+  "eventId": "evt_1234567890abcdef"
 }
 ```
 
+Email addresses are **never** logged.
+
+## Error Handling
+
+Email send failures are caught and logged but do not crash the webhook:
+
+```json
+{
+  "event": "email_send_error",
+  "purchaseUid": "550e8400-e29b-41d4-a716-446655440000",
+  "eventId": "evt_1234567890abcdef",
+  "error": "SMTP connection failed"
+}
+```
+
+The webhook returns `200 OK` to Stripe even if email fails (purchase is still recorded).
+
 ## Testing
 
-Run the email tests:
+### Test with Dry-Run Mode
 
 ```bash
-npm test lib/email
+# Set environment variables
+export EMAIL_CONFIRMATION_ENABLED=true
+export EMAIL_DRY_RUN=true
+export GMAIL_USER=test@anthrasite.io
+
+# Trigger webhook with Stripe CLI
+stripe trigger checkout.session.completed
+
+# Check dry-run output
+ls -la /tmp/mailbox/
+cat /tmp/mailbox/*.meta.json
 ```
 
-### Mock SendGrid in Tests
+### Test Idempotency
 
-```typescript
-jest.mock('@sendgrid/mail', () => ({
-  default: {
-    setApiKey: jest.fn(),
-    send: jest.fn(),
-  },
-}))
+```bash
+# Replay the same event
+stripe events resend evt_1234567890abcdef
+
+# Check logs - should show "email_already_sent"
 ```
 
-## Best Practices
+## Migration from SendGrid
 
-1. **Always handle email failures gracefully** - Don't let email failures break the main flow
-2. **Use sandbox mode in development** - Prevents accidental emails to real addresses
-3. **Monitor the retry queue** - Check for persistent failures
-4. **Keep templates simple** - Complex HTML may not render correctly in all clients
-5. **Test with real email clients** - Use tools like Litmus or Email on Acid
+This module replaces the legacy SendGrid integration (archived in G3).
+
+**Key differences:**
+
+- SendGrid used API key → Gmail uses SMTP with app password
+- SendGrid had template IDs → Gmail uses inline templates
+- SendGrid had webhook events → Gmail confirmation is timestamp-based
+
+**Migration path:**
+
+- All SendGrid files archived to `_archive/lib/email/`
+- Error stub at `lib/email/sendgrid.ts` catches legacy imports
+- See `_archive/ARCHIVE_INDEX.md` for restoration instructions
+
+## Future Enhancements
+
+Planned for later epics:
+
+- **Queue-based sending** (Epic C) - Move email to job queue for better reliability
+- **Retry logic** (Epic F) - Automatic retries on transient failures
+- **Report delivery emails** (Epic D) - Send PDF reports when ready
+- **Template system** - Move email content to separate template files
+- **Provider abstraction** - Switch between Gmail/Postmark/SendGrid via config
 
 ## Troubleshooting
 
 ### Emails not sending
 
-1. Check if `SENDGRID_API_KEY` is set
-2. Verify sandbox mode is disabled in production
-3. Check SendGrid account status and limits
+1. Check `EMAIL_CONFIRMATION_ENABLED=true` is set
+2. Verify `GMAIL_USER` and `GMAIL_APP_PASSWORD` are correct
+3. Check Gmail account has 2FA enabled and app password created
+4. Review logs for `email_send_error` events
 
-### High bounce rate
+### Dry-run files not created
 
-1. Implement email validation before sending
-2. Monitor bounce reasons in webhook events
-3. Maintain a suppression list
+1. Check `/tmp/mailbox/` directory exists and is writable
+2. Verify `EMAIL_DRY_RUN=true` is set
+3. Check logs for `email_dry_run_written` events
 
-### Templates not rendering correctly
+### Duplicate emails
 
-1. Test in multiple email clients
-2. Keep CSS inline
-3. Avoid JavaScript (not supported)
-4. Use table-based layouts for compatibility
+1. Check `Purchase.confirmationEmailSentAt` is being set correctly
+2. Review logs for `email_already_sent` events
+3. Verify Stripe event deduplication is working
+
+## Best Practices
+
+1. **Never log email addresses** - Use purchaseUid for correlation
+2. **Always use dry-run in development** - Prevents accidental sends
+3. **Monitor Gmail sending limits** - 500/day for free accounts, 2000/day for Google Workspace
+4. **Test idempotency** - Replay Stripe events to verify no duplicates
+5. **Handle failures gracefully** - Email errors shouldn't break purchases
