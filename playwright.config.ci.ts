@@ -30,6 +30,8 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
+  // Configure reporters for CI
+  reporter: [['line'], ['html']],
   // Tighten retries for CI determinism
   retries: 1,
 })
