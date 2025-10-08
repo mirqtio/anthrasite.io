@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test'
-import { generateUTMUrl } from '@/lib/utm/crypto'
+import {
+  encodePayload,
+  createSignature,
+  createUTMParameter,
+  type UTMPayload,
+} from '@/lib/utm/crypto'
 import { createAndStoreToken } from '@/lib/utm/storage'
 import { prisma } from '@/lib/db'
 import { getTestBaseUrl } from './helpers/test-config'
@@ -18,6 +23,35 @@ test.describe('UTM Parameter Validation', () => {
         },
       },
     })
+  }
+
+  // Helper to create UTM URL with stored token
+  async function createStoredUTMUrl(
+    baseUrl: string,
+    businessId: string
+  ): Promise<string> {
+    // Create and store token in DB
+    const { nonce } = await createAndStoreToken(businessId)
+
+    // Build UTM token with the stored nonce
+    const now = Date.now()
+    const expires = now + 24 * 60 * 60 * 1000 // 24 hours
+
+    const payload: UTMPayload = {
+      businessId,
+      timestamp: now,
+      nonce,
+      expires,
+    }
+
+    const encodedPayload = encodePayload(payload)
+    const signature = await createSignature(encodedPayload)
+    const utm = createUTMParameter({ payload: encodedPayload, signature })
+
+    // Build URL
+    const url = new URL(baseUrl)
+    url.searchParams.set('utm', utm)
+    return url.toString()
   }
 
   // Helper to cleanup test data
@@ -48,9 +82,9 @@ test.describe('UTM Parameter Validation', () => {
       page,
       request,
     }) => {
-      // Setup: Create business and generate UTM
+      // Setup: Create business and generate UTM with stored token
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl(
+      const utmUrl = await createStoredUTMUrl(
         `${getTestBaseUrl()}/purchase`,
         business.id
       )
@@ -88,7 +122,7 @@ test.describe('UTM Parameter Validation', () => {
       page,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl(getTestBaseUrl(), business.id)
+      const utmUrl = await createStoredUTMUrl(getTestBaseUrl(), business.id)
 
       try {
         // Navigate to homepage with UTM
@@ -162,7 +196,7 @@ test.describe('UTM Parameter Validation', () => {
 
     test('should redirect for tampered UTM', async ({ page }) => {
       const business = await createTestBusiness()
-      const validUrl = await generateUTMUrl(
+      const validUrl = await createStoredUTMUrl(
         `${getTestBaseUrl()}/purchase`,
         business.id
       )
@@ -191,8 +225,7 @@ test.describe('UTM Parameter Validation', () => {
   test.describe('One-time use enforcement', () => {
     test('should prevent reuse of UTM token', async ({ page, request }) => {
       const business = await createTestBusiness()
-      const { token, nonce } = await createAndStoreToken(business.id)
-      const utmUrl = await generateUTMUrl(
+      const utmUrl = await createStoredUTMUrl(
         `${getTestBaseUrl()}/purchase`,
         business.id
       )
