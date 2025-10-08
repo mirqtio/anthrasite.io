@@ -188,8 +188,30 @@ Include in `stripe.paymentIntents.create()`:
 - `.env.example` - Added feature flag
 - `package.json` - Stripe dependencies updated
 
-**Ready for:**
+**Pull Request:**
 
-1. E2E test updates
-2. Local testing with Stripe CLI
-3. Feature branch creation and PR
+- Created PR #5: https://github.com/mirqtio/anthrasite.io/pull/5
+- Branch: `feature/A1-payment-element` (commit 927298f)
+
+**Current Status: Build Failing ❌**
+
+Build error encountered during pre-push:
+
+```
+Attempted import error: 'getStripe' is not exported from '@/lib/stripe/client'
+```
+
+This will block:
+
+- Vercel preview deployment
+- GitHub Actions CI
+- PR merge
+
+**Issue:** The `getStripe` import in `app/purchase/success/page.tsx` is causing build failure despite the export existing in `lib/stripe/client.ts`. The import is only used in the old redirect flow fallback path.
+
+**Next Actions:**
+
+1. Fix `getStripe` import/build issue
+2. Verify Vercel preview deployment succeeds
+3. E2E test updates (after build is green)
+4. Local testing with Stripe CLI (after build is green)

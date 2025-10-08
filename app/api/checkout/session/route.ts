@@ -4,11 +4,22 @@ import { validateUTMToken } from '@/lib/utm/crypto'
 import { prisma } from '@/lib/db'
 import { trackEvent } from '@/lib/analytics/analytics-server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-05-28.basil',
-})
+// Force dynamic rendering - prevents build-time execution
+export const dynamic = 'force-dynamic'
+
+// Lazy initialization to prevent build-time execution
+let stripeInstance: Stripe | null = null
+function getStripe() {
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2025-05-28.basil',
+    })
+  }
+  return stripeInstance
+}
 
 export async function POST(request: NextRequest) {
+  const stripe = getStripe()
   try {
     const body = await request.json()
     const { utm, businessId } = body
