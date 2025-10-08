@@ -1,9 +1,9 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
-- **Total Effort (Estimated)**: 83 Story Points
-- **Completed Points**: 0 Points
-- **Remaining Points**: 83 Points
-- **Estimated Completion**: ~11 Workdays
+- **Total Effort (Estimated)**: 95 Story Points
+- **Completed Points**: 24 Points
+- **Remaining Points**: 71 Points
+- **Estimated Completion**: ~10 Workdays
 
 ---
 
@@ -11,18 +11,19 @@
 
 This section lists all launch-critical issues for the Anthrasite.io payment site.
 
-### EPIC G - Codebase Cleanup - (8 pts)
+### EPIC G - Codebase Cleanup & Build Stabilization - (21 pts)
 
-**Goal:** Aggressively refactor the codebase to establish a clean, minimal baseline for development.
+**Goal:** Aggressively refactor the codebase, fix critical build issues, and establish a clean, stable baseline for future development.
 
-- **G1 (8 pts)**: Archive all non-essential files and directories, then run a full test and fix cycle to ensure the core purchase flow remains functional.
-- **Status**: `IN_PROGRESS`
+- **G1 (21 pts)**: Combined task including initial codebase cleanup (G1), fixing critical build hangs (G2), and archiving unused features (G3).
+- **Status**: `CLOSED`
+- **Commit**: `30835ed`
 - **Checklist**:
-    - [ ] 0. Pre-flight: Create safety branch and golden path smoke test.
-    - [ ] 1. Archive: Move non-essential files to a tracked `_archive` directory.
-    - [ ] 2. Validate & Fix: Run `typecheck`, `build`, and `test:e2e` in a loop until the smoke test passes.
-    - [ ] 3. Evidence: Provide passing test logs, git status, and final file tree.
-    - [ ] 4. Guardrails: Add environment checks and a `@smoke` test suite to CI before merging.
+    - [x] 0. Pre-flight: Create safety branch and golden path smoke test.
+    - [x] 1. Archive: Move non-essential files to a tracked `_archive` directory.
+    - [x] 2. Validate & Fix: Run `typecheck`, `build`, and `test:e2e` in a loop until the smoke test passes.
+    - [x] 3. Evidence: Provide passing test logs, git status, and final file tree.
+    - [x] 4. Guardrails: Added environment checks and a `@smoke` test suite to CI before merging.
 
 
 ### EPIC A — Embedded Payments (Stripe) — 10 pts
@@ -51,14 +52,16 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 -   **C2 (4 pts)**: Managed queue bridge
 -   **C3 (3 pts)**: Temporal kickoff contract
 
-### EPIC D — Report Generation & Delivery — 15 pts
+### EPIC D — Report Generation & Delivery — 16 pts
 
 **Goal:** Deterministic PDF + emailed attachment from a robust ESP.
 
 -   **D0 (3 pts)**: Report template & content design
 -   **D1 (4 pts)**: PDF generation (Playwright, MVP)
 -   **D2 (2 pts)**: Storage & traceability
--   **D3 (4 pts)**: Implement Mailgun for Transactional Emails
+-   **D3 (3 pts)**: Activate Gmail SMTP Provider in Webhook
+-   **Status**: `CLOSED`
+-   **Commit**: `f5a638f`
 -   **D4 (2 pts)**: Resend & fallback download
 
 ### EPIC E — Sales Page & Messaging — 6 pts

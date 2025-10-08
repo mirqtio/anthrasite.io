@@ -1,6 +1,8 @@
-# Anthrasite.io System Architecture (v1.0)
+# Anthrasite.io System Architecture (v1.1)
 
 This document provides a terse, ground-truth overview of the `anthrasite.io` payment and report delivery system. It is the single source of truth for this project's architecture.
+
+**Note**: This system underwent a significant codebase cleanup (G1) in October 2025. Many legacy components and files were moved to a tracked `_archive` directory to establish a clean baseline.
 
 ## 1. Core Principles
 
@@ -65,3 +67,15 @@ graph TD
 - **ADR-P05 (Email Delivery)**: Send reports via **Gmail SMTP** using `nodemailer`. Legacy SendGrid provider archived in G3 (2025-10-07). The implementation includes a simple provider interface to facilitate future migration to a transactional email service (e.g., Postmark).
 - **ADR-P06 (Pricing)**: Pricing is controlled by a **server-side allow-list**. The UTM token carries a tier label, which the server validates against a predefined map of `tier → amount` to prevent client-side price manipulation.
 - **ADR-P07 (Deployment)**: `anthrasite.io` and `LeadShop` remain **separate projects and deployments**. The public webhook and payment infrastructure reside on `anthrasite.io` (Vercel).
+- **ADR-P08 (Build-Time Rendering)**: To prevent build hangs, pages with runtime dependencies (e.g., hooks) must be explicitly marked for dynamic rendering (`export const dynamic = 'force-dynamic'`) and use client-side only imports for dynamic components (`ssr: false`).
+
+## 5. Post-G1 File Structure
+
+- **`/app`**: Core Next.js routing, including API routes and pages.
+- **`/components`**: Reusable React components.
+- **`/docs`**: Project documentation, including ADRs.
+- **`/e2e`**: Playwright end-to-end tests, including the critical smoke tests.
+- **`/lib`**: Shared libraries for services like database access, analytics, and Stripe.
+- **`/prisma`**: Database schema and migration files.
+- **`/public`**: Static assets like images and fonts.
+- **`/_archive`**: A tracked directory containing all non-essential files from before the G1 cleanup. This provides a historical record and allows for easy restoration if needed.
