@@ -1,234 +1,274 @@
-# Implementation Plan: A1 - Switch to Stripe Payment Element
+# H1 & H2 Implementation Plan (Hardened & Locked)
 
-**Issue**: `A1`
-**Status**: Implementation Complete - Ready for Testing
-**Last Updated**: 2025-10-07
+**Last Updated**: 2025-10-08
+**Status**: APPROVED & LOCKED - Ready for Implementation
+**Branch**: `feature/H1-H2-security-hardening`
+**Strategy**: Single PR, two atomic commits (H1 then H2)
 
-## 1. Goal
+---
 
-Migrate from Stripe Checkout (redirect) to Stripe Payment Element (embedded) for a seamless, on-domain payment experience that integrates directly with our webhook and confirmation email workflow.
+## Executive Decisions
 
-## 2. Final Architectural Decisions
+1. **Secrets Scanning**: Replace Gitleaks with **GitGuardian** in CI (keep custom local script for pre-commit)
+2. **Unit Test Quarantine Policy**:
+   - PRs/feature branches: Surface failures, upload reports, **do not block** (`continue-on-error: true`)
+   - `main` and `release/*`: **Strict** - fail pipeline if unit tests fail
+3. **Branching**: Single PR with two commits (H1, then H2) - infra-only, independent of A1
+4. **Workflows**: Archive phased E2E workflows; single hardened CI + GitGuardian workflow
 
-### 2.1 Client Secret Handling
+---
 
-- **DO NOT** store `client_secret` in the database (ephemeral and sensitive)
-- Return it directly from API to client only
-- Use `purchaseUid` + `stripePaymentIntentId` for correlation
+## Phase 0: Pre-flight Fixes (Prerequisites)
 
-### 2.2 Idempotency Strategy
+**Goal**: Fix blocking issues before H1/H2 implementation
 
-- **Option A** (MVP): Create a new `PaymentIntent` on each API call
-- Simple approach, no deduplication for now
-- Future improvement: reuse pending PIs by `purchaseUid` if needed
+### Tasks:
 
-### 2.3 Pricing Authority
+1. Create `playwright.config.ci.ts` (missing file referenced by current CI)
+2. Update `package.json`:
+   - Add `test:unit` and `test:unit:coverage` scripts
+   - Keep `test` as alias for backwards compatibility
+3. Configure `jest-junit` reporter in `jest.config.js`
+4. Install `jest-junit` dependency
+5. Fix `.husky/pre-push` to use `npm` instead of `pnpm`
 
-- **Server-authoritative price**: $399 (39900 cents)
-- UTM tiers resolve to allowlisted price amounts
-- Client never sends an amount (server enforces)
+### Validation:
 
-### 2.4 Package & Feature Flag
+- `npm run test:unit` executes successfully
+- `npm run typecheck` works from pre-push hook
 
-- **Package**: `@stripe/react-stripe-js` (installed ✓)
-- **Flag**: `NEXT_PUBLIC_USE_PAYMENT_ELEMENT` (default: `false`)
+---
 
-### 2.5 Endpoint Strategy
+## Phase 1: H1 - GitGuardian Integration
 
-- **New endpoint**: `POST /api/checkout/payment-intent`
-- Keep existing `POST /api/checkout/session` for fallback during transition
+**Goal**: Replace Gitleaks with GitGuardian for superior secret detection
 
-### 2.6 PaymentIntent Metadata
+### Implementation Steps:
 
-Include in `stripe.paymentIntents.create()`:
+1. **Create CONTRIBUTING.md**: Developer setup guide including local secret scanning best practices
+2. **Create `.github/workflows/gitguardian.yml`**:
+   - Multi-trigger: push, PR, nightly schedule, manual dispatch
+   - Pinned action versions for security
+   - Concurrency control to cancel redundant runs
+3. **Archive `.github/workflows/secrets-check.yml`**: Move to `_archive/workflows/` for history
 
-```json
-{
-  "purchaseUid": "<uuid>",
-  "businessId": "<id>",
-  "utmId": "<token-or-empty>",
-  "sku": "AUDIT_399_V1",
-  "tier": "standard"
-}
+### Commit Message:
+
+```
+feat(H1): Integrate GitGuardian for secret scanning
+
+Replace Gitleaks with GitGuardian in CI pipeline for:
+- Better detection algorithms with fewer false positives
+- Historical scanning capability via nightly schedule
+- Dashboard and policy management
+
+Local pre-commit custom script retained for dev-time checks.
+
+Related to ISSUE H1 (3pts)
 ```
 
-### 2.7 Webhook Coverage (Dual Support)
+### Human Actions Required:
 
-- Handle **`payment_intent.succeeded`** (new embedded flow)
-- Keep **`checkout.session.completed`** (old redirect flow)
-- Both converge on same: mark paid → send D3 confirmation email
+- Add `GITGUARDIAN_API_KEY` secret to GitHub repo settings
+- API key will be needed for validation testing
 
-### 2.8 Success Page Handoff
+---
 
-- `confirmPayment({ confirmParams: { return_url: /purchase/success?purchase=<purchaseUid> } })`
-- Update `/purchase/success` to read `purchase` query param
-- Fallback to session lookup if param missing
+## Phase 2: H2 - Harden CI/CD Pipeline
 
-## 3. Implementation Checklist
+**Goal**: Create deterministic, secure, fast CI with proper dependency management
 
-### Backend
+### Key Improvements:
 
-- [x] Install `@stripe/react-stripe-js` package
-- [x] Add `NEXT_PUBLIC_USE_PAYMENT_ELEMENT` to `.env.example`
-- [x] Create `app/api/checkout/payment-intent/route.ts`:
-  - Validate SKU/tier → resolve amount from server allowlist
-  - Create `Purchase` with `status='pending'`, generate `purchaseUid`
-  - Create `stripe.paymentIntents.create()` with metadata
-  - Persist `stripePaymentIntentId` on Purchase
-  - Return `{ clientSecret: pi.client_secret, purchaseUid }`
-- [x] Update `app/api/webhooks/stripe/route.ts`:
-  - Add `case 'payment_intent.succeeded'`
-  - Find Purchase by `stripePaymentIntentId`
-  - Mark `status='completed'`
-  - Trigger D3 email confirmation (already implemented)
+- **Security**: Pinned action SHAs, minimal permissions, concurrency control
+- **Speed**: Parallel job execution, Playwright caching, frozen lockfile installs
+- **Reliability**: Explicit job dependencies, artifact uploads, JUnit reports
+- **Policy**: Quarantine unit test failures on PRs; strict on `main`
+- **Simplicity**: Single `gate` job for branch protection
 
-### Frontend
+### Implementation Steps:
 
-- [x] Create `components/purchase/CheckoutForm.tsx`:
-  - Use `useStripe()` and `useElements()` from `@stripe/react-stripe-js`
-  - Render `<PaymentElement />`
-  - Handle `confirmPayment()` with `return_url`
-  - Loading and error states
-- [x] Create `components/purchase/PaymentElementWrapper.tsx`:
-  - Initialize PaymentIntent via `/api/checkout/payment-intent`
-  - Setup Stripe Elements with theme configuration
-  - Handle loading and error states
-- [x] Update `app/purchase/page.tsx`:
-  - Check flag `NEXT_PUBLIC_USE_PAYMENT_ELEMENT`
-  - If true: fetch `/api/checkout/payment-intent`, mount `<Elements>`
-  - If false: use existing redirect flow
-- [x] Update `app/purchase/success/page.tsx`:
-  - Read `purchase` query param (new flow)
-  - Fallback to `session_id` param (old flow)
-  - Show status and next steps accordingly
-- [x] Fix `components/purchase/PricingCard.tsx`:
-  - Update hardcoded $99 to $399
+1. **Replace `.github/workflows/ci.yml`** with hardened version:
+   - Jobs: `setup`, `typecheck`, `lint`, `build`, `unit`, `e2e`, `gate`
+   - `unit` job: `continue-on-error` conditional on branch
+   - Artifact uploads: `junit-unit.xml`, `playwright-report`
+   - Node 22.x, npm ci (frozen), Playwright caching
+2. **Archive obsolete workflows**: Move to `_archive/workflows/`
+   - `e2e-phase1.yml` through `e2e-phase6.yml`
+   - `e2e-phase2-alt.yml`
+   - `complete-e2e-success.yml`
+   - `deployment-check.yml` (if obsolete)
+   - Keep: `ci.yml` (replaced), `gitguardian.yml` (new), `basic-ci.yml` (review), `smoke-visual.yml`, `visual-regression.yml`
 
-### Testing
+### Commit Message:
 
-- [ ] Update `e2e/purchase-flow.spec.ts`:
-  - Test embedded Payment Element flow with flag ON
-  - Use Stripe test card `4242 4242 4242 4242`
-  - Assert redirect to `/purchase/success?purchase=...`
-  - Verify webhook logs show `status='completed'`
-  - Keep fallback test for redirect flow
+```
+feat(H2): Harden CI/CD pipeline with security and reliability improvements
 
-### Local Validation
+Improvements:
+- Pinned GitHub Actions SHAs for supply chain security
+- Minimal permissions (contents: read)
+- Parallel job execution with explicit dependencies
+- Playwright browser caching for speed
+- JUnit and HTML test reports as artifacts
+- Quarantine policy: unit test failures allowed on PRs, strict on main
+- Single 'gate' job for simplified branch protection
 
-- [ ] Test complete flow with Stripe CLI webhook forwarding
-- [ ] Verify email confirmation triggers (D3)
-- [ ] Check Stripe Dashboard shows PaymentIntent (not Session)
+Cleanup:
+- Archived phased E2E workflows (development artifacts)
+- Consolidated to single hardened CI workflow
 
-## 4. Acceptance Criteria (A1 "Done")
+Related to ISSUE H2 (5pts)
+```
 
-1. ✅ Setting `NEXT_PUBLIC_USE_PAYMENT_ELEMENT=true` renders on-page Payment Element
-2. ✅ Completing test payment lands on `/purchase/success?purchase=<uid>`
-3. ✅ Webhook processes `payment_intent.succeeded`, sets `status='completed'`
-4. ✅ D3 confirmation email triggers exactly once
-5. ✅ Stripe Dashboard shows **PaymentIntent** (not Checkout Session)
-6. ✅ Old redirect path still works with flag OFF
-7. ✅ E2E tests pass for both flows
+### Human Actions Required:
 
-## 5. File-Level TODOs (Exact)
+- Configure branch protection on `main` to require `gate` status check
+- Optionally review and update required checks list
 
-### New Files to Create
+---
 
-1. `app/api/checkout/payment-intent/route.ts`
-2. `components/purchase/CheckoutForm.tsx`
+## Phase 3: Validation & PR
 
-### Files to Modify
+### Pre-Push Validation (Local):
 
-3. `app/api/webhooks/stripe/route.ts` (add `payment_intent.succeeded` case)
-4. `app/purchase/page.tsx` (conditional Payment Element rendering)
-5. `app/purchase/success/page.tsx` (read `purchase` query param)
-6. `components/purchase/PricingCard.tsx` (fix $99 → $399)
-7. `e2e/purchase-flow.spec.ts` (add Payment Element tests)
+```bash
+npm run typecheck
+npm run lint
+npm run test:unit
+npm run build
+```
 
-## 6. Progress Notes
+### CI Validation (After Push):
 
-### 2025-10-07 - Implementation Complete ✅
+1. Verify all jobs appear in Actions UI: `setup`, `typecheck`, `lint`, `build`, `unit`, `e2e`, `gate`
+2. Confirm `unit` job shows quarantine behavior (continues despite 33 failures on PR)
+3. Check artifacts uploaded: `junit-unit`, `playwright-report`
+4. Verify GitGuardian workflow triggered and passes
 
-**All Core Tasks Completed:**
+### Optional: Dummy Secret Test
 
-- ✅ Installed `@stripe/react-stripe-js` v5.2.0 and upgraded `@stripe/stripe-js` to v8.0.0
-- ✅ Added `NEXT_PUBLIC_USE_PAYMENT_ELEMENT` feature flag to `.env.example`
-- ✅ Created `/api/checkout/payment-intent` endpoint with server-authoritative pricing ($399)
-- ✅ Created `CheckoutForm.tsx` component with Payment Element integration
-- ✅ Created `PaymentElementWrapper.tsx` for client-side Stripe Elements setup
-- ✅ Updated webhook to handle `payment_intent.succeeded` event (finds Purchase by purchaseUid, marks complete, triggers D3 email)
-- ✅ Updated purchase page with conditional rendering (Payment Element when flag ON, redirect when flag OFF)
-- ✅ Updated success page to handle both `purchase` (new) and `session_id` (old) query params
-- ✅ Created `/api/purchase/[id]` endpoint for purchase status verification
-- ✅ Fixed pricing across codebase: `REPORT_PRICE` to $399, PricingCard button text
-- ✅ Fixed TypeScript error in `purchase-preview/page.tsx` (Stripe v8 compatibility)
-- ✅ All code formatted with Prettier, TypeScript compilation successful
+Create temporary branch to validate GitGuardian:
 
-**Implementation Details:**
+```bash
+git checkout -b test/gitguardian-validation
+echo 'DUMMY_SECRET="ghp_1234567890abcdefghijklmnopqrstuvwx"' > test-secret.txt
+git add test-secret.txt && git commit -m "test: Add dummy secret"
+git push -u origin test/gitguardian-validation
+# Observe GitGuardian workflow FAIL
+git rm test-secret.txt && git commit -m "test: Remove dummy secret"
+git push
+# Observe GitGuardian workflow PASS
+git checkout feature/H1-H2-security-hardening
+git branch -D test/gitguardian-validation
+```
 
-1. **Server Flow**: Purchase created with `pending` status → PaymentIntent with metadata → client_secret returned (not stored)
-2. **Client Flow**: PaymentElementWrapper fetches client_secret → Elements renders PaymentElement → confirmPayment redirects to success
-3. **Webhook Flow**: payment_intent.succeeded → find Purchase by purchaseUid → update to `completed` → send D3 email (idempotent)
-4. **Dual Support**: Old checkout.session.completed handler remains active for backward compatibility
+### Create Pull Request:
 
-**Files Created:**
+```bash
+gh pr create \
+  --title "H1 & H2: GitGuardian Integration + Hardened CI/CD" \
+  --body "$(cat <<'EOF'
+## Summary
+- **H1**: Replace Gitleaks with GitGuardian for secret scanning
+- **H2**: Harden CI/CD with security best practices and reliability improvements
 
-- `app/api/checkout/payment-intent/route.ts` - PaymentIntent creation with server pricing
-- `components/purchase/CheckoutForm.tsx` - Payment Element form
-- `components/purchase/PaymentElementWrapper.tsx` - Stripe Elements client setup
-- `app/api/purchase/[id]/route.ts` - Purchase verification
+## Changes
+### H1 - GitGuardian Integration (3pts)
+- ✅ New `.github/workflows/gitguardian.yml` with multi-trigger support
+- ✅ Created `CONTRIBUTING.md` for developer onboarding
+- ✅ Archived legacy `secrets-check.yml` (Gitleaks)
 
-**Files Modified:**
+### H2 - CI/CD Hardening (5pts)
+- ✅ Replaced `.github/workflows/ci.yml` with security-hardened version
+- ✅ Pinned all GitHub Actions to commit SHAs
+- ✅ Implemented quarantine policy for unit tests (strict on main)
+- ✅ Added JUnit and Playwright HTML report artifacts
+- ✅ Archived 7 obsolete phased E2E workflows
+- ✅ Created single `gate` job for branch protection simplicity
 
-- `lib/stripe/config.ts` - REPORT_PRICE → $399
-- `app/api/webhooks/stripe/route.ts` - Added payment_intent.succeeded handler
-- `app/purchase/page.tsx` - Conditional Payment Element rendering
-- `app/purchase/success/page.tsx` - Dual param support
-- `components/purchase/PricingCard.tsx` - Button text → $399
-- `app/purchase-preview/page.tsx` - Stripe v8 fix (removed redirectToCheckout)
-- `.env.example` - Added feature flag
-- `package.json` - Stripe dependencies updated
+### Phase 0 - Prerequisites
+- ✅ Created `playwright.config.ci.ts` (fixes broken CI reference)
+- ✅ Added `test:unit` scripts to `package.json`
+- ✅ Configured `jest-junit` for test reporting
+- ✅ Fixed `.husky/pre-push` to use npm (not pnpm)
 
-**Pull Request:**
+## Human Actions Required
+1. **GitGuardian**: Add `GITGUARDIAN_API_KEY` secret to repo settings
+2. **Branch Protection**: Update `main` branch to require `gate` status check
 
-- PR #5: https://github.com/mirqtio/anthrasite.io/pull/5
-- Branch: `feature/A1-payment-element`
-- Latest commit: c90c526 (build fix)
+## Test Plan
+- [x] Local: `npm run typecheck && npm run lint && npm run test:unit && npm run build`
+- [ ] CI: All jobs pass in correct dependency order
+- [ ] CI: Unit test quarantine behavior verified (continues on PR despite failures)
+- [ ] CI: Artifacts uploaded successfully
+- [ ] GitGuardian: Workflow triggered and passes (after API key added)
 
-**Current Status: Build Passing ✅**
+## Related Issues
+- Closes H1 (3pts): Integrate GitGuardian for secret scanning
+- Closes H2 (5pts): Review and update CI/CD pipeline
 
-Build issues resolved with commit c90c526:
-- Added `'use client'` directive to `lib/stripe/client.ts`
-- Implemented lazy Stripe initialization in all API routes
-- Added `export const dynamic = 'force-dynamic'` to prevent build-time execution
-- Build completes successfully locally and in pre-push validation
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
-**What's Working:**
-- ✅ TypeScript compilation passes
-- ✅ Production build completes successfully
-- ✅ All A1 implementation code committed
-- ✅ Pre-push validation passing (typecheck, lint, build)
-- ✅ Dual flow architecture (Payment Element + redirect)
-- ✅ Server-authoritative pricing ($399)
-- ✅ Webhook handlers for both flows
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
+```
 
-**What's NOT Tested:**
-1. ❌ **E2E tests for Payment Element flow** - `e2e/purchase-flow.spec.ts` not updated yet
-2. ❌ **Payment Element UI in browser** - No manual testing with test card 4242 4242 4242 4242
-3. ❌ **Webhook integration** - Not tested with Stripe CLI webhook forwarding
-4. ❌ **D3 email confirmation** - Not verified to trigger on payment_intent.succeeded
-5. ❌ **Success page with purchase param** - Not manually tested with new flow
+---
 
-**Pre-existing Issues (Unrelated to A1):**
-- ⚠️ 33 unit test failures (ConsentIntegration, OrganicHomepage, consent.test, page.test)
-- These failures existed before A1 implementation
+## Files Modified
 
-**Waiting For:**
-1. Vercel preview deployment to complete
-2. GitHub Actions CI to pass
-3. Cascade's architectural review
+### Created:
 
-**Next Actions (After Review Approval):**
-1. E2E test updates for Payment Element flow (per SCRATCHPAD checklist)
-2. Local Stripe CLI testing with webhook forwarding
-3. Manual browser testing of complete purchase flow
-4. D3 email delivery verification
+- `playwright.config.ci.ts`
+- `CONTRIBUTING.md`
+- `.github/workflows/gitguardian.yml`
+
+### Modified:
+
+- `package.json` (scripts)
+- `jest.config.js` (reporters)
+- `.husky/pre-push` (npm not pnpm)
+- `.github/workflows/ci.yml` (complete replacement)
+
+### Archived/Removed:
+
+- `.github/workflows/secrets-check.yml`
+- `.github/workflows/e2e-phase*.yml` (1-6 + alt)
+- `.github/workflows/complete-e2e-success.yml`
+- `.github/workflows/deployment-check.yml` (if obsolete)
+
+---
+
+## Success Criteria
+
+✅ **H1 Complete When**:
+
+- GitGuardian workflow exists and is properly configured
+- CONTRIBUTING.md provides clear developer guidance
+- Legacy Gitleaks workflow archived
+
+✅ **H2 Complete When**:
+
+- New CI workflow has all 7 jobs with correct dependencies
+- Unit test quarantine policy implemented and verified
+- JUnit and Playwright reports upload as artifacts
+- Obsolete workflows archived
+- Local validation passes (`typecheck`, `lint`, `test:unit`, `build`)
+
+✅ **PR Merge Ready When**:
+
+- CI shows green `gate` status (despite quarantined unit failures)
+- All commit messages follow conventional commits format
+- Human has added `GITGUARDIAN_API_KEY`
+- Code review approved
+
+---
+
+## Notes
+
+- **Unit Test Strategy**: 33 failing tests are quarantined (continue-on-error on PRs) to unblock delivery while maintaining strict enforcement on main. Technical debt to be addressed in future epic.
+- **Workflow Archival**: Phased E2E workflows appear to be iterative development artifacts. Retained for historical reference in `_archive/`.
+- **GitGuardian vs Gitleaks**: GitGuardian chosen for superior detection algorithms, historical scanning, and dashboard capabilities.
+- **A1 Independence**: This PR is infra-only and does not conflict with `feature/A1-payment-element`.

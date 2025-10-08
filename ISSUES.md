@@ -30,7 +30,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 **Goal:** On-page payment; branded receipts; robust tests.
 
 - **A1 (2 pts)**: Switch to Payment Element
-- **Status**: `IN_PROGRESS`
+- **Status**: `PENDING_VALIDATION` (Implementation complete in `c90c526`. Validation to be completed under **A5**.)
 - **A2 (2 pts)**: Price tiers (server allowlist)
 - **A3 (2 pts)**: Stripe receipts + business identity
 - **A4 (1 pt)**: Feature flag control

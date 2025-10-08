@@ -11,14 +11,14 @@ handle_error() {
 
 # Run TypeScript type checking
 echo "🔍 Running TypeScript type checking..."
-pnpm typecheck || handle_error "TypeScript type check failed"
+npm run typecheck || handle_error "TypeScript type check failed"
 
 # Run ESLint (warnings are ok, only fail on errors)
 echo "🔍 Running ESLint..."
-pnpm lint --max-warnings=999 || handle_error "ESLint found errors"
+npm run lint -- --max-warnings=999 || handle_error "ESLint found errors"
 
 # Run build (this is what Vercel does)
 echo "🏗️ Running production build..."
-pnpm build || handle_error "Production build failed"
+npm run build || handle_error "Production build failed"
 
 echo "✅ All pre-push checks passed! Safe to push."
