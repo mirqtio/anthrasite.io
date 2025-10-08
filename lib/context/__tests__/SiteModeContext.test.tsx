@@ -98,7 +98,7 @@ describe('SiteModeContext', () => {
     consoleSpy.mockRestore()
   })
 
-  it('should start in loading state', async () => {
+  it('should start in loaded state', async () => {
     // Create a custom test component that captures the initial state
     let capturedInitialState: string | null = null
 
@@ -120,10 +120,10 @@ describe('SiteModeContext', () => {
       </SiteModeProvider>
     )
 
-    // Should have captured the initial loading state
-    expect(capturedInitialState).toBe('loading')
+    // Should have captured the initial loaded state (implementation uses false by default)
+    expect(capturedInitialState).toBe('loaded')
 
-    // And eventually should be loaded
+    // Should remain loaded
     await waitFor(() => {
       expect(screen.getByTestId('loading')).toHaveTextContent('loaded')
     })

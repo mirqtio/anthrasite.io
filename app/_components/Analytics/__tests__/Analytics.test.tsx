@@ -1,15 +1,17 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { Analytics } from '../Analytics'
-import { initializeAnalytics } from '@/lib/analytics/analytics-manager'
+import { initializeAnalytics } from '@/lib/analytics/analytics-manager-optimized'
 import { trackPageView } from '@/lib/analytics/analytics-client'
 import { getCookieConsent } from '@/lib/cookies/consent'
 import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 // Mock analytics dependencies
-jest.mock('@/lib/analytics/analytics-manager', () => ({
-  initializeAnalytics: jest.fn(),
+jest.mock('@/lib/analytics/analytics-manager-optimized', () => ({
+  initializeAnalytics: jest.fn(() => ({
+    initialize: jest.fn().mockResolvedValue(undefined),
+  })),
 }))
 
 jest.mock('@/lib/analytics/analytics-client', () => ({

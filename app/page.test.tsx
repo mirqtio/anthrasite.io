@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import HomePage from './page'
 import { useSiteMode } from '@/lib/context/SiteModeContext'
 
@@ -27,7 +27,7 @@ describe('HomePage', () => {
     jest.clearAllMocks()
   })
 
-  it('shows loading state when isLoading is true', () => {
+  it('shows loading state when isLoading is true', async () => {
     mockUseSiteMode.mockReturnValue({
       mode: 'organic',
       businessId: null,
@@ -35,6 +35,12 @@ describe('HomePage', () => {
     })
 
     render(<HomePage />)
+
+    // Wait for component to fully render
+    await waitFor(() => {
+      const loadingContainer = screen.getByRole('main')
+      expect(loadingContainer).toBeInTheDocument()
+    })
 
     // Check for loading state - now it's just an animated square
     const loadingContainer = screen.getByRole('main')
@@ -56,7 +62,7 @@ describe('HomePage', () => {
     expect(screen.queryByTestId('purchase-homepage')).not.toBeInTheDocument()
   })
 
-  it('renders OrganicHomepage when mode is organic', () => {
+  it('renders OrganicHomepage when mode is organic', async () => {
     mockUseSiteMode.mockReturnValue({
       mode: 'organic',
       businessId: null,
@@ -64,6 +70,11 @@ describe('HomePage', () => {
     })
 
     render(<HomePage />)
+
+    // Wait for OrganicHomepage to render
+    await waitFor(() => {
+      expect(screen.getByTestId('organic-homepage')).toBeInTheDocument()
+    })
 
     // Check that OrganicHomepage is rendered
     const organicHomepage = screen.getByTestId('organic-homepage')
@@ -76,7 +87,7 @@ describe('HomePage', () => {
     expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
   })
 
-  it('renders PurchaseHomepage when mode is purchase', () => {
+  it('renders PurchaseHomepage when mode is purchase', async () => {
     mockUseSiteMode.mockReturnValue({
       mode: 'purchase',
       businessId: 'test-business-123',
@@ -84,6 +95,11 @@ describe('HomePage', () => {
     })
 
     render(<HomePage />)
+
+    // Wait for PurchaseHomepage to render
+    await waitFor(() => {
+      expect(screen.getByTestId('purchase-homepage')).toBeInTheDocument()
+    })
 
     // Check that PurchaseHomepage is rendered
     const purchaseHomepage = screen.getByTestId('purchase-homepage')

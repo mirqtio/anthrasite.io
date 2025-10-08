@@ -149,6 +149,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Generate Prisma Client
         run: pnpm exec prisma generate
+      - name: Prepare test DB schema
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+        run: pnpm exec prisma migrate deploy
       - name: Unit tests (with JUnit)
         env:
           CI: 'true'

@@ -37,13 +37,15 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    // Analytics should be initialized with consent
-    expect(initializeAnalytics).toHaveBeenCalledWith(
-      expect.objectContaining({
-        analytics: true,
-        functional: true,
-      })
-    )
+    // Analytics should be initialized with consent (async)
+    await waitFor(() => {
+      expect(initializeAnalytics).toHaveBeenCalledWith(
+        expect.objectContaining({
+          analytics: true,
+          functional: true,
+        })
+      )
+    })
 
     // Check localStorage
     const stored = JSON.parse(
@@ -72,12 +74,14 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    expect(initializeAnalytics).toHaveBeenCalledWith(
-      expect.objectContaining({
-        analytics: false,
-        functional: true,
-      })
-    )
+    await waitFor(() => {
+      expect(initializeAnalytics).toHaveBeenCalledWith(
+        expect.objectContaining({
+          analytics: false,
+          functional: true,
+        })
+      )
+    })
   })
 
   it('should handle preferences modal flow', async () => {
@@ -119,13 +123,15 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    // Check that analytics was initialized with correct preferences
-    expect(initializeAnalytics).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        analytics: true,
-        functional: true,
-      })
-    )
+    // Check that analytics was initialized with correct preferences (async)
+    await waitFor(() => {
+      expect(initializeAnalytics).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          analytics: true,
+          functional: true,
+        })
+      )
+    })
   })
 
   it('should remember consent on page reload', async () => {
@@ -160,13 +166,15 @@ describe('Consent Integration', () => {
       { timeout: 1000 }
     )
 
-    // Analytics should be initialized with stored preferences
-    expect(initializeAnalytics).toHaveBeenCalledWith(
-      expect.objectContaining({
-        analytics: true,
-        functional: true,
-      })
-    )
+    // Analytics should be initialized with stored preferences (async)
+    await waitFor(() => {
+      expect(initializeAnalytics).toHaveBeenCalledWith(
+        expect.objectContaining({
+          analytics: true,
+          functional: true,
+        })
+      )
+    })
   })
 
   it('should show banner again if consent version changes', async () => {

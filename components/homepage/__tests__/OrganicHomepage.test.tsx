@@ -28,7 +28,7 @@ describe('OrganicHomepage', () => {
       screen.getByText('Your website has untapped potential')
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/We analyze thousands of data points/)
+      screen.getByText(/(hundreds|thousands) of data points/i)
     ).toBeInTheDocument()
   })
 

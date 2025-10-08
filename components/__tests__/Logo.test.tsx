@@ -53,11 +53,11 @@ describe('Logo', () => {
     expect(img).toBeInTheDocument()
   })
 
-  it('should render SVG logo', () => {
+  it('should render logo image', () => {
     render(<Logo />)
 
-    const svg = screen.getByTestId('logo-svg')
-    expect(svg).toBeInTheDocument()
+    const img = screen.getByRole('img', { name: /anthrasite/i })
+    expect(img).toBeInTheDocument()
   })
 
   it('should apply dark mode styles', () => {
@@ -74,11 +74,11 @@ describe('Logo', () => {
     expect(logo).toHaveClass('custom-1', 'custom-2')
   })
 
-  it('should have correct viewBox for SVG', () => {
+  it('should have correct image source', () => {
     render(<Logo />)
 
-    const svg = screen.getByTestId('logo-svg')
-    expect(svg).toHaveAttribute('viewBox', '0 0 200 40')
+    const img = screen.getByRole('img', { name: /anthrasite/i })
+    expect(img).toHaveAttribute('src', expect.stringContaining('logo_full_white.svg'))
   })
 
   it('should be focusable when used as a link', () => {

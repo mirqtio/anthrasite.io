@@ -31,7 +31,7 @@ describe('Cookie Consent', () => {
           timestamp: '2024-01-15T10:00:00Z',
         },
       }
-      localStorage.setItem('cookie-consent', JSON.stringify(storedConsent))
+      localStorage.setItem('anthrasite_cookie_consent', JSON.stringify(storedConsent))
 
       const consent = getCookieConsent()
 
@@ -45,7 +45,7 @@ describe('Cookie Consent', () => {
     })
 
     it('should handle missing preferences object', () => {
-      localStorage.setItem('cookie-consent', JSON.stringify({}))
+      localStorage.setItem('anthrasite_cookie_consent', JSON.stringify({}))
 
       const consent = getCookieConsent()
 
@@ -59,7 +59,7 @@ describe('Cookie Consent', () => {
     })
 
     it('should handle invalid JSON in localStorage', () => {
-      localStorage.setItem('cookie-consent', 'invalid json')
+      localStorage.setItem('anthrasite_cookie_consent', 'invalid json')
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
 
       const consent = getCookieConsent()
