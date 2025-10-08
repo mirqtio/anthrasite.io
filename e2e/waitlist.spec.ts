@@ -255,7 +255,7 @@ test.describe('Waitlist Signup', () => {
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
 
     // Should show loading state on button
-    await expect(page.getByText('Joining...')).toBeVisible()
+    await expect(page.getByText('Submitting...')).toBeVisible()
 
     // Wait for submission to complete
     await expect(page.getByText("You're on the list!")).toBeVisible({
@@ -264,7 +264,7 @@ test.describe('Waitlist Signup', () => {
   })
 
   test('should track referral source', async ({ page }) => {
-    await page.goto('/?ref=twitter')
+    await gotoAndDismissCookies(page, '/?ref=twitter')
 
     // Wait for page to load
     await expect(
