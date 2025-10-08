@@ -31,7 +31,7 @@ test.describe('Full User Journey - Happy Paths', () => {
       await safeFill(page, 'input[placeholder="example.com"]', 'example.com')
       await safeFill(
         page,
-        'input[placeholder="you@example.com"]',
+        'input[placeholder="you@company.com"]',
         'test@example.com'
       )
 

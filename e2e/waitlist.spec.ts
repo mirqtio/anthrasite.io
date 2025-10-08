@@ -105,7 +105,7 @@ test.describe('Waitlist Signup', () => {
     // Enter email
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'test@e2e-test.com'
     )
 
@@ -123,7 +123,7 @@ test.describe('Waitlist Signup', () => {
     await safeFill(page, 'input[placeholder="example.com"]', 'not a domain')
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'test@example.com'
     )
 
@@ -146,7 +146,7 @@ test.describe('Waitlist Signup', () => {
     await safeFill(page, 'input[placeholder="example.com"]', 'www.example.com')
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'test@example.com'
     )
 
@@ -168,7 +168,7 @@ test.describe('Waitlist Signup', () => {
     )
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'first@example.com'
     )
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -188,7 +188,7 @@ test.describe('Waitlist Signup', () => {
     )
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'second@example.com'
     )
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -207,7 +207,7 @@ test.describe('Waitlist Signup', () => {
     // Try invalid email format (HTML5 validation should kick in)
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'invalid-email'
     )
 
@@ -220,7 +220,7 @@ test.describe('Waitlist Signup', () => {
     // Now enter valid email
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'valid@example.com'
     )
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -247,7 +247,7 @@ test.describe('Waitlist Signup', () => {
     await safeFill(page, 'input[placeholder="example.com"]', 'loading.com')
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'test@loading.com'
     )
 
@@ -283,7 +283,7 @@ test.describe('Waitlist Signup', () => {
     )
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'test@referral.com'
     )
     await safeClick(page, '[data-testid="waitlist-submit-button"]')
@@ -302,7 +302,7 @@ test.describe('Waitlist Signup', () => {
     await safeFill(page, 'input[placeholder="example.com"]', 'error.com')
     await safeFill(
       page,
-      'input[placeholder="you@example.com"]',
+      'input[placeholder="you@company.com"]',
       'test@example.com'
     )
 

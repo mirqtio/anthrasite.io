@@ -467,12 +467,33 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
       {/* Modal */}
       <div
-        className={`modal ${showModal ? 'active' : ''}`}
+        className={`modal ${showModal ? 'active' : ''} ${
+          process.env.NEXT_PUBLIC_E2E_TESTING === 'true' && showModal
+            ? 'test-force-visible'
+            : ''
+        }`}
         onClick={(e) => {
           if (e.target === e.currentTarget) closeModal()
         }}
+        style={{
+          opacity:
+            process.env.NEXT_PUBLIC_E2E_TESTING === 'true' && showModal
+              ? 1
+              : undefined,
+          visibility:
+            process.env.NEXT_PUBLIC_E2E_TESTING === 'true' && showModal
+              ? 'visible'
+              : undefined,
+          transition:
+            process.env.NEXT_PUBLIC_E2E_TESTING === 'true'
+              ? 'none'
+              : undefined,
+        }}
       >
-        <div className="modal-container container-form">
+        <div
+          className="modal-container container-form"
+          data-testid="waitlist-form"
+        >
           <button className="modal-close" onClick={closeModal}>
             ×
           </button>
@@ -487,7 +508,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
                 information below and we'll review your site and contact you as
                 soon as we launch.
               </p>
-              <form onSubmit={handleEmailSubmit}>
+              <form onSubmit={handleEmailSubmit} data-testid="waitlist-submit-form">
                 <div className="form-group">
                   <label className="form-label">Your website URL</label>
                   <input
@@ -515,6 +536,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
                   type="submit"
                   className="cta-primary button-full"
                   disabled={isSubmitting}
+                  data-testid="waitlist-submit-button"
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>
