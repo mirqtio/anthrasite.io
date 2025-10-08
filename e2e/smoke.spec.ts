@@ -16,7 +16,9 @@ test.describe('Smoke Test @smoke', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Verify page loaded with purchase header
-    await expect(page.getByTestId('purchase-header')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByTestId('purchase-header')).toBeVisible({
+      timeout: 10000,
+    })
 
     // 2. Payment UI mounts (feature flag ON)
     // Check for checkout button which indicates payment UI is ready
@@ -26,7 +28,9 @@ test.describe('Smoke Test @smoke', () => {
     // 3. Navigate to success page stub
     // In mock mode, this redirects to checkout simulator
     await checkoutButton.click()
-    await page.waitForURL(/\/test-purchase\/checkout-simulator/, { timeout: 5000 })
+    await page.waitForURL(/\/test-purchase\/checkout-simulator/, {
+      timeout: 5000,
+    })
 
     // Verify we reached the checkout/success flow
     await expect(page).toHaveURL(/\/test-purchase\/checkout-simulator/)

@@ -26,7 +26,12 @@ export interface EmailOptions {
  *
  * @see https://support.google.com/accounts/answer/185833
  */
-export async function sendEmail({ to, subject, text, html }: EmailOptions): Promise<void> {
+export async function sendEmail({
+  to,
+  subject,
+  text,
+  html,
+}: EmailOptions): Promise<void> {
   // Validate required environment variables
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     throw new Error(

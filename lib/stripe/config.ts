@@ -28,7 +28,7 @@ export const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 // Price configuration
 export const REPORT_PRICE = {
-  amount: 9900, // $99.00 in cents
+  amount: 39900, // $399.00 in cents
   currency: 'usd' as const,
   productName: 'Website Audit Report',
   productDescription:

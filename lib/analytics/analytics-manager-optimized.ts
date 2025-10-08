@@ -8,9 +8,12 @@ import { getCookieConsent, onConsentChange } from '@/lib/cookies/consent'
 import { validateEventSchema } from './event-schemas'
 
 // Lazy load providers to reduce initial bundle size
-const loadGA4Provider = () => import('./providers/ga4').then(m => m.GoogleAnalytics4Provider)
-const loadPostHogProvider = () => import('./providers/posthog').then(m => m.PostHogProvider)
-const loadHotjarProvider = () => import('./providers/hotjar').then(m => m.HotjarProvider)
+const loadGA4Provider = () =>
+  import('./providers/ga4').then((m) => m.GoogleAnalytics4Provider)
+const loadPostHogProvider = () =>
+  import('./providers/posthog').then((m) => m.PostHogProvider)
+const loadHotjarProvider = () =>
+  import('./providers/hotjar').then((m) => m.HotjarProvider)
 
 export class AnalyticsManager {
   private providers: Map<string, AnalyticsProvider> = new Map()
@@ -26,10 +29,10 @@ export class AnalyticsManager {
 
   async initialize(): Promise<void> {
     if (this.initialized || typeof window === 'undefined') return
-    
+
     // Prevent multiple initialization calls
     if (this.initPromise) return this.initPromise
-    
+
     this.initPromise = this._initialize()
     await this.initPromise
   }
@@ -56,13 +59,13 @@ export class AnalyticsManager {
 
   private async initializeProviders(): Promise<void> {
     console.log('[AnalyticsManager] Initializing providers...')
-    
+
     const initPromises: Promise<void>[] = []
-    
+
     // Initialize GA4 lazily
     if (this.config.ga4) {
       initPromises.push(
-        loadGA4Provider().then(GA4Provider => {
+        loadGA4Provider().then((GA4Provider) => {
           const ga4 = new GA4Provider(
             this.config.ga4!.measurementId,
             this.config.ga4!.apiSecret
@@ -76,7 +79,7 @@ export class AnalyticsManager {
     // Initialize PostHog lazily
     if (this.config.posthog) {
       initPromises.push(
-        loadPostHogProvider().then(PostHogProvider => {
+        loadPostHogProvider().then((PostHogProvider) => {
           const posthog = new PostHogProvider(
             this.config.posthog!.apiKey,
             this.config.posthog!.host
@@ -90,7 +93,7 @@ export class AnalyticsManager {
     // Initialize Hotjar lazily
     if (this.config.hotjar) {
       initPromises.push(
-        loadHotjarProvider().then(HotjarProvider => {
+        loadHotjarProvider().then((HotjarProvider) => {
           const hotjar = new HotjarProvider(this.config.hotjar!.siteId)
           this.providers.set('hotjar', hotjar)
           return hotjar.initialize()
@@ -103,12 +106,12 @@ export class AnalyticsManager {
     console.log('[AnalyticsManager] All providers initialized')
   }
 
-  async track(
-    eventName: string,
-    properties?: EventProperties
-  ): Promise<void> {
+  async track(eventName: string, properties?: EventProperties): Promise<void> {
     if (!this.initialized) {
-      console.warn('[AnalyticsManager] Not initialized, queuing event:', eventName)
+      console.warn(
+        '[AnalyticsManager] Not initialized, queuing event:',
+        eventName
+      )
       return
     }
 
@@ -163,7 +166,6 @@ export class AnalyticsManager {
       }
     })
   }
-
 
   reset(): void {
     this.providers.forEach((provider) => {
@@ -240,13 +242,19 @@ export function getAnalytics(): AnalyticsManager | null {
 }
 
 // Export compatible methods for existing code
-export async function trackEvent(eventName: string, properties?: EventProperties): Promise<void> {
+export async function trackEvent(
+  eventName: string,
+  properties?: EventProperties
+): Promise<void> {
   if (managerInstance) {
     return managerInstance.track(eventName, properties)
   }
 }
 
-export async function trackPageView(url: string, properties?: EventProperties): Promise<void> {
+export async function trackPageView(
+  url: string,
+  properties?: EventProperties
+): Promise<void> {
   if (managerInstance) {
     managerInstance.page({ ...properties, page_path: url })
   }

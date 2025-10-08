@@ -94,7 +94,7 @@ describe('PricingCard', () => {
 
     const button = screen.getByTestId('checkout-button')
     expect(button).toBeInTheDocument()
-    expect(button).toHaveTextContent('Get Your Report for $99')
+    expect(button).toHaveTextContent('Get Your Report for $399')
   })
 
   it('handles checkout click', async () => {

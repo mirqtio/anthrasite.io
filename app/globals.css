@@ -131,7 +131,8 @@
 
 /* Scroll arrow animation */
 @keyframes scrollBounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -276,7 +277,8 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: calc(80px + var(--spacing-5xl)) var(--spacing-3xl) var(--spacing-3xl);
+    padding: calc(80px + var(--spacing-5xl)) var(--spacing-3xl)
+      var(--spacing-3xl);
     overflow: visible;
     overflow-x: clip;
   }
@@ -321,7 +323,8 @@
 
   @media (max-width: 768px) {
     .hero {
-      padding: calc(60px + var(--spacing-4xl)) var(--spacing-xl) var(--spacing-4xl);
+      padding: calc(60px + var(--spacing-4xl)) var(--spacing-xl)
+        var(--spacing-4xl);
     }
 
     .section {
@@ -861,8 +864,6 @@
   .text-balance {
     text-wrap: balance;
   }
-  
-
 
   /* Arrow styles */
   .arrow-container {
@@ -983,7 +984,8 @@
   /* Mobile Fixes */
   @media (max-width: 768px) {
     /* Allow rings to bleed off screen but prevent horizontal scroll */
-    html, body {
+    html,
+    body {
       overflow-x: clip;
       width: 100%;
     }
@@ -1009,7 +1011,6 @@
       padding: 40px var(--spacing-xl);
       margin-top: -10px;
     }
-
 
     /* Fix navigation overflow */
     .nav-fixed {
@@ -1062,7 +1063,9 @@
     /* Remove all mobile constraints on pressure visual */
 
     /* Ensure touch targets meet minimum size */
-    button, a, [role="button"] {
+    button,
+    a,
+    [role='button'] {
       min-height: 44px;
       min-width: 44px;
       padding: 12px 16px;
@@ -1104,7 +1107,10 @@
     }
 
     /* Fix text that might overflow */
-    h1, h2, h3, p {
+    h1,
+    h2,
+    h3,
+    p {
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
@@ -1133,7 +1139,6 @@
     .hero-content {
       padding: 0 15px;
     }
-
 
     .text-header {
       font-size: 28px;
@@ -1202,7 +1207,6 @@
 
   /* Extra small devices */
   @media (max-width: 390px) {
-
     .assessment-grid p {
       font-size: 14px;
     }

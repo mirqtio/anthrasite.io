@@ -15,22 +15,23 @@ This document provides a terse, ground-truth overview of the `anthrasite.io` pay
 The system is split into two primary operational environments:
 
 1.  **`anthrasite.io` (Vercel)**: Handles all public-facing interactions.
-    -   **Responsibilities**: User authentication (via UTM token), presenting the sales page, processing payments with Stripe, and enqueuing jobs for the backend.
-    -   **Components**:
-        -   **Next.js Frontend**: Renders the purchase and success pages.
-        -   **Stripe Payment Element**: Embedded on-page for collecting payment details.
-        -   **Stripe Webhook Listener**: A Vercel serverless function that verifies, deduplicates, and logs incoming Stripe events.
-        -   **PostgreSQL Database**: Stores `Business`, `Purchase`, and `UtmToken` data.
-        -   **Managed Queue (e.g., SQS/Upstash)**: A durable message queue to bridge the gap to the internal `LeadShop` system.
+
+    - **Responsibilities**: User authentication (via UTM token), presenting the sales page, processing payments with Stripe, and enqueuing jobs for the backend.
+    - **Components**:
+      - **Next.js Frontend**: Renders the purchase and success pages.
+      - **Stripe Payment Element**: Embedded on-page for collecting payment details.
+      - **Stripe Webhook Listener**: A Vercel serverless function that verifies, deduplicates, and logs incoming Stripe events.
+      - **PostgreSQL Database**: Stores `Business`, `Purchase`, and `UtmToken` data.
+      - **Managed Queue (e.g., SQS/Upstash)**: A durable message queue to bridge the gap to the internal `LeadShop` system.
 
 2.  **`LeadShop` (Mac Mini)**: The internal, secure environment for business logic.
-    -   **Responsibilities**: Consuming jobs from the queue, orchestrating report generation, and delivering the final PDF report.
-    -   **Components**:
-        -   **Queue Consumer Worker**: Polls the managed queue for new `payment_completed` jobs.
-        -   **Temporal Worker**: Kicks off and manages the `ReportGenerationWorkflow`.
-        -   **Playwright PDF Engine**: Generates the PDF report from a predefined HTML template.
-        -   **S3 Storage**: Persists the final PDF reports for audit and resend capabilities.
-        -   **Gmail SMTP Service**: Sends the report as a PDF attachment to the customer (via `nodemailer` - see ADR-P05).
+    - **Responsibilities**: Consuming jobs from the queue, orchestrating report generation, and delivering the final PDF report.
+    - **Components**:
+      - **Queue Consumer Worker**: Polls the managed queue for new `payment_completed` jobs.
+      - **Temporal Worker**: Kicks off and manages the `ReportGenerationWorkflow`.
+      - **Playwright PDF Engine**: Generates the PDF report from a predefined HTML template.
+      - **S3 Storage**: Persists the final PDF reports for audit and resend capabilities.
+      - **Gmail SMTP Service**: Sends the report as a PDF attachment to the customer (via `nodemailer` - see ADR-P05).
 
 ## 3. Data & Control Flow (Customer Journey)
 

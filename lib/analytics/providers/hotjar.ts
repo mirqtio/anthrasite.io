@@ -25,7 +25,7 @@ export class HotjarProvider implements AnalyticsProvider {
 
       // Initialize Hotjar
       const hj = function (...args: any[]) {
-        const hjQueue = (hj as any).q = (hj as any).q || []
+        const hjQueue = ((hj as any).q = (hj as any).q || [])
         hjQueue.push(args)
       }
       ;(hj as any).q = []

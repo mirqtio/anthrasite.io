@@ -22,9 +22,11 @@ To prevent build hangs and ensure a clear, predictable rendering path for all pa
 ## Consequences
 
 **Positive:**
--   **Build Stability:** This strategy eliminates a major source of build hangs, making our CI/CD process more reliable.
--   **Clear Rendering Contracts:** It forces a clear distinction between statically generated pages and dynamically rendered pages, making the behavior of each component easier to reason about.
--   **Automated Prevention:** The ESLint rule will catch these errors before they are committed, preventing future regressions.
+
+- **Build Stability:** This strategy eliminates a major source of build hangs, making our CI/CD process more reliable.
+- **Clear Rendering Contracts:** It forces a clear distinction between statically generated pages and dynamically rendered pages, making the behavior of each component easier to reason about.
+- **Automated Prevention:** The ESLint rule will catch these errors before they are committed, preventing future regressions.
 
 **Negative:**
--   Slightly more cognitive overhead for developers to remember to add `export const dynamic = 'force-dynamic'` and `ssr: false` where appropriate. The ESLint rule will mitigate this.
+
+- Slightly more cognitive overhead for developers to remember to add `export const dynamic = 'force-dynamic'` and `ssr: false` where appropriate. The ESLint rule will mitigate this.

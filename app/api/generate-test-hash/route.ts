@@ -3,12 +3,12 @@ import { generateSecureUTM } from '@/lib/crypto/utm-hash'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  
+
   // Get parameters from query string or use defaults
   const businessName = searchParams.get('name') || 'Acme Corporation'
   const price = parseFloat(searchParams.get('price') || '297')
   const value = parseFloat(searchParams.get('value') || '1500')
-  
+
   try {
     // Generate a valid hash
     const hash = await generateSecureUTM({
@@ -17,11 +17,11 @@ export async function GET(request: Request) {
       price: price,
       value: value,
       campaign_id: 'test-campaign',
-      preview_pages: 4
+      preview_pages: 4,
     })
-    
+
     const purchaseUrl = `${request.headers.get('origin')}/purchase/${hash}`
-    
+
     return NextResponse.json({
       success: true,
       hash,
@@ -29,14 +29,18 @@ export async function GET(request: Request) {
       testData: {
         businessName,
         price,
-        value
+        value,
       },
-      instructions: 'Visit the purchaseUrl to see the purchase flow page'
+      instructions: 'Visit the purchaseUrl to see the purchase flow page',
     })
   } catch (error) {
-    return NextResponse.json({ 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Failed to generate hash' 
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Failed to generate hash',
+      },
+      { status: 500 }
+    )
   }
 }

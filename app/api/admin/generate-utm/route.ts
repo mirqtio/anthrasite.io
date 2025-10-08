@@ -8,16 +8,13 @@ export async function POST(request: NextRequest) {
     // Security: Check for admin API key
     const headersList = headers()
     const apiKey = headersList.get('x-admin-api-key')
-    
+
     if (!apiKey || apiKey !== process.env.ADMIN_API_KEY) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     // Also check if we're in a test environment or have test mode enabled
-    const isTestEnvironment = 
+    const isTestEnvironment =
       process.env.NODE_ENV === 'development' ||
       process.env.ENABLE_TEST_MODE === 'true' ||
       process.env.VERCEL_ENV === 'preview'
@@ -42,7 +39,7 @@ export async function POST(request: NextRequest) {
     // Generate a valid UTM token
     const tokenData = await generateUTMToken(businessId)
     const token = createUTMParameter(tokenData)
-    
+
     // Note: The current implementation doesn't store businessName and domain
     // in the token, only businessId. These would need to be stored in the database
 
@@ -60,12 +57,14 @@ export async function POST(request: NextRequest) {
       success: true,
       token,
       urls,
-      expiresAt: new Date(Date.now() + expiryHours * 60 * 60 * 1000).toISOString(),
+      expiresAt: new Date(
+        Date.now() + expiryHours * 60 * 60 * 1000
+      ).toISOString(),
       testData: {
         businessId,
         businessName,
         domain,
-      }
+      },
     })
   } catch (error) {
     console.error('Failed to generate UTM token:', error)
@@ -78,7 +77,7 @@ export async function POST(request: NextRequest) {
 
 // GET endpoint to check if the service is available
 export async function GET(request: NextRequest) {
-  const isTestEnvironment = 
+  const isTestEnvironment =
     process.env.NODE_ENV === 'development' ||
     process.env.ENABLE_TEST_MODE === 'true' ||
     process.env.VERCEL_ENV === 'preview'

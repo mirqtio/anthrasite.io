@@ -9,42 +9,66 @@ import { trackEvent } from '@/lib/analytics/analytics-client'
 
 export default function PurchaseSuccessPage() {
   const searchParams = useSearchParams()
-  const sessionId = searchParams.get('session_id')
+  const sessionId = searchParams.get('session_id') // Old redirect flow
+  const purchaseId = searchParams.get('purchase') // New Payment Element flow
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!sessionId) {
-      setError('Missing session ID')
+    // Handle both old and new flows
+    if (!sessionId && !purchaseId) {
+      setError('Missing payment information')
       setLoading(false)
       return
     }
 
     // Track successful redirect to success page
     trackEvent('purchase_success_page_viewed', {
-      sessionId,
+      sessionId: sessionId || undefined,
+      purchaseId: purchaseId || undefined,
+      flow: purchaseId ? 'payment_element' : 'redirect',
     })
 
-    // Verify the session with Stripe
-    const verifySession = async () => {
+    // Verify the session/purchase
+    const verifyPurchase = async () => {
       try {
-        const stripe = await getStripe()
-        if (!stripe) {
-          throw new Error('Failed to load Stripe')
-        }
+        if (purchaseId) {
+          // New Payment Element flow - purchase already created and verified by webhook
+          // Just confirm it exists and is completed
+          const response = await fetch(`/api/purchase/${purchaseId}`, {
+            method: 'GET',
+          })
 
-        // Note: In production, you'd want to verify this server-side
-        // For now, we'll just track the success
-        setLoading(false)
+          if (!response.ok) {
+            throw new Error('Purchase not found')
+          }
+
+          const data = await response.json()
+          if (data.status !== 'completed') {
+            throw new Error('Payment not completed')
+          }
+
+          setLoading(false)
+        } else if (sessionId) {
+          // Old redirect flow - verify with Stripe
+          const stripe = await getStripe()
+          if (!stripe) {
+            throw new Error('Failed to load Stripe')
+          }
+
+          // Note: In production, you'd want to verify this server-side
+          // For now, we'll just track the success
+          setLoading(false)
+        }
       } catch (err) {
-        console.error('Error verifying session:', err)
+        console.error('Error verifying purchase:', err)
         setError('Failed to verify payment')
         setLoading(false)
       }
     }
 
-    verifySession()
-  }, [sessionId])
+    verifyPurchase()
+  }, [sessionId, purchaseId])
 
   if (loading) {
     return (
@@ -62,8 +86,18 @@ export default function PurchaseSuccessPage() {
       <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <div className="text-red-500 mb-4">
-            <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-16 h-16 mx-auto"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
           <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
@@ -93,7 +127,8 @@ export default function PurchaseSuccessPage() {
             <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
             <h1 className="text-4xl font-bold mb-4">Purchase Successful!</h1>
             <p className="text-xl text-white/80">
-              Thank you for your purchase. We're already working on your comprehensive website audit.
+              Thank you for your purchase. We're already working on your
+              comprehensive website audit.
             </p>
           </div>
 
@@ -105,21 +140,29 @@ export default function PurchaseSuccessPage() {
                 <span className="text-electric-blue font-bold mr-3">1.</span>
                 <div>
                   <p className="font-medium">Confirmation Email</p>
-                  <p className="text-white/60 text-sm">Check your inbox for your purchase confirmation and receipt.</p>
+                  <p className="text-white/60 text-sm">
+                    Check your inbox for your purchase confirmation and receipt.
+                  </p>
                 </div>
               </div>
               <div className="flex items-start">
                 <span className="text-electric-blue font-bold mr-3">2.</span>
                 <div>
                   <p className="font-medium">Audit Processing</p>
-                  <p className="text-white/60 text-sm">Our systems are analyzing your website. This typically takes 24-48 hours.</p>
+                  <p className="text-white/60 text-sm">
+                    Our systems are analyzing your website. This typically takes
+                    24-48 hours.
+                  </p>
                 </div>
               </div>
               <div className="flex items-start">
                 <span className="text-electric-blue font-bold mr-3">3.</span>
                 <div>
                   <p className="font-medium">Report Delivery</p>
-                  <p className="text-white/60 text-sm">You'll receive your comprehensive PDF report via email once complete.</p>
+                  <p className="text-white/60 text-sm">
+                    You'll receive your comprehensive PDF report via email once
+                    complete.
+                  </p>
                 </div>
               </div>
             </div>
@@ -127,9 +170,7 @@ export default function PurchaseSuccessPage() {
 
           {/* Support */}
           <div className="text-center">
-            <p className="text-white/60 mb-4">
-              Have questions? Need help?
-            </p>
+            <p className="text-white/60 mb-4">Have questions? Need help?</p>
             <a
               href="mailto:hello@anthrasite.io"
               className="inline-flex items-center px-6 py-3 bg-card-darker border border-card-border rounded-lg font-medium hover:bg-card-darkest transition-colors"

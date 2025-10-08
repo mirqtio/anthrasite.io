@@ -26,11 +26,11 @@ export function OrganicHomepage() {
             if (entry.isIntersecting) {
               const target = entry.target as HTMLElement
               const delay = parseInt(target.dataset.delay || '0')
-              
+
               setTimeout(() => {
                 target.classList.add('revealed')
               }, delay)
-              
+
               // Stop observing once revealed
               observerRef.current?.unobserve(target)
             }
@@ -38,13 +38,15 @@ export function OrganicHomepage() {
         },
         {
           threshold: 0.2,
-          rootMargin: '0px 0px -50px 0px'
+          rootMargin: '0px 0px -50px 0px',
         }
       )
 
       // Observe all reveal elements
-      const revealElements = document.querySelectorAll('.reveal-card, .reveal-tagline')
-      revealElements.forEach(el => observerRef.current?.observe(el))
+      const revealElements = document.querySelectorAll(
+        '.reveal-card, .reveal-tagline'
+      )
+      revealElements.forEach((el) => observerRef.current?.observe(el))
     }
 
     return () => {
@@ -65,12 +67,13 @@ export function OrganicHomepage() {
           if (targetElement) {
             const navbarHeight = 80 // Height of fixed navbar
             const extraOffset = hash === 'assessment' ? 120 : 0 // Extra offset for Examples section
-            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset
+            const elementPosition =
+              targetElement.getBoundingClientRect().top + window.pageYOffset
             const offsetPosition = elementPosition - navbarHeight - extraOffset
-            
+
             window.scrollTo({
               top: offsetPosition,
-              behavior: 'smooth'
+              behavior: 'smooth',
             })
           }
         }, 100)
@@ -96,12 +99,13 @@ export function OrganicHomepage() {
     if (targetElement) {
       const navbarHeight = 80 // Height of fixed navbar
       const extraOffset = sectionId === 'assessment' ? 120 : 0 // Extra offset for Examples section
-      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset
+      const elementPosition =
+        targetElement.getBoundingClientRect().top + window.pageYOffset
       const offsetPosition = elementPosition - navbarHeight - extraOffset
-      
+
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
     }
     setShowMobileMenu(false)
@@ -185,23 +189,23 @@ export function OrganicHomepage() {
               </div>
             </a>
           </div>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <button 
-              onClick={() => scrollToSection('assessment')} 
+            <button
+              onClick={() => scrollToSection('assessment')}
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
             >
               Method
             </button>
-            <button 
-              onClick={() => scrollToSection('faq')} 
+            <button
+              onClick={() => scrollToSection('faq')}
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
             >
               FAQ
             </button>
-            <a 
-              href="/about" 
+            <a
+              href="/about"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
               About Us
@@ -214,9 +218,15 @@ export function OrganicHomepage() {
             className="md:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5"
             aria-label="Toggle menu"
           >
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? 'rotate-45 translate-y-2' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-white transition-opacity ${showMobileMenu ? 'opacity-0' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? '-rotate-45 -translate-y-2' : ''}`}></span>
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? 'rotate-45 translate-y-2' : ''}`}
+            ></span>
+            <span
+              className={`block w-6 h-0.5 bg-white transition-opacity ${showMobileMenu ? 'opacity-0' : ''}`}
+            ></span>
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${showMobileMenu ? '-rotate-45 -translate-y-2' : ''}`}
+            ></span>
           </button>
         </div>
 
@@ -224,20 +234,20 @@ export function OrganicHomepage() {
         {showMobileMenu && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-carbon border-t border-smoke">
             <div className="flex flex-col py-4">
-              <button 
-                onClick={() => scrollToSection('assessment')} 
+              <button
+                onClick={() => scrollToSection('assessment')}
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity text-left"
               >
                 Method
               </button>
-              <button 
-                onClick={() => scrollToSection('faq')} 
+              <button
+                onClick={() => scrollToSection('faq')}
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity text-left"
               >
                 FAQ
               </button>
-              <a 
-                href="/about" 
+              <a
+                href="/about"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
@@ -262,10 +272,11 @@ export function OrganicHomepage() {
             </p>
 
             {/* CTA Button with Pulsing Rings */}
-            <div className="relative inline-block -mt-[200px] md:-mt-[80px]" data-testid="hero-section">
-              <div
-                className="pressure-visual"
-              >
+            <div
+              className="relative inline-block -mt-[200px] md:-mt-[80px]"
+              data-testid="hero-section"
+            >
+              <div className="pressure-visual">
                 <div
                   className="pressure-ring"
                   style={{ '--scale': 1 } as React.CSSProperties}
@@ -273,13 +284,19 @@ export function OrganicHomepage() {
                 <div
                   className="pressure-ring"
                   style={
-                    { '--scale': 0.8, animationDelay: '0.3s' } as React.CSSProperties
+                    {
+                      '--scale': 0.8,
+                      animationDelay: '0.3s',
+                    } as React.CSSProperties
                   }
                 ></div>
                 <div
                   className="pressure-ring"
                   style={
-                    { '--scale': 0.6, animationDelay: '0.6s' } as React.CSSProperties
+                    {
+                      '--scale': 0.6,
+                      animationDelay: '0.6s',
+                    } as React.CSSProperties
                   }
                 ></div>
                 <div className="pressure-center">
@@ -293,7 +310,7 @@ export function OrganicHomepage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Animated Arrow */}
             <div className="arrow-container" aria-hidden="true">
               <div className="scroll-arrow">
@@ -313,7 +330,9 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
                 </div>
-                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Load Performance</h3>
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">
+                  Load Performance
+                </h3>
                 <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   How fast your site loads on real devices, and what it's
                   costing you in lost customers.
@@ -324,7 +343,9 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#DC2626' }}>
                   47%
                 </div>
-                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Mobile Experience</h3>
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">
+                  Mobile Experience
+                </h3>
                 <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   Where mobile visitors fail to convert, with specific
                   breakpoints identified.
@@ -335,7 +356,9 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#22C55E' }}>
                   $$
                 </div>
-                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">Revenue Impact</h3>
+                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">
+                  Revenue Impact
+                </h3>
                 <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
                   Estimated monthly revenue loss from technical issues,
                   calculated for your specific market.
@@ -343,7 +366,10 @@ export function OrganicHomepage() {
               </div>
             </div>
 
-            <p className="text-center text-[24px] md:text-[24px] text-[20px] font-normal opacity-70 reveal-tagline" data-delay="450">
+            <p
+              className="text-center text-[24px] md:text-[24px] text-[20px] font-normal opacity-70 reveal-tagline"
+              data-delay="450"
+            >
               No fluff. No 50-page reports. Just what's broken and what it's
               worth to fix it.
             </p>
@@ -440,9 +466,12 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
       </main>
 
       {/* Modal */}
-      <div className={`modal ${showModal ? 'active' : ''}`} onClick={(e) => {
-        if (e.target === e.currentTarget) closeModal()
-      }}>
+      <div
+        className={`modal ${showModal ? 'active' : ''}`}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) closeModal()
+        }}
+      >
         <div className="modal-container container-form">
           <button className="modal-close" onClick={closeModal}>
             ×
@@ -450,9 +479,13 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
           {step === 'domain' && (
             <>
-              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">Join the Waitlist</h3>
+              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">
+                Join the Waitlist
+              </h3>
               <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
-                We're currently assessing targeted SMB websites. Provide your information below and we'll review your site and contact you as soon as we launch.
+                We're currently assessing targeted SMB websites. Provide your
+                information below and we'll review your site and contact you as
+                soon as we launch.
               </p>
               <form onSubmit={handleEmailSubmit}>
                 <div className="form-group">
@@ -477,9 +510,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
                     required
                   />
                 </div>
-                {error && (
-                  <p className="text-red-500 text-sm mb-4">{error}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                 <button
                   type="submit"
                   className="cta-primary button-full"
@@ -493,7 +524,9 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
           {step === 'success' && (
             <div className="text-center">
-              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">You're on the list!</h3>
+              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">
+                You're on the list!
+              </h3>
               <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
                 We'll analyze {domain} and send your report to {email} as soon
                 as we launch.

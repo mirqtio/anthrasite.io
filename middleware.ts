@@ -63,12 +63,12 @@ export async function middleware(request: NextRequest) {
 
     // Development/Test bypass
     const bypassToken = process.env.UTM_BYPASS_TOKEN || 'dev-test-token'
-    const isTestMode = 
+    const isTestMode =
       process.env.NODE_ENV === 'development' ||
       process.env.ENABLE_TEST_MODE === 'true' ||
       process.env.VERCEL_ENV === 'preview' ||
       utm === 'dev-test-token' // Hard-coded fallback for development
-    
+
     if (isTestMode && utm === bypassToken) {
       // Allow bypass with test business data
       response = NextResponse.next(response)

@@ -24,20 +24,23 @@ test.describe('Waitlist Signup', () => {
       'h1:has-text("Your website has untapped potential")',
       'h1:has-text("untapped potential")',
       'text="Your website has untapped potential"',
-      'h1'
+      'h1',
     ]
-    
+
     let headingFound = false
     for (const selector of headingSelectors) {
       try {
-        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 })
+        await page.waitForSelector(selector, {
+          state: 'visible',
+          timeout: 5000,
+        })
         headingFound = true
         break
       } catch {
         // Try next selector
       }
     }
-    
+
     if (!headingFound) {
       // Log the page content for debugging
       const content = await page.textContent('body')
@@ -50,9 +53,9 @@ test.describe('Waitlist Signup', () => {
       'button:has-text("Get Started")',
       'button:has-text("Join")',
       'button:has-text("Waitlist")',
-      'button[type="button"]'
+      'button[type="button"]',
     ]
-    
+
     for (const selector of buttonSelectors) {
       try {
         const button = await page.locator(selector).first()
@@ -69,22 +72,25 @@ test.describe('Waitlist Signup', () => {
     const formSelectors = [
       '[data-testid="waitlist-form"]',
       'form',
-      'div:has(input[placeholder="example.com"])'
+      'div:has(input[placeholder="example.com"])',
     ]
-    
+
     for (const selector of formSelectors) {
       try {
-        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 })
+        await page.waitForSelector(selector, {
+          state: 'visible',
+          timeout: 5000,
+        })
         break
       } catch {
         // Try next selector
       }
     }
-    
+
     // Ensure the domain input is visible
-    await page.waitForSelector('input[placeholder="example.com"]', { 
-      state: 'visible', 
-      timeout: 10000 
+    await page.waitForSelector('input[placeholder="example.com"]', {
+      state: 'visible',
+      timeout: 10000,
     })
   }
 
