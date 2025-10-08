@@ -6,7 +6,8 @@
 interface UTMTokenParams {
   businessId: string
   businessName: string
-  price: number
+  domain: string
+  expiryHours?: number
 }
 
 /**
@@ -14,16 +15,19 @@ interface UTMTokenParams {
  */
 export async function generateUTMToken(params: UTMTokenParams): Promise<string> {
   const baseUrl = process.env.BASE_URL || 'http://localhost:3333'
+  const adminApiKey = process.env.ADMIN_API_KEY || 'test-admin-key-local-only'
 
   const response = await fetch(`${baseUrl}/api/admin/generate-utm`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-admin-api-key': adminApiKey,
     },
     body: JSON.stringify({
       businessId: params.businessId,
       businessName: params.businessName,
-      price: params.price,
+      domain: params.domain,
+      expiryHours: params.expiryHours,
     }),
   })
 

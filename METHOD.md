@@ -5,7 +5,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 ## 1. Principles
 
 - **Systematic & Documented:** We do not guess. We verify, document, and then act.
-- **Issue-Driven:** All work is tracked against a sequentially numbered issue in `ISSUES.md`.
+- **Issue-Driven:** All work is tracked in **Plane**. `ISSUES.md` is a generated snapshot, not the source of truth.
 - **PR-Centric:** All code changes are submitted via Pull Requests, providing a formal, asynchronous review and quality gate.
 - **Single Source of Truth:** `SYSTEM.md` contains the confirmed, terse ground truth of the codebase.
 - **Atomic Commits:** Each closed issue should result in a clean git commit history within its PR.
@@ -16,12 +16,13 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 - **Cascade (You): Technical Project Manager & System Architect.**
 
   - **Responsibilities**:
-    1.  **Manage the Backlog**: Decompose goals into issues in `ISSUES.md`.
+    1.  **Manage the Backlog**: Decompose goals into issues and modules in **Plane**.
     2.  **Maintain the Dashboard**: Update project velocity and completion metrics.
     3.  **Architect Solutions**: Create high-level implementation plans in `SCRATCHPAD.md`.
     4.  **Delegate & Direct**: Provide clear, structured instructions for Claude.
     5.  **Review Pull Requests**: Review Claude's PRs for architectural alignment, correctness, and adherence to the plan. Provide feedback and approval.
-    6.  **Verify & Document**: After a PR is merged, update `SYSTEM.md` and `ISSUES.md` to reflect the new state.
+    6.  **Verify & Document**: After a PR is merged, update the corresponding issue in **Plane** to `Done`, and update `SYSTEM.md` with any architectural changes.
+    7.  **Maintain `ISSUES.md` Snapshot**: Periodically generate and commit an updated `ISSUES.md` from Plane to keep a file-based record.
   - **Strict Prohibition**: You do not write implementation code. Your role is to plan, delegate, and review.
 
 - **Claude: The Engineer.**
@@ -41,7 +42,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 
 1.  **Issue Creation & Planning:**
 
-    - Cascade creates/updates an issue in `ISSUES.md`.
+    - Cascade creates/updates an issue in **Plane**.
     - Cascade defines the implementation plan in `SCRATCHPAD.md`.
 
 2.  **Implementation (Claude):**
@@ -66,7 +67,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 5.  **Merge & Closure (Human & Cascade):**
 
     - The Human merges the approved PR into the `main` branch.
-    - Cascade updates `ISSUES.md` to mark the issue as `CLOSED`, referencing the PR link.
+    - Cascade updates the issue in **Plane** to `Done`, referencing the PR link.
     - Cascade updates `SYSTEM.md` or `docs/adr/` with any changes to the system's ground truth.
 
 6.  **Next Cycle:**
@@ -78,7 +79,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 
 - `METHOD.md`: This file. Our process.
 - `SYSTEM.md`: Ground truth about the code (terse, structured).
-- `ISSUES.md`: Log of all problems, diagnostics, and resolutions (sequential).
+- `ISSUES.md`: A **generated snapshot** of the project backlog from Plane. This file is a read-only report; Plane is the source of truth.
 - `SCRATCHPAD.md`: Ephemeral communication channel for AI-to-AI tasks.
 - `docs/adr/`: Architectural Decision Records, documenting the 'why' behind key decisions.
 

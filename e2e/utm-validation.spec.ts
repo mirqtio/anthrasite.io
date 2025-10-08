@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { createAndStoreToken } from '@/lib/utm/storage'
 import { prisma } from '@/lib/db'
+import { getTestBaseUrl } from './helpers/test-config'
 
 test.describe('UTM Parameter Validation', () => {
   // Helper to create test business
@@ -50,7 +51,7 @@ test.describe('UTM Parameter Validation', () => {
       // Setup: Create business and generate UTM
       const business = await createTestBusiness()
       const utmUrl = await generateUTMUrl(
-        'http://localhost:3000/purchase',
+        `${getTestBaseUrl()}/purchase`,
         business.id
       )
 
@@ -87,7 +88,7 @@ test.describe('UTM Parameter Validation', () => {
       page,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(getTestBaseUrl(), business.id)
 
       try {
         // Navigate to homepage with UTM
@@ -162,7 +163,7 @@ test.describe('UTM Parameter Validation', () => {
     test('should redirect for tampered UTM', async ({ page }) => {
       const business = await createTestBusiness()
       const validUrl = await generateUTMUrl(
-        'http://localhost:3000/purchase',
+        `${getTestBaseUrl()}/purchase`,
         business.id
       )
 
@@ -192,7 +193,7 @@ test.describe('UTM Parameter Validation', () => {
       const business = await createTestBusiness()
       const { token, nonce } = await createAndStoreToken(business.id)
       const utmUrl = await generateUTMUrl(
-        'http://localhost:3000/purchase',
+        `${getTestBaseUrl()}/purchase`,
         business.id
       )
 

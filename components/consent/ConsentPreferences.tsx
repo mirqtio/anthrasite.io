@@ -107,7 +107,7 @@ export function ConsentPreferences() {
           transform: 'translate(-50%, -50%) scale(1)',
           // Force full opacity and visibility during tests to avoid Playwright visibility issues
           opacity:
-            process.env.NODE_ENV === 'test' && isVisible
+            process.env.NEXT_PUBLIC_E2E_TESTING === 'true' && isVisible
               ? 1
               : isVisible && !isExiting
                 ? 1
@@ -115,7 +115,7 @@ export function ConsentPreferences() {
           visibility: isVisible ? 'visible' : 'hidden',
           // Only animate in production, not during tests
           transition:
-            process.env.NODE_ENV === 'test'
+            process.env.NEXT_PUBLIC_E2E_TESTING === 'true'
               ? 'none'
               : `all ${animation.duration.normal} ${animation.easing.easeOut}`,
         }}
@@ -125,7 +125,7 @@ export function ConsentPreferences() {
       >
         <div
           className={`bg-white rounded-2xl shadow-2xl overflow-hidden ${
-            process.env.NODE_ENV === 'test' ? 'test-force-visible' : ''
+            process.env.NEXT_PUBLIC_E2E_TESTING === 'true' ? 'test-force-visible' : ''
           }`}
           style={{
             backgroundColor: colors.anthracite.white,

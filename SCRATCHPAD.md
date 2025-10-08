@@ -330,27 +330,144 @@ Archived workflows preserved in `_archive/` for historical reference.
   - Expected: ~2-3 minutes for full suite
   - Common failures: "waitlist-form not found", navigation issues, cookie modal issues
 
-**Decision: Temporarily Increase E2E Timeout**
-Given that:
-1. E2E tests got to 119/120 before timeout (99.2% complete)
-2. All helper infrastructure is now fixed
-3. Test failures appear to be pre-existing application issues, not CI config issues
-4. User directive: "fix pre-existing issues" but also need working CI first
+**⚠️ CRITICAL CONTEXT UPDATE - USER DIRECTIVE:**
 
-**Pragmatic Approach:**
-1. Increase e2e job timeout from 15min to 25min (temporary)
-2. This allows CI to complete and show which tests fail
-3. Then systematically fix failing tests OR quarantine them
-4. Once tests are stable, can reduce timeout back down
+> **"The goal is to cleanup the codebase, not to make CI pass."**
 
-**Alternative Considered:** Fix all 26+ test failures before increasing timeout
-**Rejected Because:** Would take significant time, and we need CI feedback to identify all failures systematically
+The timeout increase (commit 95f605e) was the WRONG approach - a bandaid that masks problems instead of fixing them.
+
+**CORRECT Approach (User-Directed):**
+1. ✅ Revert timeout bandaid (restore 15min)
+2. ⏳ Audit E2E test suite - determine which tests are valuable
+3. ⏳ Review failures from valuable tests
+4. ⏳ Diagnose root causes (app bugs, test bugs, or obsolete tests)
+5. ⏳ Fix root causes properly
+6. ⏳ Result: Fast E2E suite that tests what matters + cleaner codebase
+
+**Why This Is Better:**
+- Fixes real issues instead of hiding them
+- Reduces E2E execution time by removing non-valuable tests
+- Surfaces and fixes actual application bugs
+- Aligns with the actual goal: cleanup, not green checkmarks
 
 **Commits:**
 - 722b49b: fix(ci): Add missing DIRECT_URL and fix unit test reporters
 - 48ca911: fix(ci): Fix E2E test reporters configuration
 - 73ab188: fix(e2e): Create missing test helper utilities (test-utils.ts, stripe-mocks.ts)
 - 1d1fcf9: fix(e2e): Add missing utm-generator helper
+- 95f605e: fix(ci): Increase E2E test timeout to 25 minutes
+
+**Latest CI Run (18351496442):** ⚠️ **ABANDONED** (Timeout bandaid reverted)
+- Status: Bandaid approach rejected by user
+- Commit: 95f605e (reverted in working directory)
+- Correct approach: Audit and cleanup test suite, not increase timeout
+
+**Phase 1.6: E2E Test Suite Audit & Cleanup** ⏳ IN PROGRESS
+See E2E_TEST_AUDIT.md (analysis) and E2E_CLEANUP_LOG.md (changes).
+
+**Phase 1: Remove Obvious Duplicates** ✅ COMPLETED
+- ❌ Deleted `homepage.spec.ts` (1 test) - duplicate of homepage-rendering.spec.ts
+- ❌ Deleted `consent-banner-visibility.spec.ts` (3 tests) - subset of consent.spec.ts
+- ❌ Deleted `test-analytics-component.spec.ts` (1 test) - debug code, not real test
+- **Result**: 116 → 111 tests, 21 → 18 files (-5 tests, -3 files)
+
+**Phase 2A: Local Test Run with Docker PostgreSQL** ✅ COMPLETED
+- ✅ Setup Docker PostgreSQL for local testing
+  - Created `anthrasite_test` database in existing `anth-db` container
+  - Fixed `.env`, `.env.local`, `.env.test` to use correct credentials (postgres:devpass)
+  - Fixed `playwright.config.ts` hardcoded fallback password (postgres → devpass)
+  - Pushed Prisma schema to test database
+- ✅ Ran `pnpm run test:e2e` locally
+- **Results**: 56 failed, 55 passed (111 total tests, 5.2 minutes)
+- ✅ Database connectivity working (no more auth errors)
+
+**Phase 2B: Diagnose Test Failures** ⏳ IN PROGRESS
+- Categorize each failure: redundant test, app bug, or test bug
+- Common failure patterns observed:
+  - Client-side rendering tests (isInteractive false)
+  - Consent modal visibility timeouts
+  - UTM token generation (401 Unauthorized)
+  - Homepage rendering failures
+  - Waitlist form submission failures
+- Target: Understand root cause of each failure type
+
+**Phase 2C: Fix Root Causes** ⏳ IN PROGRESS
+
+✅ **Fix #1 Complete**: UTM Token Generation (401 Unauthorized)
+- Added ADMIN_API_KEY to env files
+- Updated utm-generator.ts to send x-admin-api-key header
+- Fixed parameter mismatch (price → domain)
+- **Results**: 56 failed → 54 failed, 55 passed → 56 passed, 1 flaky
+- **Status**: ✅ 401 errors eliminated, but UTM tests still fail for OTHER reasons
+
+✅ **Fix #2 Complete**: Port Mismatch (localhost:3000 → 3333)
+- Fixed `homepage-mode-detection.spec.ts` - replaced 7 instances of localhost:3000
+- Fixed `utm-validation.spec.ts` - replaced 4 instances of localhost:3000
+- **Results**: 54 failed, 56 passed → 54 failed, 57 passed
+- **Impact**: +1 passing test, -0 failures (net neutral on failed count)
+- **Status**: ✅ Port errors eliminated, but less impact than expected
+
+✅ **Fix #3 Complete (Partial)**: Cookie Consent Modal Visibility
+- Fixed `playwright.config.ts` - added `NEXT_PUBLIC_E2E_TESTING: 'true'`
+- Fixed `ConsentPreferences.tsx` - replaced `NODE_ENV === 'test'` with `NEXT_PUBLIC_E2E_TESTING === 'true'`
+- **Results (consent tests only)**: 7 failed → 4 failed
+- **Impact**: +3 consent tests passing
+- **Status**: ✅ Partial fix - modal visibility improved, 4 tests still failing
+
+✅ **Fix #4 Complete**: Client-Side Rendering Text Assertion
+- Fixed `e2e/client-side-rendering.spec.ts` - replaced stale "Get Started" with "Join Waitlist"
+- **Impact**: +1 test passing (expected)
+
+**Fix #2 Improved**: Made port configuration portable
+- Added `e2e/helpers/test-config.ts` with `getTestBaseUrl()` helper
+- All hardcoded URLs now use environment-based configuration
+- **Portability**: ✅ Docker/CI ready - just set `BASE_URL` env var
+
+**Current Results**: 56 failed, 55 passed (111 total tests)
+- ⚠️ **Critical Issue**: Full test suite taking 10+ minutes (goal: <5min)
+- Problem affects both local AND CI/remote execution
+
+**Total Files Modified**: 9 files
+1. `playwright.config.ts` - Added ADMIN_API_KEY, NEXT_PUBLIC_E2E_TESTING, BASE_URL
+2-4. `.env`, `.env.local`, `.env.test` - Added ADMIN_API_KEY
+5. `e2e/helpers/utm-generator.ts` - Fixed auth + params
+6. `e2e/helpers/test-config.ts` - NEW portable URL helper
+7. `e2e/full-user-journey.spec.ts` - Updated UTM calls
+8. `e2e/homepage-mode-detection.spec.ts` - Portable URLs
+9. `e2e/utm-validation.spec.ts` - Portable URLs
+10. `components/consent/ConsentPreferences.tsx` - Fixed E2E visibility
+11. `e2e/client-side-rendering.spec.ts` - Fixed stale text
+
+📋 **Strategic Problem**: Two Issues to Solve
+1. **Performance**: 10+ minute runtime (target: <5min)
+2. **Failures**: 56 failing tests (50% failure rate)
+
+**Strategic Solution** (See E2E_STRATEGIC_PLAN.md for details):
+
+**3-Pronged Approach**:
+1. **Aggressive Deduplication**: Remove ~20-25 duplicate tests (111 → ~85-90 tests, -2min)
+2. **Increase Parallelization**: Configure 6-8 workers vs current 5 (-4min runtime)
+3. **Fix Root Causes**: 3 fixes resolve ~25 test failures
+   - Waitlist form visibility (~8 tests)
+   - Homepage mode detection (~12 tests)
+   - Purchase flow issues (~5 tests)
+
+**Recommended Path: Option A (Aggressive)**
+- Execute deduplication first (smaller test suite = faster iteration)
+- Fix top 3 root causes (highest ROI)
+- Add parallelization last (validate final count)
+- **Expected outcome**: ~85-90 tests, <5min runtime, >90% pass rate
+
+**Alternative: Option C (Targeted)**
+- Focus only on root cause fixes + parallelization
+- Skip deduplication for now
+- **Expected outcome**: 111 tests, ~6min runtime, ~80% pass rate
+
+**Audit Findings:**
+- 116 tests across 21 files (now 111/18 after Phase 1)
+- ~30 tests appear duplicative (5 removed, ~25 remain to evaluate)
+- 26+ failures indicate missing features or app bugs
+- Execution time bloat from failures + retries
 
 **Results from CI Run 18349442434:**
 - ✅ setup, lint, typecheck, build: All passing

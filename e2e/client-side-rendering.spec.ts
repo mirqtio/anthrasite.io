@@ -59,7 +59,7 @@ test.describe('Client-Side Rendering', () => {
       return (
         bodyChildren.length > 0 &&
         Array.from(bodyChildren).some((child) =>
-          child.textContent?.includes('Get Started')
+          child.textContent?.includes('Join Waitlist')
         )
       )
     })
