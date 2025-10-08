@@ -218,10 +218,11 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           PLAYWRIGHT_HEADLESS: '1'
-          NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true'
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: 'false'
+          NEXT_PUBLIC_E2E_TESTING: 'true'
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
-        run: pnpm run test:e2e
+        run: pnpm run test:e2e:ci
         timeout-minutes: 15
       - name: Upload Playwright HTML report
         if: always()
