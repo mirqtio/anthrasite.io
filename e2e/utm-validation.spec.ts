@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './base-test'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { createAndStoreToken } from '@/lib/utm/storage'
 import { prisma } from '@/lib/db'

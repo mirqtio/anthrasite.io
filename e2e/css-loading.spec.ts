@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './base-test'
 import { gotoAndDismissCookies } from './helpers/test-utils'
 
 test.describe('CSS Loading and Styling', () => {

@@ -19,8 +19,6 @@ export default defineConfig({
   expect: {
     timeout: 15_000, // 15s for production build hydration (increased from 8s)
   },
-  // Shared test hooks for diagnostics (inherited from base config)
-  testMatch: ['**/*.spec.ts', '**/.setup.ts'],
   // CI only tests Chromium (override base config's 5-browser matrix)
   projects: [
     {

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './base-test'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 
 test.describe('Purchase Page', () => {

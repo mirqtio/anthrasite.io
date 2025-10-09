@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './base-test'
 import { waitForAppReady } from './_utils/app-ready'
 import { JourneyIds, JourneyA11y } from '../tests/contracts/journeyContract'
 import { generateUTMToken } from './helpers/utm-generator'

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './base-test'
 import { waitForAppReady } from './utils/waits'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { prisma } from '@/lib/db'

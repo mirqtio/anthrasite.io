@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './base-test'
 import { waitForAppReady } from './utils/waits'
 import { generateUTMToken } from './helpers/utm-generator'
 import { mockStripeCheckout } from './helpers/stripe-mocks'

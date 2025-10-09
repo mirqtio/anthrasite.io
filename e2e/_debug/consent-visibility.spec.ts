@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../base-test'
 import { openCookiePreferences } from '../helpers/test-utils'
 import { debugElementVisibility } from './visibility-debug'
 
