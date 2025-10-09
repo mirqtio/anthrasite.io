@@ -45,19 +45,21 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
       </head>
       <body className={`${inter.variable} font-sans`}>
-        <MonitoringProvider>
-          <ConsentProvider>
-            <SiteModeProvider>
-              <HelpWidgetProvider>
-                {children}
-                <ConsentManager />
-                <ConditionalHelpWidget />
-                <AnalyticsWrapper />
-                <AnalyticsNoScriptWrapper />
-              </HelpWidgetProvider>
-            </SiteModeProvider>
-          </ConsentProvider>
-        </MonitoringProvider>
+        <div data-app-shell>
+          <MonitoringProvider>
+            <ConsentProvider>
+              <SiteModeProvider>
+                <HelpWidgetProvider>
+                  {children}
+                  <ConsentManager />
+                  <ConditionalHelpWidget />
+                  <AnalyticsWrapper />
+                  <AnalyticsNoScriptWrapper />
+                </HelpWidgetProvider>
+              </SiteModeProvider>
+            </ConsentProvider>
+          </MonitoringProvider>
+        </div>
       </body>
     </html>
   )
