@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { prisma } from '@/lib/db'
 
+// Get base URL from environment (matches Playwright config)
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3333'
+
 test.describe('Homepage Mode Detection', () => {
   // Generate unique identifier for test runs
   const getUniqueTestId = () => {
@@ -212,7 +215,7 @@ test.describe('Homepage Mode Detection', () => {
       context,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         // Clear cookies
@@ -270,7 +273,7 @@ test.describe('Homepage Mode Detection', () => {
       request,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         await page.goto(utmUrl)
@@ -300,7 +303,7 @@ test.describe('Homepage Mode Detection', () => {
       context,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         // Initial visit with UTM
@@ -338,7 +341,7 @@ test.describe('Homepage Mode Detection', () => {
       context,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         // Visit with UTM
@@ -445,10 +448,7 @@ test.describe('Homepage Mode Detection', () => {
 
     test('should show error for tampered UTM signature', async ({ page }) => {
       const business = await createTestBusiness()
-      const validUrl = await generateUTMUrl(
-        'http://localhost:3000',
-        business.id
-      )
+      const validUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         // Extract and tamper with UTM
@@ -524,7 +524,7 @@ test.describe('Homepage Mode Detection', () => {
       context,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         // Set mobile viewport
@@ -561,7 +561,7 @@ test.describe('Homepage Mode Detection', () => {
       context,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         // Rapidly switch between modes
@@ -582,7 +582,7 @@ test.describe('Homepage Mode Detection', () => {
 
     test('should handle concurrent cookie operations', async ({ browser }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
         // Create two contexts (simulating two tabs)
