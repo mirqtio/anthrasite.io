@@ -57,14 +57,18 @@ export async function acceptConsentIfPresent(page: Page) {
  * @param url - URL to navigate to
  */
 export async function gotoAndDismissConsent(page: Page, url: string) {
-  // Clear cookies and storage BEFORE navigation to ensure clean state
+  // Clear cookies first (available before navigation)
   await page.context().clearCookies()
+
+  // Navigate to page (localStorage only accessible after navigation)
+  await page.goto(url)
+
+  // Clear storage after page loads
   await page.evaluate(() => {
     localStorage.clear()
     sessionStorage.clear()
   })
 
-  await page.goto(url)
   await acceptConsentIfPresent(page)
 }
 

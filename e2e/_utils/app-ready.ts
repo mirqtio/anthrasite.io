@@ -9,14 +9,18 @@ export async function waitForAppReady(page: Page) {
   const r = await page.request.get('/api/health')
   expect(r.status()).toBeLessThan(500)
 
-  // Clear cookies and storage BEFORE navigation to prevent test pollution
+  // Clear cookies first (available before navigation)
   await page.context().clearCookies()
+
+  // Navigate to homepage
   await page.goto('/')
+  await page.waitForLoadState('domcontentloaded')
+
+  // Clear storage after page loads
   await page.evaluate(() => {
     localStorage.clear()
     sessionStorage.clear()
   })
-  await page.waitForLoadState('domcontentloaded')
 
   // Ensure app shell is visible (confirms React has hydrated)
   await expect(page.locator('[data-app-shell]')).toBeVisible()
