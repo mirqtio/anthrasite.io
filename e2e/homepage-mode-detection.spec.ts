@@ -418,7 +418,9 @@ test.describe('Homepage Mode Detection', () => {
         await page.waitForLoadState('networkidle')
 
         // Should show error state in purchase mode
-        await expect(page.locator('h2')).toContainText('Invalid Purchase Link')
+        await expect(
+          page.locator('h2', { hasText: 'Invalid Purchase Link' })
+        ).toBeVisible()
         await expect(
           page.locator('text=This purchase link is not valid')
         ).toBeVisible()
@@ -443,7 +445,9 @@ test.describe('Homepage Mode Detection', () => {
       await page.waitForLoadState('networkidle')
 
       // Should show error state
-      await expect(page.locator('h2')).toContainText('Invalid Purchase Link')
+      await expect(
+        page.locator('h2', { hasText: 'Invalid Purchase Link' })
+      ).toBeVisible()
     })
 
     test('should show error for tampered UTM signature', async ({ page }) => {
@@ -462,7 +466,9 @@ test.describe('Homepage Mode Detection', () => {
         await page.waitForLoadState('networkidle')
 
         // Should show error state
-        await expect(page.locator('h2')).toContainText('Invalid Purchase Link')
+        await expect(
+          page.locator('h2', { hasText: 'Invalid Purchase Link' })
+        ).toBeVisible()
       } finally {
         await cleanup(business.id)
       }
@@ -491,7 +497,9 @@ test.describe('Homepage Mode Detection', () => {
       await page.waitForLoadState('networkidle')
 
       // Should show error state
-      await expect(page.locator('h2')).toContainText('Invalid Purchase Link')
+      await expect(
+        page.locator('h2', { hasText: 'Invalid Purchase Link' })
+      ).toBeVisible()
     })
   })
 
