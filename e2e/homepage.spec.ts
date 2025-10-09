@@ -17,7 +17,7 @@ test.describe('Homepage', () => {
     // Check key content sections
     await expect(
       page.getByText(
-        "We analyze thousands of data points to show you what to fix and what it's worth."
+        "We analyze hundreds of data points to show you what to fix and what it's worth."
       )
     ).toBeVisible()
     await expect(page.getByTestId('open-waitlist-button')).toBeVisible()

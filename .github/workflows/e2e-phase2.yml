@@ -54,8 +54,8 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
 
-      - name: Run Phase 2 E2E tests
-        run: pnpm exec playwright test --config=playwright.config.ci.ts e2e/client-side-rendering.spec.ts e2e/homepage-rendering.spec.ts e2e/site-mode.spec.ts e2e/waitlist.spec.ts
+      - name: Run Phase 2 E2E tests - User Flows
+        run: pnpm exec playwright test --config=playwright.config.ci.ts e2e/client-side-rendering.spec.ts e2e/homepage-rendering.spec.ts e2e/site-mode.spec.ts e2e/site-mode-context.spec.ts e2e/homepage-mode-detection.spec.ts e2e/waitlist.spec.ts e2e/waitlist-functional.spec.ts
         timeout-minutes: 15
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
