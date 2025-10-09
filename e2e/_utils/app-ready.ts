@@ -1,8 +1,9 @@
 import { Page, expect } from '@playwright/test'
+import { waitForHydration } from '@/e2e/utils/waits'
 
 /**
  * Wait for app to be ready before running tests
- * Ensures server is healthy, DOM is loaded, and storage is clean
+ * Ensures server is healthy, DOM is loaded, storage is clean, and React has hydrated
  */
 export async function waitForAppReady(page: Page) {
   // Check health endpoint is responding
@@ -21,6 +22,9 @@ export async function waitForAppReady(page: Page) {
     localStorage.clear()
     sessionStorage.clear()
   })
+
+  // Wait for React hydration to complete (critical for production builds)
+  await waitForHydration(page)
 
   // Ensure app shell is visible (confirms React has hydrated)
   await expect(page.locator('[data-app-shell]')).toBeVisible()
