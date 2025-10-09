@@ -46,14 +46,16 @@ export default defineConfig({
     ...base.use,
     actionTimeout: 15_000, // 15s action timeout in CI
     navigationTimeout: 30_000, // 30s navigation timeout in CI
-    video: 'retain-on-failure',
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
+    video: 'off', // Disable video to save space
+    trace: 'retain-on-failure', // Keep traces only on failure
+    screenshot: 'only-on-failure', // Screenshots only on failure
   },
   // Configure reporters for CI
   reporter: [
-    ['line'],
-    ['html'],
+    ['list'], // Better for CI logs than 'line'
+    ['html', { open: 'never' }], // Generate HTML report but don't open
     ['junit', { outputFile: 'test-results/junit.xml' }],
   ],
+  // Prevent accidental .only() commits
+  forbidOnly: !!process.env.CI,
 })

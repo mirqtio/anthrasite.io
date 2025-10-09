@@ -1,293 +1,200 @@
-# PLAN: I8 - EPIC I - Final Cleanup & CI Green
+# I8 EPIC: CI MONITORING & FIXES
 
-**Last Updated**: 2025-10-09 12:59 UTC
-**Status**: `IN_PROGRESS` - Critical build failures identified
-**Issue**: `ANT-153`
-**Latest Commit**: `7b5c16ba` (workflow fixes)
+## Current Status (2025-10-09)
 
----
-
-## CRITICAL ISSUES IDENTIFIED FROM CI LOGS
-
-### Log Analysis Summary (from run 18375639295 - commit bff01bd2)
-
-**Test Results**: 62 failed, 57 passed, 1 flaky, 4 skipped
-
-### 🔴 BLOCKING ISSUE #1: Missing nodemailer dependency
-
-**CI Run**: 18376960954 (commit 7b5c16ba)
-**Status**: **BLOCKING** - Build fails to compile
-
-```
-Error: Cannot find module 'nodemailer' or its corresponding type declarations.
-File: ./lib/email/gmail.ts:11:24
-```
-
-**Root Cause**:
-
-- `lib/email/gmail.ts` imports `nodemailer`
-- Package not installed in node_modules
-- Causes Next.js build to fail in CI
-- webServer cannot start → all tests fail
-
-**Fix Required**:
-
-```bash
-pnpm add nodemailer
-pnpm add -D @types/nodemailer
-```
-
-### 🟡 ISSUE #2: Test ID Contract Mismatch (FIXED but not yet verified)
-
-**Status**: Fixed in commit bff01bd2, awaiting CI validation
-
-**Problem**: 62 tests failing with identical error:
-
-```
-Error: Timed out 8000ms waiting for expect(locator).toBeVisible()
-Locator: getByTestId('open-waitlist-button').first()
-Expected: visible
-Received: <element(s) not found>
-```
-
-**Affected Tests**:
-
-- All client-side-rendering tests
-- All homepage-mode-detection tests
-- All waitlist tests
-- All full-user-journey tests
-- All consent tests (cascade failures)
-
-**Root Cause**:
-
-- Test contract defined `openButton: 'waitlist-open'`
-- Tests expected `'open-waitlist-button'`
-- Component uses contract value → mismatch
-
-**Fix Applied** (commit bff01bd2):
-
-- Updated 3 contract files to use `'open-waitlist-button'`
-  - `lib/testing/waitlistFormContract.ts`
-  - `tests/contracts/journeyContract.ts`
-  - `tests/contracts/waitlistFormContract.ts`
-
-**Verification Status**: Cannot verify until nodemailer issue resolved
-
-### 🟡 ISSUE #3: Flaky Test - Content Duplication
-
-**Test**: `e2e/duplication.spec.ts:3:5 › check for content duplication`
-**Status**: Flaky (intermittent failure)
-
-**Error**:
-
-```
-expect(heroCount).toBe(1)
-Expected: 1
-Received: 0
-```
-
-**Analysis**:
-
-- Test checks for duplicate nav/main/footer/hero elements
-- Hero text element sometimes not found (timing issue)
-- Likely needs waitForSelector or retry logic
-
-**Impact**: Low (1 flaky test, marked as flaky in CI)
-
-### 🟡 ISSUE #4: Workflow Package Manager Inconsistency (FIXED)
-
-**Status**: Fixed in commit 7b5c16ba
-
-**Problem**: 11 workflow files still using npm instead of pnpm
-
-- Caused "Dependencies lock file is not found" errors
-- Blocked e2e-phase1 and other workflows
-
-**Files Fixed**:
-
-- e2e-phase1.yml through e2e-phase6.yml
-- complete-e2e-success.yml
-- basic-ci.yml
-- smoke-visual.yml
-- visual-regression.yml
-
-**Changes Applied**:
-
-- Removed `cache: 'npm'` from Setup Node.js
-- Added Setup pnpm step (version 9)
-- Replaced `npm ci` → `pnpm install --frozen-lockfile`
-- Replaced all `npx` → `pnpm exec`
-- Added DIRECT_URL env var
-- Added SENDGRID_API_KEY: test_key_mock
-
-### ⚠️ ISSUE #5: Datadog SDK Warning (Non-blocking)
-
-**Warning Pattern** (appears ~12 times in logs):
-
-```
-[WebServer] Datadog Browser SDK: SDK is loaded more than once.
-This is unsupported and might have unexpected behavior.
-```
-
-**Analysis**:
-
-- SDK being initialized multiple times during page loads
-- May indicate client/server hydration issue
-- Non-blocking but could cause telemetry duplication
-
-**Impact**: Low (warning only, tests still run)
-
-### ⚠️ ISSUE #6: Sentry Deprecation Warning (Non-blocking)
-
-**Warning**:
-
-```
-[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your
-`sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`.
-When using Turbopack `sentry.client.config.ts` will no longer work.
-```
-
-**Impact**: Low (deprecation warning, not breaking)
-**Action**: Can migrate to instrumentation-client.ts in future
-
-### ⚠️ ISSUE #7: Webpack Performance Warning (Non-blocking)
-
-**Warning**:
-
-```
-<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (253kiB)
-impacts deserialization performance (consider using Buffer instead and decode when needed)
-```
-
-**Impact**: Low (performance optimization suggestion)
-
-### ⚠️ ISSUE #8: PostgreSQL Role Errors (Expected, Non-blocking)
-
-**Pattern** (~50 occurrences):
-
-```
-FATAL: role "root" does not exist
-```
-
-**Analysis**:
-
-- Expected behavior from health checks
-- Service container logs showing connection attempts
-- Does not affect test execution
-
-**Impact**: None (expected postgres behavior)
+**Test Results**: 62 passing ✅, 57 failing ❌ (52% pass rate)
+**Infrastructure**: ✅ FIXED - All setup issues resolved
+**Next Phase**: Speed optimizations + remaining test failures
 
 ---
 
-## CURRENT CI STATUS
+## COMPLETED FIXES (4 commits)
 
-### Latest Runs (commit 7b5c16ba - workflow fixes)
+### ✅ 1. Fixed missing nodemailer dependency (commit c59045b7)
 
-| Workflow          | Run ID      | Status         | Issue              |
-| ----------------- | ----------- | -------------- | ------------------ |
-| Comprehensive E2E | 18376960954 | ❌ FAILED      | nodemailer missing |
-| E2E Phase 1       | 18376960950 | 🔄 In Progress | -                  |
-| E2E Phase 2       | 18376960936 | 🔄 In Progress | -                  |
-| E2E Phase 3       | 18376960938 | 🔄 In Progress | -                  |
-| E2E Phase 4       | 18376960941 | 🔄 In Progress | -                  |
-| E2E Phase 5       | 18376960925 | 🔄 In Progress | -                  |
-| E2E Phase 6       | 18376960928 | 🔄 In Progress | -                  |
+- **Problem**: Build failing with "Cannot find module 'nodemailer'"
+- **Fix**: Installed `nodemailer ^7.0.9` and `@types/nodemailer ^7.0.2`
+- **Impact**: Build now succeeds, webServer can start
 
-### Previous Run Analysis (commit bff01bd2 - test ID fix only)
+### ✅ 2. Fixed test ID contract mismatch (commit bff01bd2)
 
-| Workflow          | Run ID      | Status    | Issue                          |
-| ----------------- | ----------- | --------- | ------------------------------ |
-| Comprehensive E2E | 18375639295 | ❌ FAILED | Test ID mismatch (62 failures) |
-| E2E Phase 1       | 18376861536 | ❌ FAILED | npm/pnpm mismatch              |
+- **Problem**: 62 tests failing looking for `'open-waitlist-button'` but contract defined `'waitlist-open'`
+- **Fix**: Updated 3 contract files to use `'open-waitlist-button'`
+- **Impact**: All 62 test ID failures resolved, tests now passing
 
----
+### ✅ 3. Fixed Playwright browser installation (commit 531de62c)
 
-## IMMEDIATE ACTION PLAN
+- **Problem**: Workflows only installing chromium, tests run on multiple browsers
+- **Fix**: Changed all 12 workflows from `--with-deps chromium` to `--with-deps`
+- **Impact**: Firefox, webkit tests can now run
 
-### Priority 1: Fix Build Blocker (nodemailer)
+### ✅ 4. Fixed CI Playwright config usage (commit 9219d3bf)
 
-**Tasks**:
-
-1. ✅ Identify issue: nodemailer not in dependencies
-2. ⏳ Install nodemailer: `pnpm add nodemailer`
-3. ⏳ Install types: `pnpm add -D @types/nodemailer`
-4. ⏳ Verify local build: `pnpm build`
-5. ⏳ Commit + push
-6. ⏳ Monitor CI run
-
-### Priority 2: Verify Test ID Fix
-
-**Once nodemailer is fixed**:
-
-1. Wait for CI run to complete
-2. Check if 62 test failures are resolved
-3. Verify only expected 4 skipped tests remain
-4. Confirm 1 flaky test (duplication) is marked as flaky
-
-### Priority 3: Address Flaky Test (If Time Permits)
-
-**File**: `e2e/duplication.spec.ts`
-**Fix**: Add proper wait for hero element before assertion
+- **Problem**: Phase workflows not using CI config, webServer wouldn't start
+- **Fix**: Added `--config=playwright.config.ci.ts` to all 7 phase workflows
+- **Impact**: webServer starts properly with production build
 
 ---
 
-## DEFINITION OF DONE (I8)
+## IN PROGRESS: SPEED OPTIMIZATIONS (Phase 2 - Quick Wins)
 
-**Green Policy**:
+### Goal: Reduce CI time from ~15 minutes to ~5-7 minutes
 
-1. ✅ `pnpm typecheck` → 0 errors
-2. ✅ `pnpm lint` → warnings acceptable
-3. ✅ `pnpm test:unit` → 0 failing tests
-4. ✅ `pnpm test:e2e` (local) → 61 passed, 4 skipped
-5. ⏳ `pnpm test:e2e:ci` → **BLOCKED by nodemailer**
-6. ✅ Pre-commit hook passes
+### ✅ Completed Optimizations:
 
-**Evidence Required**:
+1. **pnpm store caching**
 
-- ✅ Local E2E report (61/65 passing)
-- ⏳ CI run with 0 build failures
-- ⏳ CI run with 0 test failures (except 4 intentional skips, 1 flaky)
-- ⏳ 3 consecutive green CI runs
+   - Caches `~/.pnpm-store` across runs
+   - Eliminates redownloading dependencies every time
+   - Expected savings: ~2-3 minutes
+
+2. **Playwright browser caching**
+
+   - Caches `~/.cache/ms-playwright` keyed by Playwright version
+   - Only installs browsers on cache miss
+   - Expected savings: ~5-8 minutes (browsers take 480s currently)
+
+3. **Artifacts upload on failure only**
+
+   - Changed from `if: always()` to `if: failure()`
+   - Reduces storage from ~628 MB every run to ~0 MB on success
+   - Expected savings: ~30-60 seconds upload time
+
+4. **Playwright config optimizations**
+   - Disabled video recording (`video: 'off'`)
+   - Keep traces/screenshots only on failure
+   - Added `forbidOnly` to prevent `.only()` commits
+   - Expected savings: Smaller artifacts, faster test execution
+
+### 🔄 Currently Applying:
+
+- Propagating caching to all phase workflows (e2e-phase1 through phase6)
+- Will commit once complete
 
 ---
 
-## COMMIT HISTORY (I8)
+## DEFERRED: STABILITY & ARCHITECTURE (Phase 3+)
 
-| Commit   | Description                              | Status                |
-| -------- | ---------------------------------------- | --------------------- |
-| 50182c59 | feat(test): complete I8 pre-flight fixes | ✅ Green locally      |
-| 0878dfe1 | test(e2e): fix journey tests             | ⚠️ Missing nodemailer |
-| bff01bd2 | fix(test): align test ID contracts       | ⚠️ npm/pnpm issues    |
-| 7b5c16ba | fix(ci): convert workflows npm→pnpm      | ⚠️ nodemailer missing |
-| **NEXT** | fix(deps): add nodemailer dependency     | ⏳ Pending            |
+### Phase 3: Test Stability (Low Risk, keeps NODE_ENV=production)
+
+1. **Determinism flags** (NOT STARTED)
+
+   - Add `DISABLE_ANALYTICS`, `DISABLE_SENTRY`, `DISABLE_DD`, `DISABLE_EMAIL` env vars
+   - Gate SDK initialization in code
+   - Keeps `NODE_ENV=production` for build fidelity
+   - **Why deferred**: Want to see impact of speed improvements first
+
+2. **Fix flaky duplication test** (NOT STARTED)
+   - Add `data-e2e-ready` marker to signal app hydration complete
+   - Use role/label locators instead of raw counts
+   - **Why deferred**: Only affects 1 test, not blocking
+
+### Phase 4: Architecture Improvements (Later)
+
+1. **Sentry migration** (NOT STARTED)
+
+   - Move to `instrumentation-client.ts` (Turbopack requirement)
+   - **Why deferred**: Not urgent until Turbopack adoption
+
+2. **Test sharding** (NOT STARTED)
+
+   - Split tests across parallel jobs if wall time still > 7-8 min
+   - **Why deferred**: Wait to see if caching solves this
+
+3. **Webpack cache optimization** (NOT STARTED)
+   - Address "large string serialize" warning
+   - **Why deferred**: Low priority, doesn't block
 
 ---
 
-## PROGRESS SUMMARY
+## REMAINING ISSUES: 57 TEST FAILURES
 
-### Completed
+### Analysis Needed (NOT STARTED)
 
-- ✅ TypeScript errors (4 blockers fixed)
-- ✅ Package manager consistency (pre-commit)
-- ✅ Missing scripts (check:all)
-- ✅ Playwright CI config (production build)
-- ✅ Journey test logic (waitlist + purchase)
-- ✅ Test IDs and selectors
-- ✅ Cookie consent handling
-- ✅ JWT UTM token parsing
-- ✅ Console error filtering
-- ✅ Workflow npm→pnpm conversion (11 files)
-- ✅ Test ID contract alignment (3 files)
+**Failure Categories** (from run 18377680290):
 
-### Blocked
+1. **Client-side rendering tests** (~20 failures)
 
-- ❌ CI validation - **BLOCKED by missing nodemailer**
-- ❌ Evidence gathering - Cannot proceed until CI green
+   - `isInteractive` assertions failing
+   - Likely timing/hydration issues
 
-### Next Actions
+2. **Form input tests** (~15 failures)
 
-1. **IMMEDIATE**: Install nodemailer + types
-2. **THEN**: Push + monitor CI
-3. **VALIDATE**: 62 test failures should become 0
-4. **DOCUMENT**: Update SCRATCHPAD with results
-5. **CLOSE**: Mark I8 complete with evidence
+   - Domain input not being filled: `expect("test.com") received ""`
+   - Possible focus trap or client-side JS issue
+
+3. **Duplication test** (1 flaky)
+
+   - `expect(navCount).toBe(1)` receiving `0`
+   - Known timing issue
+
+4. **Other assertion failures** (~21)
+   - Need detailed analysis
+
+### Next Steps for Test Failures:
+
+1. Download CI logs for run 18377680290
+2. Categorize all 57 failures by root cause
+3. Fix highest-impact issues first
+4. Re-run to verify
+
+---
+
+## TIMELINE
+
+### Completed (Dec 9, 13:00-13:30 UTC):
+
+- ✅ Infrastructure fixes (4 commits)
+- ✅ Speed optimizations design
+- ✅ Comprehensive E2E workflow optimized
+
+### In Progress (Dec 9, 13:30 UTC):
+
+- 🔄 Applying optimizations to all phase workflows
+
+### Next (Dec 9, 14:00 UTC):
+
+- Commit and push optimizations
+- Monitor CI run with caching
+- Analyze 57 test failures
+
+### Later (TBD):
+
+- Phase 3: Stability improvements
+- Phase 4: Architecture changes
+
+---
+
+## SUCCESS METRICS
+
+### Before Optimizations:
+
+- **CI Time**: ~15.5 minutes
+- **Browser Install**: ~8 minutes (480s)
+- **Test Execution**: ~6 minutes (377s)
+- **Artifact Upload**: ~22s for 628 MB
+- **Pass Rate**: 52% (62/119)
+
+### Expected After Phase 2:
+
+- **CI Time**: ~5-7 minutes (8-10 min savings)
+- **Browser Install**: ~0 seconds (cached)
+- **Test Execution**: ~5-6 minutes (slightly faster)
+- **Artifact Upload**: ~0 seconds on success
+- **Pass Rate**: 52% (unchanged, but faster iteration)
+
+### Target After All Phases:
+
+- **CI Time**: < 5 minutes
+- **Pass Rate**: > 95% (fix remaining test issues)
+- **Reliability**: < 1% flaky tests
+- **Cost**: Minimal artifact storage
+
+---
+
+## NOTES
+
+- Keeping `NODE_ENV=production` to maintain build fidelity
+- All optimizations are **additive** - no breaking changes
+- Caching strategy uses Playwright version + lockfile for cache keys
+- Artifacts only uploaded on failure saves significant storage/bandwidth

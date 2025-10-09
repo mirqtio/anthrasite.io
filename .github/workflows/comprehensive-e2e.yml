@@ -33,11 +33,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -50,8 +63,26 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
 
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "VERSION=$(node -p "require('./package.json').devDependencies['@playwright/test']")" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.VERSION }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps
 
       - name: Run ALL E2E Tests
         run: |
@@ -69,15 +100,16 @@ jobs:
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
           SENDGRID_API_KEY: test_key_mock
 
-      - name: Upload test results
-        if: always()
+      - name: Upload test results (failures only)
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: comprehensive-e2e-results
+          name: comprehensive-e2e-failures
           path: |
             playwright-report/
             test-results/
           retention-days: 30
+          compression-level: 9
 
       - name: Comprehensive E2E success confirmation
         run: echo "✅ Comprehensive E2E tests completed - All tests executed!"
