@@ -1,4 +1,4 @@
-name: GitGuardian Secrets Scan
+name: Security Scanning
 
 on:
   push:
@@ -14,18 +14,18 @@ permissions:
   contents: read
 
 concurrency:
-  group: ggshield-${{ github.ref }}
+  group: security-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  ggshield:
+  gitguardian:
     name: GitGuardian Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.2.1
         with:
-          fetch-depth: 0 # Full history for comprehensive scanning
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.3.0
@@ -40,3 +40,27 @@ jobs:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
           CI: 'true'
         run: ggshield secret scan repo .
+
+  gitleaks:
+    name: Gitleaks Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.2.1
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+      - name: Run custom secret check
+        run: |
+          if [ -f ./scripts/check-secrets.sh ]; then
+            chmod +x ./scripts/check-secrets.sh
+            ./scripts/check-secrets.sh
+          else
+            echo "No custom secret check script found, skipping"
+          fi

@@ -173,6 +173,10 @@ jobs:
     needs: build
     # ✅ Allow E2E failures on PRs/feature branches; strict on main & release/*
     continue-on-error: ${{ github.ref_name != 'main' && !startsWith(github.ref_name, 'release/') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     services:
       postgres:
         image: postgres:15
@@ -219,7 +223,7 @@ jobs:
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
         run: pnpm run build
-      - name: Run E2E tests
+      - name: Run E2E tests (shard ${{ matrix.shard }}/3)
         env:
           CI: 'true'
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
@@ -229,13 +233,13 @@ jobs:
           NEXT_PUBLIC_E2E_TESTING: 'true'
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
-        run: pnpm run test:e2e:ci
-        timeout-minutes: 15
+        run: pnpm exec playwright test --config=playwright.config.ci.ts --shard=${{ matrix.shard }}/3
+        timeout-minutes: 8
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
-          name: playwright-report
+          name: playwright-report-shard-${{ matrix.shard }}
           path: playwright-report
           if-no-files-found: ignore
 
