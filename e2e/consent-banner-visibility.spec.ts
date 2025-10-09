@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { waitForHydration } from '../utils/waits'
+import { waitForHydration } from './utils/waits'
 
 test.describe('Consent Banner Visibility', () => {
   test.beforeEach(async ({ context }) => {

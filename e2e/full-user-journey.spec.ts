@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { waitForHydration } from '../utils/waits'
+import { waitForHydration } from './utils/waits'
 import { generateUTMToken } from './helpers/utm-generator'
 import { mockStripeCheckout } from './helpers/stripe-mocks'
 import {

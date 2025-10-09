@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { waitForHydration } from '../utils/waits'
+import { waitForHydration } from './utils/waits'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { prisma } from '@/lib/db'
 

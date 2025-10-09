@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { waitForHydration } from '../utils/waits'
+import { waitForHydration } from './utils/waits'
 import { gotoAndDismissCookies, safeClick } from './helpers/test-utils'
 
 test.describe('Client-Side Rendering', () => {
