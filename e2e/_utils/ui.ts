@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test'
 import { waitForAppReady } from '@/e2e/utils/waits'
+import { acceptConsentIfPresent as acceptConsent } from '@/e2e/utils/consent'
 
 /**
  * Safely open a modal by clicking trigger and waiting for modal to appear
@@ -21,47 +22,10 @@ export async function openModal(page: Page, trigger: Locator, modal: Locator) {
 }
 
 /**
- * Accept consent modal if it appears
- * Safe to call even if modal doesn't appear (non-blocking)
- *
- * @param page - Playwright page object
+ * Accept consent banner if present (re-export hardened implementation)
+ * @deprecated Use acceptConsent from '@/e2e/utils/consent' directly
  */
-export async function acceptConsentIfPresent(page: Page) {
-  try {
-    // Look for consent banner with correct selector
-    const consentBanner = page.locator(
-      '[role="region"][aria-label="Cookie consent"]'
-    )
-    const isVisible = await consentBanner
-      .isVisible({ timeout: 2000 })
-      .catch(() => false)
-
-    if (isVisible) {
-      // Find accept button using data-testid for reliability
-      const acceptButton = page.locator(
-        '[data-testid="accept-all-cookies-button"]'
-      )
-
-      // Wait for button to be actionable (visible, enabled, stable)
-      await expect(acceptButton).toBeVisible({ timeout: 3000 })
-      await expect(acceptButton).toBeEnabled({ timeout: 1000 })
-
-      // Small wait for any animations to settle
-      await page.waitForTimeout(100)
-
-      // Click the accept button
-      await acceptButton.click({ timeout: 2000 })
-
-      // Wait for banner to disappear
-      await expect(consentBanner).not.toBeVisible({ timeout: 3000 })
-
-      console.log('✓ Consent banner accepted')
-    }
-  } catch (error) {
-    // Silently ignore - consent banner is optional
-    console.log('  (no consent banner found or could not dismiss)')
-  }
-}
+export const acceptConsentIfPresent = acceptConsent
 
 /**
  * Navigate to URL and dismiss consent modal if present

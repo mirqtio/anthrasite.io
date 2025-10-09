@@ -49,6 +49,10 @@ export default defineConfig({
     video: 'off', // Disable video to save space
     trace: 'retain-on-failure', // Keep traces only on failure
     screenshot: 'only-on-failure', // Screenshots only on failure
+    // Reduce motion to prevent animation-based flakiness
+    launchOptions: {
+      args: ['--force-prefers-reduced-motion'],
+    },
   },
   // Configure reporters for CI
   reporter: [

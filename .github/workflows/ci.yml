@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -47,8 +47,20 @@ jobs:
           path: ~/.cache/ms-playwright
           key: pw-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - name: Install Playwright
-        run: pnpm exec playwright install --with-deps
+      - name: Clear apt locks (prevent hangs)
+        run: |
+          sudo rm -f /var/lib/dpkg/lock-frontend /var/cache/apt/archives/lock || true
+          sudo dpkg --configure -a || true
+
+      - name: Install Playwright (with timeout + retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_on: error
+          command: |
+            npx playwright --version
+            npx playwright install --with-deps chromium
 
   typecheck:
     runs-on: ubuntu-latest
@@ -206,8 +218,19 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: pw-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
+      - name: Clear apt locks (prevent hangs)
+        run: |
+          sudo rm -f /var/lib/dpkg/lock-frontend /var/cache/apt/archives/lock || true
+          sudo dpkg --configure -a || true
+      - name: Install Playwright browsers (with timeout + retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_on: error
+          command: |
+            npx playwright --version
+            npx playwright install --with-deps chromium
       - name: Generate Prisma Client
         run: pnpm exec prisma generate
       - name: Setup test database
