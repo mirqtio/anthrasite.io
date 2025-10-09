@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { waitForHydration } from '../utils/waits'
 import { gotoAndDismissCookies, safeClick } from './helpers/test-utils'
 
 test.describe('Client-Side Rendering', () => {
@@ -101,6 +102,7 @@ test.describe('Client-Side Rendering', () => {
     })
 
     await page.goto('/')
+      await waitForHydration(page)
     await page.waitForLoadState('networkidle')
 
     // Filter out known non-critical errors
@@ -151,6 +153,7 @@ test.describe('Client-Side Rendering', () => {
     })
 
     await page.goto('/')
+      await waitForHydration(page)
     await page.waitForLoadState('networkidle')
 
     // Should not have hydration mismatch errors

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { waitForHydration } from '../utils/waits'
 
 test.describe('Consent Banner Visibility', () => {
   test.beforeEach(async ({ context }) => {
@@ -12,6 +13,7 @@ test.describe('Consent Banner Visibility', () => {
   test('should show consent banner for new users', async ({ page }) => {
     // Navigate to the site
     await page.goto('/')
+      await waitForHydration(page)
     
     // Wait for the page to fully load
     await page.waitForLoadState('networkidle')
@@ -38,6 +40,7 @@ test.describe('Consent Banner Visibility', () => {
     
     // Navigate to the site
     await page.goto('/')
+      await waitForHydration(page)
     
     // Wait for the page to fully load
     await page.waitForLoadState('networkidle')
@@ -53,6 +56,7 @@ test.describe('Consent Banner Visibility', () => {
   test('should not show banner after accepting cookies', async ({ page }) => {
     // First visit - accept cookies
     await page.goto('/')
+      await waitForHydration(page)
     await page.waitForLoadState('networkidle')
     
     // Accept cookies

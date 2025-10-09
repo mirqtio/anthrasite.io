@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { waitForHydration } from '../utils/waits'
 import { generateUTMToken } from './helpers/utm-generator'
 import { mockStripeCheckout } from './helpers/stripe-mocks'
 import {
@@ -63,6 +64,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       // Desktop view
       await page.setViewportSize({ width: 1440, height: 900 })
       await page.goto('/')
+      await waitForHydration(page)
       await expect(
         page.getByRole('heading', {
           name: /Your website has untapped potential/i,
@@ -105,6 +107,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
 
       // 1. Visit with UTM parameter
       await page.goto(`/purchase?utm=${utm}`)
+      await waitForHydration(page)
 
       // 2. Verify purchase mode
       await expect(
@@ -132,6 +135,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
 
       // 8. Simulate successful redirect (in real test, would go to Stripe)
       await page.goto('/purchase/success?session_id=cs_test_123')
+      await waitForHydration(page)
 
       // 9. Verify success page
       await expect(page.getByText(/Thank you for your purchase/i)).toBeVisible()
@@ -143,6 +147,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       const expiredUtm = 'expired_token_123'
 
       await page.goto(`/purchase?utm=${expiredUtm}`)
+      await waitForHydration(page)
 
       // Should redirect to link expired page
       await expect(page).toHaveURL('/link-expired')
@@ -164,6 +169,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
 
       // 1. Start purchase flow
       await page.goto(`/purchase?utm=${utm}`)
+      await waitForHydration(page)
 
       // 2. Simulate checkout error
       await page.route('**/api/stripe/checkout', (route) => {
@@ -194,6 +200,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
     test('variant assignment consistency', async ({ page, context }) => {
       // First visit - get assigned variant
       await page.goto('/')
+      await waitForHydration(page)
 
       // Get variant from cookie or localStorage
       const cookies = await context.cookies()
@@ -215,6 +222,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       await page.context().clearCookies()
 
       await page.goto('/')
+      await waitForHydration(page)
 
       // Wait for page to load
       await page.waitForSelector('main', { state: 'visible', timeout: 10000 })
@@ -240,6 +248,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
 
     test('manage cookie preferences', async ({ page }) => {
       await page.goto('/')
+      await waitForHydration(page)
 
       // Wait for page to load
       await page.waitForSelector('main', { state: 'visible', timeout: 10000 })
@@ -270,6 +279,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
   test.describe('Error Scenarios', () => {
     test('404 page handling', async ({ page }) => {
       await page.goto('/non-existent-page')
+      await waitForHydration(page)
       await expect(page.getByText(/page not found/i)).toBeVisible()
       await expect(page.getByRole('link', { name: /go home/i })).toBeVisible()
     })
@@ -279,6 +289,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       await page.route('**/api/**', (route) => route.abort())
 
       await page.goto('/')
+      await waitForHydration(page)
 
       // Try to submit waitlist
       await page.getByPlaceholder(/yourdomain\.com/).fill('test.com')
