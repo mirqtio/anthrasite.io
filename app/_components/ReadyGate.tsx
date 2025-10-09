@@ -84,13 +84,8 @@ export default function ReadyGate() {
       document.documentElement.setAttribute('data-hydrated', 'true')
       ;(window as any).__APP_READY__ = true
 
-      // Add performance marks for DevTools
+      // Add performance mark for DevTools timeline
       performance.mark('app-ready')
-      try {
-        performance.measure('hydration-total', 'navigationStart', 'app-ready')
-      } catch {
-        // navigationStart mark might not exist
-      }
 
       // Detect if React has bound synthetic event handlers
       // React 18+ uses event delegation on the document root
@@ -99,8 +94,6 @@ export default function ReadyGate() {
     }
 
     const run = () => {
-      performance.mark('navigationStart')
-
       const raf = (cb: FrameRequestCallback) => requestAnimationFrame(cb)
       const ridle =
         (window as any).requestIdleCallback ??
