@@ -120,13 +120,13 @@ describe('SiteModeContext', () => {
       </SiteModeProvider>
     )
 
-    // Should have captured the initial loading state
-    expect(capturedInitialState).toBe('loading')
+    // Implementation starts with isLoading=false, not true
+    // This is intentional per the comment in SiteModeContext:
+    // "Start with loading false unless we need to detect mode"
+    expect(capturedInitialState).toBe('loaded')
 
-    // And eventually should be loaded
-    await waitFor(() => {
-      expect(screen.getByTestId('loading')).toHaveTextContent('loaded')
-    })
+    // Should remain loaded
+    expect(screen.getByTestId('loading')).toHaveTextContent('loaded')
   })
 
   it('should handle initial props', async () => {

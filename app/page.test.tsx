@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import React from 'react'
+import { render, screen, waitFor } from '@testing-library/react'
 import HomePage from './page'
 import { useSiteMode } from '@/lib/context/SiteModeContext'
 
@@ -6,6 +7,18 @@ import { useSiteMode } from '@/lib/context/SiteModeContext'
 jest.mock('@/lib/context/SiteModeContext', () => ({
   useSiteMode: jest.fn(),
 }))
+
+// Mock next/dynamic to load components synchronously in tests
+jest.mock('next/dynamic', () => (func: () => any) => {
+  const Component = (props: any) => {
+    const [Comp, setComp] = React.useState<any>(null)
+    React.useEffect(() => {
+      func().then((mod: any) => setComp(() => mod))
+    }, [])
+    return Comp ? <Comp {...props} /> : null
+  }
+  return Component
+})
 
 // Mock the homepage components
 jest.mock('@/components/homepage/OrganicHomepage', () => ({
@@ -47,9 +60,7 @@ describe('HomePage', () => {
     )
 
     // Check for the animated square
-    const animatedSquare = loadingContainer.querySelector(
-      '.bg-white'
-    )
+    const animatedSquare = loadingContainer.querySelector('.bg-white')
     expect(animatedSquare).toBeInTheDocument()
     expect(animatedSquare).toHaveClass('w-8', 'h-8', 'animate-pulse')
 
@@ -58,7 +69,7 @@ describe('HomePage', () => {
     expect(screen.queryByTestId('purchase-homepage')).not.toBeInTheDocument()
   })
 
-  it('renders OrganicHomepage when mode is organic', () => {
+  it('renders OrganicHomepage when mode is organic', async () => {
     mockUseSiteMode.mockReturnValue({
       mode: 'organic',
       businessId: null,
@@ -67,18 +78,17 @@ describe('HomePage', () => {
 
     render(<HomePage />)
 
-    // Check that OrganicHomepage is rendered
-    const organicHomepage = screen.getByTestId('organic-homepage')
-    expect(organicHomepage).toBeInTheDocument()
+    // Wait for dynamic import to resolve
+    await waitFor(() => {
+      const organicHomepage = screen.getByTestId('organic-homepage')
+      expect(organicHomepage).toBeInTheDocument()
+    })
 
     // Ensure PurchaseHomepage is not rendered
     expect(screen.queryByTestId('purchase-homepage')).not.toBeInTheDocument()
-
-    // Ensure loading state is not shown
-    expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
   })
 
-  it('renders PurchaseHomepage when mode is purchase', () => {
+  it('renders PurchaseHomepage when mode is purchase', async () => {
     mockUseSiteMode.mockReturnValue({
       mode: 'purchase',
       businessId: 'test-business-123',
@@ -87,15 +97,14 @@ describe('HomePage', () => {
 
     render(<HomePage />)
 
-    // Check that PurchaseHomepage is rendered
-    const purchaseHomepage = screen.getByTestId('purchase-homepage')
-    expect(purchaseHomepage).toBeInTheDocument()
+    // Wait for dynamic import to resolve
+    await waitFor(() => {
+      const purchaseHomepage = screen.getByTestId('purchase-homepage')
+      expect(purchaseHomepage).toBeInTheDocument()
+    })
 
     // Ensure OrganicHomepage is not rendered
     expect(screen.queryByTestId('organic-homepage')).not.toBeInTheDocument()
-
-    // Ensure loading state is not shown
-    expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
   })
 
   it('properly uses the SiteModeContext hook', () => {

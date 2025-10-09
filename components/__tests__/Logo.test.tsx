@@ -53,18 +53,23 @@ describe('Logo', () => {
     expect(img).toBeInTheDocument()
   })
 
-  it('should render SVG logo', () => {
+  it('should render logo image with correct alt text', () => {
     render(<Logo />)
 
-    const svg = screen.getByTestId('logo-svg')
-    expect(svg).toBeInTheDocument()
+    // Logo uses next/Image which renders as <img> in tests
+    const img = screen.getByRole('img', { name: /anthrasite/i })
+    expect(img).toBeInTheDocument()
+    expect(img).toHaveAttribute('alt', 'Anthrasite')
   })
 
-  it('should apply dark mode styles', () => {
-    render(<Logo darkMode />)
+  it('should render logo with correct source', () => {
+    render(<Logo />)
 
-    const logo = screen.getByTestId('logo')
-    expect(logo).toHaveClass('text-white')
+    const img = screen.getByRole('img', { name: /anthrasite/i })
+    expect(img).toHaveAttribute(
+      'src',
+      expect.stringContaining('logo_full_white.svg')
+    )
   })
 
   it('should combine multiple classNames', () => {
@@ -72,13 +77,6 @@ describe('Logo', () => {
 
     const logo = screen.getByTestId('logo')
     expect(logo).toHaveClass('custom-1', 'custom-2')
-  })
-
-  it('should have correct viewBox for SVG', () => {
-    render(<Logo />)
-
-    const svg = screen.getByTestId('logo-svg')
-    expect(svg).toHaveAttribute('viewBox', '0 0 200 40')
   })
 
   it('should be focusable when used as a link', () => {

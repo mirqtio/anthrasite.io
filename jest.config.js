@@ -18,6 +18,7 @@ const customJestConfig = {
     '/.next/',
     '/e2e/',
     '/visual-tests/',
+    '/_archive/',
     '\\.spec\\.(ts|js)$',
     '\\.integration\\.test\\.(ts|tsx|js)$',
     'debug-.*\\.test\\.js$',
