@@ -106,7 +106,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **I7 (5 pts)**: Address Remaining Skipped Unit Tests
 - **Status**: `CLOSED`
 - **Commit**: `5d89582`
-- **I8 (TBD)**: EPIC I - Final Cleanup & Deferred Tasks
+- **I8 (13 pts)**: EPIC I - Final Cleanup & Deferred Tasks
 
 ### EPIC H - Hardening & CI/CD - (24 pts)
 
