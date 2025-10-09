@@ -1,8 +1,8 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
 - **Total Effort (Estimated)**: 100 Story Points
-- **Completed Points**: 24 Points
-- **Remaining Points**: 76 Points
+- **Completed Points**: 47 Points
+- **Remaining Points**: 53 Points
 - **Estimated Completion**: ~10 Workdays
 
 ---
@@ -56,7 +56,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 
 **Goal:** Deterministic PDF + emailed attachment from a robust ESP.
 
-- **D1 (4 pts)**: PDF generation (Playwright, MVP)
+- **D1 (3 pts)**: PDF generation service
 - **D2 (2 pts)**: Storage & traceability
 - **D3 (3 pts)**: Activate Gmail SMTP Provider in Webhook
 - **Status**: `CLOSED`
@@ -82,6 +82,22 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **F5 (1 pt)**: Refund policy & implementation
 - **F6 (1 pt)**: Support tooling (MVP)
 - **F7 (2 pts - OPTIONAL)**: Privacy compliance
+
+### EPIC I - Test Suite Hardening - (15 pts)
+
+**Goal:** Achieve a fully green CI by resolving all remaining E2E and unit test failures.
+
+- **I1 (3 pts)**: Fix Consent Modal Visibility (E2E)
+- **Status**: `CLOSED`
+- **I2 (2 pts)**: Implement Waitlist Validation Logic (E2E)
+- **Status**: `CLOSED`
+- **I3 (2 pts)**: Fix UTM Cookie Persistence & Expired Route (E2E)
+- **I4 (2 pts)**: Fix Homepage Component Drift in Tests (Unit)
+- **Status**: `CLOSED`
+- **Commits**: `7becd48`, `2955eb9`, `3f05f3c`
+- **I5 (1 pt)**: Fix Analytics Test Mock (Unit)
+- **I6 (2 pts)**: Fix Client-Side Journey Tests (E2E)
+- **I7 (5 pts)**: Address Remaining Skipped Unit Tests
 
 ### EPIC H - Hardening & CI/CD - (24 pts)
 
