@@ -47,25 +47,29 @@ export async function waitForAppReady(
 ) {
   const { routeMarker } = opts || {}
 
-  // Race multiple readiness signals
-  const hydrationFlag = page
+  // CRITICAL: Wait for hydration FIRST (required for click handlers)
+  // Don't proceed until React has attached event handlers!
+  await page
     .waitForFunction(
       () =>
         document.documentElement.getAttribute('data-hydrated') === 'true' ||
         (window as any).__APP_READY__ === true,
-      { timeout: 20000, polling: 100 }
+      { timeout: 25000, polling: 100 }
     )
-    .catch(() => {})
+    .catch(() => {
+      console.warn('⚠️  Hydration flag not set within timeout')
+    })
 
+  // THEN race other signals for extra confidence
   const firstIdle = page
-    .waitForLoadState('networkidle', { timeout: 10000 })
+    .waitForLoadState('networkidle', { timeout: 5000 })
     .catch(() => {})
 
   const spinnerGone = (async () => {
     const spinner = page.locator('.animate-spin, [data-loading="true"]')
     const count = await spinner.count()
     if (count > 0) {
-      await expect(spinner).not.toBeVisible({ timeout: 15000 })
+      await expect(spinner).not.toBeVisible({ timeout: 10000 })
     }
   })().catch(() => {})
 
@@ -73,23 +77,23 @@ export async function waitForAppReady(
     ? page
         .waitForSelector(`[data-page="${routeMarker}"]`, {
           state: 'attached',
-          timeout: 15000,
+          timeout: 10000,
         })
         .catch(() => {})
     : Promise.resolve()
 
-  // Wait for any signal to succeed
-  await Promise.race([hydrationFlag, firstIdle, spinnerGone, routeReady])
+  // Race remaining signals (all optional)
+  await Promise.race([firstIdle, spinnerGone, routeReady, Promise.resolve()])
 
-  // Sanity check: html should have the attribute eventually (don't fail if it doesn't)
+  // Extra stability: ensure html has the hydration attribute
   try {
     await expect(page.locator('html')).toHaveAttribute(
       'data-hydrated',
       /true/,
-      { timeout: 5000 }
+      { timeout: 2000 }
     )
   } catch {
-    // Non-critical - log but don't fail
+    // Already waited above, this is just a double-check
   }
 }
 

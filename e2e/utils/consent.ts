@@ -16,12 +16,26 @@ export async function acceptConsentIfPresent(page: Page) {
     const btnCount = await btn.count()
 
     if (btnCount > 0) {
+      // CRITICAL: Ensure button is truly actionable before clicking
+      await btn.waitFor({ state: 'attached', timeout: 3000 }).catch(() => {})
+      await btn.waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
+      await expect(btn)
+        .toBeEnabled({ timeout: 2000 })
+        .catch(() => {})
+
+      // Small wait for any animations to settle
+      await page.waitForTimeout(100)
+
       // Trial click to verify it's clickable
       await btn.click({ trial: true }).catch(() => {})
       await btn.click()
     } else {
       // Fallback: any button in the region
-      await banner.getByRole('button').first().click()
+      const fallbackBtn = banner.getByRole('button').first()
+      await fallbackBtn
+        .waitFor({ state: 'visible', timeout: 2000 })
+        .catch(() => {})
+      await fallbackBtn.click()
     }
 
     // Wait for banner to disappear (non-blocking)
