@@ -1,7 +1,20 @@
 import { datadogRum, type RumInitConfiguration } from '@datadog/browser-rum'
 import { datadogLogs } from '@datadog/browser-logs'
 
+// Singleton guard to prevent multiple initializations
+let datadogInitialized = false
+
 export const initDatadog = () => {
+  // Skip if already initialized
+  if (datadogInitialized) {
+    return
+  }
+
+  // Skip in E2E tests to reduce noise and improve stability
+  if (process.env.NEXT_PUBLIC_E2E_TESTING === 'true') {
+    return
+  }
+
   const applicationId = process.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID
   const clientToken = process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN
   const site = (process.env.NEXT_PUBLIC_DATADOG_SITE ||
@@ -63,6 +76,9 @@ export const initDatadog = () => {
 
   // Start RUM session
   datadogRum.startSessionReplayRecording()
+
+  // Mark as initialized
+  datadogInitialized = true
 }
 
 // Custom logging functions

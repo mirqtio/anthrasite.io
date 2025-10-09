@@ -6,6 +6,9 @@ export async function initSentryLazy() {
   if (sentryInitialized) return
   if (sentryInitPromise) return sentryInitPromise
 
+  // Skip in E2E tests to reduce noise and improve stability
+  if (process.env.NEXT_PUBLIC_E2E_TESTING === 'true') return
+
   const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN
   if (!SENTRY_DSN) return
 
@@ -54,7 +57,7 @@ export async function initSentryLazy() {
         return event
       },
     })
-    
+
     sentryInitialized = true
   })
 
