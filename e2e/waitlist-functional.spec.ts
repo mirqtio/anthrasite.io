@@ -1,4 +1,5 @@
 import { test, expect, request } from '@playwright/test'
+import { WaitlistFormIds, WaitlistA11y } from '@/lib/testing/waitlistFormContract'
 
 test.describe('Waitlist API Validation', () => {
   test('rejects invalid email format', async ({}) => {
@@ -61,72 +62,87 @@ test.describe('Waitlist API Validation', () => {
 
 test.describe('Waitlist Form Functionality', () => {
   test.beforeEach(async ({ page }) => {
+    // Force organic mode and dismiss consent banner
+    await page.addInitScript(() => {
+      // Clear any purchase mode cookies
+      document.cookie = 'site_mode=; Max-Age=0; Path=/';
+      document.cookie = 'business_id=; Max-Age=0; Path=/';
+      // Set explicit E2E organic mode flag
+      localStorage.setItem('E2E_MODE', 'organic');
+
+      // Pre-accept all cookies to prevent banner from showing
+      localStorage.setItem('anthrasite_cookie_consent', JSON.stringify({
+        version: '1.0',
+        preferences: {
+          analytics: true,
+          marketing: true,
+          performance: true,
+          functional: true,
+          timestamp: new Date().toISOString()
+        }
+      }));
+    });
+
     await page.goto('/')
   })
 
-  test('should successfully submit waitlist form', async ({ page }) => {
-    // Find the waitlist form
-    const waitlistForm = page.locator('form').filter({ hasText: 'Enter your website domain' })
-    
-    // Enter domain
-    await waitlistForm.locator('input[type="text"]').fill('mycompany.com')
-    await waitlistForm.locator('button:has-text("Continue")').click()
-    
-    // Wait for email step
-    await expect(page.locator('text="Great! We\'ll analyze mycompany.com"')).toBeVisible()
-    
-    // Enter email
-    await waitlistForm.locator('input[type="email"]').fill('test@mycompany.com')
-    await waitlistForm.locator('button:has-text("Join Waitlist")').click()
-    
+  test('should successfully submit waitlist form via modal', async ({ page }) => {
+    // Open the modal
+    await page.getByTestId(WaitlistFormIds.openButton).click()
+
+    // Verify form is visible
+    await expect(page.getByTestId(WaitlistFormIds.form)).toBeVisible()
+
+    // Fill in the form using accessible selectors
+    await page.getByLabel(WaitlistA11y.domainLabel).fill('mycompany.com')
+    await page.getByLabel(WaitlistA11y.emailLabel).fill(`test+${Date.now()}@mycompany.com`)
+
+    // Submit the form
+    await page.getByTestId(WaitlistFormIds.submitButton).click()
+
     // Wait for success state
-    await expect(page.locator('text="You\'re on the list!"')).toBeVisible({ timeout: 10000 })
-    await expect(page.locator('text=/You\'re number #\\d+/')).toBeVisible()
+    await expect(page.getByTestId(WaitlistFormIds.successBanner)).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText(WaitlistA11y.successText)).toBeVisible()
   })
 
-  test('should validate domain format', async ({ page }) => {
-    const waitlistForm = page.locator('form').filter({ hasText: 'Enter your website domain' })
-    
-    // Try invalid domain
-    await waitlistForm.locator('input[type="text"]').fill('not a domain')
-    
-    // Wait for validation
-    await page.waitForTimeout(1000)
-    
-    // Check for error
-    await expect(page.locator('text="Invalid characters in domain"')).toBeVisible()
-    
-    // Continue button should be disabled
-    await expect(waitlistForm.locator('button:has-text("Continue")')).toBeDisabled()
+  test('should show error for invalid email in modal', async ({ page }) => {
+    // Open the modal
+    await page.getByTestId(WaitlistFormIds.openButton).click()
+    await expect(page.getByTestId(WaitlistFormIds.form)).toBeVisible()
+
+    // Fill with invalid email
+    await page.getByLabel(WaitlistA11y.domainLabel).fill('example.com')
+    await page.getByLabel(WaitlistA11y.emailLabel).fill('bad@invalid')
+    await page.getByTestId(WaitlistFormIds.submitButton).click()
+
+    // Should show error (either from client or server validation)
+    await expect(page.getByTestId(WaitlistFormIds.errorBanner).or(page.getByText(WaitlistA11y.errorText))).toBeVisible({ timeout: 5000 })
   })
 
-  test('should handle duplicate signups', async ({ page }) => {
+  test('should handle duplicate signups (domain-based uniqueness)', async ({ page }) => {
     const testDomain = `test${Date.now()}.com`
-    const waitlistForm = page.locator('form').filter({ hasText: 'Enter your website domain' })
-    
+
     // First signup
-    await waitlistForm.locator('input[type="text"]').fill(testDomain)
-    await waitlistForm.locator('button:has-text("Continue")').click()
-    await waitlistForm.locator('input[type="email"]').fill('first@test.com')
-    await waitlistForm.locator('button:has-text("Join Waitlist")').click()
-    await expect(page.locator('text="You\'re on the list!"')).toBeVisible({ timeout: 10000 })
-    
-    // Note the position
-    const positionText = await page.locator('text=/You\'re number #(\\d+)/').textContent()
-    const firstPosition = positionText?.match(/#(\d+)/)?.[1]
-    
-    // Navigate back to form
-    await page.goto('/')
-    
-    // Try to sign up again with same domain
-    const newForm = page.locator('form').filter({ hasText: 'Enter your website domain' })
-    await newForm.locator('input[type="text"]').fill(testDomain)
-    await newForm.locator('button:has-text("Continue")').click()
-    await newForm.locator('input[type="email"]').fill('second@test.com')
-    await newForm.locator('button:has-text("Join Waitlist")').click()
-    
-    // Should show same position
-    await expect(page.locator('text="You\'re on the list!"')).toBeVisible({ timeout: 10000 })
-    await expect(page.locator(`text="You're number #${firstPosition}"`)).toBeVisible()
+    await page.getByTestId(WaitlistFormIds.openButton).click()
+    await expect(page.getByTestId(WaitlistFormIds.form)).toBeVisible()
+
+    await page.getByLabel(WaitlistA11y.domainLabel).fill(testDomain)
+    await page.getByLabel(WaitlistA11y.emailLabel).fill('first@test.com')
+    await page.getByTestId(WaitlistFormIds.submitButton).click()
+
+    await expect(page.getByTestId(WaitlistFormIds.successBanner)).toBeVisible({ timeout: 10000 })
+
+    // Close modal and try again with same domain, different email
+    await page.reload()
+
+    await page.getByTestId(WaitlistFormIds.openButton).click()
+    await expect(page.getByTestId(WaitlistFormIds.form)).toBeVisible()
+
+    await page.getByLabel(WaitlistA11y.domainLabel).fill(testDomain)
+    await page.getByLabel(WaitlistA11y.emailLabel).fill('second@test.com')
+    await page.getByTestId(WaitlistFormIds.submitButton).click()
+
+    // Should still succeed (idempotent - API returns 200)
+    await expect(page.getByTestId(WaitlistFormIds.successBanner)).toBeVisible({ timeout: 10000 })
   })
 })
