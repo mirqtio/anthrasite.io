@@ -168,7 +168,7 @@ export function Analytics() {
       // DOM is already loaded, load GA4 immediately
       loadGA4()
     }
-  }, [hasAnalyticsConsent])
+  }, [hasAnalyticsConsent, isE2E])
 
   return null
 }
