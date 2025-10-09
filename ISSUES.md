@@ -98,6 +98,8 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **Status**: `CLOSED`
 - **Commits**: `7becd48`, `2955eb9`, `3f05f3c`
 - **I5 (1 pt)**: Fix Analytics Test Mock (Unit)
+- **Status**: `CLOSED`
+- **Commit**: `6af616f`
 - **I6 (2 pts)**: Fix Client-Side Journey Tests (E2E)
 - **I7 (5 pts)**: Address Remaining Skipped Unit Tests
 

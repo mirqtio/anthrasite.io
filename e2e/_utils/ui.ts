@@ -78,13 +78,48 @@ export async function waitForStable(locator: Locator, timeout = 5000) {
   await expect(locator).toBeVisible()
 }
 
+// ============================================================================
+// Compatibility exports for existing test signatures
+// ============================================================================
+
 /**
- * Click element with animation handling
- * Waits for element to be stable before clicking
- *
- * @param locator - Element to click
+ * Alias for backward compatibility with existing tests
  */
-export async function safeClick(locator: Locator) {
-  await waitForStable(locator)
-  await locator.click()
+export { gotoAndDismissConsent as gotoAndDismissCookies }
+
+/**
+ * Click element with animation handling (page-based signature)
+ * Waits for element to be visible before clicking
+ */
+type ClickOpts = { waitForAnimations?: boolean; timeout?: number }
+
+export async function safeClick(
+  page: Page,
+  selector: string,
+  opts: ClickOpts = {}
+) {
+  const { waitForAnimations = true, timeout = 10_000 } = opts
+  const loc = page.locator(selector)
+  await expect(loc).toBeVisible({ timeout })
+  if (waitForAnimations) {
+    await page.addStyleTag({
+      content: '*{transition:none!important;animation:none!important}',
+    })
+  }
+  await loc.click()
+}
+
+/**
+ * Fill input field (page-based signature)
+ * Waits for element to be visible before filling
+ */
+export async function safeFill(
+  page: Page,
+  selector: string,
+  value: string,
+  timeout = 10_000
+) {
+  const loc = page.locator(selector)
+  await expect(loc).toBeVisible({ timeout })
+  await loc.fill(value)
 }

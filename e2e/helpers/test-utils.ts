@@ -1,6 +1,7 @@
 import type { Page, Locator } from '@playwright/test'
 
-// Re-export existing utilities
+// Single entry-point for e2e helpers used by specs
+// Re-export all utilities from _utils/ui
 export * from '../_utils/ui'
 
 /**
