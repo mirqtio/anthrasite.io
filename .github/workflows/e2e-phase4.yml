@@ -54,7 +54,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run Phase 4 E2E tests (expand to monitoring + basic)
-        run: pnpm exec playwright test e2e/monitoring.spec.ts e2e/basic.spec.ts
+        run: pnpm exec playwright test --config=playwright.config.ci.ts e2e/monitoring.spec.ts e2e/basic.spec.ts
         timeout-minutes: 10
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test

@@ -54,7 +54,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run Phase 6 E2E tests - Complete Core Suite (monitoring + basic + homepage + css-loading)
-        run: pnpm exec playwright test e2e/monitoring.spec.ts e2e/basic.spec.ts e2e/homepage.spec.ts e2e/css-loading.spec.ts
+        run: pnpm exec playwright test --config=playwright.config.ci.ts e2e/monitoring.spec.ts e2e/basic.spec.ts e2e/homepage.spec.ts e2e/css-loading.spec.ts
         timeout-minutes: 15
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
