@@ -33,20 +33,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Setup test database
         run: |
-          npx prisma generate
-          npx prisma db push
+          pnpm exec prisma generate
+          pnpm exec prisma db push
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
 
       - name: Build application for testing
-        run: npm run build
+        run: pnpm run build
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           NODE_ENV: production
@@ -55,13 +59,13 @@ jobs:
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run ALL E2E Tests
         run: |
           echo "Running comprehensive E2E test suite..."
           # Run all E2E tests
-          npx playwright test --config=playwright.config.ci.ts
+          pnpm exec playwright test --config=playwright.config.ci.ts
         timeout-minutes: 8
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
