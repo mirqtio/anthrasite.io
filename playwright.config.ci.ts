@@ -26,13 +26,21 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: base.webServer
-    ? {
-        ...base.webServer,
-        reuseExistingServer: false, // Never reuse in CI - always start fresh
-        timeout: 180_000, // 3 minutes for CI server startup (cold environment)
-      }
-    : undefined,
+  webServer: {
+    command: 'pnpm build && pnpm start -p 3333',
+    port: 3333,
+    reuseExistingServer: false, // Never reuse in CI - always start fresh
+    timeout: 180_000, // 3 minutes for CI server startup (cold environment)
+    env: (base.webServer &&
+      !Array.isArray(base.webServer) &&
+      base.webServer.env) || {
+      DATABASE_URL:
+        process.env.DATABASE_URL ||
+        'postgresql://postgres:devpass@localhost:5432/anthrasite_test',
+      NEXT_PUBLIC_E2E_TESTING: 'true',
+      ADMIN_API_KEY: process.env.ADMIN_API_KEY || 'test-admin-key-local-only',
+    },
+  },
   use: {
     ...base.use,
     actionTimeout: 15_000, // 15s action timeout in CI

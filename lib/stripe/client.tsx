@@ -47,3 +47,10 @@ export function StripeProvider({ children }: { children: React.ReactNode }) {
 export function useStripe() {
   return useContext(StripeContext)
 }
+
+// Export getStripe for direct usage outside of React context
+export function getStripe() {
+  return stripePromise
+}
+
+export default getStripe

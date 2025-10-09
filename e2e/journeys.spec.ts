@@ -59,6 +59,14 @@ test.describe('Client-Side Journey Tests @journey', () => {
   })
 
   test('Purchase journey with UTM token @journey', async ({ page }) => {
+    // Monitor console errors
+    const consoleErrors: string[] = []
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        consoleErrors.push(msg.text())
+      }
+    })
+
     await test.step('App ready', async () => {
       await waitForAppReady(page)
     })
@@ -81,10 +89,14 @@ test.describe('Client-Side Journey Tests @journey', () => {
       const purchaseElement =
         (await page.getByText(/Test Company/i).count()) > 0 ||
         (await page.getByText(/\$99/i).count()) > 0 ||
-        (await page.getByRole('button', { name: /purchase|buy|get/i }).count()) >
-          0
+        (await page
+          .getByRole('button', { name: /purchase|buy|get/i })
+          .count()) > 0
 
       expect(purchaseElement).toBeTruthy()
+
+      // Verify no console errors occurred
+      expect(consoleErrors).toEqual([])
     })
   })
 })
