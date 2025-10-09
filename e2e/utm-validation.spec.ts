@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { createAndStoreToken } from '@/lib/utm/storage'
 import { prisma } from '@/lib/db'
+import { makeExpiredUtmToken } from './helpers/utm-generator'
 
 test.describe('UTM Parameter Validation', () => {
   // Helper to create test business
@@ -50,7 +51,7 @@ test.describe('UTM Parameter Validation', () => {
       // Setup: Create business and generate UTM
       const business = await createTestBusiness()
       const utmUrl = await generateUTMUrl(
-        'http://localhost:3000/purchase',
+        'http://localhost:3333/purchase',
         business.id
       )
 
@@ -87,7 +88,7 @@ test.describe('UTM Parameter Validation', () => {
       page,
     }) => {
       const business = await createTestBusiness()
-      const utmUrl = await generateUTMUrl('http://localhost:3000', business.id)
+      const utmUrl = await generateUTMUrl('http://localhost:3333', business.id)
 
       try {
         // Navigate to homepage with UTM
@@ -133,19 +134,10 @@ test.describe('UTM Parameter Validation', () => {
     })
 
     test('should show expiration page for expired UTM', async ({ page }) => {
-      // Create an expired token manually
-      const expiredPayload = Buffer.from(
-        JSON.stringify({
-          businessId: 'test',
-          nonce: 'expired',
-          timestamp: Date.now() - 48 * 60 * 60 * 1000,
-          expires: Date.now() - 24 * 60 * 60 * 1000, // Expired
-        })
-      ).toString('base64url')
+      // Create a properly signed but expired token
+      const expiredUtm = makeExpiredUtmToken()
 
-      const invalidUtm = `${expiredPayload}.invalidsignature`
-
-      await page.goto(`/purchase?utm=${invalidUtm}`)
+      await page.goto(`/purchase?utm=${expiredUtm}`)
 
       // Should be redirected to expiration page
       await page.waitForURL('/link-expired')
@@ -162,7 +154,7 @@ test.describe('UTM Parameter Validation', () => {
     test('should redirect for tampered UTM', async ({ page }) => {
       const business = await createTestBusiness()
       const validUrl = await generateUTMUrl(
-        'http://localhost:3000/purchase',
+        'http://localhost:3333/purchase',
         business.id
       )
 
@@ -192,7 +184,7 @@ test.describe('UTM Parameter Validation', () => {
       const business = await createTestBusiness()
       const { token, nonce } = await createAndStoreToken(business.id)
       const utmUrl = await generateUTMUrl(
-        'http://localhost:3000/purchase',
+        'http://localhost:3333/purchase',
         business.id
       )
 

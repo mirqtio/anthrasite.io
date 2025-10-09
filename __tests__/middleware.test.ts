@@ -176,18 +176,18 @@ describe('UTM Middleware', () => {
       expect(response?.cookies.get('business_id')?.value).toBe('test-123')
     })
 
-    it('should clear purchase mode when returning without UTM', async () => {
+    it('should persist purchase mode cookies when returning without UTM', async () => {
       const request = createRequest('/', { site_mode: 'purchase' })
       const response = await middleware(request)
 
-      // Should clear cookies
+      // Cookies should persist (not be deleted) - they expire naturally after maxAge
       const deletedCookies = []
       response?.cookies.getAll().forEach((cookie) => {
         if (cookie.value === '') deletedCookies.push(cookie.name)
       })
 
-      expect(deletedCookies).toContain('site_mode')
-      expect(deletedCookies).toContain('business_id')
+      expect(deletedCookies).not.toContain('site_mode')
+      expect(deletedCookies).not.toContain('business_id')
     })
 
     it('should maintain purchase mode with existing cookie', async () => {

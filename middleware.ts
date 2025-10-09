@@ -63,12 +63,12 @@ export async function middleware(request: NextRequest) {
 
     // Development/Test bypass
     const bypassToken = process.env.UTM_BYPASS_TOKEN || 'dev-test-token'
-    const isTestMode = 
+    const isTestMode =
       process.env.NODE_ENV === 'development' ||
       process.env.ENABLE_TEST_MODE === 'true' ||
       process.env.VERCEL_ENV === 'preview' ||
       utm === 'dev-test-token' // Hard-coded fallback for development
-    
+
     if (isTestMode && utm === bypassToken) {
       // Allow bypass with test business data
       response = NextResponse.next(response)
@@ -142,14 +142,13 @@ export async function middleware(request: NextRequest) {
   // Homepage mode detection
   if (pathname === '/') {
     const utm = searchParams.get('utm')
-    const siteMode = request.cookies.get('site_mode')?.value
 
     if (utm) {
       // Validate UTM for homepage
       const validation = await validateUTMToken(utm)
 
       if (validation.valid) {
-        // Set purchase mode
+        // Set purchase mode - cookies persist for 30 minutes (SameSite=Lax)
         response = NextResponse.next(response)
         response.cookies.set('site_mode', 'purchase', {
           httpOnly: true,
@@ -165,13 +164,8 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // No UTM or invalid UTM - ensure organic mode
-    if (siteMode === 'purchase' && !utm) {
-      response = NextResponse.next(response)
-      response.cookies.delete('site_mode')
-      response.cookies.delete('business_id')
-      return response
-    }
+    // No UTM on homepage - allow cookies to persist naturally (they'll expire after maxAge)
+    // This enables purchase mode to persist across navigations within the session
   }
 
   return response
