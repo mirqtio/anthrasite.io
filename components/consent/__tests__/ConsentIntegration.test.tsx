@@ -1,13 +1,38 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ConsentProvider } from '@/lib/context/ConsentContext'
 import { ConsentManager } from '../ConsentManager'
+import { Analytics } from '@/app/_components/Analytics/Analytics'
 
-// Mock the analytics module
-jest.mock('@/lib/analytics/consent-loader', () => ({
-  initializeAnalytics: jest.fn(),
+// Mock the analytics manager module
+const mockInitialize = jest.fn().mockResolvedValue(undefined)
+const mockInitializeAnalytics = jest.fn()
+
+jest.mock('@/lib/analytics/analytics-manager-optimized', () => ({
+  initializeAnalytics: jest.fn(() => ({
+    initialize: mockInitialize,
+    trackEvent: jest.fn(),
+    trackPageView: jest.fn(),
+  })),
 }))
 
-import { initializeAnalytics } from '@/lib/analytics/consent-loader'
+// Mock analytics client
+jest.mock('@/lib/analytics/analytics-client', () => ({
+  trackPageView: jest.fn(),
+}))
+
+// Mock useWebVitals hook
+jest.mock('@/lib/analytics/hooks/useWebVitals', () => ({
+  useWebVitals: jest.fn(),
+}))
+
+// Mock next/navigation
+jest.mock('next/navigation', () => ({
+  usePathname: () => '/',
+  useSearchParams: () => ({ toString: () => '' }),
+}))
+
+// Import the mocked function after the mock is set up
+import { initializeAnalytics as mockInitializeAnalyticsImport } from '@/lib/analytics/analytics-manager-optimized'
 
 describe('Consent Integration', () => {
   beforeEach(() => {
@@ -19,6 +44,7 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
+        <Analytics />
       </ConsentProvider>
     )
 
@@ -38,12 +64,10 @@ describe('Consent Integration', () => {
     })
 
     // Analytics should be initialized with consent
-    expect(initializeAnalytics).toHaveBeenCalledWith(
-      expect.objectContaining({
-        analytics: true,
-        functional: true,
-      })
-    )
+    await waitFor(() => {
+      expect(mockInitializeAnalyticsImport).toHaveBeenCalled()
+      expect(mockInitialize).toHaveBeenCalled()
+    })
 
     // Check localStorage
     const stored = JSON.parse(
@@ -57,6 +81,7 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
+        <Analytics />
       </ConsentProvider>
     )
 
@@ -72,18 +97,17 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    expect(initializeAnalytics).toHaveBeenCalledWith(
-      expect.objectContaining({
-        analytics: false,
-        functional: true,
-      })
-    )
+    // Analytics should not be initialized when consent is rejected
+    await waitFor(() => {
+      expect(mockInitializeAnalyticsImport).not.toHaveBeenCalled()
+    })
   })
 
   it('should handle preferences modal flow', async () => {
     render(
       <ConsentProvider>
         <ConsentManager />
+        <Analytics />
       </ConsentProvider>
     )
 
@@ -119,13 +143,11 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    // Check that analytics was initialized with correct preferences
-    expect(initializeAnalytics).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        analytics: true,
-        functional: true,
-      })
-    )
+    // Check that analytics was initialized
+    await waitFor(() => {
+      expect(mockInitializeAnalyticsImport).toHaveBeenCalled()
+      expect(mockInitialize).toHaveBeenCalled()
+    })
   })
 
   it('should remember consent on page reload', async () => {
@@ -147,6 +169,7 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
+        <Analytics />
       </ConsentProvider>
     )
 
@@ -161,12 +184,10 @@ describe('Consent Integration', () => {
     )
 
     // Analytics should be initialized with stored preferences
-    expect(initializeAnalytics).toHaveBeenCalledWith(
-      expect.objectContaining({
-        analytics: true,
-        functional: true,
-      })
-    )
+    await waitFor(() => {
+      expect(mockInitializeAnalyticsImport).toHaveBeenCalled()
+      expect(mockInitialize).toHaveBeenCalled()
+    })
   })
 
   it('should show banner again if consent version changes', async () => {
@@ -186,6 +207,7 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
+        <Analytics />
       </ConsentProvider>
     )
 

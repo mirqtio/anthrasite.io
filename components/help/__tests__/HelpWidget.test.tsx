@@ -159,8 +159,13 @@ describe('HelpWidget', () => {
   })
 
   describe('Keyboard Navigation', () => {
+    /**
+     * INTENTIONAL SKIP:
+     * Keyboard shortcut feature ("?" key) not yet implemented.
+     * Unskip when keyboard shortcuts are added to HelpWidget.
+     * Related feature: HelpWidget keyboard navigation
+     */
     it.skip('should open with "?" shortcut', async () => {
-      // Feature not yet implemented
       renderWithProvider(<HelpWidget />)
 
       fireEvent.keyDown(window, { key: '?', shiftKey: true })
@@ -188,8 +193,13 @@ describe('HelpWidget', () => {
       })
     })
 
+    /**
+     * INTENTIONAL SKIP:
+     * Search functionality not yet implemented in HelpWidget.
+     * Unskip when search feature is added.
+     * Related feature: HelpWidget search
+     */
     it.skip('should open search with "/" key', async () => {
-      // Search feature not yet implemented
       renderWithProvider(<HelpWidget />)
 
       // Open the widget
@@ -226,8 +236,13 @@ describe('HelpWidget', () => {
       })
     })
 
+    /**
+     * INTENTIONAL SKIP:
+     * Related questions feature not yet implemented in HelpWidget FAQ system.
+     * Unskip when related questions UI is added.
+     * Related feature: HelpWidget FAQ related questions
+     */
     it.skip('should show related questions', async () => {
-      // Related questions feature not yet implemented
       renderWithProvider(<HelpWidget />)
 
       fireEvent.click(screen.getByLabelText('Open help menu'))
@@ -243,8 +258,13 @@ describe('HelpWidget', () => {
       })
     })
 
+    /**
+     * INTENTIONAL SKIP:
+     * FAQ detail view navigation not yet implemented.
+     * Unskip when FAQ detail view and navigation are added.
+     * Related feature: HelpWidget FAQ detail view
+     */
     it.skip('should navigate back from FAQ detail', async () => {
-      // FAQ detail view not yet implemented
       renderWithProvider(<HelpWidget />)
 
       fireEvent.click(screen.getByLabelText('Open help menu'))
@@ -268,8 +288,13 @@ describe('HelpWidget', () => {
   })
 
   describe('Search Functionality', () => {
+    /**
+     * INTENTIONAL SKIP:
+     * Search functionality not yet implemented in HelpWidget.
+     * Unskip when search button and search UI are added.
+     * Related feature: HelpWidget search
+     */
     it.skip('should open search when search button is clicked', async () => {
-      // Search feature not yet implemented
       renderWithProvider(<HelpWidget />)
 
       fireEvent.click(screen.getByLabelText('Open help menu'))
@@ -288,8 +313,13 @@ describe('HelpWidget', () => {
   })
 
   describe('Minimize/Maximize', () => {
+    /**
+     * INTENTIONAL SKIP:
+     * Minimize feature not yet implemented in HelpWidget.
+     * Unskip when minimize/maximize functionality is added.
+     * Related feature: HelpWidget minimize/maximize
+     */
     it.skip('should minimize the widget', async () => {
-      // Minimize feature not yet implemented
       renderWithProvider(<HelpWidget />)
 
       fireEvent.click(screen.getByLabelText('Open help menu'))
@@ -306,8 +336,13 @@ describe('HelpWidget', () => {
       })
     })
 
+    /**
+     * INTENTIONAL SKIP:
+     * Maximize feature not yet implemented in HelpWidget.
+     * Unskip when minimize/maximize functionality is added.
+     * Related feature: HelpWidget minimize/maximize
+     */
     it.skip('should maximize the widget after minimizing', async () => {
-      // Maximize feature not yet implemented
       renderWithProvider(<HelpWidget />)
 
       fireEvent.click(screen.getByLabelText('Open help menu'))

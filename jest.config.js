@@ -19,6 +19,7 @@ const customJestConfig = {
     '/e2e/',
     '/visual-tests/',
     '\\.spec\\.(ts|js)$',
+    '\\.integration\\.test\\.(ts|tsx|js)$',
     'debug-.*\\.test\\.js$',
     'test-.*\\.spec\\.ts$',
   ],

@@ -1,5 +1,18 @@
 import '@testing-library/jest-dom'
 
+// Mock Prisma DB client for unit tests
+// eslint-disable-next-line no-undef
+jest.mock('@/lib/db', () => ({
+  // eslint-disable-next-line no-undef
+  prisma: new Proxy(
+    {},
+    {
+      // eslint-disable-next-line no-undef
+      get: () => jest.fn().mockResolvedValue([]),
+    }
+  ),
+}))
+
 // Mock Next.js NextRequest and NextResponse
 // eslint-disable-next-line no-undef
 jest.mock('next/server', () => ({

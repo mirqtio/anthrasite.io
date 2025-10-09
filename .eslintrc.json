@@ -16,5 +16,14 @@
     "react/no-unescaped-entities": "off",
     "no-extra-semi": "warn",
     "@typescript-eslint/no-empty-object-type": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.*", "**/__tests__/**/*"],
+      "plugins": ["jest"],
+      "rules": {
+        "jest/no-disabled-tests": "warn"
+      }
+    }
+  ]
 }
