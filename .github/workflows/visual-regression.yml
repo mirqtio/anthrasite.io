@@ -1,0 +1,62 @@
+name: Visual Regression Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  visual-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run visual regression tests
+        run: pnpm exec playwright test visual-tests/smoke.spec.ts --config=playwright-visual.config.ts
+        timeout-minutes: 15
+        env:
+          CI: true
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
+          SKIP_ENV_VALIDATION: true
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-screenshots
+          path: |
+            visual-tests/screenshots/
+          retention-days: 30
+
+      - name: Visual regression success confirmation
+        run: echo "✅ Visual regression tests completed!"
