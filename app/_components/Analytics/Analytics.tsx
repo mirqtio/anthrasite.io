@@ -12,11 +12,17 @@ export function Analytics() {
   const searchParams = useSearchParams()
   const [hasAnalyticsConsent, setHasAnalyticsConsent] = useState<boolean>(false)
 
+  // Skip analytics in E2E test mode to prevent external script loading failures
+  const isE2E = process.env.NEXT_PUBLIC_E2E_TESTING === 'true'
+
   // Track Web Vitals
   useWebVitals()
 
   // Track consent changes and initialize analytics
   useEffect(() => {
+    // Skip in E2E mode
+    if (isE2E) return
+
     // Check initial consent
     const initialConsent = getCookieConsent()
     setHasAnalyticsConsent(initialConsent.analytics)
@@ -73,10 +79,13 @@ export function Analytics() {
     })
 
     return unsubscribe
-  }, [])
+  }, [isE2E])
 
   // Track page views on route change
   useEffect(() => {
+    // Skip in E2E mode
+    if (isE2E) return
+
     if (hasAnalyticsConsent && pathname) {
       // Skip the initial page view since GA4 will track it automatically
       const isInitialLoad = !window.gtag
@@ -93,10 +102,12 @@ export function Analytics() {
         })
       }
     }
-  }, [pathname, searchParams, hasAnalyticsConsent])
+  }, [pathname, searchParams, hasAnalyticsConsent, isE2E])
 
   // GA4 Script - lazy loaded after page is interactive and consent is given
   useEffect(() => {
+    // Skip in E2E mode
+    if (isE2E) return
     if (!hasAnalyticsConsent) return
 
     // Delay loading GA4 until after page is interactive
@@ -118,12 +129,12 @@ export function Analytics() {
       script.async = true
       script.onload = () => {
         console.log('[GA4] Script loaded successfully')
-        
+
         // Initialize gtag after script loads
         window.dataLayer = window.dataLayer || []
         // Define gtag function - IMPORTANT: must use arguments, not spread operator
         // eslint-disable-next-line prefer-rest-params
-        window.gtag = function() {
+        window.gtag = function () {
           // eslint-disable-next-line prefer-rest-params
           window.dataLayer!.push(arguments)
         }
