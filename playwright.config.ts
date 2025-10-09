@@ -13,6 +13,8 @@ export default defineConfig({
   reporter: 'html',
   globalSetup: require.resolve('./e2e/_setup/global-setup'),
   globalTeardown: require.resolve('./e2e/_setup/global-teardown'),
+  // Shared test hooks for diagnostics, logging, and cleanup
+  testMatch: ['**/*.spec.ts', '**/.setup.ts'],
   use: {
     actionTimeout: 10_000, // 10s action timeout
     navigationTimeout: 15_000, // 15s navigation timeout
