@@ -3,8 +3,22 @@
  * Fetches and caches experiment configurations
  */
 
-import { get } from '@vercel/edge-config'
 import { Experiment, EdgeConfigExperiment } from './types'
+
+// Lazy-load edge-config to prevent build-time initialization errors
+// when EDGE_CONFIG environment variable is not set
+async function getEdgeConfig() {
+  if (!process.env.EDGE_CONFIG) {
+    return null
+  }
+  try {
+    const { get } = await import('@vercel/edge-config')
+    return { get }
+  } catch (error) {
+    console.warn('Failed to load @vercel/edge-config:', error)
+    return null
+  }
+}
 
 // Cache configuration
 const CACHE_TTL = 60 * 1000 // 1 minute cache
@@ -76,7 +90,14 @@ export async function fetchExperiments(
 
   try {
     // Fetch from Edge Config
-    const configData = await get<EdgeConfigExperiment>('ab-experiments')
+    const edgeConfig = await getEdgeConfig()
+    if (!edgeConfig) {
+      // Edge Config not available (missing env var or import failed)
+      return new Map(Object.entries(FALLBACK_EXPERIMENTS))
+    }
+
+    const configData =
+      await edgeConfig.get<EdgeConfigExperiment>('ab-experiments')
 
     if (!configData) {
       // Only log warnings in development, suppress in tests and E2E

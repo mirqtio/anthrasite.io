@@ -72,6 +72,20 @@ export function ConsentPreferences() {
     }
   }, [showPreferences, preferences])
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    if (!showPreferences) return
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closePreferences()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [showPreferences, closePreferences])
+
   const handleSave = () => {
     updateConsent(localPreferences)
     closePreferences()
@@ -90,47 +104,50 @@ export function ConsentPreferences() {
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/50 z-50 transition-opacity ${animation.duration.normal}`}
+        className="fixed inset-0 bg-black/50"
         style={{
+          zIndex: 10000,
           opacity: isVisible && !isExiting ? 1 : 0,
+          transition:
+            process.env.NODE_ENV === 'test'
+              ? 'none'
+              : `opacity ${animation.duration.normal} ${animation.easing.easeOut}`,
           transitionTimingFunction: animation.easing.easeOut,
+          pointerEvents: isVisible ? 'auto' : 'none',
         }}
         onClick={closePreferences}
         aria-hidden="true"
+        data-testid="consent-modal-backdrop"
       />
 
       {/* Modal */}
       <div
-        className={`fixed inset-x-4 top-1/2 -translate-y-1/2 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 z-50 w-full max-w-2xl`}
+        className="fixed inset-0 flex items-center justify-center p-4"
         style={{
-          // Simplified for E2E test reliability - no complex transforms during testing
-          transform: 'translate(-50%, -50%) scale(1)',
-          // Force full opacity and visibility during tests to avoid Playwright visibility issues
-          opacity:
-            process.env.NODE_ENV === 'test' && isVisible
-              ? 1
-              : isVisible && !isExiting
-                ? 1
-                : 0,
-          visibility: isVisible ? 'visible' : 'hidden',
-          // Only animate in production, not during tests
-          transition:
-            process.env.NODE_ENV === 'test'
-              ? 'none'
-              : `all ${animation.duration.normal} ${animation.easing.easeOut}`,
+          zIndex: 10000,
+          pointerEvents: 'none', // Allow clicks to pass through to backdrop
         }}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="preferences-title"
       >
         <div
-          className={`bg-white rounded-2xl shadow-2xl overflow-hidden ${
-            process.env.NODE_ENV === 'test' ? 'test-force-visible' : ''
-          }`}
+          className="bg-white rounded-2xl shadow-2xl overflow-hidden"
           style={{
+            width: '100%',
+            maxWidth: '42rem', // 672px (2xl)
             backgroundColor: colors.anthracite.white,
             borderRadius: radii.xl,
+            opacity: isVisible && !isExiting ? 1 : 0,
+            transition:
+              process.env.NODE_ENV === 'test'
+                ? 'none'
+                : `opacity ${animation.duration.normal} ${animation.easing.easeOut}`,
+            visibility: isVisible ? 'visible' : 'hidden',
+            pointerEvents: isVisible ? 'auto' : 'none', // Content div handles clicks
           }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="preferences-title"
+          data-testid="consent-modal-container"
+          onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div

@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "gitguardian": {
+      "command": "/Users/charlieirwin/Documents/GitHub/anthrasite.io/.mcp-gitguardian.sh"
+    }
+  }
+}

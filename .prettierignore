@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+*.log
+
+# Archives
+_archive/
+
+# Environment
+.env
+.env.local
+.env.production
+.env.development
+
+# Prisma
+prisma/migrations/
+
+# Other
+*.min.js
+*.min.css
+public/
+.vercel/
+.DS_Store

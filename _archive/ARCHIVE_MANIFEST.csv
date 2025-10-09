@@ -1,0 +1,49 @@
+Category,Item Path,Reason,Import Count,Decision
+Component,components/analytics/ABTestResults.tsx,Zero imports,0,ARCHIVE
+Lib Module,lib/abandoned-cart/analytics.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/abandoned-cart/index.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/abandoned-cart/tracker.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/analytics/event-schemas.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/analytics/providers/ga4.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/analytics/providers/hotjar.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/analytics/providers/posthog.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/analytics/types.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/context/SiteModeProviderClient.tsx,Zero imports,0,ARCHIVE
+Lib Module,lib/db/queries.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/design-system/animations.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/config.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/index.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/queue.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/templates/cartRecovery.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/templates/orderConfirmation.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/templates/reportReady.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/templates/welcomeEmail.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/email/types.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/help/content.ts,Zero imports,0,ARCHIVE
+Lib Module,lib/monitoring/alerts.ts,Zero imports,0,ARCHIVE
+Asset,public/logo_full_black.svg,Zero code references,0,ARCHIVE
+Asset,public/test.html,Zero code references,0,ARCHIVE
+Script,scripts/fix-all-tests.sh,One-time use script,N/A,ARCHIVE
+Script,scripts/fix-consent-loader-tests.sh,One-time use script,N/A,ARCHIVE
+Script,scripts/fix-helpwidget-aria-tests.sh,One-time use script,N/A,ARCHIVE
+Script,scripts/fix-helpwidget-performance-tests.sh,One-time use script,N/A,ARCHIVE
+Script,scripts/fix-helpwidget-tests.sh,One-time use script,N/A,ARCHIVE
+Script,scripts/fix-remaining-tests.sh,One-time use script,N/A,ARCHIVE
+Script,scripts/fix-tests-comprehensive.sh,One-time use script,N/A,ARCHIVE
+Script,scripts/fix-tests-locally.sh,One-time use script,N/A,ARCHIVE
+CI Workflow,.github/workflows/e2e-phase1.yml,Superseded by main CI,N/A,ARCHIVE
+CI Workflow,.github/workflows/e2e-phase2.yml,Superseded by main CI,N/A,ARCHIVE
+CI Workflow,.github/workflows/e2e-phase2-alt.yml,Superseded by main CI,N/A,ARCHIVE
+CI Workflow,.github/workflows/e2e-phase3.yml,Superseded by main CI,N/A,ARCHIVE
+CI Workflow,.github/workflows/e2e-phase4.yml,Superseded by main CI,N/A,ARCHIVE
+CI Workflow,.github/workflows/e2e-phase5.yml,Superseded by main CI,N/A,ARCHIVE
+CI Workflow,.github/workflows/e2e-phase6.yml,Superseded by main CI,N/A,ARCHIVE
+CI Workflow,.github/workflows/complete-e2e-success.yml,Superseded by smoke tests,N/A,ARCHIVE
+CI Workflow,.github/workflows/comprehensive-e2e.yml,Superseded by smoke tests,N/A,ARCHIVE
+CI Workflow,.github/workflows/deployment-check.yml,Duplicate functionality,N/A,ARCHIVE
+CI Workflow,.github/workflows/smoke-visual.yml,Visual regression not used,N/A,ARCHIVE
+CI Workflow,.github/workflows/vercel-deploy-check.yml,May trigger unwanted deploys,N/A,REVIEW
+CI Workflow,.github/workflows/visual-regression.yml,Visual regression not used,N/A,ARCHIVE
+Route,app/link-expired/page.tsx,Low usage route,2,REVIEW
+API,app/api/waitlist/route.ts,Waitlist feature status unclear,3,REVIEW
+API,app/api/waitlist/validate-domain/route.ts,Waitlist feature status unclear,3,REVIEW

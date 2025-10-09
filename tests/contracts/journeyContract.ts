@@ -6,7 +6,7 @@
  */
 export const JourneyIds = {
   // Waitlist journey (aligned with WaitlistFormIds)
-  openWaitlist: 'waitlist-open',
+  openWaitlist: 'open-waitlist-button',
   waitlistForm: 'waitlist-form',
   waitlistEmail: 'waitlist-email',
   waitlistDomain: 'waitlist-domain',

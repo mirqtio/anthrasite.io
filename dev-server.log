@@ -1,23 +1,63 @@
 
 > anthrasite.io@1.0.0 dev /Users/charlieirwin/Documents/GitHub/anthrasite.io
-> next dev -p 3333
+> next dev -p 3333 --port 3333
 
- ⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3333
-    at Server.setupListenHandle [as _listen2] (node:net:1939:16)
-    at listenInCluster (node:net:1996:12)
-    at Server.listen (node:net:2101:7)
-    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:280:16
-    at new Promise (<anonymous>)
-    at startServer (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:191:11)
-    at /Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:310:52
-    at Span.traceAsyncFn (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/trace/trace.js:154:26)
-    at process.<anonymous> (/Users/charlieirwin/Documents/GitHub/anthrasite.io/node_modules/.pnpm/next@14.2.30_@babel+core@7.27.4_@opentelemetry+api@1.9.0_@playwright+test@1.53.1_react-_0e060f19bd66219759ac9d447635a5d5/node_modules/next/dist/server/lib/start-server.js:310:35)
-    at process.emit (node:events:518:28) {
-  code: 'EADDRINUSE',
-  errno: -48,
-  syscall: 'listen',
-  address: '::',
-  port: 3333
-}
+  ▲ Next.js 14.2.30
+  - Local:        http://localhost:3333
+  - Environments: .env.local, .env
+  - Experiments (use with caution):
+    · instrumentationHook
+
+ ✓ Starting...
+[@sentry/nextjs] DEPRECATION WARNING: It is recommended renaming your `sentry.client.config.ts` file, or moving its content to `instrumentation-client.ts`. When using Turbopack `sentry.client.config.ts` will no longer work. Read more about the `instrumentation-client.ts` file: https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation-client
+ ○ Compiling /instrumentation ...
+ ✓ Compiled /instrumentation in 1281ms (900 modules)
+ ✓ Ready in 7.9s
+ ○ Compiling /api/health ...
+ ✓ Compiled /api/health in 1270ms (1647 modules)
+prisma:query SELECT 1
+ GET /api/health 200 in 1595ms
+prisma:query SELECT 1
+ GET /api/health 200 in 5ms
+ ✓ Compiled /middleware in 184ms (471 modules)
+ ○ Compiling / ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (253kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ✓ Compiled / in 4.9s (4584 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 5222ms
+ ○ Compiling /api/waitlist ...
+ ✓ Compiled /api/waitlist in 954ms (3287 modules)
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+prisma:query SELECT 1
+prisma:query SELECT "public"."waitlist"."id", "public"."waitlist"."domain", "public"."waitlist"."email", "public"."waitlist"."ip_location", "public"."waitlist"."variant_data", "public"."waitlist"."position", "public"."waitlist"."created_at", "public"."waitlist"."updated_at" FROM "public"."waitlist" WHERE "public"."waitlist"."domain" = $1 LIMIT $2 OFFSET $3
+prisma:query UPDATE "public"."waitlist" SET "email" = $1, "updated_at" = $2 WHERE ("public"."waitlist"."id" = $3 AND 1=1) RETURNING "public"."waitlist"."id", "public"."waitlist"."domain", "public"."waitlist"."email", "public"."waitlist"."ip_location", "public"."waitlist"."variant_data", "public"."waitlist"."position", "public"."waitlist"."created_at", "public"."waitlist"."updated_at"
+Event tracked: api.waitlist_duplicate { domain: 'example.com', created: false }
+ POST /api/waitlist 200 in 1038ms
+prisma:query SELECT 1
+ GET /api/health 200 in 9ms
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+ GET / 200 in 70ms
+ ○ Compiling /purchase ...
+ ✓ Compiled /purchase in 1009ms (4943 modules)
+SENDGRID_API_KEY not found in environment variables
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+prisma:query SELECT "public"."businesses"."id", "public"."businesses"."domain", "public"."businesses"."name", "public"."businesses"."email", "public"."businesses"."reportData", "public"."businesses"."createdAt", "public"."businesses"."updatedAt" FROM "public"."businesses" WHERE ("public"."businesses"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."utm_tokens"."nonce", "public"."utm_tokens"."token", "public"."utm_tokens"."businessId", "public"."utm_tokens"."used", "public"."utm_tokens"."usedAt", "public"."utm_tokens"."createdAt", "public"."utm_tokens"."expiresAt" FROM "public"."utm_tokens" WHERE ("public"."utm_tokens"."nonce" = $1 AND 1=1) LIMIT $2 OFFSET $3
+Failed to create checkout session: Error: STRIPE_SECRET_KEY is not defined
+    at getStripe (webpack-internal:///(rsc)/./lib/stripe/config.ts:17:19)
+    at Object.get (webpack-internal:///(rsc)/./lib/stripe/config.ts:29:28)
+    at createCheckoutSession (webpack-internal:///(rsc)/./lib/stripe/checkout.ts:23:75)
+    at createCheckoutSession (webpack-internal:///(rsc)/./lib/purchase/purchase-service.ts:92:106)
+    at async PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:59:29)
+Error creating checkout session: Error: Failed to create checkout session
+    at createCheckoutSession (webpack-internal:///(rsc)/./lib/stripe/checkout.ts:60:15)
+    at createCheckoutSession (webpack-internal:///(rsc)/./lib/purchase/purchase-service.ts:92:106)
+    at async PurchaseContent (webpack-internal:///(rsc)/./app/purchase/page.tsx:59:29)
+prisma:query SELECT "public"."businesses"."id", "public"."businesses"."domain", "public"."businesses"."name", "public"."businesses"."email", "public"."businesses"."reportData", "public"."businesses"."createdAt", "public"."businesses"."updatedAt" FROM "public"."businesses" WHERE ("public"."businesses"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+ GET /purchase?utm=eyJidXNpbmVzc0lkIjoidGVzdC1idXNpbmVzcy0xMjMiLCJ0aW1lc3RhbXAiOjE3NjAwMDgyOTczOTQsIm5vbmNlIjoiY2Y1M2E3OGQ4YmUyNDQzOWNkZDA1OGNlNWQ4NmYxMzEiLCJleHBpcmVzIjoxNzYwMDExODk3Mzk0LCJidXNpbmVzc05hbWUiOiJUZXN0IENvbXBhbnkiLCJwcmljZSI6OTkwMH0.1S4JQEEg3j4AezDLf6TjXfWG1nsE39XtM6_vK58Je2M 200 in 1216ms
+ ✓ Compiled in 270ms (1328 modules)
 [?25h

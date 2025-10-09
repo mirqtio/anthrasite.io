@@ -1,0 +1,78 @@
+# Serena Configuration for Anthrasite.io
+# Payment Site & Report Delivery Platform
+
+language: typescript
+
+ignore_all_files_in_gitignore: true
+
+ignored_paths:
+  - 'node_modules/**'
+  - '_archive/**'
+  - '.next/**'
+  - 'out/**'
+  - 'dist/**'
+  - 'build/**'
+  - 'coverage/**'
+  - '*.log'
+  - '.vercel/**'
+  - 'test-results/**'
+  - 'playwright-report/**'
+  - 'playwright-visual-report/**'
+  - 'prisma/migrations/**'
+  - '.env*'
+  - '*.db'
+  - 'pnpm-lock.yaml'
+  - 'package-lock.json'
+
+read_only: false
+
+excluded_tools: []
+
+initial_prompt: |
+  Anthrasite.io is a Next.js payment and report delivery platform for B2B website audits.
+
+  ## Key Architecture Components:
+  - **Next.js 14**: App router with server components and server actions
+  - **Stripe Integration**: Payment Element (embedded) for on-page checkout
+  - **PostgreSQL + Prisma**: Business, Purchase, and UTM token management
+  - **Email**: Gmail SMTP for purchase confirmation (D3)
+  - **Queue Bridge**: Managed queue to LeadShop (Mac mini) for report generation
+  - **Temporal Orchestration**: Workflow-driven report generation and delivery
+
+  ## Current Implementation Status:
+  - **EPIC G (CLOSED)**: Codebase cleanup, build stabilization, legacy archival
+  - **EPIC D3 (CLOSED)**: Gmail SMTP confirmation emails with idempotency
+  - **EPIC A1 (IN PROGRESS)**: Migration to embedded Payment Element
+
+  ## Core Business Flow:
+  1. Customer receives UTM-tokenized email link
+  2. Purchase page loads with personalized preview
+  3. Payment via Stripe Payment Element (embedded)
+  4. Webhook processes payment_intent.succeeded
+  5. Queue enqueues job for LeadShop
+  6. LeadShop generates PDF via Playwright
+  7. Report delivered via Gmail SMTP with PDF attachment
+
+  ## Development Principles:
+  - **METHOD.md**: Defines our collaborative workflow (Cascade plans, Claude implements)
+  - **SYSTEM.md**: Single source of truth for architecture
+  - **ISSUES.md**: Issue-driven development with story points
+  - **SCRATCHPAD.md**: Active task handoff and implementation plans
+  - **PR-Centric**: All changes via feature branches and pull requests
+  - **TDD/BDD**: Playwright E2E tests for validation
+  - **Feature Flags**: Safe rollout of new features
+
+  ## AI Agent Optimization:
+  This codebase follows METHOD.md for AI collaboration.
+  Claude acts as the engineer; Cascade as the architect.
+  All work is tracked via ISSUES.md and SCRATCHPAD.md.
+  Focus on understanding the payment flow, webhook idempotency, and D3 email integration.
+
+project_name: 'Anthrasite.io'
+
+show_logs: true
+tool_monitoring:
+  capture_stats: true
+  log_level: 'INFO'
+  include_timing: true
+  include_token_usage: true

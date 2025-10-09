@@ -7,7 +7,7 @@
  */
 
 export const WaitlistFormIds = {
-  openButton: 'waitlist-open',
+  openButton: 'open-waitlist-button',
   form: 'waitlist-form',
   emailInput: 'waitlist-email',
   domainInput: 'waitlist-domain',
