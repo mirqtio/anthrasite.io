@@ -51,12 +51,19 @@ export async function acceptConsentIfPresent(page: Page) {
 
 /**
  * Navigate to URL and dismiss consent modal if present
- * Convenience function combining navigation and consent handling
+ * Ensures clean storage state before navigation to prevent test pollution
  *
  * @param page - Playwright page object
  * @param url - URL to navigate to
  */
 export async function gotoAndDismissConsent(page: Page, url: string) {
+  // Clear cookies and storage BEFORE navigation to ensure clean state
+  await page.context().clearCookies()
+  await page.evaluate(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+
   await page.goto(url)
   await acceptConsentIfPresent(page)
 }

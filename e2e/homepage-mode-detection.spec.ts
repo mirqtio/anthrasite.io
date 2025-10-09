@@ -7,6 +7,11 @@ import { prisma } from '@/lib/db'
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3333'
 
 test.describe('Homepage Mode Detection', () => {
+  // Ensure clean storage state before each test
+  test.beforeEach(async ({ page }) => {
+    await page.context().clearCookies()
+  })
+
   // Generate unique identifier for test runs
   const getUniqueTestId = () => {
     const timestamp = Date.now()
@@ -226,7 +231,7 @@ test.describe('Homepage Mode Detection', () => {
 
         // Navigate with UTM parameter
         await page.goto(utmUrl)
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Wait for loading to complete
@@ -281,7 +286,7 @@ test.describe('Homepage Mode Detection', () => {
 
       try {
         await page.goto(utmUrl)
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Extract UTM from URL
@@ -313,7 +318,7 @@ test.describe('Homepage Mode Detection', () => {
       try {
         // Initial visit with UTM
         await page.goto(utmUrl)
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Verify purchase mode
@@ -328,7 +333,7 @@ test.describe('Homepage Mode Detection', () => {
 
         // Navigate to homepage without UTM
         await page.goto('/')
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Should maintain purchase mode (cookies persist)
@@ -353,7 +358,7 @@ test.describe('Homepage Mode Detection', () => {
       try {
         // Visit with UTM
         await page.goto(utmUrl)
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Navigate to purchase page
@@ -362,7 +367,7 @@ test.describe('Homepage Mode Detection', () => {
 
         // Navigate back to homepage
         await page.goto('/')
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Should still be in purchase mode
@@ -399,7 +404,7 @@ test.describe('Homepage Mode Detection', () => {
 
         // Visit homepage
         await page.goto('/')
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Should show organic mode (expired cookies are ignored)
@@ -425,7 +430,7 @@ test.describe('Homepage Mode Detection', () => {
 
       for (const utm of malformedUTMs) {
         await page.goto(`/?utm=${utm}`)
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Should show error state in purchase mode
@@ -475,7 +480,7 @@ test.describe('Homepage Mode Detection', () => {
         const tamperedUtm = parts.join('.')
 
         await page.goto(`/?utm=${tamperedUtm}`)
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         // Should show error state
@@ -555,7 +560,7 @@ test.describe('Homepage Mode Detection', () => {
 
         // Test organic mode on mobile
         await page.goto('/')
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         await expect(page.locator('h1')).toBeVisible()
@@ -563,7 +568,7 @@ test.describe('Homepage Mode Detection', () => {
 
         // Test purchase mode on mobile
         await page.goto(utmUrl)
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.waitForLoadState('networkidle')
 
         await expect(page.locator('h1')).toContainText('Website Audit is Ready')
@@ -591,14 +596,14 @@ test.describe('Homepage Mode Detection', () => {
       try {
         // Rapidly switch between modes
         await page.goto(utmUrl) // Purchase mode
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.goto('/') // Should stay in purchase mode due to cookie
-      await waitForHydration(page)
+        await waitForHydration(page)
         await context.clearCookies()
         await page.goto('/') // Organic mode
-      await waitForHydration(page)
+        await waitForHydration(page)
         await page.goto(utmUrl) // Back to purchase mode
-      await waitForHydration(page)
+        await waitForHydration(page)
 
         await page.waitForLoadState('networkidle')
 

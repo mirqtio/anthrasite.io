@@ -9,6 +9,12 @@ import {
 } from './helpers/test-utils'
 
 test.describe('Full User Journey - Comprehensive E2E Tests', () => {
+  // Global cleanup before each test to prevent cookie/localStorage pollution
+  test.beforeEach(async ({ page }) => {
+    await page.context().clearCookies()
+    // Note: localStorage/sessionStorage cleared on first page.goto or in helpers
+  })
+
   test.describe('Organic Visitor Flow', () => {
     test('complete waitlist signup journey', async ({ page }) => {
       // 1. Visit homepage with cookie dismissal
