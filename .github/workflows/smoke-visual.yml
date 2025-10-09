@@ -28,7 +28,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps
 
       - name: Run smoke visual test
         run: pnpm exec playwright test visual-tests/smoke.spec.ts --config=playwright-visual.config.ts

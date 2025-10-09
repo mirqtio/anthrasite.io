@@ -51,7 +51,7 @@ jobs:
           DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps
 
       - name: Run Phase 5 E2E tests (monitoring + basic + homepage)
         run: pnpm exec playwright test e2e/monitoring.spec.ts e2e/basic.spec.ts e2e/homepage.spec.ts
