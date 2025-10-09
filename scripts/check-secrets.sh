@@ -49,12 +49,17 @@ for pattern in "${PATTERNS[@]}"; do
     --include="*.js" \
     --include="*.jsx" \
     --include="*.json" \
-    --include=".env*" \
+    --include=".env" \
+    --include=".env.local" \
+    --include=".env.production" \
+    --include=".env.development" \
     --exclude-dir=node_modules \
     --exclude-dir=.next \
     --exclude-dir=.git \
     --exclude="*.test.*" \
     --exclude="*.spec.*" \
+    --exclude=".env.example" \
+    --exclude=".env.test" \
     2>/dev/null)
   
   if [ ! -z "$results" ]; then
@@ -66,11 +71,10 @@ done
 
 # Check for specific files that shouldn't be committed
 SENSITIVE_FILES=(
+  ".env"
   ".env.local"
   ".env.production"
   ".env.development"
-  ".env.example"
-  ".env.test"
   "secrets.json"
   "credentials.json"
 )

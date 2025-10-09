@@ -6,8 +6,15 @@ import { trackEvent } from '@/lib/monitoring'
 
 // Validation schema with automatic normalization
 const WaitlistSchema = z.object({
-  domain: z.string().min(3).transform(s => s.trim().toLowerCase()),
-  email: z.string().email().transform(s => s.trim().toLowerCase()).optional(),
+  domain: z
+    .string()
+    .min(3)
+    .transform((s) => s.trim().toLowerCase()),
+  email: z
+    .string()
+    .email()
+    .transform((s) => s.trim().toLowerCase())
+    .optional(),
   referralSource: z.string().optional(),
 })
 
@@ -17,10 +24,7 @@ export async function POST(request: NextRequest) {
     const parsed = WaitlistSchema.safeParse(body)
 
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: 'Invalid input' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
     }
 
     const { domain, email, referralSource } = parsed.data
@@ -39,7 +43,9 @@ export async function POST(request: NextRequest) {
         where: { id: existing.id },
         data: {
           email: email ?? existing.email,
-          variantData: referralSource ? { referralSource } : existing.variantData,
+          variantData: referralSource
+            ? { referralSource }
+            : (existing.variantData ?? undefined),
         },
       })
     } else {
@@ -98,10 +104,7 @@ export async function POST(request: NextRequest) {
       error: err.message,
     })
 
-    return NextResponse.json(
-      { error: 'Server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
 
@@ -109,7 +112,7 @@ export async function GET() {
   try {
     // Get waitlist statistics
     const stats = await getWaitlistStats()
-    
+
     return NextResponse.json({
       count: stats.totalCount,
       todayCount: stats.todayCount,
@@ -117,7 +120,7 @@ export async function GET() {
     })
   } catch (error) {
     console.error('Waitlist stats error:', error)
-    
+
     return NextResponse.json(
       { error: 'Failed to get waitlist stats' },
       { status: 500 }
