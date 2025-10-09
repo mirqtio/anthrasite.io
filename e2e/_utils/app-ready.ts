@@ -1,9 +1,11 @@
 import { Page, expect } from '@playwright/test'
-import { waitForHydration } from '@/e2e/utils/waits'
+import { waitForAppReady as waitForAppReadyComposite } from '@/e2e/utils/waits'
 
 /**
  * Wait for app to be ready before running tests
  * Ensures server is healthy, DOM is loaded, storage is clean, and React has hydrated
+ *
+ * Uses composite readiness detection to handle slow hydration gracefully.
  */
 export async function waitForAppReady(page: Page) {
   // Check health endpoint is responding
@@ -23,8 +25,8 @@ export async function waitForAppReady(page: Page) {
     sessionStorage.clear()
   })
 
-  // Wait for React hydration to complete (critical for production builds)
-  await waitForHydration(page)
+  // Wait for app to be fully ready (composite signal - rAF + idle + network)
+  await waitForAppReadyComposite(page)
 
   // Ensure app shell is visible (confirms React has hydrated)
   await expect(page.locator('[data-app-shell]')).toBeVisible()

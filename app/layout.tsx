@@ -10,7 +10,7 @@ import {
   AnalyticsWrapper,
   AnalyticsNoScriptWrapper,
 } from '@/app/_components/Analytics/AnalyticsWrapper'
-import { HydrationFlag } from '@/app/_components/HydrationFlag'
+import ReadyGate from '@/app/_components/ReadyGate'
 import './globals.css'
 
 const inter = Inter({
@@ -56,7 +56,7 @@ export default function RootLayout({
                   <ConditionalHelpWidget />
                   <AnalyticsWrapper />
                   <AnalyticsNoScriptWrapper />
-                  <HydrationFlag />
+                  <ReadyGate />
                 </HelpWidgetProvider>
               </SiteModeProvider>
             </ConsentProvider>

@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test'
-import { waitForHydration } from '@/e2e/utils/waits'
+import { waitForAppReady } from '@/e2e/utils/waits'
 
 /**
  * Safely open a modal by clicking trigger and waiting for modal to appear
@@ -55,6 +55,8 @@ export async function acceptConsentIfPresent(page: Page) {
  * Ensures clean storage state before navigation to prevent test pollution
  * Waits for React hydration to complete before proceeding
  *
+ * Uses composite readiness detection to handle slow hydration gracefully.
+ *
  * @param page - Playwright page object
  * @param url - URL to navigate to
  */
@@ -71,8 +73,8 @@ export async function gotoAndDismissConsent(page: Page, url: string) {
     sessionStorage.clear()
   })
 
-  // Wait for React hydration to complete (critical for production builds)
-  await waitForHydration(page)
+  // Wait for app to be fully ready (composite signal - rAF + idle + network)
+  await waitForAppReady(page)
 
   await acceptConsentIfPresent(page)
 }
