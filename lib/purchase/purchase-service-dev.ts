@@ -110,7 +110,36 @@ export async function fetchBusinessByUTMDev(
   utm: string
 ): Promise<PurchasePageData | null> {
   // Simulate async behavior
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 100))
+
+  // Try to parse JWT-style tokens (from E2E tests)
+  try {
+    const [payloadB64] = utm.split('.')
+    if (payloadB64) {
+      const payload = JSON.parse(
+        Buffer.from(payloadB64, 'base64url').toString()
+      )
+      if (payload.businessId) {
+        // Return mock data for E2E test business
+        const mockBusiness: Business = {
+          id: payload.businessId,
+          domain: 'test.com',
+          name: 'Test Company',
+          email: 'test@test.com',
+          reportData: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+        return {
+          business: mockBusiness,
+          utm,
+          isValid: true,
+        }
+      }
+    }
+  } catch (e) {
+    // Not a JWT token, fall through to dictionary lookup
+  }
 
   const tokenData = MOCK_UTM_TOKENS[utm]
   if (!tokenData) {

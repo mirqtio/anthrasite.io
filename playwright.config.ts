@@ -20,6 +20,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: process.env.CI ? 'retain-on-failure' : 'off',
+    testIdAttribute: 'data-testid',
   },
 
   projects: [
@@ -46,16 +47,20 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'NEXT_PUBLIC_USE_MOCK_PURCHASE=false npm run dev',
+    command: 'PORT=3333 pnpm run dev',
     port: 3333,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes for server startup
     env: {
-      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
+      PORT: '3333',
+      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'false',
       NODE_ENV: 'development',
       // Flag to indicate E2E test environment (NEXT_PUBLIC_ makes it available in client components)
       E2E_TESTING: 'true',
       NEXT_PUBLIC_E2E_TESTING: 'true',
+      ENABLE_TEST_MODE: 'true',
+      // UTM secret for token validation (must match e2e/helpers/utm-generator.ts)
+      UTM_SECRET_KEY: 'development-secret-key-replace-in-production',
       // Database for tests - prioritize CI environment variable
       DATABASE_URL:
         process.env.DATABASE_URL ||

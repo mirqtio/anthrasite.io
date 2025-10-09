@@ -152,7 +152,11 @@ export function WaitlistForm() {
 
   if (step === 'success' && position) {
     return (
-      <Card variant="elevated" className="mx-auto max-w-md p-8 text-center">
+      <Card
+        variant="elevated"
+        className="mx-auto max-w-md p-8 text-center"
+        data-testid="waitlist-success"
+      >
         <div className="space-y-4">
           <div className="mx-auto h-16 w-16 rounded-full bg-anthracite-blue/10 flex items-center justify-center">
             <CheckIcon className="h-8 w-8 text-anthracite-blue" />
@@ -192,6 +196,7 @@ export function WaitlistForm() {
   return (
     <Card variant="bordered" className="mx-auto max-w-md">
       <form
+        data-testid="waitlist-form"
         onSubmit={step === 'domain' ? handleDomainSubmit : handleEmailSubmit}
         className="space-y-4"
       >
@@ -206,6 +211,7 @@ export function WaitlistForm() {
               </label>
               <Input
                 id="domain"
+                data-testid="waitlist-domain"
                 type="text"
                 placeholder="example.com"
                 value={domain}
@@ -218,7 +224,12 @@ export function WaitlistForm() {
 
               {error && (
                 <div className="mt-2 space-y-2">
-                  <p className="text-sm text-anthracite-error">{error}</p>
+                  <p
+                    className="text-sm text-anthracite-error"
+                    data-testid="waitlist-error"
+                  >
+                    {error}
+                  </p>
 
                   {suggestion && (
                     <p className="text-sm text-anthracite-black/60">
@@ -249,6 +260,7 @@ export function WaitlistForm() {
               className="w-full"
               disabled={!domain || isValidating || !!error}
               loading={isValidating}
+              data-testid="waitlist-submit"
             >
               Continue
             </Button>
@@ -271,6 +283,7 @@ export function WaitlistForm() {
               </label>
               <Input
                 id="email"
+                data-testid="waitlist-email"
                 type="email"
                 placeholder="you@example.com"
                 value={email}
@@ -282,7 +295,12 @@ export function WaitlistForm() {
               />
 
               {error && (
-                <p className="mt-2 text-sm text-anthracite-error">{error}</p>
+                <p
+                  className="mt-2 text-sm text-anthracite-error"
+                  data-testid="waitlist-error"
+                >
+                  {error}
+                </p>
               )}
             </div>
 
@@ -293,6 +311,7 @@ export function WaitlistForm() {
                 className="w-full"
                 disabled={!email || isSubmitting}
                 loading={isSubmitting}
+                data-testid="waitlist-submit"
               >
                 Join Waitlist
               </Button>
