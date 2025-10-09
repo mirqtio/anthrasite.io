@@ -1,15 +1,30 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { Analytics } from '../Analytics'
-import { initializeAnalytics } from '@/lib/analytics/analytics-manager'
-import { trackPageView } from '@/lib/analytics/analytics-client'
-import { getCookieConsent } from '@/lib/cookies/consent'
-import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
-import { usePathname, useSearchParams } from 'next/navigation'
 
-// Mock analytics dependencies
-jest.mock('@/lib/analytics/analytics-manager', () => ({
-  initializeAnalytics: jest.fn(),
+// Mock analytics dependencies - must be hoisted before imports
+const mockInitialize = jest.fn().mockResolvedValue(undefined)
+const mockTrack = jest.fn()
+const mockPage = jest.fn()
+const mockIdentify = jest.fn()
+const mockReset = jest.fn()
+
+// Mock the actual module used by the component (analytics-manager-optimized)
+jest.mock('@/lib/analytics/analytics-manager-optimized', () => ({
+  __esModule: true,
+  initializeAnalytics: jest.fn(() => ({
+    initialize: mockInitialize,
+    track: mockTrack,
+    page: mockPage,
+    identify: mockIdentify,
+    reset: mockReset,
+  })),
+  getAnalytics: jest.fn(() => ({
+    track: mockTrack,
+    page: mockPage,
+    identify: mockIdentify,
+    reset: mockReset,
+  })),
 }))
 
 jest.mock('@/lib/analytics/analytics-client', () => ({
@@ -38,6 +53,13 @@ jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(() => new URLSearchParams()),
 }))
 
+// Import after mocks to ensure mocks are applied
+import { initializeAnalytics } from '@/lib/analytics/analytics-manager-optimized'
+import { trackPageView } from '@/lib/analytics/analytics-client'
+import { getCookieConsent } from '@/lib/cookies/consent'
+import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
+import { usePathname, useSearchParams } from 'next/navigation'
+
 describe('Analytics Component', () => {
   const originalEnv = process.env
 
@@ -54,20 +76,30 @@ describe('Analytics Component', () => {
     process.env = originalEnv
   })
 
-  it('should initialize analytics when measurement ID is provided', () => {
+  it('should initialize analytics when measurement ID is provided', async () => {
     process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID = 'G-TESTID123'
     process.env.NEXT_PUBLIC_POSTHOG_KEY = 'phc_test123'
 
     render(<Analytics />)
 
-    expect(initializeAnalytics).toHaveBeenCalledWith({
-      ga4: {
-        measurementId: 'G-TESTID123',
-        apiSecret: undefined,
-      },
-      posthog: {
-        apiKey: 'phc_test123',
-      },
+    // Wait for async initialization
+    await waitFor(() => {
+      expect(initializeAnalytics).toHaveBeenCalledWith({
+        ga4: {
+          measurementId: 'G-TESTID123',
+          apiSecret: undefined,
+        },
+        posthog: {
+          apiKey: 'phc_test123',
+          host: undefined,
+        },
+        hotjar: undefined,
+      })
+    })
+
+    // Verify initialize was called
+    await waitFor(() => {
+      expect(mockInitialize).toHaveBeenCalled()
     })
   })
 
@@ -80,6 +112,9 @@ describe('Analytics Component', () => {
   })
 
   it('should track page view when analytics consent is given', () => {
+    // Set up window.gtag to simulate non-initial load
+    ;(window as any).gtag = jest.fn()
+
     render(<Analytics />)
 
     expect(trackPageView).toHaveBeenCalledWith({
@@ -133,6 +168,9 @@ describe('Analytics Component', () => {
       performance: true,
       functional: true,
     })
+
+    // Set up window.gtag to simulate non-initial load
+    ;(window as any).gtag = jest.fn()
 
     mockUsePathname.mockReturnValue('/test-page')
     mockUseSearchParams.mockReturnValue(new URLSearchParams('?utm=test'))
