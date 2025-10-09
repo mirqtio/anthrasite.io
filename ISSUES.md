@@ -101,13 +101,19 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **Status**: `CLOSED`
 - **Commit**: `6af616f`
 - **I6 (2 pts)**: Fix Client-Side Journey Tests (E2E)
+- **Status**: `CLOSED`
+- **Commits**: `ebbae60`, `b7e7440`, `4d13fef`
 - **I7 (5 pts)**: Address Remaining Skipped Unit Tests
+- **Status**: `CLOSED`
+- **Commit**: `5d89582`
+- **I8 (TBD)**: EPIC I - Final Cleanup & Deferred Tasks
 
 ### EPIC H - Hardening & CI/CD - (24 pts)
 
 **Goal:** Ensure the repository is secure and the CI/CD pipeline is reliable before public launch.
 
-- **H1 (3 pts)**: Integrate GitGuardian for secret scanning. _(**Next Task** - High Priority Security)_
+- **H1 (3 pts)**: Integrate GitGuardian for secret scanning.
+- **Status**: `CLOSED`
 - **H2 (13 pts)**: Review and update CI/CD to run correct E2E and unit tests.
 - **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
 
