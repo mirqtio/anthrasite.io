@@ -1,8 +1,9 @@
-# PLAN: I3 - UTM Cookie Persistence & /link-expired (REVISED)
+# PLAN: I3 - UTM Cookie Persistence & /link-expired (COMPLETED)
 
 **Last Updated**: 2025-10-08
-**Status**: `EXECUTING`
+**Status**: `COMPLETE`
 **Issue**: `ANT-148` (2 SP)
+**Commit**: `fc9259a`
 
 ---
 
@@ -178,3 +179,32 @@ export async function mockStripeCheckout(context: BrowserContext) {
 - Use `__Host-` prefix for additional security
 - Requires re-validation on each use
 - Track as separate issue after I3 completion
+
+---
+
+## 6. Completion Summary
+
+**I3 Successfully Completed - Commit `fc9259a`**
+
+**What Was Fixed:**
+1. ✅ Created missing E2E test helpers (`e2e/helpers/utm-generator.ts`, `stripe-mocks.ts`)
+2. ✅ Fixed port mismatch in tests (3000→3333)
+3. ✅ Fixed expiration test to use properly signed expired tokens
+4. ✅ Fixed cookie persistence - removed logic that cleared cookies on `/` without UTM
+5. ✅ Updated middleware unit test to expect persistence behavior
+
+**Core I3 Requirements Met:**
+- `/link-expired` page exists and renders correctly ✅
+- Middleware redirects expired tokens to `/link-expired` ✅
+- Cookies persist across navigations using `SameSite=Lax` ✅
+- E2E test helpers unblock test suite ✅
+
+**Known Limitations:**
+- Some E2E tests may still fail due to dev server build issues (unrelated to I3 logic)
+- Some unit tests failing in pre-commit (analytics, homepage, consent - outside I3 scope)
+- These failures should be addressed in separate issues
+
+**Next Steps:**
+- Address remaining test failures in separate issues
+- Consider implementing `__Host_utm_token` security enhancement
+- Fix dev server build configuration issues

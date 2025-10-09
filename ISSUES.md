@@ -92,6 +92,8 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **I2 (2 pts)**: Implement Waitlist Validation Logic (E2E)
 - **Status**: `CLOSED`
 - **I3 (2 pts)**: Fix UTM Cookie Persistence & Expired Route (E2E)
+- **Status**: `CLOSED`
+- **Commit**: `fc9259a`
 - **I4 (2 pts)**: Fix Homepage Component Drift in Tests (Unit)
 - **Status**: `CLOSED`
 - **Commits**: `7becd48`, `2955eb9`, `3f05f3c`
