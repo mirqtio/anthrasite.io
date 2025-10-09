@@ -27,7 +27,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm build && pnpm start -p 3333',
+    command: 'PORT=3333 pnpm run dev',
     port: 3333,
     reuseExistingServer: false, // Never reuse in CI - always start fresh
     timeout: 180_000, // 3 minutes for CI server startup (cold environment)

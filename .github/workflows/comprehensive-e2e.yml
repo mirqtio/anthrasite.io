@@ -50,16 +50,6 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
 
-      - name: Build application for testing
-        run: pnpm run build
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-          NODE_ENV: production
-          CI: true
-          SKIP_ENV_VALIDATION: true
-          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
-
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
