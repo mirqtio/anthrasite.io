@@ -1,4 +1,63 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, request } from '@playwright/test'
+
+test.describe('Waitlist API Validation', () => {
+  test('rejects invalid email format', async ({}) => {
+    const api = await request.newContext()
+    const res = await api.post('http://localhost:3333/api/waitlist', {
+      data: { domain: 'example.com', email: 'not-an-email' }
+    })
+    expect(res.status()).toBe(400)
+    const json = await res.json()
+    expect(json.error).toMatch(/invalid/i)
+  })
+
+  test('rejects missing domain', async ({}) => {
+    const api = await request.newContext()
+    const res = await api.post('http://localhost:3333/api/waitlist', {
+      data: { email: 'test@example.com' }
+    })
+    expect(res.status()).toBe(400)
+  })
+
+  test('is idempotent on duplicate domain (different emails)', async ({}) => {
+    const api = await request.newContext()
+    const domain = `test${Date.now()}.com`
+
+    // First signup
+    const first = await api.post('http://localhost:3333/api/waitlist', {
+      data: { domain, email: 'first@test.com' }
+    })
+    expect([200, 201]).toContain(first.status())
+    const firstJson = await first.json()
+    expect(firstJson.ok).toBe(true)
+
+    // Second signup with different email, same domain
+    const second = await api.post('http://localhost:3333/api/waitlist', {
+      data: { domain, email: 'second@test.com' }
+    })
+    expect(second.status()).toBe(200) // Idempotent OK
+    const secondJson = await second.json()
+    expect(secondJson.ok).toBe(true)
+    expect(secondJson.message).toMatch(/on the waitlist/i)
+  })
+
+  test('normalizes domain case (case-insensitive uniqueness)', async ({}) => {
+    const api = await request.newContext()
+    const baseDomain = `case${Date.now()}.com`
+
+    // First with lowercase
+    const first = await api.post('http://localhost:3333/api/waitlist', {
+      data: { domain: baseDomain.toLowerCase(), email: 'test1@test.com' }
+    })
+    expect([200, 201]).toContain(first.status())
+
+    // Second with uppercase (should be treated as duplicate)
+    const second = await api.post('http://localhost:3333/api/waitlist', {
+      data: { domain: baseDomain.toUpperCase(), email: 'test2@test.com' }
+    })
+    expect(second.status()).toBe(200) // Should return 200, not 201
+  })
+})
 
 test.describe('Waitlist Form Functionality', () => {
   test.beforeEach(async ({ page }) => {
