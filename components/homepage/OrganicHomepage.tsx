@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useRenderTracking } from '@/lib/monitoring/hooks'
 import { Logo } from '@/components/Logo'
 import { ScrollToTop } from '@/components/ScrollToTop'
+import { WaitlistFormIds, WaitlistA11y } from '@/lib/testing/waitlistFormContract'
 
 export function OrganicHomepage() {
   // useRenderTracking('OrganicHomepage')
@@ -286,7 +287,7 @@ export function OrganicHomepage() {
                   <button
                     onClick={openModal}
                     className="cta-primary"
-                    data-testid="open-waitlist-button"
+                    data-testid={WaitlistFormIds.openButton}
                   >
                     Join Waitlist
                   </button>
@@ -454,10 +455,18 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
               <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
                 We're currently assessing targeted SMB websites. Provide your information below and we'll review your site and contact you as soon as we launch.
               </p>
-              <form onSubmit={handleEmailSubmit}>
+              <form
+                role={WaitlistA11y.formRole}
+                data-testid={WaitlistFormIds.form}
+                onSubmit={handleEmailSubmit}
+              >
                 <div className="form-group">
-                  <label className="form-label">Your website URL</label>
+                  <label htmlFor={WaitlistFormIds.domainInput} className="form-label">
+                    Your website URL
+                  </label>
                   <input
+                    id={WaitlistFormIds.domainInput}
+                    data-testid={WaitlistFormIds.domainInput}
                     type="text"
                     value={domain}
                     onChange={(e) => setDomain(e.target.value)}
@@ -467,23 +476,36 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Business email</label>
+                  <label htmlFor={WaitlistFormIds.emailInput} className="form-label">
+                    Business email
+                  </label>
                   <input
+                    id={WaitlistFormIds.emailInput}
+                    data-testid={WaitlistFormIds.emailInput}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
                     className="form-input"
+                    autoComplete="email"
                     required
                   />
                 </div>
                 {error && (
-                  <p className="text-red-500 text-sm mb-4">{error}</p>
+                  <div
+                    role="alert"
+                    data-testid={WaitlistFormIds.errorBanner}
+                    className="text-red-500 text-sm mb-4"
+                  >
+                    {error}
+                  </div>
                 )}
                 <button
                   type="submit"
+                  data-testid={WaitlistFormIds.submitButton}
                   className="cta-primary button-full"
                   disabled={isSubmitting}
+                  aria-label="Join waitlist"
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>
@@ -493,11 +515,17 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
 
           {step === 'success' && (
             <div className="text-center">
-              <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">You're on the list!</h3>
-              <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
-                We'll analyze {domain} and send your report to {email} as soon
-                as we launch.
-              </p>
+              <div
+                role="status"
+                data-testid={WaitlistFormIds.successBanner}
+                aria-live="polite"
+              >
+                <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">You're on the list!</h3>
+                <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
+                  We'll analyze {domain} and send your report to {email} as soon
+                  as we launch.
+                </p>
+              </div>
               <button onClick={closeModal} className="cta-primary">
                 Done
               </button>
