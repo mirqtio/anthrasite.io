@@ -27,7 +27,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm exec next start -p 3333',
+    command: 'PORT=3333 node .next/standalone/server.js',
     port: 3333,
     reuseExistingServer: false, // Never reuse in CI - always start fresh
     timeout: 60_000, // 1 minute for server startup (build happens in workflow step)

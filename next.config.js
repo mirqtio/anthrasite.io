@@ -4,6 +4,8 @@ const { withSentryConfig } = require('@sentry/nextjs')
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  // Standalone output for better artifact portability in CI
+  output: 'standalone',
   // Sentry error page optimization
   excludeDefaultMomentLocales: true,
   productionBrowserSourceMaps: false,

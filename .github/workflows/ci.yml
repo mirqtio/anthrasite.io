@@ -130,28 +130,21 @@ jobs:
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
           NEXT_TELEMETRY_DISABLED: '1'
         run: pnpm run build
-      - name: Verify build output exists
+      - name: Prepare standalone bundle
         run: |
-          echo "Checking for .next directory..."
-          ls -la | grep next || echo ".next not found in root"
-          ls -la .next 2>/dev/null | head -20 || echo "Cannot list .next contents"
-          echo "Current directory: $(pwd)"
-          find . -name ".next" -type d 2>/dev/null || echo "No .next directory found anywhere"
-      - name: Upload Next.js build artifact
+          echo "Copying static and public files into standalone..."
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+          echo "Standalone bundle structure:"
+          ls -la .next/standalone
+      - name: Upload standalone bundle
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
-          name: next-build-${{ github.sha }}
-          path: ./.next
+          name: next-standalone-${{ github.sha }}
+          path: .next/standalone
           if-no-files-found: error
           retention-days: 1
           include-hidden-files: true
-      - name: Upload public directory
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
-        with:
-          name: next-public-${{ github.sha }}
-          path: public
-          if-no-files-found: error
-          retention-days: 1
 
   unit:
     # Quarantine policy: allow failure on non-main; strict on main & release/*
@@ -236,26 +229,21 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - name: Download Next.js build artifact
+      - name: Download standalone bundle
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: next-build-${{ github.sha }}
-          path: .next
-      - name: Download public directory
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
-        with:
-          name: next-public-${{ github.sha }}
-          path: public
-      - name: Verify downloaded build artifacts
+          name: next-standalone-${{ github.sha }}
+          path: .next/standalone
+      - name: Verify standalone bundle
         run: |
-          echo "Verifying .next directory structure..."
-          ls -la .next | head -20
+          echo "Standalone bundle structure:"
+          ls -la .next/standalone | head -20
           echo "Checking for static files..."
-          ls -la .next/static 2>/dev/null | head -10 || echo "WARNING: No static directory found"
-          echo "Checking BUILD_ID..."
-          cat .next/BUILD_ID 2>/dev/null || echo "WARNING: No BUILD_ID found"
-          echo "Verifying public directory..."
-          ls -la public | head -10
+          ls -la .next/standalone/.next/static 2>/dev/null | head -10 || echo "WARNING: No static directory"
+          echo "Checking for public files..."
+          ls -la .next/standalone/public 2>/dev/null | head -10 || echo "WARNING: No public directory"
+          echo "Checking for server.js..."
+          ls -la .next/standalone/server.js 2>/dev/null || echo "WARNING: No server.js found"
       - name: Read Playwright version
         id: pwver
         run: |
