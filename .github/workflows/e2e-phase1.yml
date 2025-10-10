@@ -15,7 +15,7 @@ jobs:
   e2e-phase1:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.47.2-jammy
+      image: mcr.microsoft.com/playwright:v1.53.1-jammy
     services:
       postgres:
         image: postgres:15
