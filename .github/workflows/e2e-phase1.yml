@@ -57,6 +57,27 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
           DIRECT_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
 
+      - name: Build Next.js production bundle
+        run: pnpm run build
+        env:
+          # Database
+          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
+          # E2E Test Mode
+          NODE_ENV: production
+          NEXT_PUBLIC_E2E: 'true'
+          NEXT_PUBLIC_E2E_TESTING: 'true'
+          # Disable External Services
+          DISABLE_ANALYTICS: 'true'
+          DISABLE_SENTRY: 'true'
+          DISABLE_DD: 'true'
+          DISABLE_EMAIL: 'true'
+          # Mock Services
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true'
+          # Config
+          SKIP_ENV_VALIDATION: 'true'
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
+
       - name: Run Phase 1 E2E tests - Core Functionality
         run: pnpm exec playwright test --config=playwright.config.ci.ts e2e/basic.spec.ts e2e/homepage.spec.ts e2e/css-loading.spec.ts e2e/consent.spec.ts e2e/consent-banner-visibility.spec.ts e2e/monitoring.spec.ts e2e/duplication.spec.ts
         timeout-minutes: 15

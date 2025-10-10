@@ -27,18 +27,34 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command:
-      'NODE_ENV=production pnpm build && NODE_ENV=production PORT=3333 pnpm start',
+    command: 'PORT=3333 pnpm start',
     port: 3333,
     reuseExistingServer: false, // Never reuse in CI - always start fresh
-    timeout: 180_000, // 3 minutes for CI server startup (cold environment)
-    env: (base.webServer &&
-      !Array.isArray(base.webServer) &&
-      base.webServer.env) || {
+    timeout: 60_000, // 1 minute for server startup (build happens in workflow step)
+    env: {
+      // Database (workflow sets this, but ensure it's passed through)
       DATABASE_URL:
         process.env.DATABASE_URL ||
-        'postgresql://postgres:devpass@localhost:5432/anthrasite_test',
+        'postgresql://postgres:postgres@postgres:5432/anthrasite_test',
+      DIRECT_URL:
+        process.env.DIRECT_URL ||
+        'postgresql://postgres:postgres@postgres:5432/anthrasite_test',
+      // E2E mode flags (must be set for server to run in E2E mode)
+      NODE_ENV: 'production',
+      PORT: '3333',
+      NEXT_PUBLIC_E2E: 'true',
       NEXT_PUBLIC_E2E_TESTING: 'true',
+      // Disable external services
+      DISABLE_ANALYTICS: 'true',
+      DISABLE_SENTRY: 'true',
+      DISABLE_DD: 'true',
+      DISABLE_EMAIL: 'true',
+      // Mock services
+      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
+      // Config
+      SKIP_ENV_VALIDATION: 'true',
+      SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1',
+      // Test utilities
       ADMIN_API_KEY: process.env.ADMIN_API_KEY || 'test-admin-key-local-only',
     },
   },
