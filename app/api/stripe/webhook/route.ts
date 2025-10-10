@@ -5,11 +5,6 @@ import { prisma } from '@/lib/db'
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-// Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-05-28.basil',
-})
-
 /**
  * Stripe Webhook Handler
  *
@@ -23,6 +18,24 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
  * - checkout.session.completed → Legacy Checkout flow support
  */
 export async function POST(request: NextRequest) {
+  // Lazy-init Stripe only at request time (not at module import)
+  const apiKey = process.env.STRIPE_SECRET_KEY
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+  // If not configured (e.g., during build), return gracefully
+  if (!apiKey || !webhookSecret) {
+    console.warn('[Webhook] Stripe not configured - webhook disabled')
+    return NextResponse.json(
+      { error: 'Webhook not configured' },
+      { status: 200 }
+    )
+  }
+
+  // Initialize Stripe at request time
+  const stripe = new Stripe(apiKey, {
+    apiVersion: '2025-05-28.basil',
+  })
+
   const signature = request.headers.get('stripe-signature')
 
   if (!signature) {
@@ -30,14 +43,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: 'Missing stripe-signature header' },
       { status: 400 }
-    )
-  }
-
-  if (!process.env.STRIPE_WEBHOOK_SECRET) {
-    console.error('[Webhook] STRIPE_WEBHOOK_SECRET not configured')
-    return NextResponse.json(
-      { error: 'Webhook secret not configured' },
-      { status: 500 }
     )
   }
 

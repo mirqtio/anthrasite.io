@@ -10,8 +10,12 @@ export const dynamic = 'force-dynamic'
 // Lazy initialization to prevent build-time execution
 let stripeInstance: Stripe | null = null
 function getStripe() {
+  const apiKey = process.env.STRIPE_SECRET_KEY
+  if (!apiKey) {
+    throw new Error('STRIPE_SECRET_KEY is not configured')
+  }
   if (!stripeInstance) {
-    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    stripeInstance = new Stripe(apiKey, {
       apiVersion: '2025-05-28.basil',
     })
   }
@@ -19,8 +23,17 @@ function getStripe() {
 }
 
 export async function POST(request: NextRequest) {
+  // Check if Stripe is configured
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+  if (!process.env.STRIPE_SECRET_KEY || !webhookSecret) {
+    console.warn('[Webhook] Stripe not configured - webhook disabled')
+    return NextResponse.json(
+      { error: 'Webhook not configured' },
+      { status: 200 }
+    )
+  }
+
   const stripe = getStripe()
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
   let event: Stripe.Event
 
   try {
