@@ -129,6 +129,15 @@ jobs:
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
         run: pnpm run build
+      - name: Upload Next.js build artifact
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: next-build-${{ github.sha }}
+          path: |
+            .next
+            public
+          if-no-files-found: error
+          retention-days: 1
 
   unit:
     # Quarantine policy: allow failure on non-main; strict on main & release/*
@@ -213,11 +222,23 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
+      - name: Download Next.js build artifact
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: next-build-${{ github.sha }}
+          path: .
+      - name: Read Playwright version
+        id: pwver
+        run: |
+          echo "PW_VER=$(node -e "const p=require('./package.json');console.log((p.devDependencies||p.dependencies)['@playwright/test'])")" >> $GITHUB_ENV
       - name: Cache Playwright browsers
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/ms-playwright
-          key: pw-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: pw-${{ runner.os }}-${{ env.PW_VER }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pw-${{ runner.os }}-${{ env.PW_VER }}-
+            pw-${{ runner.os }}-
       - name: Clear apt locks (prevent hangs)
         run: |
           sudo rm -f /var/lib/dpkg/lock-frontend /var/cache/apt/archives/lock || true
@@ -238,14 +259,6 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
           DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
         run: pnpm exec prisma db push
-      - name: Build Next.js app
-        env:
-          CI: 'true'
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-          SKIP_ENV_VALIDATION: 'true'
-          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
-        run: pnpm run build
       - name: Run E2E tests (shard ${{ matrix.shard }}/3)
         env:
           CI: 'true'
