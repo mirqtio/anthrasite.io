@@ -47,7 +47,6 @@
     "@datadog/browser-logs": "^6.10.1",
     "@datadog/browser-rum": "^6.10.1",
     "@prisma/client": "^6.9.0",
-    "@sendgrid/mail": "^8.1.5",
     "@sentry/nextjs": "^9.29.0",
     "@stripe/react-stripe-js": "^5.2.0",
     "@stripe/stripe-js": "^8.0.0",

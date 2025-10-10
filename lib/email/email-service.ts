@@ -1,5 +1,5 @@
-import { MailDataRequired } from '@sendgrid/mail'
-import { sgMail, emailConfig, isEmailConfigured } from './config'
+// Email service (SendGrid removed - email functionality disabled)
+import { emailConfig, isEmailConfigured } from './config'
 import { emailQueue } from './queue'
 import { orderConfirmationTemplate } from './templates/orderConfirmation'
 import { reportReadyTemplate } from './templates/reportReady'
@@ -16,7 +16,7 @@ import type {
 } from './types'
 
 /**
- * Send an email using SendGrid
+ * Send an email (DISABLED - SendGrid removed)
  */
 async function sendEmail(
   to: string,
@@ -25,77 +25,16 @@ async function sendEmail(
   options?: EmailOptions,
   metadata?: EmailMetadata
 ): Promise<EmailDeliveryResult> {
-  // Check if email is configured
-  if (!isEmailConfigured()) {
-    console.warn('Email not configured, skipping send')
-    return {
-      success: false,
-      status: 'failed',
-      error: 'Email service not configured',
-    }
-  }
+  console.log('[EMAIL DISABLED] Would send email:', {
+    to,
+    subject,
+    template: metadata?.template,
+  })
 
-  try {
-    const msg: MailDataRequired = {
-      to,
-      from: emailConfig.from,
-      replyTo: emailConfig.replyTo,
-      subject,
-      html,
-      trackingSettings: {
-        clickTracking: {
-          enable: options?.trackClicks ?? emailConfig.features.trackClicks,
-        },
-        openTracking: {
-          enable: options?.trackOpens ?? emailConfig.features.trackOpens,
-        },
-      },
-      mailSettings: {
-        sandboxMode: {
-          enable: options?.sandboxMode ?? emailConfig.features.sandboxMode,
-        },
-      },
-    }
-
-    // Add categories for tracking
-    if (options?.categories || metadata?.template) {
-      msg.categories = options?.categories || [
-        metadata?.template || 'transactional',
-      ]
-    }
-
-    // Add custom args for webhook tracking
-    if (options?.customArgs || metadata) {
-      msg.customArgs = {
-        ...options?.customArgs,
-        ...(metadata?.purchaseId && { purchaseId: metadata.purchaseId }),
-        ...(metadata?.businessId && { businessId: metadata.businessId }),
-        ...(metadata?.template && { template: metadata.template }),
-      }
-    }
-
-    // Send email
-    const [response] = await sgMail.send(msg)
-
-    console.log(`Email sent successfully: ${response.headers['x-message-id']}`)
-
-    return {
-      success: true,
-      messageId: response.headers['x-message-id'] as string,
-      status: 'sent',
-    }
-  } catch (error: any) {
-    console.error('Failed to send email:', error)
-
-    // Extract error details
-    const errorMessage =
-      error.response?.body?.errors?.[0]?.message || error.message
-
-    return {
-      success: false,
-      status: 'failed',
-      error: errorMessage,
-    }
+  return {
+    success: false,
+    status: 'failed',
+    error: 'Email service not configured (SendGrid removed)',
   }
 }
 
@@ -116,14 +55,7 @@ export async function sendOrderConfirmation(
     timestamp: new Date(),
   }
 
-  const result = await sendEmail(data.to, subject, template, options, metadata)
-
-  // Queue for retry if failed
-  if (!result.success && result.error !== 'Email service not configured') {
-    emailQueue.add('orderConfirmation', data, metadata, result.error)
-  }
-
-  return result
+  return sendEmail(data.to, subject, template, options, metadata)
 }
 
 /**
@@ -143,14 +75,7 @@ export async function sendReportReady(
     timestamp: new Date(),
   }
 
-  const result = await sendEmail(data.to, subject, template, options, metadata)
-
-  // Queue for retry if failed
-  if (!result.success && result.error !== 'Email service not configured') {
-    emailQueue.add('reportReady', data, metadata, result.error)
-  }
-
-  return result
+  return sendEmail(data.to, subject, template, options, metadata)
 }
 
 /**
@@ -169,14 +94,7 @@ export async function sendWelcomeEmail(
     timestamp: new Date(),
   }
 
-  const result = await sendEmail(data.to, subject, template, options, metadata)
-
-  // Queue for retry if failed
-  if (!result.success && result.error !== 'Email service not configured') {
-    emailQueue.add('welcomeEmail', data, metadata, result.error)
-  }
-
-  return result
+  return sendEmail(data.to, subject, template, options, metadata)
 }
 
 /**
@@ -265,20 +183,7 @@ export async function sendCartRecoveryEmail(
     },
   }
 
-  const result = await sendEmail(
-    data.to,
-    subject,
-    htmlContent,
-    options,
-    metadata
-  )
-
-  // Queue for retry if failed
-  if (!result.success && result.error !== 'Email service not configured') {
-    emailQueue.add('cartRecovery', data, metadata, result.error)
-  }
-
-  return result
+  return sendEmail(data.to, subject, htmlContent, options, metadata)
 }
 
 /**

@@ -1,4 +1,4 @@
-import type { MailDataRequired } from '@sendgrid/mail'
+// Email types (SendGrid removed - email functionality disabled)
 
 // Base email template data
 export interface BaseEmailData {

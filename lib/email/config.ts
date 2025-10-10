@@ -1,15 +1,4 @@
-import sgMail from '@sendgrid/mail'
-
-// Initialize SendGrid with API key
-const apiKey = process.env.SENDGRID_API_KEY
-if (!apiKey) {
-  console.warn('SENDGRID_API_KEY not found in environment variables')
-}
-
-// Initialize SendGrid client
-if (apiKey) {
-  sgMail.setApiKey(apiKey)
-}
+// Email configuration (SendGrid removed - email functionality disabled)
 
 // Email configuration
 export const emailConfig = {
@@ -59,10 +48,7 @@ export const emailConfig = {
   },
 }
 
-// Export initialized SendGrid client
-export { sgMail }
-
-// Helper to check if email is configured
+// Helper to check if email is configured (always false now)
 export const isEmailConfigured = () => {
-  return !!process.env.SENDGRID_API_KEY
+  return false
 }
