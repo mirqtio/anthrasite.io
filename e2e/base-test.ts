@@ -34,9 +34,11 @@ export const test = base.extend({
     // ============================================================================
     // Route Blocking - Block analytics and telemetry to prevent timeouts
     // ============================================================================
-    await page.route(BLOCKED_ROUTES, (route) =>
-      route.fulfill({ status: 204, body: '' })
-    )
+    for (const pattern of BLOCKED_ROUTES) {
+      await page.route(pattern, (route) =>
+        route.fulfill({ status: 204, body: '' })
+      )
+    }
 
     // ============================================================================
     // Browser Isolation - Clear state before each test
