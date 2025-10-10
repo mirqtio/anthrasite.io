@@ -1,6 +1,9 @@
 import { test, expect } from './base-test'
 import { openCookiePreferences } from './helpers/test-utils'
 
+// Disable route blocking for consent tests - they need to test actual analytics loading
+test.use({ skipRouteBlocking: true })
+
 test.describe('Cookie Consent Flow', () => {
   test.beforeEach(async ({ page, context }) => {
     // Clear cookies and localStorage before each test

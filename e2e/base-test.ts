@@ -29,15 +29,18 @@ const BLOCKED_ROUTES = [
 // Configure clean storage state for each test
 base.use({ storageState: { cookies: [], origins: [] } })
 
-export const test = base.extend({
-  page: async ({ page }, use, testInfo) => {
+export const test = base.extend<{ skipRouteBlocking?: boolean }>({
+  skipRouteBlocking: [false, { option: true }],
+  page: async ({ page, skipRouteBlocking }, use, testInfo) => {
     // ============================================================================
     // Route Blocking - Block analytics and telemetry to prevent timeouts
     // ============================================================================
-    for (const pattern of BLOCKED_ROUTES) {
-      await page.route(pattern, (route) =>
-        route.fulfill({ status: 204, body: '' })
-      )
+    if (!skipRouteBlocking) {
+      for (const pattern of BLOCKED_ROUTES) {
+        await page.route(pattern, (route) =>
+          route.fulfill({ status: 204, body: '' })
+        )
+      }
     }
 
     // ============================================================================

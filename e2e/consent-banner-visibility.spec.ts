@@ -1,6 +1,9 @@
 import { test, expect } from './base-test'
 import { waitForAppReady } from './utils/waits'
 
+// Disable route blocking for consent banner tests - they test consent persistence
+test.use({ skipRouteBlocking: true })
+
 test.describe('Consent Banner Visibility', () => {
   test.beforeEach(async ({ context }) => {
     // Clear all cookies and localStorage to simulate new user
