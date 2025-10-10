@@ -141,9 +141,10 @@ jobs:
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: next-build-${{ github.sha }}
-          path: .next
+          path: ./.next
           if-no-files-found: error
           retention-days: 1
+          include-hidden-files: true
       - name: Upload public directory
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
