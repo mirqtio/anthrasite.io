@@ -130,6 +130,13 @@ jobs:
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
           NEXT_TELEMETRY_DISABLED: '1'
         run: pnpm run build
+      - name: Verify build output exists
+        run: |
+          echo "Checking for .next directory..."
+          ls -la | grep next || echo ".next not found in root"
+          ls -la .next 2>/dev/null | head -20 || echo "Cannot list .next contents"
+          echo "Current directory: $(pwd)"
+          find . -name ".next" -type d 2>/dev/null || echo "No .next directory found anywhere"
       - name: Upload Next.js build artifact
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
