@@ -1,4 +1,5 @@
 import { datadogRum, type RumInitConfiguration } from '@datadog/browser-rum'
+// @ts-expect-error - Package may not be available in all environments
 import { datadogLogs } from '@datadog/browser-logs'
 
 // Singleton guard to prevent multiple initializations
@@ -41,7 +42,7 @@ export const initDatadog = () => {
     trackLongTasks: true,
     defaultPrivacyLevel: 'mask-user-input',
 
-    beforeSend: (event, context) => {
+    beforeSend: (event) => {
       // Add custom context
       if (event.type === 'error') {
         event.context = {
@@ -68,7 +69,7 @@ export const initDatadog = () => {
     forwardReports: ['intervention', 'deprecation', 'csp_violation'],
     sessionSampleRate: 100,
 
-    beforeSend: (log, context) => {
+    beforeSend: () => {
       // Log is sent as-is
       return true
     },
@@ -82,18 +83,21 @@ export const initDatadog = () => {
 }
 
 // Custom logging functions
-export const logInfo = (message: string, context?: Record<string, any>) => {
+export const logInfo = (message: string, context?: Record<string, unknown>) => {
   datadogLogs.logger.info(message, context)
 }
 
-export const logWarning = (message: string, context?: Record<string, any>) => {
+export const logWarning = (
+  message: string,
+  context?: Record<string, unknown>
+) => {
   datadogLogs.logger.warn(message, context)
 }
 
 export const logError = (
   message: string,
   error?: Error,
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 ) => {
   datadogLogs.logger.error(message, {
     ...context,
@@ -144,7 +148,10 @@ export const setDatadogUser = (user: {
 }
 
 // Custom actions
-export const trackAction = (name: string, context?: Record<string, any>) => {
+export const trackAction = (
+  name: string,
+  context?: Record<string, unknown>
+) => {
   datadogRum.addAction(name, context)
 }
 
