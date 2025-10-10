@@ -1,10 +1,6 @@
-name: Visual Regression Tests
+name: Visual Regression Tests (DISABLED - use ci.yml instead)
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
   workflow_dispatch:
 
 jobs:

@@ -1,10 +1,6 @@
-name: Visual Testing
+name: Visual Testing (DISABLED - use ci.yml instead)
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
   workflow_dispatch:
 
 permissions:

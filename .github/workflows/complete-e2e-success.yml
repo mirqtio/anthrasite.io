@@ -1,10 +1,6 @@
-name: Complete E2E Success
+name: Complete E2E Success (DISABLED - use ci.yml instead)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:

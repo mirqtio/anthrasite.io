@@ -1,9 +1,7 @@
-name: Vercel Deployment Check
+name: Vercel Deployment Check (DISABLED - use ci.yml instead)
 
 on:
-  push:
-    branches: [main]
-  deployment_status:
+  workflow_dispatch:
 
 jobs:
   check-deployment:

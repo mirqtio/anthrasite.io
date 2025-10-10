@@ -1,10 +1,6 @@
-name: Basic CI Success
+name: Basic CI Success (DISABLED - use ci.yml instead)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
