@@ -27,10 +27,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'PORT=3333 pnpm start',
+    command: 'pnpm exec next start -p 3333',
     port: 3333,
     reuseExistingServer: false, // Never reuse in CI - always start fresh
     timeout: 60_000, // 1 minute for server startup (build happens in workflow step)
+    stdout: 'pipe', // Pipe stdout to see server logs
+    stderr: 'pipe', // Pipe stderr to see errors
     env: {
       // Database (workflow sets this, but ensure it's passed through)
       DATABASE_URL:

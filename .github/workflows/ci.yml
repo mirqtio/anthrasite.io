@@ -246,6 +246,16 @@ jobs:
         with:
           name: next-public-${{ github.sha }}
           path: public
+      - name: Verify downloaded build artifacts
+        run: |
+          echo "Verifying .next directory structure..."
+          ls -la .next | head -20
+          echo "Checking for static files..."
+          ls -la .next/static 2>/dev/null | head -10 || echo "WARNING: No static directory found"
+          echo "Checking BUILD_ID..."
+          cat .next/BUILD_ID 2>/dev/null || echo "WARNING: No BUILD_ID found"
+          echo "Verifying public directory..."
+          ls -la public | head -10
       - name: Read Playwright version
         id: pwver
         run: |
