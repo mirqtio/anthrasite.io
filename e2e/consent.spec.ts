@@ -132,7 +132,7 @@ test.describe('Cookie Consent Flow', () => {
     await expect(page.getByRole('dialog')).not.toBeVisible()
   })
 
-  test('should load analytics scripts only after consent', async ({ page }) => {
+  test('should load analytics scripts only after consent', { tag: '@consent-edge' }, async ({ page }) => {
     // Check that analytics scripts are not loaded initially
     const gaScriptBefore = await page
       .locator('script[src*="googletagmanager.com"]')

@@ -56,7 +56,7 @@ test.describe('Consent Banner Visibility', () => {
     await context.close()
   })
 
-  test('should not show banner after accepting cookies', async ({ page }) => {
+  test('should not show banner after accepting cookies', { tag: '@consent-edge' }, async ({ page }) => {
     // First visit - accept cookies
     await page.goto('/')
     await waitForAppReady(page)

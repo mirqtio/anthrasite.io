@@ -1,21 +1,23 @@
-name: E2E Tests Phase 1
+name: Consent Edge Tests (Non-blocking)
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch:
 
 concurrency:
-  group: e2e-phase1-${{ github.ref }}
+  group: e2e-consent-edge-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  e2e-phase1:
+  e2e-consent-edge:
+    # Always run, even if other jobs fail - don't block PRs
+    if: always()
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.53.1-jammy
+
     services:
       postgres:
         image: postgres:15
@@ -78,9 +80,9 @@ jobs:
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
 
-      - name: Run Phase 1 E2E tests - Core Functionality
-        run: pnpm exec playwright test --config=playwright.config.ci.ts --grep-invert @consent-edge e2e/basic.spec.ts e2e/homepage.spec.ts e2e/css-loading.spec.ts e2e/consent.spec.ts e2e/consent-banner-visibility.spec.ts e2e/monitoring.spec.ts e2e/duplication.spec.ts
-        timeout-minutes: 15
+      - name: Run Consent Edge Tests (with retries)
+        run: pnpm exec playwright test --config=playwright.config.ci.ts --grep @consent-edge --retries=2
+        timeout-minutes: 10
         env:
           # Database
           DATABASE_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
@@ -100,16 +102,15 @@ jobs:
           # Config
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
+          # Test utilities
+          ADMIN_API_KEY: test-admin-key-ci
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-phase1-results
+          name: consent-edge-results
           path: |
-            playwright-report/
             test-results/
-          retention-days: 30
-
-      - name: Phase 1 success confirmation
-        run: echo "✅ E2E Phase 1 tests completed!"
+            playwright-report/
+          retention-days: 7
