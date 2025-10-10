@@ -7,9 +7,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: e2e-phase2-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   e2e-phase2:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.47.2-jammy
     services:
       postgres:
         image: postgres:15
@@ -48,24 +54,31 @@ jobs:
           pnpm exec prisma generate
           pnpm exec prisma db push
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
+          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
 
       - name: Run Phase 2 E2E tests - User Flows
         run: pnpm exec playwright test --config=playwright.config.ci.ts e2e/client-side-rendering.spec.ts e2e/homepage-rendering.spec.ts e2e/site-mode.spec.ts e2e/site-mode-context.spec.ts e2e/homepage-mode-detection.spec.ts e2e/waitlist.spec.ts e2e/waitlist-functional.spec.ts
         timeout-minutes: 15
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
-          NODE_ENV: test
+          # Database
+          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
+          DIRECT_URL: postgresql://postgres:postgres@postgres:5432/anthrasite_test
+          # E2E Test Mode
+          NODE_ENV: production
           CI: true
-          NEXT_PUBLIC_USE_MOCK_PURCHASE: true
-          SKIP_ENV_VALIDATION: true
-          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: 1
-          SENDGRID_API_KEY: test_key_mock
+          NEXT_PUBLIC_E2E: 'true'
+          NEXT_PUBLIC_E2E_TESTING: 'true'
+          # Disable External Services
+          DISABLE_ANALYTICS: 'true'
+          DISABLE_SENTRY: 'true'
+          DISABLE_DD: 'true'
+          DISABLE_EMAIL: 'true'
+          # Mock Services
+          NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true'
+          # Config
+          SKIP_ENV_VALIDATION: 'true'
+          SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
 
       - name: Upload test results
         if: always()

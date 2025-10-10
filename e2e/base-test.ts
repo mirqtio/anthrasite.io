@@ -1,19 +1,58 @@
 import { test as base } from '@playwright/test'
 
 /**
- * Base test with comprehensive diagnostic hooks
+ * Base test with comprehensive diagnostic hooks and test isolation
  * All E2E tests should import from this file instead of @playwright/test
  *
  * This ensures every test gets:
+ * - Analytics/telemetry route blocking (no external calls)
+ * - Browser state isolation (storage, caches, service workers)
  * - Console logging (errors, warnings, diagnostics)
  * - Page error logging
  * - Network failure logging
- * - Service Worker unregistration
  * - Test lifecycle logging
  */
 
+// Block analytics and telemetry routes to prevent external calls and timeouts
+const BLOCKED_ROUTES = [
+  /googletagmanager\.com/i,
+  /google-analytics\.com/i,
+  /analytics\.google\.com/i,
+  /datadoghq/i,
+  /sentry\.io/i,
+  /hotjar/i,
+  /segment\.com/i,
+  /fullstory/i,
+  /posthog/i,
+]
+
+// Configure clean storage state for each test
+base.use({ storageState: { cookies: [], origins: [] } })
+
 export const test = base.extend({
   page: async ({ page }, use, testInfo) => {
+    // ============================================================================
+    // Route Blocking - Block analytics and telemetry to prevent timeouts
+    // ============================================================================
+    await page.route(BLOCKED_ROUTES, (route) =>
+      route.fulfill({ status: 204, body: '' })
+    )
+
+    // ============================================================================
+    // Browser Isolation - Clear state before each test
+    // ============================================================================
+    await page.addInitScript(() => {
+      // Clear caches
+      if ('caches' in window) {
+        caches
+          .keys()
+          .then((keys) => keys.forEach((k) => caches.delete(k)))
+          .catch(() => {
+            // Ignore errors
+          })
+      }
+    })
+
     // ============================================================================
     // Console Logging - Capture all app logs
     // ============================================================================
