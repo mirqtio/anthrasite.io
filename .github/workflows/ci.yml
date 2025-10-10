@@ -135,13 +135,14 @@ jobs:
           echo "Copying static and public files into standalone..."
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
-          echo "Copying Prisma client binaries into standalone..."
-          mkdir -p .next/standalone/node_modules/.prisma
-          cp -r node_modules/.prisma/client .next/standalone/node_modules/.prisma/client
+          echo "Copying Prisma client binaries from pnpm store..."
+          mkdir -p .next/standalone/node_modules
+          # Copy .prisma directory from pnpm store (pnpm-specific path)
+          cp -r node_modules/.pnpm/@prisma+client*/node_modules/.prisma .next/standalone/node_modules/ || echo "WARNING: Could not copy from pnpm store"
           echo "Standalone bundle structure:"
           ls -la .next/standalone
           echo "Verifying Prisma client copied:"
-          ls -la .next/standalone/node_modules/.prisma/client 2>/dev/null || echo "WARNING: Prisma client not found"
+          ls -la .next/standalone/node_modules/.prisma 2>/dev/null || echo "WARNING: Prisma client not found"
       - name: Upload standalone bundle
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
