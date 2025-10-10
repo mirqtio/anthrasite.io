@@ -12,11 +12,11 @@ import {
 } from './purchase-service-dev'
 
 // Check if we're in development mode and should use mock data
+// SECURITY: Only allow mock mode in non-production environments
 const isDevelopmentMode = () => {
   return (
-    (process.env.NODE_ENV === 'development' ||
-      process.env.NODE_ENV === 'test') &&
-    process.env.NEXT_PUBLIC_USE_MOCK_PURCHASE === 'true'
+    process.env.NODE_ENV !== 'production' &&
+    process.env.USE_MOCK_PURCHASE === 'true'
   )
 }
 

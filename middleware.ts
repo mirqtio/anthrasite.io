@@ -19,13 +19,49 @@ const PUBLIC_PATHS = [
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
 
-  // Skip middleware for public paths
-  if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+  // Early exclusion for paths that should never run middleware (matches config.matcher)
+  const excludedPaths = ['/_next/static', '/_next/image', '/favicon.ico']
+  if (excludedPaths.some((path) => pathname.startsWith(path))) {
     return NextResponse.next()
   }
 
-  // Run A/B testing middleware first to assign experiments
-  let response = await abTestingMiddleware(request)
+  // Anonymous session management (must run before public path check for API routes)
+  let response = NextResponse.next()
+  let anonSid = request.cookies.get('anon_sid')?.value
+  if (!anonSid) {
+    anonSid = crypto.randomUUID()
+    response.cookies.set('anon_sid', anonSid, {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
+  }
+  // Make session ID available to API routes via header
+  response.headers.set('x-anon-session', anonSid)
+
+  // Skip remaining middleware for non-API public paths
+  const isApiRoute = pathname.startsWith('/api')
+  const isOtherPublicPath = PUBLIC_PATHS.filter((p) => p !== '/api').some(
+    (path) => pathname.startsWith(path)
+  )
+
+  if (isOtherPublicPath) {
+    return response
+  }
+
+  // For API routes, anon session is set but skip other middleware
+  if (isApiRoute) {
+    return response
+  }
+
+  // Run A/B testing middleware for page routes
+  response = await abTestingMiddleware(request)
+
+  // Re-apply anon session header after A/B middleware
+  if (anonSid) {
+    response.headers.set('x-anon-session', anonSid)
+  }
 
   // Add security headers
   response.headers.set('X-Content-Type-Options', 'nosniff')
@@ -68,6 +104,28 @@ export async function middleware(request: NextRequest) {
       process.env.ENABLE_TEST_MODE === 'true' ||
       process.env.VERCEL_ENV === 'preview' ||
       utm === 'dev-test-token' // Hard-coded fallback for development
+
+    // Mock purchase mode - bypass UTM validation entirely
+    // SECURITY: Only allow in non-production environments
+    const mockAllowed =
+      process.env.NODE_ENV !== 'production' &&
+      process.env.USE_MOCK_PURCHASE === 'true'
+
+    if (mockAllowed) {
+      // Allow bypass with test business data in mock mode
+      response = NextResponse.next(response)
+      response.cookies.set('site_mode', 'purchase', {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 30 * 60, // 30 minutes
+      })
+      response.cookies.set('business_id', 'dev-business-1', {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 30 * 60, // 30 minutes
+      })
+      return response
+    }
 
     if (isTestMode && utm === bypassToken) {
       // Allow bypass with test business data
@@ -174,12 +232,12 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * Match all request paths except for:
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * Note: API routes are now INCLUDED for anon session management
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }

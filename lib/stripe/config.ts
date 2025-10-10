@@ -26,7 +26,7 @@ export const stripe = new Proxy({} as Stripe, {
 // Webhook configuration
 export const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
-// Price configuration
+// Price configuration (legacy - to be deprecated after Payment Element migration)
 export const REPORT_PRICE = {
   amount: 9900, // $99.00 in cents
   currency: 'usd' as const,
@@ -34,6 +34,14 @@ export const REPORT_PRICE = {
   productDescription:
     'Comprehensive 50+ page website audit report with technical SEO analysis, performance optimization roadmap, and priority-ranked action items.',
 }
+
+// Tier-based pricing (ADR-P06)
+export const PRICE_TIERS = {
+  basic: { amount: 39900, currency: 'usd' as const, name: 'Basic Audit' },
+  pro: { amount: 69900, currency: 'usd' as const, name: 'Pro Audit' },
+} as const
+
+export type TierKey = keyof typeof PRICE_TIERS
 
 // URLs for Stripe checkout
 export const getStripeUrls = (baseUrl: string) => ({

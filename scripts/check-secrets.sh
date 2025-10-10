@@ -40,32 +40,20 @@ PATTERNS=(
 
 FOUND_SECRETS=0
 
-# Check each pattern
+# Check each pattern only in staged files
 for pattern in "${PATTERNS[@]}"; do
-  # Search for pattern, excluding common safe locations
-  results=$(grep -rE "$pattern" . \
-    --include="*.ts" \
-    --include="*.tsx" \
-    --include="*.js" \
-    --include="*.jsx" \
-    --include="*.json" \
-    --include=".env" \
-    --include=".env.local" \
-    --include=".env.production" \
-    --include=".env.development" \
-    --exclude-dir=node_modules \
-    --exclude-dir=.next \
-    --exclude-dir=.git \
-    --exclude="*.test.*" \
-    --exclude="*.spec.*" \
-    --exclude=".env.example" \
-    --exclude=".env.test" \
-    2>/dev/null)
-  
-  if [ ! -z "$results" ]; then
-    echo -e "${RED}❌ Found potential secrets matching pattern: $pattern${NC}"
-    echo "$results" | head -5
-    FOUND_SECRETS=1
+  # Get list of staged files
+  staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx|json|env)$' | grep -v '.env.test')
+
+  if [ ! -z "$staged_files" ]; then
+    # Search for pattern only in staged files
+    results=$(echo "$staged_files" | xargs grep -E "$pattern" 2>/dev/null)
+
+    if [ ! -z "$results" ]; then
+      echo -e "${RED}❌ Found potential secrets matching pattern: $pattern${NC}"
+      echo "$results" | head -5
+      FOUND_SECRETS=1
+    fi
   fi
 done
 

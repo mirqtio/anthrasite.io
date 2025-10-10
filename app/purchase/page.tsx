@@ -15,6 +15,8 @@ import { Skeleton } from '@/components/Skeleton'
 import { StripeErrorBoundary } from '@/components/purchase/StripeErrorBoundary'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { trackEvent } from '@/lib/analytics/analytics-server'
+import { isPaymentElementEnabled } from '@/lib/feature-flags'
+import { PaymentElementWrapper } from '@/components/purchase/PaymentElementWrapper'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,15 +24,18 @@ interface PurchasePageProps {
   searchParams: {
     utm?: string
     preview?: string // Optional param to show interstitial page
+    tier?: string // Tier parameter for pricing
   }
 }
 
 async function PurchaseContent({
   utm,
   preview,
+  tier,
 }: {
   utm: string
   preview?: string
+  tier: string
 }) {
   // Fetch business data
   const purchaseData = await fetchBusinessByUTM(utm)
@@ -40,18 +45,20 @@ async function PurchaseContent({
   }
 
   const { business, isValid } = purchaseData
+  const useEmbeddedPayment = isPaymentElementEnabled()
 
   // Check if we should show interstitial page (preview param, or invalid token)
   const showInterstitial = preview === 'true' || !isValid
 
-  // If valid and no override, go directly to Stripe
-  if (!showInterstitial) {
+  // OLD FLOW: If flag OFF and valid token, redirect to Stripe Checkout
+  if (!useEmbeddedPayment && !showInterstitial && isValid) {
     try {
       // Track direct checkout attempt
       await trackEvent('direct_checkout_attempt', {
         business_id: business.id,
         domain: business.domain,
         utm_token: utm,
+        flow_type: 'redirect',
       })
 
       const session = await createCheckoutSession(business.id, utm)
@@ -62,7 +69,7 @@ async function PurchaseContent({
           session_id: session.id,
           business_id: business.id,
           amount_cents: session.amountCents,
-          flow_type: 'direct',
+          flow_type: 'redirect',
         })
 
         // Redirect directly to Stripe Checkout
@@ -77,7 +84,7 @@ async function PurchaseContent({
   // Show interstitial page for invalid tokens or if checkout failed
   const reportPreview = getReportPreview(business)
 
-  // Server action for manual checkout (if they end up on the page)
+  // Server action for manual checkout (OLD FLOW only)
   async function handleCheckout() {
     'use server'
 
@@ -87,6 +94,7 @@ async function PurchaseContent({
         business_id: business.id,
         domain: business.domain,
         utm_token: utm,
+        flow_type: 'redirect',
       })
 
       const session = await createCheckoutSession(business.id, utm)
@@ -97,7 +105,7 @@ async function PurchaseContent({
           session_id: session.id,
           business_id: business.id,
           amount_cents: session.amountCents,
-          flow_type: 'manual',
+          flow_type: 'redirect',
         })
 
         // Redirect to Stripe Checkout
@@ -132,11 +140,26 @@ async function PurchaseContent({
 
       <TrustSignals />
 
-      <PricingCard
-        businessName={business.name}
-        utm={utm}
-        onCheckout={handleCheckout}
-      />
+      {/* NEW FLOW: Embedded Payment Element */}
+      {useEmbeddedPayment ? (
+        <section className="py-12 md:py-16" aria-label="Secure payment">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <PaymentElementWrapper
+              businessId={business.id}
+              businessName={business.name}
+              utm={utm}
+              tier={tier}
+            />
+          </div>
+        </section>
+      ) : (
+        /* OLD FLOW: Redirect to Stripe Checkout */
+        <PricingCard
+          businessName={business.name}
+          utm={utm}
+          onCheckout={handleCheckout}
+        />
+      )}
 
       {/* Warning if UTM has been used */}
       {!isValid && (
@@ -187,15 +210,23 @@ export default async function PurchasePage({
 }: PurchasePageProps) {
   const utm = searchParams.utm
   const preview = searchParams.preview
+  const tier = searchParams.tier ?? 'basic' // Default to basic tier
 
-  if (!utm) {
+  // In mock mode, use a fake UTM token if not provided
+  // SECURITY: Only allow in non-production environments
+  const mockAllowed =
+    process.env.NODE_ENV !== 'production' &&
+    process.env.USE_MOCK_PURCHASE === 'true'
+  const effectiveUtm = utm || (mockAllowed ? 'mock-utm-token' : undefined)
+
+  if (!effectiveUtm) {
     redirect('/')
   }
 
   return (
     <main className="min-h-screen bg-carbon text-white">
       <Suspense fallback={<PurchasePageSkeleton />}>
-        <PurchaseContent utm={utm} preview={preview} />
+        <PurchaseContent utm={effectiveUtm} preview={preview} tier={tier} />
       </Suspense>
     </main>
   )

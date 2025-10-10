@@ -61,6 +61,7 @@ components_backup/
 *.log
 0_test.txt
 coverage-*.txt
+.scratchpad/
 
 # Documentation reports
 *_REPORT.md

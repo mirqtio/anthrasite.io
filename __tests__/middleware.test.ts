@@ -212,8 +212,10 @@ describe('UTM Middleware', () => {
       const request = createRequest('/api/health')
       const response = await middleware(request)
 
-      // Should not modify anything
-      expect(response?.cookies.getAll()).toHaveLength(0)
+      // Should set anon session but skip other middleware
+      const cookies = response?.cookies.getAll()
+      expect(cookies).toHaveLength(1)
+      expect(cookies?.[0].name).toBe('anon_sid')
     })
 
     it('should bypass middleware for static assets', async () => {
@@ -229,8 +231,15 @@ describe('UTM Middleware', () => {
         const request = createRequest(path)
         const response = await middleware(request)
 
-        // Should not modify anything
-        expect(response?.cookies.getAll()).toHaveLength(0)
+        // Static assets in matcher exclusion list should not run middleware at all
+        // Others (robots.txt, sitemap.xml) get anon_sid but skip other middleware
+        const cookies = response?.cookies.getAll()
+        if (path.includes('_next') || path.includes('favicon')) {
+          expect(cookies).toHaveLength(0)
+        } else {
+          expect(cookies).toHaveLength(1)
+          expect(cookies?.[0].name).toBe('anon_sid')
+        }
       }
     })
   })

@@ -5,11 +5,10 @@ import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 
 interface CheckoutFormProps {
-  purchaseUid: string
   businessName: string
 }
 
-export function CheckoutForm({ purchaseUid, businessName }: CheckoutFormProps) {
+export function CheckoutForm({ businessName }: CheckoutFormProps) {
   const stripe = useStripe()
   const elements = useElements()
   const [error, setError] = useState<string | null>(null)
@@ -19,32 +18,43 @@ export function CheckoutForm({ purchaseUid, businessName }: CheckoutFormProps) {
     e.preventDefault()
 
     if (!stripe || !elements) {
+      console.error('Stripe or elements not loaded')
       return
     }
 
     setIsProcessing(true)
     setError(null)
 
+    console.log('Starting payment confirmation...')
+    console.log('Return URL:', `${window.location.origin}/purchase/success`)
+
     try {
-      const { error: submitError } = await stripe.confirmPayment({
+      const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/purchase/success?purchase=${purchaseUid}`,
+          return_url: `${window.location.origin}/purchase/success`,
         },
       })
 
-      if (submitError) {
-        setError(submitError.message || 'An error occurred')
+      console.log('Payment confirmation result:', result)
+
+      if (result.error) {
+        console.error('Payment error:', result.error)
+        setError(result.error.message || 'An error occurred')
 
         // Track payment error
         trackEvent('payment_error', {
-          error: submitError.message,
-          purchaseUid,
+          error: result.error.message,
+          code: result.error.code,
+          type: result.error.type,
         })
+      } else {
+        // If we reach here without redirect, something's wrong
+        console.log('Payment succeeded but no redirect occurred')
       }
     } catch (err) {
+      console.error('Unexpected payment error:', err)
       setError('An unexpected error occurred')
-      console.error('Payment error:', err)
     } finally {
       setIsProcessing(false)
     }

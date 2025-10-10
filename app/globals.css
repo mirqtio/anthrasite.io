@@ -1,9 +1,34 @@
 @import 'tailwindcss';
+@config '../tailwind.config.ts';
 
 /* E2E test helper classes */
 .test-force-visible * {
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* HOTFIX: Tailwind v4 utility classes not generating despite @config directive */
+/* This CSS is required until Tailwind v4 properly generates utility classes */
+section[aria-label="Secure payment"] .container {
+  width: 100% !important;
+  max-width: 672px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+section[aria-label="Secure payment"] form {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.5rem !important;
+}
+
+section[aria-label="Secure payment"] .StripeElement,
+section[aria-label="Secure payment"] .__PrivateStripeElement {
+  width: 100% !important;
+  min-width: 100% !important;
 }
 
 @theme {

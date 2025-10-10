@@ -47,7 +47,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'PORT=3333 pnpm run dev',
+    command: './scripts/start-e2e-server.sh',
     port: 3333,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes for server startup
@@ -64,7 +64,7 @@ export default defineConfig({
       // Database for tests - prioritize CI environment variable
       DATABASE_URL:
         process.env.DATABASE_URL ||
-        'postgresql://postgres:devpass@localhost:5432/anthrasite_test',
+        'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
       // Analytics for consent tests
       NEXT_PUBLIC_GA4_MEASUREMENT_ID:
         process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID || 'G-TEST123456',
@@ -79,6 +79,15 @@ export default defineConfig({
       ADMIN_API_KEY: process.env.ADMIN_API_KEY || 'test-admin-key-local-only',
       // Base URL for tests (matches baseURL config above)
       BASE_URL: process.env.BASE_URL || 'http://localhost:3333',
+      // Stripe test keys for Payment Element tests (required from environment)
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
+      STRIPE_WEBHOOK_SECRET:
+        process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test_fake',
+      // Feature flag for Payment Element
+      NEXT_PUBLIC_FF_PURCHASE_ENABLED:
+        process.env.NEXT_PUBLIC_FF_PURCHASE_ENABLED || 'true',
     },
   },
 })

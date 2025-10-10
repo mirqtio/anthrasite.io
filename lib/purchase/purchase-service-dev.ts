@@ -142,8 +142,16 @@ export async function fetchBusinessByUTMDev(
   }
 
   const tokenData = MOCK_UTM_TOKENS[utm]
+
+  // If token not found in dictionary, return default mock business
   if (!tokenData) {
-    return null
+    // Use first available business as default
+    const defaultBusiness = MOCK_BUSINESSES['dev-business-1']
+    return {
+      business: defaultBusiness,
+      utm,
+      isValid: true,
+    }
   }
 
   const business = MOCK_BUSINESSES[tokenData.businessId]

@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: anthrasite_test
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_dev_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3333:3333'
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/anthrasite_test
+      - DIRECT_URL=postgresql://postgres:postgres@postgres:5432/anthrasite_test
+      - PORT=3333
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY:-SG.test_fake}
+      - NEXT_PUBLIC_FF_PURCHASE_ENABLED=true
+      - NEXT_PUBLIC_USE_MOCK_PURCHASE=true
+      - USE_MOCK_PURCHASE=true
+      - EDGE_CONFIG_BASE64_KEY=${EDGE_CONFIG_BASE64_KEY:-}
+      - EDGE_CONFIG=${EDGE_CONFIG:-}
+      - SKIP_ENV_VALIDATION=true
+    volumes:
+      # Mount source code for hot reload
+      - ./app:/app/app
+      - ./components:/app/components
+      - ./lib:/app/lib
+      - ./public:/app/public
+      - ./styles:/app/styles
+      - ./middleware.ts:/app/middleware.ts
+      - ./instrumentation.ts:/app/instrumentation.ts
+      # Don't mount node_modules or .next (use container versions)
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "npx prisma db push --accept-data-loss && npx prisma db seed && npm run dev"
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:

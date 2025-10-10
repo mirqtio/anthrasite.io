@@ -9,14 +9,15 @@ import { trackEvent } from '@/lib/analytics/analytics-client'
 
 export default function PurchaseSuccessPage() {
   const searchParams = useSearchParams()
-  const sessionId = searchParams.get('session_id') // Old redirect flow
-  const purchaseId = searchParams.get('purchase') // New Payment Element flow
+  const sessionId = searchParams.get('session_id') // Old Checkout Session flow
+  const paymentIntentId = searchParams.get('payment_intent') // Payment Element flow
+  const purchaseId = searchParams.get('purchase') // Direct purchase ID (legacy)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Handle both old and new flows
-    if (!sessionId && !purchaseId) {
+    // Handle multiple flows: payment_intent (Payment Element), session_id (Checkout), or direct purchase ID
+    if (!sessionId && !paymentIntentId && !purchaseId) {
       setError('Missing payment information')
       setLoading(false)
       return
@@ -25,16 +26,39 @@ export default function PurchaseSuccessPage() {
     // Track successful redirect to success page
     trackEvent('purchase_success_page_viewed', {
       sessionId: sessionId || undefined,
+      paymentIntentId: paymentIntentId || undefined,
       purchaseId: purchaseId || undefined,
-      flow: purchaseId ? 'payment_element' : 'redirect',
+      flow: paymentIntentId
+        ? 'payment_element'
+        : purchaseId
+          ? 'direct'
+          : 'checkout_session',
     })
 
     // Verify the session/purchase
     const verifyPurchase = async () => {
       try {
-        if (purchaseId) {
-          // New Payment Element flow - purchase already created and verified by webhook
-          // Just confirm it exists and is completed
+        if (paymentIntentId) {
+          // Payment Element flow - look up purchase by payment intent ID
+          const response = await fetch(
+            `/api/purchase/by-payment-intent/${paymentIntentId}`,
+            {
+              method: 'GET',
+            }
+          )
+
+          if (!response.ok) {
+            throw new Error('Purchase not found')
+          }
+
+          const data = await response.json()
+          if (data.status !== 'completed') {
+            throw new Error('Payment not completed yet. Please wait a moment.')
+          }
+
+          setLoading(false)
+        } else if (purchaseId) {
+          // Direct purchase ID - purchase already created and verified by webhook
           const response = await fetch(`/api/purchase/${purchaseId}`, {
             method: 'GET',
           })
@@ -50,7 +74,7 @@ export default function PurchaseSuccessPage() {
 
           setLoading(false)
         } else if (sessionId) {
-          // Old redirect flow - verify with Stripe
+          // Old Checkout Session flow - verify with Stripe
           const stripe = await getStripe()
           if (!stripe) {
             throw new Error('Failed to load Stripe')
@@ -62,13 +86,15 @@ export default function PurchaseSuccessPage() {
         }
       } catch (err) {
         console.error('Error verifying purchase:', err)
-        setError('Failed to verify payment')
+        setError(
+          err instanceof Error ? err.message : 'Failed to verify payment'
+        )
         setLoading(false)
       }
     }
 
     verifyPurchase()
-  }, [sessionId, purchaseId])
+  }, [sessionId, paymentIntentId, purchaseId])
 
   if (loading) {
     return (

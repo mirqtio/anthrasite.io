@@ -14,15 +14,16 @@ interface PaymentElementWrapperProps {
   businessId: string
   businessName: string
   utm: string
+  tier: string
 }
 
 export function PaymentElementWrapper({
   businessId,
   businessName,
   utm,
+  tier,
 }: PaymentElementWrapperProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
-  const [purchaseUid, setPurchaseUid] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -33,26 +34,28 @@ export function PaymentElementWrapper({
         const response = await fetch('/api/checkout/payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ businessId, utm }),
+          body: JSON.stringify({ businessId, utm, tier }),
         })
 
         if (!response.ok) {
-          throw new Error('Failed to initialize payment')
+          const data = await response.json()
+          throw new Error(data.error || 'Failed to initialize payment')
         }
 
         const data = await response.json()
         setClientSecret(data.clientSecret)
-        setPurchaseUid(data.purchaseUid)
       } catch (err) {
         console.error('Payment initialization error:', err)
-        setError('Unable to initialize payment. Please try again.')
+        setError(
+          err instanceof Error ? err.message : 'Unable to initialize payment'
+        )
       } finally {
         setIsLoading(false)
       }
     }
 
     createPaymentIntent()
-  }, [businessId, utm])
+  }, [businessId, utm, tier])
 
   if (isLoading) {
     return (
@@ -71,7 +74,7 @@ export function PaymentElementWrapper({
     )
   }
 
-  if (!clientSecret || !purchaseUid) {
+  if (!clientSecret) {
     return (
       <div className="p-6 bg-accent/10 border border-accent/20 rounded-lg">
         <p className="text-accent">Unable to initialize payment.</p>
@@ -97,7 +100,7 @@ export function PaymentElementWrapper({
         },
       }}
     >
-      <CheckoutForm purchaseUid={purchaseUid} businessName={businessName} />
+      <CheckoutForm businessName={businessName} />
     </Elements>
   )
 }

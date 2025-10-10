@@ -11,8 +11,75 @@ async function main() {
   await prisma.business.deleteMany()
   await prisma.waitlistEntry.deleteMany()
 
-  // Create sample businesses
+  // Create sample businesses (with specific IDs for dev UTM tokens)
   const businesses = await Promise.all([
+    // Dev/test businesses matching mock UTM tokens in lib/utm/crypto.ts
+    prisma.business.create({
+      data: {
+        id: 'dev-business-1', // Matches dev-utm-valid
+        domain: 'dev-business-1.test',
+        name: 'Dev Business 1 (Valid)',
+        email: 'dev1@test.com',
+        reportData: {
+          score: 85,
+          issues: 10,
+          estimatedValue: 12000,
+        },
+      },
+    }),
+    prisma.business.create({
+      data: {
+        id: 'dev-business-2', // Matches dev-utm-used
+        domain: 'dev-business-2.test',
+        name: 'Dev Business 2 (Used)',
+        email: 'dev2@test.com',
+        reportData: {
+          score: 78,
+          issues: 15,
+          estimatedValue: 9500,
+        },
+      },
+    }),
+    prisma.business.create({
+      data: {
+        id: 'dev-business-3', // Matches dev-utm-test
+        domain: 'dev-business-3.test',
+        name: 'Dev Business 3 (Test)',
+        email: 'dev3@test.com',
+        reportData: {
+          score: 92,
+          issues: 5,
+          estimatedValue: 18000,
+        },
+      },
+    }),
+    prisma.business.create({
+      data: {
+        id: 'mock-business-1', // Matches mock-hash-123
+        domain: 'mock-business-1.test',
+        name: 'Mock Business 1',
+        email: 'mock1@test.com',
+        reportData: {
+          score: 68,
+          issues: 28,
+          estimatedValue: 7200,
+        },
+      },
+    }),
+    prisma.business.create({
+      data: {
+        id: 'mock-business-2', // Matches mock-hash-456
+        domain: 'mock-business-2.test',
+        name: 'Mock Business 2',
+        email: 'mock2@test.com',
+        reportData: {
+          score: 81,
+          issues: 18,
+          estimatedValue: 11500,
+        },
+      },
+    }),
+    // Original sample businesses
     prisma.business.create({
       data: {
         domain: 'acme-corp.com',
@@ -63,7 +130,7 @@ async function main() {
       data: {
         nonce: 'expired-token-123',
         token: 'utm_expired_test_123',
-        businessId: businesses[0].id,
+        businessId: businesses[5].id, // Acme Corp
         expiresAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // Expired
         used: false,
       },
@@ -72,7 +139,7 @@ async function main() {
       data: {
         nonce: 'valid-token-456',
         token: 'utm_valid_test_456',
-        businessId: businesses[1].id,
+        businessId: businesses[6].id, // Tech Startup
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Valid for 24h
         used: false,
       },
@@ -82,7 +149,7 @@ async function main() {
   // Create sample purchase
   await prisma.purchase.create({
     data: {
-      businessId: businesses[0].id,
+      businessId: businesses[5].id, // Acme Corp
       stripeSessionId: 'cs_test_sample_123',
       amount: 19900,
       status: 'completed',
@@ -98,7 +165,7 @@ async function main() {
     prisma.abandonedCart.create({
       data: {
         stripeSessionId: 'cs_test_abandoned_123',
-        businessId: businesses[1].id,
+        businessId: businesses[6].id, // Tech Startup
         customerEmail: 'abandoned@example.com',
         amount: 9900,
         currency: 'usd',
@@ -110,7 +177,7 @@ async function main() {
     prisma.abandonedCart.create({
       data: {
         stripeSessionId: 'cs_test_recovered_456',
-        businessId: businesses[0].id,
+        businessId: businesses[5].id, // Acme Corp
         customerEmail: 'recovered@example.com',
         amount: 9900,
         currency: 'usd',
@@ -129,12 +196,12 @@ async function main() {
   const events = [
     { eventName: 'page_view', page: '/', referrer: 'google.com' },
     { eventName: 'waitlist_signup', domain: 'example.com', variant: 'A' },
-    { eventName: 'utm_validated', businessId: businesses[0].id },
+    { eventName: 'utm_validated', businessId: businesses[5].id }, // Acme Corp
     { eventName: 'checkout_started', value: 199.0 },
     {
       eventName: 'purchase_completed',
       value: 199.0,
-      businessId: businesses[0].id,
+      businessId: businesses[5].id, // Acme Corp
     },
   ]
 

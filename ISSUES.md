@@ -29,12 +29,16 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 
 **Goal:** On-page payment; branded receipts; robust tests.
 
-- **A1 (2 pts)**: Switch to Payment Element
-- **Status**: `PENDING_VALIDATION` (Implementation complete in `c90c526`. Validation to be completed under **A5**.)
-- **A2 (2 pts)**: Price tiers (server allowlist)
-- **A3 (2 pts)**: Stripe receipts + business identity
-- **A4 (1 pt)**: Feature flag control
-- **A5 (3 pts)**: E2E & failure paths
+- **A1 (2 pts)**: Wire Payment Element to /purchase; idempotent PaymentIntent API with tier support
+- **Status**: `IN PROGRESS` (Build fixes in `c90c526`; Payment Element components exist but not integrated into purchase flow)
+- **A2 (2 pts)**: PRICE_TIERS config (basic=$399, pro=$699) with unit tests
+- **Status**: `IN PROGRESS`
+- **A3 (2 pts)**: Stripe receipts + business identity (manual Dashboard config)
+- **Status**: `IN PROGRESS`
+- **A4 (1 pt)**: Feature flag enforcement (UI + API gating)
+- **Status**: `IN PROGRESS`
+- **A5 (3 pts)**: E2E iframe tests (happy path + decline) with CI parity
+- **Status**: `IN PROGRESS`
 
 ### EPIC B — UTM & Business Onboarding — 8 pts
 
@@ -107,6 +111,8 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **Status**: `CLOSED`
 - **Commit**: `5d89582`
 - **I8 (13 pts)**: EPIC I - Final Cleanup & Deferred Tasks
+- **Status**: `CLOSED`
+- **Commit**: `57fc0fc1`
 
 ### EPIC H - Hardening & CI/CD - (24 pts)
 
