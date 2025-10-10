@@ -1,5 +1,4 @@
 import { datadogRum, type RumInitConfiguration } from '@datadog/browser-rum'
-// @ts-expect-error - Package may not be available in all environments
 import { datadogLogs } from '@datadog/browser-logs'
 
 // Singleton guard to prevent multiple initializations
