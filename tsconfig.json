@@ -36,6 +36,8 @@
     "components_backup/**/*",
     "visual-tests/**/*",
     "scripts/**/*",
+    "CI_logs/**/*",
+    "playwright*.config*.ts",
     "*.js",
     "*.mjs"
   ]

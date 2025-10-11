@@ -87,19 +87,29 @@ describe('Analytics Component', () => {
     expect(startAnalytics).not.toHaveBeenCalled()
   })
 
-  it('should track page view when analytics consent is given', async () => {
+  it('should track page view when analytics consent is given', () => {
+    const mockGetCookieConsent = getCookieConsent as jest.Mock
+
+    // Clear and reset mocks for this test
+    jest.clearAllMocks()
+
+    // Re-mock consent after clearing
+    mockGetCookieConsent.mockReturnValue({
+      analytics: true,
+      marketing: true,
+      performance: true,
+      functional: true,
+    })
+
     // Set up window.gtag to simulate non-initial load
     ;(window as any).gtag = jest.fn()
 
     render(<Analytics />)
 
-    // Wait for state updates and effect to run
-    await waitFor(() => {
-      expect(trackPageView).toHaveBeenCalledWith({
-        path: '/',
-        url: '/',
-        title: '',
-      })
+    expect(trackPageView).toHaveBeenCalledWith({
+      path: '/',
+      url: '/',
+      title: '',
     })
   })
 
