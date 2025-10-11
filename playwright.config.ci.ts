@@ -59,7 +59,7 @@ export default defineConfig({
   webServer: {
     command: 'PORT=3333 node .next/standalone/server.js',
     port: 3333,
-    reuseExistingServer: false, // Never reuse in CI - always start fresh
+    reuseExistingServer: !!process.env.CI, // Reuse in CI (started by workflow), fresh locally
     timeout: 60_000, // 1 minute for server startup (build happens in workflow step)
     stdout: 'pipe', // Pipe stdout to see server logs
     stderr: 'pipe', // Pipe stderr to see errors
