@@ -1,4 +1,5 @@
 import { ConsentPreferences } from '@/lib/context/ConsentContext'
+import { analyticsEnabled } from './flags'
 
 // Google Analytics 4 configuration
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -61,7 +62,7 @@ function clearCookies(patterns: string[]) {
 
 // Load Google Analytics 4
 function loadGoogleAnalytics() {
-  if (gaLoaded || !GA_MEASUREMENT_ID) return
+  if (!analyticsEnabled || gaLoaded || !GA_MEASUREMENT_ID) return
 
   // Create gtag function
   window.dataLayer = window.dataLayer || []
@@ -91,7 +92,7 @@ function loadGoogleAnalytics() {
 
 // Load PostHog
 function loadPostHog() {
-  if (posthogLoaded || !POSTHOG_API_KEY) return
+  if (!analyticsEnabled || posthogLoaded || !POSTHOG_API_KEY) return
 
   // PostHog initialization script
   const script = document.createElement('script')
