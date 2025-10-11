@@ -11,7 +11,10 @@ export const initDatadog = () => {
   }
 
   // Skip in E2E tests to reduce noise and improve stability
-  if (process.env.NEXT_PUBLIC_E2E_TESTING === 'true') {
+  if (
+    process.env.NEXT_PUBLIC_E2E === 'true' ||
+    process.env.NEXT_PUBLIC_E2E_TESTING === 'true'
+  ) {
     return
   }
 
