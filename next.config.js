@@ -8,7 +8,8 @@ const nextConfig = {
   output: 'standalone',
   // Sentry error page optimization
   excludeDefaultMomentLocales: true,
-  productionBrowserSourceMaps: false,
+  // Enable source maps to debug E2E crashes
+  productionBrowserSourceMaps: true,
   // CSS optimization - removed experimental flag that's causing build issues
   // Performance optimizations
   compiler: {

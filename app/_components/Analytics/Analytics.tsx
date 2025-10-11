@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { initializeAnalytics } from '@/lib/analytics/analytics-manager-optimized'
+import { startAnalytics } from '@/lib/analytics'
 import { trackPageView } from '@/lib/analytics/analytics-client'
 import { getCookieConsent, onConsentChange } from '@/lib/cookies/consent'
 import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
@@ -12,43 +12,24 @@ export function Analytics() {
   const searchParams = useSearchParams()
   const [hasAnalyticsConsent, setHasAnalyticsConsent] = useState<boolean>(false)
 
-  // Skip analytics in E2E test mode to prevent external script loading failures
+  // Check if running in E2E mode
   const isE2E =
-    process.env.NEXT_PUBLIC_E2E_TESTING === 'true' ||
-    process.env.NEXT_PUBLIC_E2E === 'true'
+    process.env.NEXT_PUBLIC_E2E === 'true' ||
+    process.env.NEXT_PUBLIC_E2E_TESTING === 'true'
 
   // Track Web Vitals
   useWebVitals()
 
   // Track consent changes and initialize analytics
   useEffect(() => {
-    // Skip in E2E mode
-    if (isE2E) return
-
     // Check initial consent
     const initialConsent = getCookieConsent()
     setHasAnalyticsConsent(initialConsent.analytics)
 
     if (initialConsent.analytics) {
-      const manager = initializeAnalytics({
-        ga4: {
-          measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID!,
-          apiSecret: process.env.GA4_API_SECRET,
-        },
-        posthog: {
-          apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY!,
-          host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-        },
-        hotjar: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID
-          ? {
-              siteId: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID,
-            }
-          : undefined,
-      })
-
-      // Force initialization to complete
-      manager.initialize().then(() => {
-        console.log('[Analytics] Manager initialized successfully')
+      // Start analytics with centralized, guarded initialization
+      startAnalytics().catch((err) => {
+        console.error('[Analytics] Initialization error:', err)
       })
     }
 
@@ -57,31 +38,15 @@ export function Analytics() {
       setHasAnalyticsConsent(newConsent.analytics)
 
       if (newConsent.analytics) {
-        const manager = initializeAnalytics({
-          ga4: {
-            measurementId: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID!,
-            apiSecret: process.env.GA4_API_SECRET,
-          },
-          posthog: {
-            apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY!,
-            host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-          },
-          hotjar: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID
-            ? {
-                siteId: process.env.NEXT_PUBLIC_HOTJAR_SITE_ID,
-              }
-            : undefined,
-        })
-
-        // Force initialization to complete
-        manager.initialize().then(() => {
-          console.log('[Analytics] Manager initialized on consent change')
+        // Start analytics with centralized, guarded initialization
+        startAnalytics().catch((err) => {
+          console.error('[Analytics] Initialization error on consent change:', err)
         })
       }
     })
 
     return unsubscribe
-  }, [isE2E])
+  }, [])
 
   // Track page views on route change
   useEffect(() => {

@@ -121,6 +121,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Generate Prisma Client
         run: pnpm exec prisma generate
+      - name: Clean build artifacts
+        run: |
+          echo "Removing any cached .next directory..."
+          rm -rf .next
       - name: Build Next.js
         env:
           CI: 'true'
@@ -131,6 +135,9 @@ jobs:
           NEXT_TELEMETRY_DISABLED: '1'
           # Disable analytics for E2E builds
           NEXT_PUBLIC_E2E: 'true'
+          NEXT_PUBLIC_ANALYTICS_ENABLED: 'false'
+          # Force fresh build - no webpack cache
+          NEXT_DISABLE_WEBPACK_CACHE: '1'
         run: pnpm run build
       - name: Prepare standalone bundle
         run: |
@@ -148,7 +155,7 @@ jobs:
       - name: Upload standalone bundle
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
-          name: next-standalone-${{ github.sha }}
+          name: next-build-${{ github.sha }}-e2e-true
           path: .next/standalone
           if-no-files-found: error
           retention-days: 1
@@ -240,7 +247,7 @@ jobs:
       - name: Download standalone bundle
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          name: next-standalone-${{ github.sha }}
+          name: next-build-${{ github.sha }}-e2e-true
           path: .next/standalone
       - name: Verify standalone bundle
         run: |
