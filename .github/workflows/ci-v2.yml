@@ -68,7 +68,7 @@ jobs:
 
       - name: Setup database
         run: |
-          pnpm prisma migrate deploy
+          pnpm prisma db push --accept-data-loss
           pnpm tsx scripts/seed-test-data.ts
 
       - name: Build production
