@@ -51,6 +51,7 @@ export default defineConfig({
       DISABLE_SENTRY: 'true',
       DISABLE_DD: 'true',
       DISABLE_EMAIL: 'true',
+      NEXT_PUBLIC_POSTHOG_DISABLED: 'true',
       // Mock services
       NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
       // Config
