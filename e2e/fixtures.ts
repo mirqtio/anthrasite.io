@@ -1,7 +1,10 @@
 import { test as base } from '@playwright/test'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 /**
- * Extended test fixture with pre-accepted consent
+ * Extended test fixture with pre-accepted consent and database cleanup
  * Consent-specific tests can clear storage to test banner behavior
  */
 export const test = base.extend({
@@ -10,7 +13,7 @@ export const test = base.extend({
     await page.addInitScript(() => {
       // Set consent in localStorage
       const consent = {
-        version: 1,
+        version: '1.0',
         preferences: {
           analytics: true,
           marketing: true,
@@ -26,6 +29,17 @@ export const test = base.extend({
     })
 
     await use(page)
+  },
+
+  // Database cleanup fixture
+  dbCleanup: async ({}, use) => {
+    // Clean before test
+    await prisma.$executeRawUnsafe('TRUNCATE TABLE "Purchase" RESTART IDENTITY CASCADE')
+
+    await use(undefined)
+
+    // Clean after test
+    await prisma.$executeRawUnsafe('TRUNCATE TABLE "Purchase" RESTART IDENTITY CASCADE')
   },
 })
 

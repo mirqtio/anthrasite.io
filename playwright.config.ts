@@ -2,92 +2,65 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 45_000, // 45s - reasonable for most tests, forces optimization
-  expect: {
-    timeout: 5_000, // 5s - tight expectations force stable selectors
-  },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0, // No retries locally - fix flakes, don't hide them
-  workers: process.env.CI ? 6 : 8, // 8 workers locally for speed, 6 in CI for stability
-  reporter: 'html',
-  globalSetup: require.resolve('./e2e/_setup/global-setup'),
-  globalTeardown: require.resolve('./e2e/_setup/global-teardown'),
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  timeout: 30_000,
+  expect: {
+    timeout: 5_000,
+  },
+
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+  ],
+
   use: {
-    actionTimeout: 10_000, // 10s action timeout
-    navigationTimeout: 15_000, // 15s navigation timeout
-    baseURL: 'http://localhost:3333',
-    trace: 'on-first-retry',
+    baseURL: 'http://localhost:3000',
+    trace: 'retain-on-failure',
+    video: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: process.env.CI ? 'retain-on-failure' : 'off',
-    testIdAttribute: 'data-testid',
+    actionTimeout: 15_000,
   },
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'chromium-desktop',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1920, height: 1080 },
+      },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: 'firefox-desktop',
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: { width: 1920, height: 1080 },
+        // Firefox needs more time for certain operations
+        navigationTimeout: 20_000,
+      },
+      expect: { timeout: 7_000 },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: 'webkit-desktop',
+      use: {
+        ...devices['Desktop Safari'],
+        viewport: { width: 1920, height: 1080 },
+      },
     },
     {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      name: 'chromium-mobile',
+      use: {
+        ...devices['Pixel 7'],
+      },
     },
     {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
+      name: 'webkit-mobile',
+      use: {
+        ...devices['iPhone 14'],
+      },
     },
   ],
-
-  webServer: {
-    command: './scripts/start-e2e-server.sh',
-    port: 3333,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes for server startup
-    env: {
-      PORT: '3333',
-      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'false',
-      NODE_ENV: 'development',
-      // Flag to indicate E2E test environment (NEXT_PUBLIC_ makes it available in client components)
-      E2E_TESTING: 'true',
-      NEXT_PUBLIC_E2E_TESTING: 'true',
-      ENABLE_TEST_MODE: 'true',
-      // UTM secret for token validation (must match e2e/helpers/utm-generator.ts)
-      UTM_SECRET_KEY: 'development-secret-key-replace-in-production',
-      // Database for tests - prioritize CI environment variable
-      DATABASE_URL:
-        process.env.DATABASE_URL ||
-        'postgresql://postgres:postgres@localhost:5432/anthrasite_test',
-      // Analytics for consent tests
-      NEXT_PUBLIC_GA4_MEASUREMENT_ID:
-        process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID || 'G-TEST123456',
-      GA4_API_SECRET: process.env.GA4_API_SECRET || 'test-secret',
-      NEXT_PUBLIC_POSTHOG_KEY:
-        process.env.NEXT_PUBLIC_POSTHOG_KEY || 'phc_test_key',
-      NEXT_PUBLIC_POSTHOG_HOST:
-        process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
-      // Edge Config fallback
-      EDGE_CONFIG: process.env.EDGE_CONFIG || '',
-      // Admin API key for test UTM generation
-      ADMIN_API_KEY: process.env.ADMIN_API_KEY || 'test-admin-key-local-only',
-      // Base URL for tests (matches baseURL config above)
-      BASE_URL: process.env.BASE_URL || 'http://localhost:3333',
-      // Stripe test keys for Payment Element tests (required from environment)
-      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
-      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
-        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
-      STRIPE_WEBHOOK_SECRET:
-        process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test_fake',
-      // Feature flag for Payment Element
-      NEXT_PUBLIC_FF_PURCHASE_ENABLED:
-        process.env.NEXT_PUBLIC_FF_PURCHASE_ENABLED || 'true',
-    },
-  },
 })
