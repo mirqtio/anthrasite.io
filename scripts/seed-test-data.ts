@@ -6,26 +6,25 @@ async function main() {
   console.log('🌱 Seeding test data...')
 
   // Create test business
-  await prisma.business.upsert({
+  const business = await prisma.business.upsert({
     where: { domain: 'example.com' },
     update: {},
     create: {
       domain: 'example.com',
       name: 'Example LLC',
       email: 'test@example.com',
-      createdAt: new Date(),
     },
   })
 
   // Create test UTM token
-  await prisma.uTMToken.upsert({
+  await prisma.utmToken.upsert({
     where: { token: 'test-utm-token' },
     update: {},
     create: {
+      nonce: 'test-nonce-123',
       token: 'test-utm-token',
-      businessId: (await prisma.business.findFirst({ where: { domain: 'example.com' } }))!.id,
-      isValid: true,
-      createdAt: new Date(),
+      businessId: business.id,
+      used: false,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     },
   })
