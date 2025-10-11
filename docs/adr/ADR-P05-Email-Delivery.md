@@ -1,37 +1,39 @@
-# ADR-P05: Email Delivery - Google Workspace SMTP
+# ADR-P05: Email Delivery Provider for MVP
 
-**Status**: Decided
+**Status**: Accepted
+**Date**: 2025-10-08
 
-**Context**:
-Once the PDF report is generated, it must be delivered to the customer via email. We need a reliable way to send transactional emails with attachments.
+## Context
 
-**Decision**:
-We will use our existing **Google Workspace account's SMTP server** for sending reports. The implementation will include a **switchable provider interface** to make it easy to migrate to a dedicated transactional email service (like Postmark or SendGrid) in the future.
+The application needs to send transactional emails with PDF attachments to customers after a successful purchase. We need a reliable and cost-effective email delivery solution for the MVP phase.
 
-**Consequences**:
-- **Pros**:
-    - **Low cost**: Uses our existing Google Workspace subscription.
-    - **Good initial deliverability**: Emails come from our trusted domain.
-    - The provider abstraction makes future upgrades straightforward.
-- **Cons**:
-    - **Sending limits**: Google Workspace has daily sending limits (e.g., 2000 emails/day) that we may eventually exceed.
-    - **Limited analytics**: Lacks the detailed delivery tracking and analytics of a dedicated transactional email service.
+## Decision
 
----
+We will use the existing **Google Workspace (Gmail) SMTP service** as our initial email provider.
+
+The implementation will include a **switchable provider interface** to make it easy to migrate to a dedicated transactional email service (like Postmark or SendGrid) in the future.
+
+## Consequences
+
+### Positive
+
+-   **Zero Additional Cost**: Leverages our existing Google Workspace subscription.
+-   **Fast Implementation**: Simple to configure using `nodemailer`.
+-   **Sufficient for MVP**: The daily sending limits (~500-2000 emails/day) are well above our projected needs.
+
+### Negative
+
+-   **Limited Scalability**: Not suitable for high-volume sending.
+-   **Basic Deliverability Analytics**: Lacks the advanced analytics and reputation management of a commercial ESP.
 
 ## Implementation Notes
 
 **G3 Archive (2025-10-07):**
-- All legacy SendGrid files archived to `_archive/lib/email/` (10 files)
-- Implemented Gmail SMTP provider using `nodemailer` in `lib/email/gmail.ts`
-- Created error stub at `lib/email/sendgrid.ts` to catch legacy imports
-- Webhook email integration deferred to D3 (pending Gmail credentials)
+-   All legacy SendGrid files archived to `_archive/lib/email/`.
+-   Implemented Gmail SMTP provider in `lib/email/gmail.ts`.
+-   Created error stub at `lib/email/sendgrid.ts` to catch legacy imports.
 
 **Active Implementation:**
-- Provider: `lib/email/gmail.ts`
-- Functions: `sendEmail()`, `sendPurchaseConfirmation()`
-- Transport: Gmail SMTP via `nodemailer` (smtp.gmail.com:587)
-- Required environment variables: `GMAIL_USER`, `GMAIL_APP_PASSWORD`
-
-**Future Migration Path:**
-If switching to a dedicated transactional email service (e.g., Postmark), update `lib/email/gmail.ts` or create a new provider module and update the webhook imports. The simple function signature (`sendEmail()`, `sendPurchaseConfirmation()`) makes this migration straightforward.
+-   **Provider**: `lib/email/gmail.ts`
+-   **Transport**: Gmail SMTP via `nodemailer` (smtp.gmail.com:587)
+-   **Required environment variables**: `GMAIL_USER`, `GMAIL_APP_PASSWORD`

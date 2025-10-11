@@ -1,173 +1,90 @@
-# SYSTEM.md (v1.2)
+# SYSTEM.md (v1.3)
 
 **Project**: Anthrasite.io
-**Last Updated**: 2025-10-08
+**Last Updated**: 2025-10-10
+**Change Summary**: Consolidated SYSTEM.md and SYSTEM 2.md; unified topology and ADR index.
 **Owner**: Anthrasite Platform Team
 **Status**: Canonical Architecture Document (Ground Truth)
 
-## 1. Purpose
+## 1. Purpose & Core Principles
 
-This document defines the authoritative architecture of the **Anthrasite.io Payment Site** — the public-facing platform that accepts Stripe payments, validates purchase tokens, and delivers report artifacts.
+This document defines the authoritative architecture of the **Anthrasite.io Payment Site**. It captures both design intent and operational invariants to ensure the system remains reliable, secure, and maintainable.
 
-It captures both **design intent** and **operational invariants**, ensuring the system remains reliable, secure, and maintainable as it evolves.
+-   **Separation of Concerns**: The public-facing website (`anthrasite.io` on Vercel) is fully decoupled from the internal report generation engine (`LeadShop` on a local Mac mini). They communicate via a durable, managed queue.
+-   **Idempotency**: All critical operations, especially payment processing and workflow kickoff, are designed to be idempotent to prevent duplicate processing from events like webhook retries.
+-   **Progressive Enhancement**: The system is built with MVP components (Playwright for PDFs, Gmail for email) that can be swapped for more robust, scalable solutions (DocRaptor, Postmark) as business needs evolve.
+-   **Note on G1 Cleanup**: This system underwent a significant codebase cleanup (G1) in October 2025. Many legacy components were moved to a tracked `_archive` directory.
 
-## 2. Core Technology Stack
+## 2. System Topology & Data Flow
 
-| Layer                    | Technology                               | Notes                                                      |
-| :----------------------- | :--------------------------------------- | :--------------------------------------------------------- |
-| **Frontend**             | Next.js (App Router)                     | React 18, streaming server components enabled              |
-| **Styling**              | Tailwind CSS                             | Consistent with Anthrasite brand kit                       |
-| **Database**             | PostgreSQL (Vercel-hosted)               | Supabase-compatible schema                                 |
-| **ORM**                  | Prisma                                   | Enforces type safety and schema consistency                |
-| **Payments**             | Stripe Payment Element                   | Embedded flow using `PaymentIntent` API                    |
-| **Queue / Job Dispatch** | Vercel KV or Upstash Queue               | Provides lightweight asynchronous job delivery             |
-| **Worker Runtime**       | Node.js Worker or Supabase Edge Function | Consumes queued jobs and generates reports                 |
-| **PDF Generation**       | Playwright (print-to-PDF)                | Deterministic, headless Chromium rendering                 |
-| **Email Delivery**       | Google Workspace (Gmail SMTP)            | Provider-abstracted; swappable later for Postmark/SendGrid |
-| **Testing**              | Vitest (unit) / Playwright (E2E)         | Modal pattern hardened for CI                              |
-| **Deployment**           | Vercel                                   | Continuous deployment from main branch                     |
-
-## 3. System Overview
-
-The system follows a **decoupled webhook-to-worker pipeline** to ensure that payment processing, artifact generation, and delivery are reliable and idempotent.
+The system is split into two primary operational environments, `anthrasite.io` (Vercel) and `LeadShop` (Mac Mini), bridged by a managed queue.
 
 ```mermaid
 graph TD
-    subgraph Vercel App
-        A[Customer visits /purchase page] --> M[UTM Token Validation Middleware];
-        M --> B[Stripe Payment Element];
-        B --> C[Stripe API];
-        C -- webhook: payment_intent.succeeded --> D(Stripe Webhook Handler);
-        D -->|enqueue| E[(Managed Queue)];
+    subgraph Vercel [Public Site: anthrasite.io]
+        A[1. Customer clicks UTM link in email] --> B{Purchase Page};
+        B -- 2. Fills out Payment Element --> C(Stripe API);
+        C -- 3. payment_intent.succeeded --> D{Stripe Webhook};
+        D -- 4. Verified & Deduplicated --> E(PostgreSQL);
+        D --> F(Enqueue Job);
     end
 
-    subgraph Worker
-        E --> F[Queue Consumer];
-        F --> G[Generate PDF via Playwright];
-        G --> H[Send Email via Gmail SMTP];
-        H --> I[Mark job complete];
+    subgraph Queue [Managed Queue]
+        F --> G[payment_completed job];
     end
+
+    subgraph MacMini [Internal Worker: LeadShop]
+        G -- 5. Worker consumes job --> H{Temporal Kickoff};
+        H -- 6. ReportGenerationWorkflow --> I(Playwright PDF Gen);
+        I -- 7. PDF generated --> J(Store in S3);
+        J -- 8. Stored --> K(Send via Gmail SMTP);
+    end
+
+    K -- 9. Email with PDF attachment --> L[Customer Inbox];
 ```
 
-## 4. Core Architectural Patterns
+## 3. Core Technology Stack
 
-### 4.1. Decoupled Webhook / Worker Model
+| Layer | Technology | Notes |
+| :--- | :--- | :--- |
+| **Frontend** | Next.js (App Router) | React 18, streaming server components enabled |
+| **Styling** | Tailwind CSS | Consistent with Anthrasite brand kit |
+| **Database** | PostgreSQL (Vercel-hosted) | Supabase-compatible schema |
+| **ORM** | Prisma | Enforces type safety and schema consistency |
+| **Payments** | Stripe Payment Element | Embedded flow using `PaymentIntent` API |
+| **Queue / Job Dispatch** | Vercel KV or Upstash Queue | Provides lightweight asynchronous job delivery |
+| **Worker Runtime** | Node.js Worker or Supabase Edge Function | Consumes queued jobs and generates reports |
+| **PDF Generation** | Playwright (print-to-PDF) | Deterministic, headless Chromium rendering |
+| **Email Delivery** | Google Workspace (Gmail SMTP) | Provider-abstracted; swappable later for Postmark/SendGrid |
+| **Testing** | Vitest (unit) / Playwright (E2E) | Modal pattern hardened for CI |
+| **Deployment** | Vercel | Continuous deployment from main branch |
 
-- **Intent**: Prevent Stripe webhook timeouts and ensure durability under transient outages.
-- **Implementation**:
-  - Webhook validates Stripe signature → enqueues job payload (`paymentIntentId`, `customerEmail`, `reportType`).
-  - Worker consumes jobs asynchronously, ensuring at-least-once processing.
-  - Idempotency key = `paymentIntentId`.
-- **Guarantee**: No single payment can produce multiple emails or reports.
+## 4. Key Architectural Decisions & Patterns
 
-### 4.2. Idempotent UTM Token Authentication
+-   **ADR-P01 (Payment UX)**: Use Stripe's embedded **Payment Element**.
+-   **ADR-P02 (Receipts)**: Enable Stripe's automated receipts with a **custom sending domain**.
+-   **ADR-P03 (Website ↔ LeadShop Bridge)**: Implement a **managed queue** for durable communication.
+-   **ADR-P04 (PDF Engine)**: Utilize **Playwright's print-to-PDF** as the MVP.
+-   **ADR-P05 (Email Delivery)**: Send reports via **Gmail SMTP** using `nodemailer`.
+-   **ADR-P06 (Pricing)**: Pricing is controlled by a **server-side allow-list** validated against a tier label in the UTM token.
+-   **ADR-P07 (Deployment)**: `anthrasite.io` and `LeadShop` remain **separate projects and deployments**.
+-   **ADR-P08 (Build-Time Rendering)**: Pages with runtime dependencies must be explicitly marked for dynamic rendering (`export const dynamic = 'force-dynamic'`)
 
-- **Model**: `UtmToken(id, code, used, usedAt, createdAt)`
-- **Contract**:
-  - Middleware verifies that `code` exists and `used == false`.
-  - Upon first valid purchase, token is atomically marked used (`UPDATE … WHERE used=false`).
-- **Purpose**: Prevents replay or unauthorized purchases.
+**Operational Reliability Patterns:**
+Anthrasite.io inherits the *Producer–Validator* and *Failure Contract* conventions defined in LeadShop’s SYSTEM.md §4.3 and §6, ensuring consistent idempotency and explicit validation across environments.
 
-### 4.3. Producer–Validator Discipline
+## 5. Post-G1 File Structure
 
-Borrowed from the LeadShop Temporal architecture:
+-   `/app`: Core Next.js routing, including API routes and pages.
+-   `/components`: Reusable React components.
+-   `./docs`: Project documentation, including ADRs.
+-   `./e2e`: Playwright end-to-end tests.
+-   `/lib`: Shared libraries for services like database access and Stripe.
+-   `/prisma`: Database schema and migration files.
+-   `/_archive`: A tracked directory containing all non-essential files from before the G1 cleanup.
 
-| Stage       | Producer                       | Validator                 | Invariants                                                    |
-| :---------- | :----------------------------- | :------------------------ | :------------------------------------------------------------ |
-| **Webhook** | Stripe → `/api/stripe/webhook` | `verifyStripeSignature()` | Valid event type, payment succeeded, `paymentIntentId` unique |
-| **Queue**   | Job Enqueuer                   | Queue Consumer            | Job payload schema valid (`zod` validated)                    |
-| **Worker**  | PDF Generator                  | Artifact Validator        | PDF exists, size ≥ 20 KB, correct filename & MIME             |
-| **Email**   | SMTP Sender                    | Delivery Logger           | Message accepted (2xx), attachment checksum verified          |
+---
+**Maintainer:** Anthrasite Platform Team
+**Review Cadence:** Quarterly or on major ADR merge
 
-Each failure raises an explicit structured error and never silently retries without validation.
-
-### 4.4. Centralized Database Write Model
-
-- **Pattern**: “One-write-per-purchase.”
-- **Rationale**: Mirrors LeadShop’s governed persistence queue to avoid connection storms.
-- **Implementation**:
-  - All inserts/updates occur through a single transactional write (`recordPurchase()` service).
-  - Workers never write directly to user-facing tables outside that transaction.
-  - Any background enrichment uses separate queues and tables (e.g., `purchase_artifacts`).
-
-### 4.5. Environment Variable Precedence
-
-- **Rule**: `.env` file values take precedence over host environment, enforced by `env_file: - .env` in `docker-compose.yml`.
-- **Reason**: Prevents contamination from developer shell variables and ensures deterministic local builds.
-
-### 4.6. E2E-Safe Modal UI
-
-- Uses Flexbox positioning and toggles `opacity` + `visibility` (no CSS transforms).
-- Ensures Playwright reliably detects visibility states; prevents flaky tests.
-
-## 5. Operational Invariants
-
-### 5.1. Universal Invariants
-
-| #   | Invariant                                                                        | Enforced By        |
-| :-- | :------------------------------------------------------------------------------- | :----------------- |
-| 1   | **Provenance**: every job has `paymentIntentId`, `utmTokenId`, and `reportType`. | Queue schema       |
-| 2   | **Idempotency**: repeated Stripe events do not duplicate jobs.                   | Webhook handler    |
-| 3   | **Persistence atomicity**: DB writes are single-transaction.                     | `recordPurchase()` |
-| 4   | **Artifact existence**: PDF must exist in storage before email send.             | Worker validator   |
-| 5   | **Email integrity**: checksum of attachment logged alongside send record.        | Email service      |
-| 6   | **Replay safety**: duplicate Stripe webhook events detected and ignored.         | Redis KV lock      |
-| 7   | **Schema coherence**: Prisma migrations are versioned, no drift allowed.         | CI invariant       |
-| 8   | **Time coherence**: all timestamps UTC ISO8601; conversions only in UI.          | Global util        |
-
-### 5.2. Environment & Secret Handling
-
-- Secrets (`STRIPE_SECRET_KEY`, `SMTP_PASSWORD`) are stored in **Vercel Encrypted Environment Variables**.
-- Workers use scoped API keys with least privilege.
-- Never commit `.env.local` to source control.
-
-## 6. Failure Contracts and Recovery
-
-| Failure Type             | Handling Strategy                                                                        |
-| :----------------------- | :--------------------------------------------------------------------------------------- |
-| Stripe webhook timeout   | Always return 200 OK after validation; enqueue async job regardless of downstream state. |
-| Duplicate webhook events | Deduplicate by `paymentIntentId`.                                                        |
-| Queue backlog            | Jobs are idempotent and safe to retry.                                                   |
-| Worker crash mid-job     | Retry with exponential backoff (max 5 attempts).                                         |
-| Email send failure       | Re-enqueue with reason `email_retry`.                                                    |
-| Invalid PDF              | Raises structured `ArtifactValidationError` and alerts ops channel.                      |
-
-## 7. Testing Strategy
-
-- **Unit Tests (Vitest)**: Service layer contracts, Stripe webhook validator, UTM middleware.
-- **Integration Tests**: Stripe test webhooks, end-to-end purchase simulation.
-- **E2E Tests (Playwright)**: Full flow from `/purchase` → payment → email receipt, asserting modal visibility and PDF checksum.
-- **CI Gate**: PRs blocked on failing tests or unformatted code.
-
-## 8. Observability & Monitoring
-
-- **Metrics**: Queue latency, job success/failure counts, average PDF generation time.
-- **Logs**: Structured JSON logs streamed to Vercel Log Drains.
-- **Alerts**: Failure thresholds trigger Slack webhook (#ops-anthrasite).
-- **Correlation IDs**: Each job carries `traceId` propagated from Stripe event for end-to-end traceability.
-
-## 9. Versioning & Evolution
-
-- **Artifact Versioning**: PDF templates tagged as `report@v{n}` and included in metadata.
-- **Schema Migrations**: Each production deployment must run `prisma migrate deploy`.
-- **Document Updates**: `SYSTEM.md` must be revised with each major architectural change; version incremented accordingly.
-
-## 10. Future Enhancements (Planned)
-
-- **Postmark migration** – replace Gmail SMTP with API-based transactional mailer.
-- **Supabase storage adoption** – replace ephemeral local storage for PDFs.
-- **Stripe Customer Portal** – allow users to redownload past reports.
-- **Temporal-based workflow migration** – unify with LeadShop orchestration model for observability and consistency.
-
-## Appendix A — Core ADR References
-
-| ADR | Title                            | Status   |
-| :-- | :------------------------------- | :------- |
-| 001 | Email Service Provider Selection | Accepted |
-| 002 | E2E-Safe Modal Pattern           | Accepted |
-| 003 | Decoupled Webhook Architecture   | Accepted |
-| 004 | Queue Retry & Idempotency Policy | Draft    |
-| 005 | Stripe Webhook Replay Mitigation | Draft    |
-
-✅ **This file is the single source of truth for Anthrasite.io architecture.**
-Any changes to runtime behavior, system boundaries, or invariants must be reflected here.
+---

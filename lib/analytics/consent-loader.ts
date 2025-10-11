@@ -89,32 +89,65 @@ function loadGoogleAnalytics() {
   document.head.appendChild(script)
 }
 
-// Load PostHog
-function loadPostHog() {
+// Check if PostHog should be allowed in this environment
+function allowPostHogInThisEnv(): boolean {
+  // Never in E2E/testing environments
+  if (process.env.NEXT_PUBLIC_E2E_TESTING === 'true') return false
+  if (process.env.NODE_ENV === 'test') return false
+
+  // Only if key is present and valid (PostHog tokens start with 'phc_')
+  const key = POSTHOG_API_KEY || ''
+  if (!key || !/^phc_[A-Za-z0-9]+/.test(key)) return false
+
+  // Never on localhost (additional safety)
+  if (
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1')
+  ) {
+    return false
+  }
+
+  return true
+}
+
+// Load PostHog dynamically (safe, code-split approach)
+async function loadPostHog() {
   if (posthogLoaded || !POSTHOG_API_KEY) return
 
-  // PostHog initialization script
-  const script = document.createElement('script')
-  script.innerHTML = `
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('${POSTHOG_API_KEY}', {
-      api_host: '${POSTHOG_HOST}',
+  // Check environment guards before loading
+  if (!allowPostHogInThisEnv()) {
+    console.log('PostHog disabled in this environment')
+    return
+  }
+
+  try {
+    // Dynamic import - PostHog code only loads if this executes
+    const { default: posthog } = await import('posthog-js')
+
+    // Initialize with config
+    posthog.init(POSTHOG_API_KEY, {
+      api_host: POSTHOG_HOST,
       persistence: 'localStorage',
       autocapture: false, // More privacy-friendly
       capture_pageview: true,
       disable_session_recording: true, // GDPR compliance
       respect_dnt: true,
       secure_cookie: true,
-      cookie_name: 'ph_${POSTHOG_API_KEY}_posthog',
+      cookie_name: `ph_${POSTHOG_API_KEY}_posthog`,
     })
-  `
 
-  script.onload = () => {
+    // Expose to window for potential external use
+    ;(window as any).posthog = posthog
+
     posthogLoaded = true
-    console.log('PostHog loaded')
+    console.log('PostHog loaded successfully')
+  } catch (err) {
+    // Swallow PostHog init errors in non-production
+    if (process.env.NODE_ENV === 'production') {
+      console.error('PostHog initialization failed:', err)
+    }
   }
-
-  document.head.appendChild(script)
 }
 
 // Unload Google Analytics

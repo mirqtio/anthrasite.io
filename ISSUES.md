@@ -1,8 +1,8 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
-- **Total Effort (Estimated)**: 103 Story Points
-- **Completed Points**: 47 Points
-- **Remaining Points**: 56 Points
+- **Total Effort (Estimated)**: 128 Story Points
+- **Completed Points**: 61 Points
+- **Remaining Points**: 67 Points
 - **Estimated Completion**: ~10 Workdays
 
 ---
@@ -25,20 +25,21 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
   - [x] 3. Evidence: Provide passing test logs, git status, and final file tree.
   - [x] 4. Guardrails: Added environment checks and a `@smoke` test suite to CI before merging.
 
-### EPIC A — Embedded Payments (Stripe) — 10 pts
+### EPIC A — Embedded Payments (Stripe) — 12 pts
 
 **Goal:** On-page payment; branded receipts; robust tests.
+**Status**: `CLOSED` - All implementation work is complete as of 2025-10-10.
 
 - **A1 (2 pts)**: Wire Payment Element to /purchase; idempotent PaymentIntent API with tier support
-- **Status**: `IN PROGRESS` (Build fixes in `c90c526`; Payment Element components exist but not integrated into purchase flow)
+- **Status**: `CLOSED`
 - **A2 (2 pts)**: PRICE_TIERS config (basic=$399, pro=$699) with unit tests
-- **Status**: `IN PROGRESS`
+- **Status**: `CLOSED`
 - **A3 (2 pts)**: Stripe receipts + business identity (manual Dashboard config)
-- **Status**: `IN PROGRESS`
+- **Status**: `CLOSED`
 - **A4 (1 pt)**: Feature flag enforcement (UI + API gating)
-- **Status**: `IN PROGRESS`
-- **A5 (3 pts)**: E2E iframe tests (happy path + decline) with CI parity
-- **Status**: `IN PROGRESS`
+- **Status**: `CLOSED`
+- **A5 (5 pts)**: E2E iframe tests (happy path + decline) with CI parity
+- **Status**: `CLOSED`
 
 ### EPIC B — UTM & Business Onboarding — 8 pts
 
@@ -75,16 +76,17 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **E2 (1 pt)**: Report email subject/body (plain + HTML)
 - **E3 (2 pts)**: Success page states
 
-### EPIC F — Ops, Support, Compliance — 13 pts
+### EPIC F — Ops, Support, Compliance — 33 pts
 
 **Goal:** Safe operations from Day 1, with runbooks and guardrails.
 
 - **F1 (2 pts)**: Idempotency & event log
 - **F2 (2 pts)**: Domain/DNS hardening
+- **Status**: `CLOSED`
 - **F3 (2 pts)**: Monitoring & alerts
 - **F4 (2 pts)**: Runbooks
 - **F5 (1 pt)**: Refund policy & implementation
-- **F6 (1 pt)**: Support tooling (MVP)
+- **F6 (21 pts)**: Support Tooling MVP (Admin purchase dashboard, resend, manual PDF trigger)
 - **F7 (2 pts - OPTIONAL)**: Privacy compliance
 - **F8 (3 pts)**: Final Production E2E Checkout & Validation
 
@@ -123,6 +125,8 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **Status**: `CLOSED`
 - **H2 (13 pts)**: Review and update CI/CD to run correct E2E and unit tests.
 - **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
+- **H4 (3 pts)**: Fix Stripe SDK Build-Time Initialization in CI
+- **Status**: `IN PROGRESS`
 
 ---
 
