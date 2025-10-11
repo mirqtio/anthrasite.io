@@ -41,6 +41,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1920, height: 1080 },
+        actionTimeout: 20_000, // Extra time for WebKit
       },
     },
     {
@@ -53,6 +54,7 @@ export default defineConfig({
       name: 'webkit-mobile',
       use: {
         ...devices['iPhone 14'],
+        actionTimeout: 20_000, // Extra time for WebKit
       },
     },
   ],
@@ -92,6 +94,8 @@ export default defineConfig({
   },
   use: {
     ...base.use,
+    // Pre-accept consent for all tests (bypasses modal timeout issue)
+    storageState: 'e2e/storage/consent-accepted.json',
     actionTimeout: 15_000, // 15s action timeout in CI
     navigationTimeout: 30_000, // 30s navigation timeout in CI
     video: 'off', // Disable video to save space

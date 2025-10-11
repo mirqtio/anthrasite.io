@@ -28,11 +28,33 @@ export async function openModal(page: Page, trigger: Locator, modal: Locator) {
 export const acceptConsentIfPresent = acceptConsent
 
 /**
+ * Navigate to URL with stable page load waits
+ * Uses networkidle to prevent chunk loading races
+ * Assumes consent is pre-accepted via storageState in CI
+ *
+ * @param page - Playwright page object
+ * @param url - URL to navigate to
+ */
+export async function gotoStable(page: Page, url: string) {
+  // Wait for all network requests to settle (prevents chunk loading races)
+  await page.goto(url, { waitUntil: 'networkidle' })
+
+  // Verify hydration by checking body is visible
+  await expect(page.locator('body').first()).toBeVisible({ timeout: 10_000 })
+
+  // Wait for app to be fully ready
+  await waitForAppReady(page)
+}
+
+/**
  * Navigate to URL and dismiss consent modal if present
  * Ensures clean storage state before navigation to prevent test pollution
  * Waits for React hydration to complete before proceeding
  *
  * Uses composite readiness detection to handle slow hydration gracefully.
+ *
+ * NOTE: In CI with storageState, consent is pre-accepted and this clears it.
+ * Consider using gotoStable() instead for better performance.
  *
  * @param page - Playwright page object
  * @param url - URL to navigate to
@@ -41,8 +63,8 @@ export async function gotoAndDismissConsent(page: Page, url: string) {
   // Clear cookies first (available before navigation)
   await page.context().clearCookies()
 
-  // Navigate to page (localStorage only accessible after navigation)
-  await page.goto(url)
+  // Navigate to page with networkidle wait (localStorage only accessible after navigation)
+  await page.goto(url, { waitUntil: 'networkidle' })
 
   // Clear storage after page loads
   await page.evaluate(() => {
@@ -81,6 +103,11 @@ export async function waitForStable(locator: Locator, timeout = 5000) {
  * Alias for backward compatibility with existing tests
  */
 export { gotoAndDismissConsent as gotoAndDismissCookies }
+
+/**
+ * Recommended navigation for CI - uses storageState pre-accepted consent
+ */
+export { gotoStable }
 
 /**
  * Click element with animation handling (page-based signature)

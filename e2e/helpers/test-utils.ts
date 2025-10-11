@@ -4,6 +4,9 @@ import type { Page, Locator } from '@playwright/test'
 // Re-export all utilities from _utils/ui
 export * from '../_utils/ui'
 
+// Explicitly export the new stable navigation function for CI
+export { gotoStable } from '../_utils/ui'
+
 /**
  * Opens the cookie preferences modal in a robust, E2E-safe way
  * Handles multiple fallback strategies for locating the trigger and dialog

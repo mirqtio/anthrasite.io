@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:3333",
+      "localStorage": [
+        {
+          "name": "anthrasite_cookie_consent",
+          "value": "{\"version\":\"1.0\",\"preferences\":{\"analytics\":true,\"marketing\":true,\"performance\":true,\"functional\":true,\"timestamp\":\"2025-01-01T00:00:00.000Z\"}}"
+        }
+      ]
+    }
+  ]
+}
