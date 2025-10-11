@@ -1,4 +1,5 @@
 import { test, expect } from './base-test'
+import { skipOnMobile } from './helpers/project-filters'
 
 // Configuration for test environments
 const TEST_CONFIG = {
@@ -161,7 +162,10 @@ test.describe('Purchase Flow E2E Tests', () => {
     await expect(page).toHaveURL(testUrls.purchaseWithPreview)
   })
 
-  test('Mobile responsive design', async ({ page }) => {
+  test('Mobile responsive design', async ({ page }, testInfo) => {
+    // Skip on mobile projects - they already have mobile viewports configured
+    skipOnMobile(testInfo)
+
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 })
 

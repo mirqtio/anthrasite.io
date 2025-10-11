@@ -7,6 +7,7 @@ import {
   safeFill,
   gotoAndDismissCookies,
 } from './helpers/test-utils'
+import { skipOnMobile } from './helpers/project-filters'
 
 test.describe('Full User Journey - Comprehensive E2E Tests', () => {
   // Global cleanup before each test to prevent cookie/localStorage pollution
@@ -66,7 +67,10 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       // This test should be enabled when the HelpWidget component is added
     })
 
-    test('responsive design check', async ({ page }) => {
+    test('responsive design check', async ({ page }, testInfo) => {
+      // Skip on mobile projects - testing multiple viewports doesn't make sense there
+      skipOnMobile(testInfo)
+
       // Desktop view
       await page.setViewportSize({ width: 1440, height: 900 })
       await page.goto('/')

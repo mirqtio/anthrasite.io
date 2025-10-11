@@ -1,5 +1,6 @@
 import { test, expect } from './base-test'
 import { openCookiePreferences } from './helpers/test-utils'
+import { skipOnMobile } from './helpers/project-filters'
 
 // Disable route blocking for consent tests - they need to test actual analytics loading
 test.use({ skipRouteBlocking: true })
@@ -132,25 +133,29 @@ test.describe('Cookie Consent Flow', () => {
     await expect(page.getByRole('dialog')).not.toBeVisible()
   })
 
-  test('should load analytics scripts only after consent', { tag: '@consent-edge' }, async ({ page }) => {
-    // Check that analytics scripts are not loaded initially
-    const gaScriptBefore = await page
-      .locator('script[src*="googletagmanager.com"]')
-      .count()
-    expect(gaScriptBefore).toBe(0)
+  test(
+    'should load analytics scripts only after consent',
+    { tag: '@consent-edge' },
+    async ({ page }) => {
+      // Check that analytics scripts are not loaded initially
+      const gaScriptBefore = await page
+        .locator('script[src*="googletagmanager.com"]')
+        .count()
+      expect(gaScriptBefore).toBe(0)
 
-    // Accept analytics cookies
-    await page.getByTestId('accept-all-cookies-button').click()
+      // Accept analytics cookies
+      await page.getByTestId('accept-all-cookies-button').click()
 
-    // Wait a bit for scripts to load
-    await page.waitForTimeout(1000)
+      // Wait a bit for scripts to load
+      await page.waitForTimeout(1000)
 
-    // Check that analytics scripts are now loaded
-    const gaScriptAfter = await page
-      .locator('script[src*="googletagmanager.com"]')
-      .count()
-    expect(gaScriptAfter).toBeGreaterThan(0)
-  })
+      // Check that analytics scripts are now loaded
+      const gaScriptAfter = await page
+        .locator('script[src*="googletagmanager.com"]')
+        .count()
+      expect(gaScriptAfter).toBeGreaterThan(0)
+    }
+  )
 
   test('should handle consent version changes', async ({ page, context }) => {
     // Set old version consent
@@ -204,7 +209,10 @@ test.describe('Cookie Consent Flow', () => {
     await expect(page.getByRole('dialog')).not.toBeVisible()
   })
 
-  test('should be mobile responsive', async ({ page }) => {
+  test('should be mobile responsive', async ({ page }, testInfo) => {
+    // Skip on mobile projects - they already have mobile viewports configured
+    skipOnMobile(testInfo)
+
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 })
 

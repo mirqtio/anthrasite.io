@@ -1,5 +1,6 @@
 import { test, expect } from './base-test'
 import { generateUTMUrl } from '@/lib/utm/crypto'
+import { skipOnMobile } from './helpers/project-filters'
 
 test.describe('Purchase Page', () => {
   // Mock business data
@@ -57,7 +58,10 @@ test.describe('Purchase Page', () => {
     }
   })
 
-  test('should be mobile responsive', async ({ page }) => {
+  test('should be mobile responsive', async ({ page }, testInfo) => {
+    // Skip on mobile projects - they already have mobile viewports configured
+    skipOnMobile(testInfo)
+
     const utm = 'dev-utm-valid'
 
     // Set mobile viewport

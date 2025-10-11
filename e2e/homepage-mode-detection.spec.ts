@@ -2,6 +2,7 @@ import { test, expect } from './base-test'
 import { waitForAppReady } from './utils/waits'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { prisma } from '@/lib/db'
+import { skipOnMobile } from './helpers/project-filters'
 
 // Get base URL from environment (matches Playwright config)
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3333'
@@ -550,7 +551,10 @@ test.describe('Homepage Mode Detection', () => {
     test('should display correctly on mobile devices', async ({
       page,
       context,
-    }) => {
+    }, testInfo) => {
+      // Skip on mobile projects - they already have mobile viewports configured
+      skipOnMobile(testInfo)
+
       const business = await createTestBusiness()
       const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
