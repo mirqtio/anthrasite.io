@@ -3,16 +3,11 @@ import { ConsentProvider } from '@/lib/context/ConsentContext'
 import { ConsentManager } from '../ConsentManager'
 import { Analytics } from '@/app/_components/Analytics/Analytics'
 
-// Mock the analytics manager module
-const mockInitialize = jest.fn().mockResolvedValue(undefined)
-const mockInitializeAnalytics = jest.fn()
+// Mock the analytics module
+const mockStartAnalytics = jest.fn().mockResolvedValue(undefined)
 
-jest.mock('@/lib/analytics/analytics-manager-optimized', () => ({
-  initializeAnalytics: jest.fn(() => ({
-    initialize: mockInitialize,
-    trackEvent: jest.fn(),
-    trackPageView: jest.fn(),
-  })),
+jest.mock('@/lib/analytics', () => ({
+  startAnalytics: mockStartAnalytics,
 }))
 
 // Mock analytics client
@@ -32,7 +27,7 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Import the mocked function after the mock is set up
-import { initializeAnalytics as mockInitializeAnalyticsImport } from '@/lib/analytics/analytics-manager-optimized'
+import { startAnalytics as mockStartAnalyticsImport } from '@/lib/analytics'
 
 describe('Consent Integration', () => {
   beforeEach(() => {
@@ -65,8 +60,7 @@ describe('Consent Integration', () => {
 
     // Analytics should be initialized with consent
     await waitFor(() => {
-      expect(mockInitializeAnalyticsImport).toHaveBeenCalled()
-      expect(mockInitialize).toHaveBeenCalled()
+      expect(mockStartAnalyticsImport).toHaveBeenCalled()
     })
 
     // Check localStorage
@@ -99,7 +93,7 @@ describe('Consent Integration', () => {
 
     // Analytics should not be initialized when consent is rejected
     await waitFor(() => {
-      expect(mockInitializeAnalyticsImport).not.toHaveBeenCalled()
+      expect(mockStartAnalyticsImport).not.toHaveBeenCalled()
     })
   })
 
@@ -145,8 +139,7 @@ describe('Consent Integration', () => {
 
     // Check that analytics was initialized
     await waitFor(() => {
-      expect(mockInitializeAnalyticsImport).toHaveBeenCalled()
-      expect(mockInitialize).toHaveBeenCalled()
+      expect(mockStartAnalyticsImport).toHaveBeenCalled()
     })
   })
 
@@ -185,8 +178,7 @@ describe('Consent Integration', () => {
 
     // Analytics should be initialized with stored preferences
     await waitFor(() => {
-      expect(mockInitializeAnalyticsImport).toHaveBeenCalled()
-      expect(mockInitialize).toHaveBeenCalled()
+      expect(mockStartAnalyticsImport).toHaveBeenCalled()
     })
   })
 

@@ -73,9 +73,10 @@ export function Analytics() {
 
   // GA4 Script - lazy loaded after page is interactive and consent is given
   useEffect(() => {
-    // Skip in E2E mode
+    // Skip in E2E mode or when analytics is disabled
     if (isE2E) return
     if (!hasAnalyticsConsent) return
+    if (process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== 'true') return
 
     // Delay loading GA4 until after page is interactive
     const loadGA4 = () => {

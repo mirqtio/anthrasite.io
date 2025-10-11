@@ -3,28 +3,12 @@ import { render, waitFor } from '@testing-library/react'
 import { Analytics } from '../Analytics'
 
 // Mock analytics dependencies - must be hoisted before imports
-const mockInitialize = jest.fn().mockResolvedValue(undefined)
-const mockTrack = jest.fn()
-const mockPage = jest.fn()
-const mockIdentify = jest.fn()
-const mockReset = jest.fn()
+const mockStartAnalytics = jest.fn().mockResolvedValue(undefined)
 
-// Mock the actual module used by the component (analytics-manager-optimized)
-jest.mock('@/lib/analytics/analytics-manager-optimized', () => ({
+// Mock the analytics module with startAnalytics
+jest.mock('@/lib/analytics', () => ({
   __esModule: true,
-  initializeAnalytics: jest.fn(() => ({
-    initialize: mockInitialize,
-    track: mockTrack,
-    page: mockPage,
-    identify: mockIdentify,
-    reset: mockReset,
-  })),
-  getAnalytics: jest.fn(() => ({
-    track: mockTrack,
-    page: mockPage,
-    identify: mockIdentify,
-    reset: mockReset,
-  })),
+  startAnalytics: mockStartAnalytics,
 }))
 
 jest.mock('@/lib/analytics/analytics-client', () => ({
@@ -54,7 +38,7 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Import after mocks to ensure mocks are applied
-import { initializeAnalytics } from '@/lib/analytics/analytics-manager-optimized'
+import { startAnalytics } from '@/lib/analytics'
 import { trackPageView } from '@/lib/analytics/analytics-client'
 import { getCookieConsent } from '@/lib/cookies/consent'
 import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
@@ -79,36 +63,22 @@ describe('Analytics Component', () => {
   it('should initialize analytics when measurement ID is provided', async () => {
     process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID = 'G-TESTID123'
     process.env.NEXT_PUBLIC_POSTHOG_KEY = 'phc_test123'
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'true'
 
     render(<Analytics />)
 
     // Wait for async initialization
     await waitFor(() => {
-      expect(initializeAnalytics).toHaveBeenCalledWith({
-        ga4: {
-          measurementId: 'G-TESTID123',
-          apiSecret: undefined,
-        },
-        posthog: {
-          apiKey: 'phc_test123',
-          host: undefined,
-        },
-        hotjar: undefined,
-      })
-    })
-
-    // Verify initialize was called
-    await waitFor(() => {
-      expect(mockInitialize).toHaveBeenCalled()
+      expect(startAnalytics).toHaveBeenCalled()
     })
   })
 
-  it('should not initialize analytics when measurement ID is not provided', () => {
-    delete process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+  it('should not initialize analytics when analytics is disabled', () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'false'
 
     render(<Analytics />)
 
-    expect(initializeAnalytics).toHaveBeenCalled()
+    expect(startAnalytics).not.toHaveBeenCalled()
   })
 
   it('should track page view when analytics consent is given', () => {
