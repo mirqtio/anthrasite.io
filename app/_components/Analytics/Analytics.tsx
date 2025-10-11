@@ -13,7 +13,9 @@ export function Analytics() {
   const [hasAnalyticsConsent, setHasAnalyticsConsent] = useState<boolean>(false)
 
   // Skip analytics in E2E test mode to prevent external script loading failures
-  const isE2E = process.env.NEXT_PUBLIC_E2E_TESTING === 'true'
+  const isE2E =
+    process.env.NEXT_PUBLIC_E2E_TESTING === 'true' ||
+    process.env.NEXT_PUBLIC_E2E === 'true'
 
   // Track Web Vitals
   useWebVitals()

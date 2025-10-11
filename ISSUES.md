@@ -1,8 +1,8 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
-- **Total Effort (Estimated)**: 128 Story Points
+- **Total Effort (Estimated)**: 132 Story Points
 - **Completed Points**: 61 Points
-- **Remaining Points**: 67 Points
+- **Remaining Points**: 71 Points
 - **Estimated Completion**: ~10 Workdays
 
 ---
@@ -76,18 +76,18 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **E2 (1 pt)**: Report email subject/body (plain + HTML)
 - **E3 (2 pts)**: Success page states
 
-### EPIC F — Ops, Support, Compliance — 33 pts
+### EPIC F — Ops, Support, Compliance — 37 pts
 
 **Goal:** Safe operations from Day 1, with runbooks and guardrails.
 
-- **F1 (2 pts)**: Idempotency & event log
+- **F1 (5 pts)**: Idempotency & event log
 - **F2 (2 pts)**: Domain/DNS hardening
 - **Status**: `CLOSED`
-- **F3 (2 pts)**: Monitoring & alerts
-- **F4 (2 pts)**: Runbooks
-- **F5 (1 pt)**: Refund policy & implementation
-- **F6 (21 pts)**: Support Tooling MVP (Admin purchase dashboard, resend, manual PDF trigger)
-- **F7 (2 pts - OPTIONAL)**: Privacy compliance
+- **F3 (5 pts)**: Monitoring & alerts
+- **F4 (3 pts)**: Runbooks
+- **F5 (3 pts)**: Refund policy & implementation
+- **F6 (13 pts)**: Support Tooling MVP
+- **F7 (5 pts)**: Privacy compliance
 - **F8 (3 pts)**: Final Production E2E Checkout & Validation
 
 ### EPIC I - Test Suite Hardening - (15 pts)
