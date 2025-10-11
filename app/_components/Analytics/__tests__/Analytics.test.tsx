@@ -2,13 +2,10 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { Analytics } from '../Analytics'
 
-// Mock analytics dependencies - must be hoisted before imports
-const mockStartAnalytics = jest.fn().mockResolvedValue(undefined)
-
 // Mock the analytics module with startAnalytics
 jest.mock('@/lib/analytics', () => ({
   __esModule: true,
-  startAnalytics: mockStartAnalytics,
+  startAnalytics: jest.fn().mockResolvedValue(undefined),
 }))
 
 jest.mock('@/lib/analytics/analytics-client', () => ({

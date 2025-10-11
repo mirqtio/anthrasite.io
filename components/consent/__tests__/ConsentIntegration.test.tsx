@@ -4,10 +4,8 @@ import { ConsentManager } from '../ConsentManager'
 import { Analytics } from '@/app/_components/Analytics/Analytics'
 
 // Mock the analytics module
-const mockStartAnalytics = jest.fn().mockResolvedValue(undefined)
-
 jest.mock('@/lib/analytics', () => ({
-  startAnalytics: mockStartAnalytics,
+  startAnalytics: jest.fn().mockResolvedValue(undefined),
 }))
 
 // Mock analytics client
@@ -27,7 +25,12 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Import the mocked function after the mock is set up
-import { startAnalytics as mockStartAnalyticsImport } from '@/lib/analytics'
+import { startAnalytics } from '@/lib/analytics'
+
+// Cast to access jest mock methods
+const mockStartAnalyticsImport = startAnalytics as jest.MockedFunction<
+  typeof startAnalytics
+>
 
 describe('Consent Integration', () => {
   beforeEach(() => {
