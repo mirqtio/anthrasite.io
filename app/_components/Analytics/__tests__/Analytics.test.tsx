@@ -73,6 +73,15 @@ describe('Analytics Component', () => {
   it('should not initialize analytics when analytics is disabled', () => {
     process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'false'
 
+    // Mock consent as false to ensure startAnalytics is not called
+    const mockGetCookieConsent = getCookieConsent as jest.Mock
+    mockGetCookieConsent.mockReturnValue({
+      analytics: false,
+      marketing: false,
+      performance: false,
+      functional: true,
+    })
+
     render(<Analytics />)
 
     expect(startAnalytics).not.toHaveBeenCalled()
