@@ -1,22 +1,6 @@
 import { test as base } from '@playwright/test'
 
 /**
- * Blocked third-party hosts to prevent external analytics/monitoring calls
- * that slow tests and cause rate limiting
- */
-const BLOCKED_HOSTS = new Set([
-  'www.googletagmanager.com',
-  'www.google-analytics.com',
-  'analytics.google.com',
-  'cdn.segment.com',
-  'o444.ingest.sentry.io',
-  'static.hotjar.com',
-  'rum.browser-intake-datadoghq.com',
-  'js.posthogcdn.com',
-  'app.posthog.com',
-])
-
-/**
  * Extended test with E2E-specific setup
  * - Blocks third-party analytics/monitoring hosts
  * - Pre-accepts consent to avoid banner in most tests
@@ -32,43 +16,65 @@ export const test = base.extend({
     // Pre-accept consent to avoid banner races (opt-out in consent-specific tests)
     await page.addInitScript(() => {
       localStorage.setItem(
-        'cookie_consent',
+        'anthrasite_cookie_consent',
         JSON.stringify({
-          accepted: true,
-          ts: Date.now(),
           version: 1,
           preferences: {
-            necessary: true,
             analytics: true,
             marketing: true,
+            performance: true,
+            functional: true,
+            timestamp: new Date().toISOString(),
           },
         })
       )
-      document.cookie = 'cookie_consent=accepted; path=/; max-age=31536000'
+      document.cookie =
+        'anthrasite_cookie_consent=accepted; path=/; max-age=31536000'
     })
 
-    // Route blocking: Allow same-origin (including /_next/ chunks), block known 3P hosts
-    await page.route('**/*', (route) => {
+    // Route blocking: Allow-list only same-origin, block all third-party
+    await page.route('**/*', async (route) => {
       try {
-        const url = new URL(route.request().url())
+        const req = route.request()
+        const url = new URL(req.url())
 
-        // Always allow same-origin requests (including Next.js chunks)
-        if (
-          url.origin === 'http://localhost:3333' ||
-          url.pathname.startsWith('/_next/')
-        ) {
+        // Allow only same-origin app traffic (covers Next.js chunks, images, fonts, etc.)
+        if (url.origin === 'http://localhost:3333') {
           return route.continue()
         }
 
-        // Block known third-party hosts
-        if (BLOCKED_HOSTS.has(url.hostname)) {
-          return route.fulfill({ status: 204, body: '' })
+        // Block everything else (3P) with a harmless 204
+        // Log once per host to avoid spam
+        if (!(globalThis as any).__blockedHosts)
+          (globalThis as any).__blockedHosts = new Set<string>()
+        const seen = (globalThis as any).__blockedHosts as Set<string>
+        if (!seen.has(url.hostname)) {
+          seen.add(url.hostname)
+          console.warn(
+            `[route-block] blocking host: ${url.hostname} (${req.method()} ${url.pathname})`
+          )
         }
-      } catch {
-        // If URL parsing fails, continue
-      }
 
-      return route.continue()
+        return route.fulfill({ status: 204, body: '' })
+      } catch (e) {
+        // Fall back to continue so we don't accidentally starve the app
+        console.warn(
+          `[route-block] parse fail, continuing: ${(e as Error).message}`
+        )
+        return route.continue()
+      }
+    })
+
+    // Add error instrumentation to surface crashes in CI logs
+    page.on('pageerror', (err) => {
+      console.error(
+        `[pageerror] ${err?.name}: ${err?.message}\n${err?.stack ?? ''}`
+      )
+    })
+    page.on('console', (msg) => {
+      if (['error', 'warning'].includes(msg.type())) {
+        console.log(`[console.${msg.type()}]`, msg.text())
+      }
     })
 
     await use(page)
