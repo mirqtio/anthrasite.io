@@ -1,8 +1,8 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
-- **Total Effort (Estimated)**: 132 Story Points
+- **Total Effort (Estimated)**: 155 Story Points
 - **Completed Points**: 61 Points
-- **Remaining Points**: 71 Points
+- **Remaining Points**: 94 Points
 - **Estimated Completion**: ~10 Workdays
 
 ---
@@ -68,15 +68,17 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **Commit**: `f5a638f`
 - **D4 (2 pts)**: Resend & fallback download
 
-### EPIC E — Sales Page & Messaging — 6 pts
+### EPIC E — Sales Page & Messaging — 11 pts
 
 **Goal:** Tight sales page; locked email copy; clear post-purchase UX.
 
 - **E1 (3 pts)**: Sales page redesign (final copy/UX)
 - **E2 (1 pt)**: Report email subject/body (plain + HTML)
 - **E3 (2 pts)**: Success page states
+- **E4 (2 pts)**: Pre-launch Site QA
+- **E5 (3 pts)**: Delivery Failure Detection
 
-### EPIC F — Ops, Support, Compliance — 37 pts
+### EPIC F — Ops, Support, Compliance — 40 pts
 
 **Goal:** Safe operations from Day 1, with runbooks and guardrails.
 
@@ -89,6 +91,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **F6 (13 pts)**: Support Tooling MVP
 - **F7 (5 pts)**: Privacy compliance
 - **F8 (3 pts)**: Final Production E2E Checkout & Validation
+- **F9 (3 pts)**: Secret Management & Env Audit
 
 ### EPIC I - Test Suite Hardening - (15 pts)
 
@@ -127,6 +130,14 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
 - **H4 (3 pts)**: Fix Stripe SDK Build-Time Initialization in CI
 - **Status**: `IN PROGRESS`
+
+### EPIC Admin UI Overhaul — 15 pts
+
+**Goal:** Build a minimal, stable admin UI for internal testing and demos, focusing on a "Prompt Lab" and fixing existing bugs.
+
+- **Admin UI Overhaul (Epic)** (2 pts): Coordination, QA, and polish for the Admin UI MVP.
+- **Fix Existing Admin UI Bugs** (5 pts): Audit and fix known issues in the current Admin UI.
+- **"Prompt Lab" UI** (8 pts): Build a minimal UI for testing AI model configurations.
 
 ---
 
