@@ -87,16 +87,19 @@ describe('Analytics Component', () => {
     expect(startAnalytics).not.toHaveBeenCalled()
   })
 
-  it('should track page view when analytics consent is given', () => {
+  it('should track page view when analytics consent is given', async () => {
     // Set up window.gtag to simulate non-initial load
     ;(window as any).gtag = jest.fn()
 
     render(<Analytics />)
 
-    expect(trackPageView).toHaveBeenCalledWith({
-      path: '/',
-      url: '/',
-      title: '',
+    // Wait for state updates and effect to run
+    await waitFor(() => {
+      expect(trackPageView).toHaveBeenCalledWith({
+        path: '/',
+        url: '/',
+        title: '',
+      })
     })
   })
 
