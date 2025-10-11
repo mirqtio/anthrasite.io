@@ -23,16 +23,6 @@ export class PostHogProvider implements AnalyticsProvider {
   async initialize(): Promise<void> {
     if (this.initialized || typeof window === 'undefined') return
 
-    // Kill switch for E2E tests and explicit disable
-    if (
-      process.env.NEXT_PUBLIC_E2E === 'true' ||
-      process.env.NEXT_PUBLIC_POSTHOG_DISABLED === 'true' ||
-      (typeof window !== 'undefined' && (window as any).__E2E__)
-    ) {
-      console.debug('PostHog disabled (E2E mode or explicitly disabled)')
-      return
-    }
-
     try {
       // Check if PostHog is already loaded
       if (window.posthog) {

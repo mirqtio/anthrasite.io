@@ -129,9 +129,6 @@ jobs:
           SKIP_ENV_VALIDATION: 'true'
           SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
           NEXT_TELEMETRY_DISABLED: '1'
-          # Disable analytics for E2E builds
-          E2E_BUILD: '1'
-          NEXT_PUBLIC_ENABLE_ANALYTICS: '0'
         run: pnpm run build
       - name: Prepare standalone bundle
         run: |
