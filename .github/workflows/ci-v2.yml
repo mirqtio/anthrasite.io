@@ -29,6 +29,7 @@ jobs:
     env:
       NODE_ENV: test
       NEXT_TELEMETRY_DISABLED: '1'
+      PORT: '3333'
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
       DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
       CI_MOCK_STRIPE: 'true'
@@ -37,6 +38,18 @@ jobs:
       # E2E mode flags
       E2E: '1'
       NEXT_PUBLIC_E2E: 'true'
+      # Mock purchase service (aligns with local .env.test)
+      USE_MOCK_PURCHASE: 'true'
+      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true'
+      BYPASS_UTM_VALIDATION: 'false'
+      # Feature flags
+      NEXT_PUBLIC_FF_PURCHASE_ENABLED: 'true'
+      # Test harness
+      NEXT_PUBLIC_ENABLE_TEST_HARNESS: 'true'
+      NEXT_PUBLIC_TEST_HARNESS_KEY: 'test-key-12345'
+      # Edge config (empty for tests)
+      EDGE_CONFIG: ''
+      EDGE_CONFIG_BASE64_KEY: ''
       # Stripe test keys
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
