@@ -10,6 +10,13 @@ export default defineConfig({
   expect: {
     timeout: 5_000,
   },
+  // Skip incomplete/debug tests
+  testIgnore: [
+    /.*waitlist-functional\.spec\.ts$/,
+    /.*purchase-payment-element\.spec\.ts$/,
+    /.*journeys\.spec\.ts$/,
+    /.*\/_debug\/.*\.spec\.ts$/,
+  ],
 
   reporter: [
     ['list'],

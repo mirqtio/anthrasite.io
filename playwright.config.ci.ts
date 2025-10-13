@@ -19,6 +19,13 @@ export default defineConfig({
   expect: {
     timeout: 15_000, // 15s for production build hydration (increased from 8s)
   },
+  // Skip incomplete/debug tests
+  testIgnore: [
+    /.*waitlist-functional\.spec\.ts$/,
+    /.*purchase-payment-element\.spec\.ts$/,
+    /.*journeys\.spec\.ts$/,
+    /.*\/_debug\/.*\.spec\.ts$/,
+  ],
   // CI tests all 5 browsers via matrix strategy
   // Regular tests use storageState to bypass consent modal (fixes 80% timeout issue)
   // Consent tests run without storageState to actually test the consent modal

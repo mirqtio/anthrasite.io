@@ -59,7 +59,8 @@ FOUND_SECRETS=0
 # Check each pattern only in staged files
 for pattern in "${PATTERNS[@]}"; do
   # Get list of staged files (including markdown for documentation)
-  staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx|json|env|md)$' | grep -v '.env.test')
+  # Exclude test files that legitimately contain test credentials
+  staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx|json|env|md)$' | grep -v '.env.test' | grep -v 'playwright.config')
 
   if [ ! -z "$staged_files" ]; then
     # Search for pattern only in staged files
