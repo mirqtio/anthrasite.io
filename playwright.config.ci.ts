@@ -78,6 +78,11 @@ export default defineConfig({
       PORT: '3333',
       NEXT_PUBLIC_E2E: 'true',
       NEXT_PUBLIC_E2E_TESTING: 'true',
+      // Stripe test keys (workflow passes these from secrets)
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
       // Disable external services
       DISABLE_ANALYTICS: 'true',
       DISABLE_SENTRY: 'true',
@@ -111,6 +116,7 @@ export default defineConfig({
     ['list'], // Better for CI logs than 'line'
     ['html', { open: 'never' }], // Generate HTML report but don't open
     ['junit', { outputFile: 'test-results/junit.xml' }],
+    ['@currents/playwright'], // Report to Currents dashboard
   ],
   // Prevent accidental .only() commits
   forbidOnly: !!process.env.CI,
