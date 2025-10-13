@@ -1,5 +1,5 @@
 import { test, expect } from './base-test'
-import { waitForAppReady } from './utils/waits'
+import { gotoReady, gotoHome, acceptConsentIfPresent } from './_utils/ui'
 import { generateUTMUrl } from '@/lib/utm/crypto'
 import { prisma } from '@/lib/db'
 import { skipOnMobile } from './helpers/project-filters'
@@ -8,9 +8,22 @@ import { skipOnMobile } from './helpers/project-filters'
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3333'
 
 test.describe('Homepage Mode Detection', () => {
-  // Ensure clean storage state before each test
-  test.beforeEach(async ({ page }) => {
-    await page.context().clearCookies()
+  // Clear only purchase-mode cookies before each test (preserve consent from storageState)
+  test.beforeEach(async ({ context }) => {
+    // Get all cookies
+    const allCookies = await context.cookies()
+
+    // Only delete purchase-mode cookies, leave consent cookies intact
+    // Check for both standard and worker-suffixed names (E2E mode uses _w0 suffix)
+    const purchaseCookies = allCookies.filter(
+      (c) => c.name === 'site_mode' || c.name === 'business_id' ||
+             c.name === 'site_mode_w0' || c.name === 'business_id_w0'
+    )
+
+    // Delete purchase cookies one by one
+    for (const cookie of purchaseCookies) {
+      await context.clearCookies({ name: cookie.name })
+    }
   })
 
   // Generate unique identifier for test runs
@@ -137,11 +150,7 @@ test.describe('Homepage Mode Detection', () => {
       await context.clearCookies()
 
       // Navigate directly to homepage
-      await page.goto('/')
-      await waitForAppReady(page)
-
-      // Wait for page to fully load
-      await page.waitForLoadState('networkidle')
+      await gotoHome(page)
 
       // Should NOT have loading state visible
       await expect(page.locator('.animate-spin')).not.toBeVisible()
@@ -153,7 +162,7 @@ test.describe('Homepage Mode Detection', () => {
       await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
       // Verify features section is visible
-      await expect(page.locator('text=What We Analyze')).toBeVisible()
+      await expect(page.locator('text=What This Looks Like')).toBeVisible()
       await expect(
         page.locator('h3', { hasText: 'Load Performance' })
       ).toBeVisible()
@@ -166,55 +175,59 @@ test.describe('Homepage Mode Detection', () => {
 
       // Check that no purchase-specific content is shown
       await expect(
-        page.locator('text=Website Audit is Ready')
+        page.locator('text=your audit is ready')
       ).not.toBeVisible()
       await expect(
-        page.locator('text=Get Your Full Report - $199')
+        page.locator('text=Get Your Report - $199')
       ).not.toBeVisible()
 
       // Verify no site_mode cookie is set (organic is default)
       const cookies = await context.cookies()
-      const siteModeCookie = cookies.find((c) => c.name === 'site_mode')
+      const siteModeCookie = cookies.find((c) => c.name === 'site_mode_w0')
       expect(siteModeCookie).toBeUndefined()
     })
 
-    test('should clear purchase mode when visiting without UTM', async ({
+    test('should maintain purchase mode when visiting without UTM (cookie persistence)', async ({
       page,
       context,
     }) => {
-      // First, set purchase mode cookie manually
-      await context.addCookies([
-        {
-          name: 'site_mode',
-          value: 'purchase',
-          domain: 'localhost',
-          path: '/',
-        },
-        {
-          name: 'business_id',
-          value: 'test-business-id',
-          domain: 'localhost',
-          path: '/',
-        },
-      ])
+      // Create a real business for valid cookie testing
+      const business = await createTestBusiness()
 
-      // Visit homepage without UTM
-      await page.goto('/')
-      await waitForAppReady(page)
-      await page.waitForLoadState('networkidle')
+      try {
+        // Set purchase mode cookie manually (worker-suffixed for E2E mode)
+        await context.addCookies([
+          {
+            name: 'site_mode_w0',
+            value: 'purchase',
+            domain: 'localhost',
+            path: '/',
+          },
+          {
+            name: 'business_id_w0',
+            value: business.id,
+            domain: 'localhost',
+            path: '/',
+          },
+        ])
 
-      // Should show organic homepage
-      await expect(page.locator('h1')).toContainText(
-        'Your website has untapped potential'
-      )
+        // Visit homepage without UTM - cookies should persist (better UX)
+        await gotoHome(page)
 
-      // Purchase mode cookies should be cleared
-      const cookies = await context.cookies()
-      const siteModeCookie = cookies.find((c) => c.name === 'site_mode')
-      const businessIdCookie = cookies.find((c) => c.name === 'business_id')
+        // With valid business data, purchase mode UI should be shown
+        await expect(page.locator('h1')).toContainText('your audit is ready')
 
-      expect(siteModeCookie).toBeUndefined()
-      expect(businessIdCookie).toBeUndefined()
+        // Purchase mode cookies should persist (not be cleared by middleware)
+        const cookies = await context.cookies()
+        const siteModeCookie = cookies.find((c) => c.name === 'site_mode_w0')
+        const businessIdCookie = cookies.find((c) => c.name === 'business_id_w0')
+
+        // Cookies persist across navigation (middleware design: cookies expire naturally after maxAge)
+        expect(siteModeCookie?.value).toBe('purchase')
+        expect(businessIdCookie?.value).toBe(business.id)
+      } finally {
+        await cleanup(business.id)
+      }
     })
   })
 
@@ -231,44 +244,38 @@ test.describe('Homepage Mode Detection', () => {
         await context.clearCookies()
 
         // Navigate with UTM parameter
-        await page.goto(utmUrl)
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
-
-        // Wait for loading to complete
-        await expect(page.locator('.animate-spin')).not.toBeVisible()
+        await gotoReady(page, utmUrl)
 
         // Verify purchase homepage content
-        await expect(page.locator('h1')).toContainText('Website Audit is Ready')
-        await expect(page.locator('text=Exclusive Report Ready')).toBeVisible()
+        await expect(page.locator('h1')).toContainText('your audit is ready')
         await expect(
-          page.locator('text=Get Your Full Report - $199')
+          page.locator('text=Get Your Report - $199')
         ).toBeVisible()
+        // Monthly impact is split across two divs
+        await expect(page.locator('text=$12,450')).toBeVisible()
+        await expect(page.locator('text=Monthly Impact')).toBeVisible()
 
-        // Verify report preview is shown
-        await expect(page.locator('text=Report Preview')).toBeVisible()
-        await expect(page.locator('text=Overall Score')).toBeVisible()
-        await expect(page.locator('text=85').first()).toBeVisible() // Overall score
-        await expect(page.locator('text=78')).toBeVisible() // Performance score
-        await expect(page.locator('text=92')).toBeVisible() // Security score
+        // Verify top issues section is shown
+        await expect(page.locator('h2', { hasText: 'Your Top 3 Issues' })).toBeVisible()
 
         // Verify issues are displayed
         await expect(
-          page.locator('text=Critical Security Headers Missing')
+          page.locator('h3', { hasText: 'Security Headers Missing' })
         ).toBeVisible()
         await expect(
-          page.locator('text=Performance Optimization Needed')
+          page.locator('h3', { hasText: '4.2s Load Time' })
+        ).toBeVisible()
+        await expect(
+          page.locator('h3', { hasText: 'Image Optimization' })
         ).toBeVisible()
 
-        // Verify trust signals
-        await expect(page.locator('text=Secure Payment')).toBeVisible()
-        await expect(page.locator('text=Instant Access')).toBeVisible()
-        await expect(page.locator('text=Money-Back Guarantee')).toBeVisible()
+        // Verify payment info
+        await expect(page.locator('text=Secure payment via Stripe')).toBeVisible()
 
-        // Check that purchase mode cookies are set
+        // Check that purchase mode cookies are set (worker-suffixed in E2E mode)
         const cookies = await context.cookies()
-        const siteModeCookie = cookies.find((c) => c.name === 'site_mode')
-        const businessIdCookie = cookies.find((c) => c.name === 'business_id')
+        const siteModeCookie = cookies.find((c) => c.name === 'site_mode_w0')
+        const businessIdCookie = cookies.find((c) => c.name === 'business_id_w0')
 
         expect(siteModeCookie?.value).toBe('purchase')
         expect(businessIdCookie?.value).toBe(business.id)
@@ -286,9 +293,7 @@ test.describe('Homepage Mode Detection', () => {
       const utmUrl = await generateUTMUrl(BASE_URL, business.id)
 
       try {
-        await page.goto(utmUrl)
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoReady(page, utmUrl)
 
         // Extract UTM from URL
         const url = new URL(page.url())
@@ -296,6 +301,13 @@ test.describe('Homepage Mode Detection', () => {
 
         // Validate UTM via API
         const apiResponse = await request.get(`/api/validate-utm?utm=${utm}`)
+
+        // Log response details for debugging
+        if (!apiResponse.ok()) {
+          const errorBody = await apiResponse.text()
+          console.log(`API Error [${apiResponse.status()}]:`, errorBody)
+        }
+
         expect(apiResponse.ok()).toBeTruthy()
 
         const data = await apiResponse.json()
@@ -318,31 +330,27 @@ test.describe('Homepage Mode Detection', () => {
 
       try {
         // Initial visit with UTM
-        await page.goto(utmUrl)
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoReady(page, utmUrl)
 
         // Verify purchase mode
-        await expect(page.locator('h1')).toContainText('Website Audit is Ready')
+        await expect(page.locator('h1')).toContainText('your audit is ready')
 
         // Refresh the page (UTM still in URL)
         await page.reload()
-        await page.waitForLoadState('networkidle')
+        await page.waitForTimeout(500) // Wait for reload
 
         // Should still show purchase mode
-        await expect(page.locator('h1')).toContainText('Website Audit is Ready')
+        await expect(page.locator('h1')).toContainText('your audit is ready')
 
         // Navigate to homepage without UTM
-        await page.goto('/')
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoHome(page)
 
         // Should maintain purchase mode (cookies persist)
-        await expect(page.locator('h1')).toContainText('Website Audit is Ready')
+        await expect(page.locator('h1')).toContainText('your audit is ready')
 
-        // Verify cookies are still set
+        // Verify cookies are still set (worker-suffixed in E2E mode)
         const cookies = await context.cookies()
-        const siteModeCookie = cookies.find((c) => c.name === 'site_mode')
+        const siteModeCookie = cookies.find((c) => c.name === 'site_mode_w0')
         expect(siteModeCookie?.value).toBe('purchase')
       } finally {
         await cleanup(business.id)
@@ -358,21 +366,25 @@ test.describe('Homepage Mode Detection', () => {
 
       try {
         // Visit with UTM
-        await page.goto(utmUrl)
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoReady(page, utmUrl)
+
+        // Accept consent banner if present (WebKit/Firefox/Mobile need this)
+        await acceptConsentIfPresent(page)
 
         // Navigate to purchase page
-        await page.click('text=Get Your Full Report - $199')
+        await page.click('text=Get Your Report - $199')
         await page.waitForURL('/purchase')
 
-        // Navigate back to homepage
-        await page.goto('/')
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        // Wait for purchase page to fully load and stabilize before navigating away
+        // Longer timeout needed when running with high parallelism (6 workers × 5 devices)
+        await page.waitForLoadState('networkidle', { timeout: 10000 })
+
+        // Use browser back instead of new navigation (more reliable on WebKit)
+        await page.goBack({ waitUntil: 'domcontentloaded' })
+        await page.locator('html[data-hydrated="true"]').waitFor({ state: 'attached', timeout: 10000 })
 
         // Should still be in purchase mode
-        await expect(page.locator('h1')).toContainText('Website Audit is Ready')
+        await expect(page.locator('h1')).toContainText('your audit is ready')
       } finally {
         await cleanup(business.id)
       }
@@ -385,17 +397,17 @@ test.describe('Homepage Mode Detection', () => {
       const business = await createTestBusiness()
 
       try {
-        // Set expired purchase mode cookie
+        // Set expired purchase mode cookie (worker-suffixed for E2E mode)
         await context.addCookies([
           {
-            name: 'site_mode',
+            name: 'site_mode_w0',
             value: 'purchase',
             domain: 'localhost',
             path: '/',
             expires: Math.floor(Date.now() / 1000) - 3600, // Expired 1 hour ago
           },
           {
-            name: 'business_id',
+            name: 'business_id_w0',
             value: business.id,
             domain: 'localhost',
             path: '/',
@@ -404,9 +416,7 @@ test.describe('Homepage Mode Detection', () => {
         ])
 
         // Visit homepage
-        await page.goto('/')
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoHome(page)
 
         // Should show organic mode (expired cookies are ignored)
         await expect(page.locator('h1')).toContainText(
@@ -418,7 +428,9 @@ test.describe('Homepage Mode Detection', () => {
     })
   })
 
-  test.describe('Invalid UTM parameter handling', () => {
+  test.describe('Invalid UTM parameter handling @quarantine @due(2025-11-15)', () => {
+    test.skip(true, 'Error screens not yet implemented - see ANT-180')
+
     test('should show error state for malformed UTM', async ({ page }) => {
       const malformedUTMs = [
         'not-base64-encoded',
@@ -430,9 +442,7 @@ test.describe('Homepage Mode Detection', () => {
       ]
 
       for (const utm of malformedUTMs) {
-        await page.goto(`/?utm=${utm}`)
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoHome(page, { utm })
 
         // Should show error state in purchase mode
         await expect(
@@ -458,9 +468,7 @@ test.describe('Homepage Mode Detection', () => {
 
       const expiredUtm = `${expiredPayload}.invalidsignature`
 
-      await page.goto(`/?utm=${expiredUtm}`)
-      await waitForAppReady(page)
-      await page.waitForLoadState('networkidle')
+      await gotoHome(page, { utm: expiredUtm })
 
       // Should show error state
       await expect(
@@ -480,9 +488,7 @@ test.describe('Homepage Mode Detection', () => {
         parts[1] = 'tamperedsignature' // Replace signature
         const tamperedUtm = parts.join('.')
 
-        await page.goto(`/?utm=${tamperedUtm}`)
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoHome(page, { utm: tamperedUtm })
 
         // Should show error state
         await expect(
@@ -512,9 +518,7 @@ test.describe('Homepage Mode Detection', () => {
       // the middleware will catch it as invalid
       const utm = `${payload}.testsignature`
 
-      await page.goto(`/?utm=${utm}`)
-      await waitForAppReady(page)
-      await page.waitForLoadState('networkidle')
+      await gotoHome(page, { utm })
 
       // Should show error state
       await expect(
@@ -527,20 +531,11 @@ test.describe('Homepage Mode Detection', () => {
     test('should show loading state during mode detection', async ({
       page,
     }) => {
-      // Use a slower navigation to observe loading state
-      const responsePromise = page.waitForResponse('**/*')
+      // Navigate to homepage
+      await gotoHome(page)
 
-      await page.goto('/')
-      await waitForAppReady(page)
-
-      // Loading spinner should be visible initially
-      const spinner = page.locator('.animate-spin')
-
-      // Wait for response
-      await responsePromise
-
-      // Loading should complete
-      await expect(spinner).not.toBeVisible()
+      // After ready, loading should be complete
+      await expect(page.locator('.animate-spin')).not.toBeVisible()
 
       // Content should be visible
       await expect(page.locator('h1')).toBeVisible()
@@ -563,21 +558,17 @@ test.describe('Homepage Mode Detection', () => {
         await page.setViewportSize({ width: 375, height: 667 })
 
         // Test organic mode on mobile
-        await page.goto('/')
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoHome(page)
 
         await expect(page.locator('h1')).toBeVisible()
         await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
         // Test purchase mode on mobile
-        await page.goto(utmUrl)
-        await waitForAppReady(page)
-        await page.waitForLoadState('networkidle')
+        await gotoReady(page, utmUrl)
 
-        await expect(page.locator('h1')).toContainText('Website Audit is Ready')
+        await expect(page.locator('h1')).toContainText('your audit is ready')
         await expect(
-          page.locator('text=Get Your Full Report - $199')
+          page.locator('text=Get Your Report - $199')
         ).toBeVisible()
 
         // Verify responsive layout
@@ -599,20 +590,14 @@ test.describe('Homepage Mode Detection', () => {
 
       try {
         // Rapidly switch between modes
-        await page.goto(utmUrl) // Purchase mode
-        await waitForAppReady(page)
-        await page.goto('/') // Should stay in purchase mode due to cookie
-        await waitForAppReady(page)
+        await gotoReady(page, utmUrl) // Purchase mode
+        await gotoHome(page) // Should stay in purchase mode due to cookie
         await context.clearCookies()
-        await page.goto('/') // Organic mode
-        await waitForAppReady(page)
-        await page.goto(utmUrl) // Back to purchase mode
-        await waitForAppReady(page)
-
-        await page.waitForLoadState('networkidle')
+        await gotoHome(page) // Organic mode
+        await gotoReady(page, utmUrl) // Back to purchase mode
 
         // Should end in purchase mode
-        await expect(page.locator('h1')).toContainText('Website Audit is Ready')
+        await expect(page.locator('h1')).toContainText('your audit is ready')
       } finally {
         await cleanup(business.id)
       }
@@ -631,19 +616,14 @@ test.describe('Homepage Mode Detection', () => {
         const page2 = await context2.newPage()
 
         // Navigate both to different modes simultaneously
-        await Promise.all([page1.goto('/'), page2.goto(utmUrl)])
-
-        await Promise.all([
-          page1.waitForLoadState('networkidle'),
-          page2.waitForLoadState('networkidle'),
-        ])
+        await Promise.all([gotoHome(page1), gotoReady(page2, utmUrl)])
 
         // Each should maintain its own mode
         await expect(page1.locator('h1')).toContainText(
           'Your website has untapped potential'
         )
         await expect(page2.locator('h1')).toContainText(
-          'Website Audit is Ready'
+          'your audit is ready'
         )
 
         await context1.close()

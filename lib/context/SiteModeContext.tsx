@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { getCookieE2ESafe } from '@/lib/e2e/cookies'
 
 export type SiteMode = 'organic' | 'purchase'
 
@@ -64,19 +65,13 @@ export function SiteModeProvider({
       return
     }
 
-    // Check cookies on client side
-    const cookies = document.cookie.split(';').reduce(
-      (acc, cookie) => {
-        const [key, value] = cookie.trim().split('=')
-        acc[key] = value
-        return acc
-      },
-      {} as Record<string, string>
-    )
+    // Check cookies on client side (E2E-safe - reads worker-specific cookies in E2E mode)
+    const siteMode = getCookieE2ESafe('site_mode')
+    const bizId = getCookieE2ESafe('business_id')
 
-    if (cookies.site_mode === 'purchase' && cookies.business_id) {
+    if (siteMode === 'purchase' && bizId) {
       setMode('purchase')
-      setBusinessId(cookies.business_id)
+      setBusinessId(bizId)
     } else {
       setMode('organic')
       setBusinessId(null)

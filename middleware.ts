@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { validateUTMToken } from '@/lib/utm/crypto'
 import { abTestingMiddleware } from '@/lib/ab-testing/middleware'
 
+// Per-worker cookie isolation for E2E tests
+// Prevents parallel worker collisions on shared server/DB
+const isE2E = process.env.E2E === '1'
+const workerPrefix = isE2E ? (process.env.PW_WORKER_INDEX ?? 'w0') : ''
+const cookieName = (base: string) => (isE2E ? `${base}_${workerPrefix}` : base)
+
 // Paths that require valid UTM parameters
 const PROTECTED_PATHS = ['/purchase', '/checkout']
 
@@ -19,23 +25,31 @@ const PUBLIC_PATHS = [
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
 
-  // Early exclusion for paths that should never run middleware (matches config.matcher)
-  const excludedPaths = ['/_next/static', '/_next/image', '/favicon.ico']
-  if (excludedPaths.some((path) => pathname.startsWith(path))) {
+  // 0) CRITICAL: Never touch framework/static paths or common assets
+  // This must be the FIRST check before any cookie/header manipulation
+  if (
+    pathname.startsWith('/_next/') ||       // All Next.js internal paths (static, data, etc)
+    pathname.startsWith('/assets/') ||
+    pathname.startsWith('/images/') ||
+    pathname === '/favicon.ico' ||
+    pathname === '/robots.txt' ||
+    pathname === '/sitemap.xml'
+  ) {
     return NextResponse.next()
   }
 
   // Anonymous session management (must run before public path check for API routes)
   let response = NextResponse.next()
-  let anonSid = request.cookies.get('anon_sid')?.value
+  let anonSid = request.cookies.get(cookieName('anon_sid'))?.value
   if (!anonSid) {
     anonSid = crypto.randomUUID()
-    response.cookies.set('anon_sid', anonSid, {
+    const cookieOptions = {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'lax' as const,
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
-    })
+    }
+    response.cookies.set(cookieName('anon_sid'), anonSid, cookieOptions)
   }
   // Make session ID available to API routes via header
   response.headers.set('x-anon-session', anonSid)
@@ -105,52 +119,68 @@ export async function middleware(request: NextRequest) {
       process.env.VERCEL_ENV === 'preview' ||
       utm === 'dev-test-token' // Hard-coded fallback for development
 
-    // Mock purchase mode - bypass UTM validation entirely
+    // Mock purchase mode - use mock services (Stripe, business data)
     // SECURITY: Only allow in non-production environments
     const mockAllowed =
       process.env.NODE_ENV !== 'production' &&
       process.env.USE_MOCK_PURCHASE === 'true'
 
-    if (mockAllowed) {
-      // Allow bypass with test business data in mock mode
+    // UTM validation bypass - skip redirect logic for tests that need unrestricted access
+    // This is INDEPENDENT of mockAllowed to allow testing redirects with mocks
+    const bypassUTM =
+      process.env.NODE_ENV !== 'production' &&
+      process.env.BYPASS_UTM_VALIDATION === 'true'
+
+    if (mockAllowed && bypassUTM) {
+      // Old behavior: bypass redirects entirely for Stripe payment tests
       response = NextResponse.next(response)
-      response.cookies.set('site_mode', 'purchase', {
-        httpOnly: true,
-        sameSite: 'lax',
+      const cookieOptions = {
+        httpOnly: false,
+        sameSite: 'lax' as const,
         maxAge: 30 * 60, // 30 minutes
-      })
-      response.cookies.set('business_id', 'dev-business-1', {
-        httpOnly: true,
-        sameSite: 'lax',
-        maxAge: 30 * 60, // 30 minutes
-      })
+      }
+      const businessId = `dev-business-${workerPrefix || '1'}`
+
+      response.cookies.set(cookieName('site_mode'), 'purchase', cookieOptions)
+      response.cookies.set(cookieName('business_id'), businessId, cookieOptions)
       return response
     }
 
     if (isTestMode && utm === bypassToken) {
       // Allow bypass with test business data
       response = NextResponse.next(response)
-      response.cookies.set('site_mode', 'purchase', {
-        httpOnly: true,
-        sameSite: 'lax',
+      const cookieOptions = {
+        httpOnly: false,
+        sameSite: 'lax' as const,
         maxAge: 30 * 60, // 30 minutes
-      })
-      response.cookies.set('business_id', 'test-business-001', {
-        httpOnly: true,
-        sameSite: 'lax',
-        maxAge: 30 * 60, // 30 minutes
-      })
+      }
+      const businessId = `test-business-${workerPrefix || '001'}`
+
+      response.cookies.set(cookieName('site_mode'), 'purchase', cookieOptions)
+      response.cookies.set(cookieName('business_id'), businessId, cookieOptions)
       return response
     }
 
     if (!utm) {
-      // Redirect to homepage with error
+      // Check if user has existing purchase mode cookies (try worker-specific first, then fallback)
+      const siteMode = request.cookies.get(cookieName('site_mode'))?.value
+        ?? request.cookies.get('site_mode')?.value
+      const businessId = request.cookies.get(cookieName('business_id'))?.value
+        ?? request.cookies.get('business_id')?.value
+
+      if (siteMode === 'purchase' && businessId) {
+        // User has valid purchase mode cookies - allow access
+        return NextResponse.next(response)
+      }
+
+      // No UTM and no purchase cookies - redirect to homepage with error
       response = NextResponse.redirect(new URL('/', request.url))
-      response.cookies.set('utm_error', 'missing', {
+      const cookieOptions = {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         maxAge: 60, // 1 minute
-      })
+      }
+      response.cookies.set(cookieName('utm_error'), 'missing', cookieOptions)
       return response
     }
 
@@ -171,28 +201,26 @@ export async function middleware(request: NextRequest) {
       }
 
       response = NextResponse.redirect(new URL(errorPage, request.url))
-      response.cookies.set('utm_error', errorMessage, {
+      const errorCookieOptions = {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         maxAge: 60, // 1 minute
-      })
+      }
+      response.cookies.set(cookieName('utm_error'), errorMessage, errorCookieOptions)
       return response
     }
 
     // Valid UTM - set mode cookie for homepage
     response = NextResponse.next(response)
-    response.cookies.set('site_mode', 'purchase', {
-      httpOnly: true,
-      sameSite: 'lax',
+    const purchaseCookieOptions = {
+      httpOnly: false,
+      sameSite: 'lax' as const,
       maxAge: 30 * 60, // 30 minutes
-    })
+    }
+    const businessId = validation.payload!.businessId
 
-    // Store business ID in cookie for later use
-    response.cookies.set('business_id', validation.payload!.businessId, {
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 30 * 60, // 30 minutes
-    })
+    response.cookies.set(cookieName('site_mode'), 'purchase', purchaseCookieOptions)
+    response.cookies.set(cookieName('business_id'), businessId, purchaseCookieOptions)
 
     return response
   }
@@ -208,16 +236,15 @@ export async function middleware(request: NextRequest) {
       if (validation.valid) {
         // Set purchase mode - cookies persist for 30 minutes (SameSite=Lax)
         response = NextResponse.next(response)
-        response.cookies.set('site_mode', 'purchase', {
-          httpOnly: true,
-          sameSite: 'lax',
+        const purchaseCookieOptions = {
+          httpOnly: false,
+          sameSite: 'lax' as const,
           maxAge: 30 * 60, // 30 minutes
-        })
-        response.cookies.set('business_id', validation.payload!.businessId, {
-          httpOnly: true,
-          sameSite: 'lax',
-          maxAge: 30 * 60, // 30 minutes
-        })
+        }
+        const businessId = validation.payload!.businessId
+
+        response.cookies.set(cookieName('site_mode'), 'purchase', purchaseCookieOptions)
+        response.cookies.set(cookieName('business_id'), businessId, purchaseCookieOptions)
         return response
       }
     }
@@ -233,11 +260,10 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Note: API routes are now INCLUDED for anon session management
+     * - _next/* (all Next.js internals: static, data, image, etc)
+     * - Common static assets (favicon, robots, sitemap, assets, images)
+     * Note: API routes are INCLUDED for anon session management
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/|favicon.ico|robots.txt|sitemap.xml|assets/|images/).*)',
   ],
 }
