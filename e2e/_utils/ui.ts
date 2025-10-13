@@ -145,3 +145,48 @@ export async function safeFill(
   await expect(loc).toBeVisible({ timeout })
   await loc.fill(value)
 }
+
+// ============================================================================
+// Primary Navigation Helpers (added 2025-10-13)
+// ============================================================================
+
+/**
+ * Consolidated navigation helper - always waits for networkidle + app ready
+ * Use this as the base for all navigation to ensure consistent behavior
+ *
+ * @param page - Playwright page object
+ * @param url - URL to navigate to
+ */
+export async function goto(page: Page, url: string) {
+  await page.goto(url, { waitUntil: 'networkidle' })
+  await waitForAppReady(page)
+}
+
+/**
+ * Navigate to homepage (/), optionally with UTM parameter
+ * Uses storageState pre-accepted consent in CI for performance
+ *
+ * @param page - Playwright page object
+ * @param options - Optional UTM parameter
+ * @example
+ *   await gotoHome(page)                    // Navigate to /
+ *   await gotoHome(page, { utm: 'token' }) // Navigate to /?utm=token
+ */
+export async function gotoHome(page: Page, options?: { utm?: string }) {
+  const url = options?.utm ? `/?utm=${options.utm}` : '/'
+  await goto(page, url)
+}
+
+/**
+ * Navigate to purchase-ready URL (with valid UTM)
+ * Assumes URL already includes UTM parameter
+ *
+ * @param page - Playwright page object
+ * @param url - Full URL including UTM parameter
+ * @example
+ *   const utmUrl = await generateUTMUrl(BASE_URL, businessId)
+ *   await gotoReady(page, utmUrl)
+ */
+export async function gotoReady(page: Page, url: string) {
+  await goto(page, url)
+}

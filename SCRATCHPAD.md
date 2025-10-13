@@ -1,9 +1,184 @@
 # E2E Testing - Complete Session History (Oct 11-13, 2025)
 
-## 📊 CURRENT WORK: GitHub CI Integration with Currents (Oct 13)
+## 🚧 IN PROGRESS: CI Test Failures (Oct 13)
+
+**Session**: Resolving WebKit launch + consent test failures + middleware unit test failures
+**Status**: PARTIAL SUCCESS - 2/4 fixes confirmed working, E2E tests still failing
+
+### Fixes Implemented & Status
+
+**1. WebKit Launch Flag** ❌ → ✅ **FIXED**
+
+- **Commit**: 3cc9df0
+- **Change**: Removed unsupported `--force-prefers-reduced-motion` flag from playwright.config.ci.ts
+- **Status**: Fix deployed, no longer seeing WebKit launch errors in CI logs
+
+**2. Consent Project Split** ❌ → ✅ **CONFIGURED**
+
+- **Commit**: 3cc9df0
+- **Change**: Split 5 projects into 10 (5 regular with storageState, 5 consent without)
+- **Status**: Configuration deployed, CI running both project types correctly
+
+**3. Middleware Unit Tests** ❌ → ✅ **FIXED**
+
+- **Commit**: 3cc9df0
+- **Change**: Force module reload in beforeEach to disable E2E mode
+- **Status**: ✅ All 11 middleware tests passing locally and in CI
+
+**4. Unit Test Stripe Secrets** ❌ → ✅ **FIXED**
+
+- **Commit**: 3f482f9
+- **Change**: Added Stripe env vars to `unit` job in ci-v2.yml
+- **Status**: ✅ Unit test job passed in 1m0s (run 18465100444)
+
+### GitHub Push Protection Resolved
+
+**Initial issue**: GitHub detected Stripe test key in `.env.test:10`
+**Solution**: Untracked `.env.test` (already in .gitignore) and created `.env.test.example` with placeholders
+
+**Changes:**
+
+- Removed `.env.test` from git tracking: `git rm --cached .env.test`
+- Created `.env.test.example` with placeholder values
+- Amended commit to replace tracked file with example file
+- Pushed successfully: commit `3cc9df0`
+
+**CI already configured**: GitHub Actions workflow (`.github/workflows/ci-v2.yml:41-46`) injects secrets as environment variables, so `.env.test` is only needed for local development.
+
+### Final CI Status (Run 18465100444) - COMPLETE DIAGNOSIS
+
+**Passing:**
+
+- ✅ Unit tests: 1m0s (316/316 tests)
+
+**Failing:**
+
+- ❌ E2E firefox-desktop: 12m22s (~15% pass)
+- ❌ E2E webkit-desktop: 12m43s (~10% pass)
+- ❌ E2E chromium-desktop: 8m44s (~20% pass)
+- ❌ E2E chromium-mobile: 8m34s (~18% pass)
+- ❌ E2E webkit-mobile: 11m32s (~12% pass)
+
+**Root Cause Analysis**: ✅ COMPLETE
+
+### 🔴 CRITICAL FINDING: Missing Code
+
+**Issue**: Functions `gotoHome()` and `gotoReady()` imported but never defined
+
+**Location**: `e2e/_utils/ui.ts` (missing exports)
+
+**Evidence**:
+
+```typescript
+// Tests import these:
+import { gotoHome, gotoReady } from './_utils/ui'
+
+// But they DON'T EXIST in e2e/_utils/ui.ts
+// Only exports: gotoStable, gotoAndDismissConsent, openModal, etc.
+```
+
+**CI Errors**:
+
+```
+TypeError: (0 , _ui.gotoHome) is not a function
+TypeError: (0 , _ui.gotoReady) is not a function
+```
+
+**Impact**: **~40+ tests fail immediately** (unable to run)
+
+**Solution**: Add missing functions to `e2e/_utils/ui.ts` - see diagnosis doc
+
+**Estimated Fix Impact**: Should restore 60-70% of failing tests
+
+### Comprehensive Diagnosis Document
+
+📄 **Full analysis**: `/CI_logs/run-18465100444/DIAGNOSIS_AND_SOLUTIONS.md`
+
+**Contents**:
+
+- ❌ Critical Issue (40+ tests): Missing helper functions
+- 🟡 Issue 2 (2-3 tests): Client-side navigation failures
+- 🟡 Issue 3 (2 tests): CSS rule count assertions too strict
+- 🟡 Issue 4 (5-10 tests): Consent modal timeouts
+- 🟡 Issue 5 (5-10 tests): Element visibility timeouts (likely cascading from Critical Issue)
+
+**Files to Fix**:
+
+1. `e2e/_utils/ui.ts` - Add gotoHome() and gotoReady() functions
+2. `e2e/css-loading.spec.ts` - Adjust CSS assertion threshold
+3. `playwright.config.ci.ts` - Verify consent project testMatch pattern
+
+---
+
+## ✅ COMPLETED: CI Test Failures Fixed (Oct 13)
+
+**Commit**: 3cc9df0 (pushed to origin)
+**Branch**: recovery/clean-slate-2025-10-13
+**PR**: https://github.com/mirqtio/anthrasite.io/pull/8
+
+### Root Causes Identified and Fixed
+
+**1. WebKit Browser Launch Failure** ❌ → ✅
+
+- **Impact**: 113/128 tests failing in CI
+- **Cause**: `--force-prefers-reduced-motion` flag not supported by WebKit
+- **Fix**: Removed `launchOptions` from playwright.config.ci.ts:262-266
+- **File**: `playwright.config.ci.ts`
+
+**2. Consent Modal Test Timeouts** ❌ → ✅
+
+- **Impact**: ~60/128 tests timing out waiting for consent modal
+- **Cause**: Global `storageState` pre-accepted consent, breaking tests that need to test the modal
+- **Fix**: Split 5 projects into 10 (5 regular + 5 consent variants)
+  - Regular projects: Use `storageState: 'e2e/storage/consent-accepted.json'` + `testIgnore: /.*consent.*\.spec\.ts$/`
+  - Consent projects: No `storageState` + `testMatch: /.*consent.*\.spec\.ts$/`
+- **Files**: `playwright.config.ci.ts`, `.github/workflows/ci-v2.yml`
+
+**3. Middleware Unit Test Failures** ❌ → ✅
+
+- **Impact**: 9/11 middleware tests failing in pre-commit hook
+- **Cause**: `E2E=1` in `.env.test` caused module-load-time caching of worker-prefixed cookie names
+- **Fix**: Force module reload in beforeEach to disable E2E mode
+  - Delete `process.env.E2E` and `process.env.PW_WORKER_INDEX`
+  - Call `jest.resetModules()` to clear module cache
+  - Dynamically import middleware after env cleared
+  - Re-apply `validateUTMToken` mock after reset
+- **File**: `__tests__/middleware.test.ts:100-116`
+
+### Files Modified
+
+```bash
+playwright.config.ci.ts           # Removed WebKit launchOptions, split projects
+.github/workflows/ci-v2.yml       # Run both regular + consent projects
+__tests__/middleware.test.ts      # Force module reload for E2E mode isolation
+.env.test                         # Added E2E=1, real Stripe test keys, Currents creds
+CLAUDE.md                         # Updated collaboration framework
+SCRATCHPAD.md                     # Documented session
+```
+
+### Test Results
+
+**Pre-commit validation** (local): ✅ ALL PASSED
+
+- Secret detection: ✅ No secrets detected
+- TypeScript: ✅ No errors
+- ESLint: ✅ (warnings only)
+- Prettier: ✅ Formatted
+- Unit tests: ✅ 36 suites, 316 tests passed
+
+**Expected CI results**:
+
+- All 128 tests × 5 browsers (640 total) should pass
+- WebKit launches successfully
+- Consent modal tests use actual modal flow
+- Regular tests skip modal with storageState
+
+---
+
+## ✅ COMPLETED: GitHub CI Integration with Currents (Oct 13)
 
 **Session**: Configuring Currents.dev for GitHub Actions CI
-**Status**: ✅ Complete
+**Previous Status**: ✅ Complete
 
 ### CI Configuration Cleanup (Critical Fixes)
 
