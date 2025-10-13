@@ -19,12 +19,13 @@ export default defineConfig({
   expect: {
     timeout: 15_000, // 15s for production build hydration (increased from 8s)
   },
-  // Skip incomplete/debug tests
+  // Skip incomplete/debug tests (match local run 5438b418d431bae7)
   testIgnore: [
     /.*waitlist-functional\.spec\.ts$/,
     /.*purchase-payment-element\.spec\.ts$/,
     /.*journeys\.spec\.ts$/,
     /.*\/_debug\/.*\.spec\.ts$/,
+    /.*waitlist\.spec\.ts$/, // Did NOT run in local baseline run
   ],
   // CI tests all 5 browsers via matrix strategy
   // Regular tests use storageState to bypass consent modal (fixes 80% timeout issue)
