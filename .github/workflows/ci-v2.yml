@@ -130,6 +130,10 @@ jobs:
       NODE_ENV: test
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
       DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
+      # Stripe test keys (required for unit tests)
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+      STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
