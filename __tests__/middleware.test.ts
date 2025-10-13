@@ -231,15 +231,10 @@ describe('UTM Middleware', () => {
         const request = createRequest(path)
         const response = await middleware(request)
 
-        // Static assets in matcher exclusion list should not run middleware at all
-        // Others (robots.txt, sitemap.xml) get anon_sid but skip other middleware
+        // All static assets are excluded by matcher - middleware doesn't run at all
+        // Updated behavior: robots.txt and sitemap.xml are now in matcher exclusion list
         const cookies = response?.cookies.getAll()
-        if (path.includes('_next') || path.includes('favicon')) {
-          expect(cookies).toHaveLength(0)
-        } else {
-          expect(cookies).toHaveLength(1)
-          expect(cookies?.[0].name).toBe('anon_sid')
-        }
+        expect(cookies).toHaveLength(0)
       }
     })
   })
