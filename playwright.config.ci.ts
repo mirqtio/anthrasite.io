@@ -11,6 +11,19 @@ import base from './playwright.config'
  * - Chromium only (vs 5 browsers locally)
  * - Longer timeouts for cold starts
  */
+
+// Tests to exclude from main browser projects (incomplete/debug/consent tests)
+// IMPORTANT: Project-level testIgnore REPLACES (not extends) top-level config
+// Must combine all patterns at project level for proper exclusion
+const EXCLUDED_TESTS = [
+  /.*waitlist-functional\.spec\.ts$/,
+  /.*purchase-payment-element\.spec\.ts$/,
+  /.*journeys\.spec\.ts$/,
+  /.*\/_debug\/.*\.spec\.ts$/,
+  /.*waitlist\.spec\.ts$/, // Did NOT run in local baseline run 5438b418d431bae7
+  /.*consent.*\.spec\.ts$/, // Consent tests run separately in dedicated projects
+]
+
 export default defineConfig({
   ...base,
   workers: 6, // Conservative parallelism for CI
@@ -19,21 +32,13 @@ export default defineConfig({
   expect: {
     timeout: 15_000, // 15s for production build hydration (increased from 8s)
   },
-  // Skip incomplete/debug tests (match local run 5438b418d431bae7)
-  testIgnore: [
-    /.*waitlist-functional\.spec\.ts$/,
-    /.*purchase-payment-element\.spec\.ts$/,
-    /.*journeys\.spec\.ts$/,
-    /.*\/_debug\/.*\.spec\.ts$/,
-    /.*waitlist\.spec\.ts$/, // Did NOT run in local baseline run
-  ],
   // CI tests all 5 browsers via matrix strategy
   // Regular tests use storageState to bypass consent modal (fixes 80% timeout issue)
   // Consent tests run without storageState to actually test the consent modal
   projects: [
     {
       name: 'chromium-desktop',
-      testIgnore: /.*consent.*\.spec\.ts$/,
+      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
@@ -51,7 +56,7 @@ export default defineConfig({
     },
     {
       name: 'firefox-desktop',
-      testIgnore: /.*consent.*\.spec\.ts$/,
+      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1920, height: 1080 },
@@ -71,7 +76,7 @@ export default defineConfig({
     },
     {
       name: 'webkit-desktop',
-      testIgnore: /.*consent.*\.spec\.ts$/,
+      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1920, height: 1080 },
@@ -91,7 +96,7 @@ export default defineConfig({
     },
     {
       name: 'chromium-mobile',
-      testIgnore: /.*consent.*\.spec\.ts$/,
+      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Pixel 7'],
         storageState: 'e2e/storage/consent-accepted.json',
@@ -107,7 +112,7 @@ export default defineConfig({
     },
     {
       name: 'webkit-mobile',
-      testIgnore: /.*consent.*\.spec\.ts$/,
+      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['iPhone 14'],
         actionTimeout: 20_000, // Extra time for WebKit
