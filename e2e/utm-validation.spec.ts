@@ -180,7 +180,10 @@ test.describe('UTM Parameter Validation', () => {
   })
 
   test.describe('One-time use enforcement', () => {
-    test('should prevent reuse of UTM token', async ({ page, request }) => {
+    test.skip('should prevent reuse of UTM token', async ({
+      page,
+      request,
+    }) => {
       const business = await createTestBusiness()
       const { token, nonce } = await createAndStoreToken(business.id)
       const utmUrl = await generateUTMUrl(

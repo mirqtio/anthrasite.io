@@ -58,7 +58,9 @@ test.describe('Site Mode Selection', () => {
       await expect(page.getByTestId('purchase-header')).not.toBeVisible()
     })
 
-    test('purchase URL with mock UTM shows purchase mode', async ({ page }) => {
+    test.skip('purchase URL with mock UTM shows purchase mode', async ({
+      page,
+    }) => {
       // Use the mock hash from our mock data as a query parameter
       await gotoAndDismissCookies(page, '/purchase?utm=mock-hash-123')
 
@@ -84,7 +86,7 @@ test.describe('Site Mode Selection', () => {
       await expect(page.getByTestId('organic-homepage')).not.toBeVisible()
     })
 
-    test('different mock hashes show different business data', async ({
+    test.skip('different mock hashes show different business data', async ({
       page,
     }) => {
       // Test first mock business

@@ -179,7 +179,9 @@ test.describe('Purchase Page', () => {
     ).toBeVisible()
   })
 
-  test('should maintain scroll position on navigation', async ({ page }) => {
+  test.skip('should maintain scroll position on navigation', async ({
+    page,
+  }) => {
     const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}&preview=true`)

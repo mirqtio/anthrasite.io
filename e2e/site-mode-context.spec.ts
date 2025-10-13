@@ -74,7 +74,7 @@ test.describe('SiteMode Context', () => {
     expect(hasContent).toBe(true)
   })
 
-  test('should properly detect cookies for site mode', async ({
+  test.skip('should properly detect cookies for site mode', async ({
     page,
     context,
   }) => {

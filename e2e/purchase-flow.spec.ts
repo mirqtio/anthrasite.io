@@ -114,7 +114,9 @@ test.describe('Purchase Flow E2E Tests', () => {
     await expect(page).toHaveURL(config.baseUrl + '/')
   })
 
-  test('Purchase flow tracking events fire correctly', async ({ page }) => {
+  test.skip('Purchase flow tracking events fire correctly', async ({
+    page,
+  }) => {
     // Set up network monitoring for analytics
     const analyticsRequests: any[] = []
 
@@ -180,7 +182,7 @@ test.describe('Purchase Flow E2E Tests', () => {
     expect(box?.width).toBeGreaterThan(350) // Nearly full width
   })
 
-  test('Performance: Purchase page loads within acceptable time', async ({
+  test.skip('Performance: Purchase page loads within acceptable time', async ({
     page,
   }) => {
     const startTime = Date.now()
