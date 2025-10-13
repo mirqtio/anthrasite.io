@@ -1,11 +1,11 @@
 /**
  * @jest-environment node
  */
-import { middleware } from '../middleware'
 import { NextRequest } from 'next/server'
-import { validateUTMToken } from '@/lib/utm/crypto'
 
-jest.mock('@/lib/utm/crypto')
+// Import middleware dynamically after env setup to avoid cached E2E mode
+let middleware: any
+let validateUTMToken: jest.Mock
 
 // Mock NextRequest and NextResponse for node environment
 jest.mock('next/server', () => {
@@ -50,7 +50,14 @@ jest.mock('next/server', () => {
       ...originalModule.NextResponse,
       next: (init?: any) => {
         const response: any = new Response(null, init)
+        // Preserve existing cookies if passed a response object
         const cookieStore = new Map()
+        if (init?.cookies) {
+          const existingCookies = init.cookies.getAll?.() || []
+          existingCookies.forEach((cookie: any) => {
+            cookieStore.set(cookie.name, { value: cookie.value, ...cookie })
+          })
+        }
         response.cookies = {
           set: (name: string, value: string, options?: any) => {
             cookieStore.set(name, { value, ...options })
@@ -90,8 +97,23 @@ jest.mock('next/server', () => {
 })
 
 describe('UTM Middleware', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
+  beforeEach(async () => {
+    // Ensure E2E mode is disabled for unit tests (prevents worker suffix on cookies)
+    delete process.env.E2E
+    delete process.env.PW_WORKER_INDEX
+    // Force reload middleware module to pick up env changes
+    jest.resetModules()
+    // Re-mock the crypto module after reset
+    const mockValidateUTMToken = jest.fn()
+    jest.doMock('@/lib/utm/crypto', () => ({
+      validateUTMToken: mockValidateUTMToken,
+    }))
+    // Dynamically import middleware after env is cleared
+    const middlewareModule = await import('../middleware')
+    middleware = middlewareModule.middleware
+    // Get reference to mocked function for test assertions
+    const cryptoModule = await import('@/lib/utm/crypto')
+    validateUTMToken = cryptoModule.validateUTMToken as jest.Mock
   })
 
   const createRequest = (url: string, cookies?: Record<string, string>) => {

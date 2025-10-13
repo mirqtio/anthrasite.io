@@ -100,7 +100,7 @@ jobs:
           npx wait-on http://localhost:3333 --timeout 60000
 
       - name: Run E2E tests - ${{ matrix.project }}
-        run: pnpm test:e2e:ci --project="${{ matrix.project }}"
+        run: pnpm test:e2e:ci --project="${{ matrix.project }}" --project="consent-${{ matrix.project }}"
 
       - name: Upload artifacts on failure
         if: failure()

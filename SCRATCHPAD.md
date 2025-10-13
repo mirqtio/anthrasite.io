@@ -4631,3 +4631,60 @@ Successfully recovered from repository corruption caused by iCloud sync. All E2E
 _Session completed: 2025-10-13_  
 _Final commit: 7dc6d67_  
 _Status: Ready for merge_
+
+---
+
+## CI Test Failure Diagnosis & Fixes (2025-10-13)
+
+### Problem Analysis
+
+Downloaded CI logs from run #18463348911 and identified two critical issues:
+
+**Issue 1: WebKit Launch Failure**
+
+- Error: `Cannot parse arguments: Unknown option --force-prefers-reduced-motion`
+- Impact: 113/128 tests failed in WebKit (all browsers couldn't launch)
+- Cause: Flag not supported by WebKit in CI environment
+
+**Issue 2: Consent Test Failures**
+
+- Error: Consent modal tests timing out waiting for modal
+- Impact: ~60/128 tests failed in Chromium/Firefox
+- Cause: Global `storageState` pre-accepted consent, blocking tests that need to test the modal
+
+### Solution Implemented
+
+**Fix 1: Remove Unsupported Flag**
+
+- Removed `launchOptions: { args: ['--force-prefers-reduced-motion'] }` from playwright.config.ci.ts:107-109
+- WebKit will now launch successfully
+
+**Fix 2: Split Test Projects**
+
+- Created separate projects for consent tests (10 total, was 5):
+  - Regular projects (5): Use `storageState` to bypass consent modal (fixes 80% timeout issue)
+  - Consent projects (5): Run without `storageState` to test modal behavior
+- Regular projects: `testIgnore: /.*consent.*\.spec\.ts$/`
+- Consent projects: `testMatch: /.*consent.*\.spec\.ts$/`
+- Updated CI workflow to run both: `--project="$matrix.project" --project="consent-$matrix.project"`
+
+### Files Changed
+
+1. `playwright.config.ci.ts`:
+
+   - Removed unsupported launchOptions
+   - Moved storageState from global `use` to per-project config
+   - Added 5 consent-specific projects without storageState
+
+2. `.github/workflows/ci-v2.yml`:
+   - Updated test command to run both regular and consent projects per browser
+
+### Expected Results
+
+- ✅ WebKit tests will launch (fixes 113 failures)
+- ✅ Regular tests bypass consent modal (maintains 80% pass rate)
+- ✅ Consent tests properly test modal (fixes ~60 failures)
+- ✅ All 128 tests × 5 browsers should pass in CI
+- ✅ Currents dashboard will show full test results
+
+**Status**: Ready to commit and push for CI validation

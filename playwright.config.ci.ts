@@ -19,42 +19,100 @@ export default defineConfig({
   expect: {
     timeout: 15_000, // 15s for production build hydration (increased from 8s)
   },
-  // CI tests all 5 browsers via matrix strategy (each job filters to one project)
+  // CI tests all 5 browsers via matrix strategy
+  // Regular tests use storageState to bypass consent modal (fixes 80% timeout issue)
+  // Consent tests run without storageState to actually test the consent modal
   projects: [
     {
       name: 'chromium-desktop',
+      testIgnore: /.*consent.*\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
+        storageState: 'e2e/storage/consent-accepted.json',
+      },
+    },
+    {
+      name: 'consent-chromium-desktop',
+      testMatch: /.*consent.*\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1920, height: 1080 },
+        // No storageState - consent tests need fresh state
       },
     },
     {
       name: 'firefox-desktop',
+      testIgnore: /.*consent.*\.spec\.ts$/,
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1920, height: 1080 },
         navigationTimeout: 30_000, // Extra time for Firefox in CI
+        storageState: 'e2e/storage/consent-accepted.json',
+      },
+    },
+    {
+      name: 'consent-firefox-desktop',
+      testMatch: /.*consent.*\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: { width: 1920, height: 1080 },
+        navigationTimeout: 30_000, // Extra time for Firefox in CI
+        // No storageState - consent tests need fresh state
       },
     },
     {
       name: 'webkit-desktop',
+      testIgnore: /.*consent.*\.spec\.ts$/,
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1920, height: 1080 },
         actionTimeout: 20_000, // Extra time for WebKit
+        storageState: 'e2e/storage/consent-accepted.json',
+      },
+    },
+    {
+      name: 'consent-webkit-desktop',
+      testMatch: /.*consent.*\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Safari'],
+        viewport: { width: 1920, height: 1080 },
+        actionTimeout: 20_000, // Extra time for WebKit
+        // No storageState - consent tests need fresh state
       },
     },
     {
       name: 'chromium-mobile',
+      testIgnore: /.*consent.*\.spec\.ts$/,
       use: {
         ...devices['Pixel 7'],
+        storageState: 'e2e/storage/consent-accepted.json',
+      },
+    },
+    {
+      name: 'consent-chromium-mobile',
+      testMatch: /.*consent.*\.spec\.ts$/,
+      use: {
+        ...devices['Pixel 7'],
+        // No storageState - consent tests need fresh state
       },
     },
     {
       name: 'webkit-mobile',
+      testIgnore: /.*consent.*\.spec\.ts$/,
       use: {
         ...devices['iPhone 14'],
         actionTimeout: 20_000, // Extra time for WebKit
+        storageState: 'e2e/storage/consent-accepted.json',
+      },
+    },
+    {
+      name: 'consent-webkit-mobile',
+      testMatch: /.*consent.*\.spec\.ts$/,
+      use: {
+        ...devices['iPhone 14'],
+        actionTimeout: 20_000, // Extra time for WebKit
+        // No storageState - consent tests need fresh state
       },
     },
   ],
@@ -99,17 +157,12 @@ export default defineConfig({
   },
   use: {
     ...base.use,
-    // Pre-accept consent for all tests (bypasses modal timeout issue)
-    storageState: 'e2e/storage/consent-accepted.json',
+    // storageState handled per-project (consent tests need fresh state)
     actionTimeout: 15_000, // 15s action timeout in CI
     navigationTimeout: 30_000, // 30s navigation timeout in CI
     video: 'off', // Disable video to save space
     trace: 'retain-on-failure', // Keep traces only on failure
     screenshot: 'only-on-failure', // Screenshots only on failure
-    // Reduce motion to prevent animation-based flakiness
-    launchOptions: {
-      args: ['--force-prefers-reduced-motion'],
-    },
   },
   // Configure reporters for CI
   reporter: [

@@ -1,10 +1,75 @@
-Use TDD and BDD with browser based e2e tests for validation that requirements are met.
-Proper CI/CD should be configured and used with each feature fully tests, issues resolved, and merged to main before moving on to the next feature.
-Final dev acceptance includes a full assessment of the codebase against requirements to ensure successfull deliver, running of the comprehensive test suite including browser based e2e test for all features and functions, and confirmation that everything runs green.
-Ask if there are any unclear or ambiguous points. Do not make assumptions. Do not work around requirements.
-Contniue until the entire plan is completed and verified to be working as expected.
-When a CI failure occurs, download the complete log archive and save it to /CI_logs in the root of the project folder. Then review every log, document every issue, create a plan to resolve every issue, and implement that plan.
-Use pre-commit hooks to catch most CI test issues.
-Ensure the local Docker test environment matches CI exectly.
-Use the local Docker test environment before merging to main.
-If tests pass locally, but fail in CI, then local or CI needs to be modified because they are not precisely aligned.
+# CLAUDE.md
+
+## Collaboration Framework
+
+This project follows a structured collaboration method: @METHOD.md
+
+**Your role (Claude):** Principal Engineer
+
+- Diagnose issues to root cause
+- Architect and implement solutions
+- Use MCP tools
+- ALL your work goes in SCRATCHPAD.md
+
+## Critical File Rules
+
+**READ ONLY - NEVER EDIT:**
+
+- `METHOD.md` - Our process
+- `SYSTEM.md` - Current architecture
+- `ISSUES.md` - Generated snapshot from Plane
+- `docs/adr/*.md` - All architectural decision records
+
+**YOUR NOTEBOOK:**
+
+- `SCRATCHPAD.md` - Write ALL plans, analysis, updates, and communication here
+
+**PROHIBITED:**
+
+- Editing METHOD.md, SYSTEM.md, ISSUES.md, or any ADRs
+- Creating random .md files anywhere in the codebase
+- Scattering documentation across multiple files
+- Writing planning documents outside of SCRATCHPAD.md
+
+## Project Commands
+
+### Build & Test
+
+```bash
+npm run build          # Build the project
+npm run test           # Run test suite
+npm run test:e2e       # Run browser-based e2e tests
+npm run typecheck      # Type checking
+```
+
+### CI/CD
+
+```bash
+docker compose up      # Local test environment (matches CI exactly)
+pre-commit run --all   # Run pre-commit hooks
+```
+
+## Development Standards
+
+- **Testing:** TDD/BDD with browser-based e2e validation
+- **Quality gate:** All features fully tested before merge to main
+- **Environment parity:** Local Docker must match CI exactly
+- **CI failures:** Download logs to `/CI_logs/`, document in SCRATCHPAD.md
+- **Alignment:** If tests pass locally but fail in CI, fix the mismatch
+
+## Workflow Pattern
+
+1. Check SCRATCHPAD.md for current plan
+2. Read SYSTEM.md and ISSUES.md as needed
+3. Write implementation plan in SCRATCHPAD.md
+4. Human implements and commits
+5. Human updates SYSTEM.md and closes issue in Plane
+6. Clear or update SCRATCHPAD.md for next task
+
+## Remember
+
+- Ask for clarification on ambiguous requirements
+- Everything you write goes in SCRATCHPAD.md
+- Human maintains METHOD.md, SYSTEM.md, ISSUES.md, and ADRs
+- Human doesn't code and hates Linux
+- Claude is the only entity that touches code in this repo
