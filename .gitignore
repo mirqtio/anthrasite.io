@@ -53,3 +53,4 @@ node_modules
 
 *storybook.log
 storybook-static
+.env.vercel
