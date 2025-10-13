@@ -4530,3 +4530,104 @@ _Recovery completed: 2025-10-13_
 _Clean repository at: ~/Developer/anthrasite-clean_  
 _PR: https://github.com/mirqtio/anthrasite.io/pull/8_  
 _Status: Ready for review and merge_
+
+---
+
+## Post-Recovery Session — 2025-10-13 (After Windsurf Crash)
+
+### Context
+
+Windsurf crashed during the pre-commit hook execution. When resuming, user requested to continue the work.
+
+### Issue Encountered
+
+Pre-commit hook failed with middleware unit test failure:
+
+```
+FAIL __tests__/middleware.test.ts
+  ● UTM Middleware › Public paths › should bypass middleware for static assets
+    expect(received).toHaveLength(expected)
+    Expected length: 1
+    Received length: 0
+```
+
+**Root Cause**: The recovered `middleware.ts` had updated matcher config that now excludes `robots.txt` and `sitemap.xml` entirely (they no longer run through middleware at all). The test still expected the old behavior where these paths would get `anon_sid` cookies.
+
+### Fix Applied
+
+Updated test in `__tests__/middleware.test.ts` (lines 221-239):
+
+**Before**:
+
+```typescript
+// Static assets in matcher exclusion list should not run middleware at all
+// Others (robots.txt, sitemap.xml) get anon_sid but skip other middleware
+const cookies = response?.cookies.getAll()
+if (path.includes('_next') || path.includes('favicon')) {
+  expect(cookies).toHaveLength(0)
+} else {
+  expect(cookies).toHaveLength(1)
+  expect(cookies?.[0].name).toBe('anon_sid')
+}
+```
+
+**After**:
+
+```typescript
+// All static assets are excluded by matcher - middleware doesn't run at all
+// Updated behavior: robots.txt and sitemap.xml are now in matcher exclusion list
+const cookies = response?.cookies.getAll()
+expect(cookies).toHaveLength(0)
+```
+
+### Final Validation
+
+**Commit**: `7dc6d67` - "docs: add repository recovery session documentation to SCRATCHPAD"
+
+- 2 files changed: `SCRATCHPAD.md` (recovery docs), `__tests__/middleware.test.ts` (test fix)
+- 782 insertions, 225 deletions
+
+**Pre-push Checks** (all passed):
+
+- ✅ TypeScript: Passed
+- ✅ ESLint: Passed (warnings only)
+- ✅ Unit Tests: **334 passed** (middleware test now passing)
+- ✅ Production Build: Successful
+
+**Push Status**: ✅ Successfully pushed to `recovery/clean-slate-2025-10-13`
+
+### Final State
+
+**Working Directory**: `~/Developer/anthrasite-clean`
+**Current Branch**: `recovery/clean-slate-2025-10-13`
+**Commits on Branch**:
+
+- `8208b5a` - Initial recovery (E2E isolation + cross-device fixes)
+- `7dc6d67` - Recovery documentation + middleware test fix
+
+**Pull Request**: https://github.com/mirqtio/anthrasite.io/pull/8
+
+- Status: Ready for review
+- All checks passing locally
+- No secrets in git history
+
+**Corrupted Backup**: Preserved at `~/Developer/anthrasite_corrupted_backup` for reference
+
+### Summary
+
+Successfully recovered from repository corruption caused by iCloud sync. All E2E isolation work and cross-device test fixes have been restored to a clean repository with proper secret management. The recovery is fully documented and ready for merge.
+
+**Key Outcomes**:
+
+1. ✅ Clean repository with no secrets in history
+2. ✅ All E2E isolation infrastructure recovered (8 files)
+3. ✅ Cross-device test fixes preserved (WebKit keyboard + navigation)
+4. ✅ Proper secret management configured (.gitignore, .env.example)
+5. ✅ All tests and builds passing
+6. ✅ PR created and ready for review
+
+---
+
+_Session completed: 2025-10-13_  
+_Final commit: 7dc6d67_  
+_Status: Ready for merge_
