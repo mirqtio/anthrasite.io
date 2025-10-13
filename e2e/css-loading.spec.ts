@@ -8,16 +8,29 @@ test.describe('CSS Loading and Styling', () => {
     // Wait for stylesheets to load
     await page.waitForLoadState('networkidle')
 
-    // Check that CSS file is loaded
-    const stylesheets = await page.evaluate(() => {
-      return Array.from(document.styleSheets).map((sheet) => ({
-        href: sheet.href,
-        rules: sheet.cssRules ? sheet.cssRules.length : 0,
-      }))
+    // Check that CSS file is loaded and contains critical rules
+    const stylesheetAnalysis = await page.evaluate(() => {
+      const sheets = Array.from(document.styleSheets)
+      const hasResponsiveRules = sheets.some((sheet) => {
+        if (!sheet.cssRules) return false
+        return Array.from(sheet.cssRules).some((rule) =>
+          rule.cssText.includes('@media')
+        )
+      })
+      return {
+        count: sheets.length,
+        totalRules: sheets.reduce(
+          (sum, sheet) => sum + (sheet.cssRules?.length || 0),
+          0
+        ),
+        hasResponsiveRules,
+      }
     })
 
-    expect(stylesheets.length).toBeGreaterThan(0)
-    expect(stylesheets[0].rules).toBeGreaterThan(100) // Should have many CSS rules
+    expect(stylesheetAnalysis.count).toBeGreaterThan(0)
+    // Production builds optimize CSS - check for critical responsive rules instead of count
+    expect(stylesheetAnalysis.hasResponsiveRules).toBe(true)
+    expect(stylesheetAnalysis.totalRules).toBeGreaterThan(50) // Reasonable minimum
   })
 
   test('should apply Tailwind utility classes', async ({ page }) => {

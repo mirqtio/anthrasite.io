@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
   // 0) CRITICAL: Never touch framework/static paths or common assets
   // This must be the FIRST check before any cookie/header manipulation
   if (
-    pathname.startsWith('/_next/') ||       // All Next.js internal paths (static, data, etc)
+    pathname.startsWith('/_next/') || // All Next.js internal paths (static, data, etc)
     pathname.startsWith('/assets/') ||
     pathname.startsWith('/images/') ||
     pathname === '/favicon.ico' ||
@@ -163,10 +163,12 @@ export async function middleware(request: NextRequest) {
 
     if (!utm) {
       // Check if user has existing purchase mode cookies (try worker-specific first, then fallback)
-      const siteMode = request.cookies.get(cookieName('site_mode'))?.value
-        ?? request.cookies.get('site_mode')?.value
-      const businessId = request.cookies.get(cookieName('business_id'))?.value
-        ?? request.cookies.get('business_id')?.value
+      const siteMode =
+        request.cookies.get(cookieName('site_mode'))?.value ??
+        request.cookies.get('site_mode')?.value
+      const businessId =
+        request.cookies.get(cookieName('business_id'))?.value ??
+        request.cookies.get('business_id')?.value
 
       if (siteMode === 'purchase' && businessId) {
         // User has valid purchase mode cookies - allow access
@@ -206,7 +208,11 @@ export async function middleware(request: NextRequest) {
         sameSite: 'lax' as const,
         maxAge: 60, // 1 minute
       }
-      response.cookies.set(cookieName('utm_error'), errorMessage, errorCookieOptions)
+      response.cookies.set(
+        cookieName('utm_error'),
+        errorMessage,
+        errorCookieOptions
+      )
       return response
     }
 
@@ -219,8 +225,16 @@ export async function middleware(request: NextRequest) {
     }
     const businessId = validation.payload!.businessId
 
-    response.cookies.set(cookieName('site_mode'), 'purchase', purchaseCookieOptions)
-    response.cookies.set(cookieName('business_id'), businessId, purchaseCookieOptions)
+    response.cookies.set(
+      cookieName('site_mode'),
+      'purchase',
+      purchaseCookieOptions
+    )
+    response.cookies.set(
+      cookieName('business_id'),
+      businessId,
+      purchaseCookieOptions
+    )
 
     return response
   }
@@ -243,8 +257,16 @@ export async function middleware(request: NextRequest) {
         }
         const businessId = validation.payload!.businessId
 
-        response.cookies.set(cookieName('site_mode'), 'purchase', purchaseCookieOptions)
-        response.cookies.set(cookieName('business_id'), businessId, purchaseCookieOptions)
+        response.cookies.set(
+          cookieName('site_mode'),
+          'purchase',
+          purchaseCookieOptions
+        )
+        response.cookies.set(
+          cookieName('business_id'),
+          businessId,
+          purchaseCookieOptions
+        )
         return response
       }
     }
@@ -256,14 +278,26 @@ export async function middleware(request: NextRequest) {
   return response
 }
 
+/**
+ * CRITICAL: Middleware matcher - limits execution to page routes only
+ *
+ * Excludes:
+ * - _next/static (JS chunks, CSS) - prevents ChunkLoadError and CSP violations
+ * - _next/image (image optimization)
+ * - _next/data (server-side data fetching)
+ * - API routes (handle auth separately if needed)
+ * - Public files (favicon, robots, sitemap)
+ * - Static assets (assets/, images/)
+ *
+ * This prevents middleware from interfering with asset loading, which caused:
+ * - 730+ "element not found" errors (app failed to hydrate)
+ * - ChunkLoadError failures (JS bundles blocked)
+ * - CSP violations (header conflicts on stylesheets)
+ *
+ * See: CI_logs/run-18467286196/DIAGNOSIS_AND_SOLUTIONS.md
+ */
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for:
-     * - _next/* (all Next.js internals: static, data, image, etc)
-     * - Common static assets (favicon, robots, sitemap, assets, images)
-     * Note: API routes are INCLUDED for anon session management
-     */
-    '/((?!_next/|favicon.ico|robots.txt|sitemap.xml|assets/|images/).*)',
+    '/((?!_next/static|_next/image|_next/data|favicon.ico|robots.txt|sitemap.xml|assets/|images/|api/).*)',
   ],
 }
