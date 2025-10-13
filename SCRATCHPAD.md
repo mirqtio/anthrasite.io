@@ -5162,3 +5162,481 @@ User must add the following secrets to GitHub repository:
 _Vercel build parity implementation completed: 2025-10-13_  
 _Status: Ready for user to add GitHub secrets and push_  
 _Expected improvement: 50% → 70-80%+ pass rate_
+
+---
+
+## 🔍 Root Cause Analysis: Local vs CI Test Differences (Oct 13, 2025)
+
+### Executive Summary
+
+Tests pass locally but fail at 50% rate in CI. After investigation, **the build process was never the issue** - both local and CI use standard `next build` + `next start`. The real culprits are **Node version mismatch** and **environment variable differences**.
+
+### False Lead: Vercel Build Parity
+
+**What we thought**: CI should use `vercel build` + `vercel dev --prebuilt` to match production.
+
+**Reality**:
+
+- Local already uses `pnpm build` → `next build` (from package.json:11)
+- CI already uses `pnpm build` → `next build` (from ci-v2.yml:89)
+- `vercel dev --prebuilt` **doesn't exist** in Vercel CLI documentation
+- `vercel build` is for deploying to Vercel platform, not local testing
+
+**Conclusion**: Reverted Vercel CLI changes. The build process is already identical.
+
+---
+
+### Actual Root Causes
+
+#### 1. ⚠️ CRITICAL: Node Version Mismatch (2 Major Versions!)
+
+| Environment  | Node Version | Source                           |
+| ------------ | ------------ | -------------------------------- |
+| **Local**    | `v22.15.0`   | `node --version`                 |
+| **CI**       | `v20.16.0`   | `.github/workflows/ci-v2.yml:56` |
+| **Required** | `20.16.0`    | `package.json` engines field     |
+
+**Impact**: Node 22 vs Node 20 has significant differences:
+
+- Fetch API behavior
+- Async/Promise handling
+- Crypto APIs
+- Performance characteristics
+- Module resolution
+- Buffer handling
+
+**Why this matters**: E2E tests may behave differently due to timing, async operations, or API differences between major versions.
+
+**Fix Required**: Use Node 20.16.0 locally to match CI and package.json specification.
+
+---
+
+#### 2. ⚠️ Environment Variable Differences
+
+**Variables in LOCAL `.env` but NOT in CI:**
+
+```bash
+PORT=3333                                    # ❌ Not in CI
+USE_MOCK_PURCHASE=true                       # ❌ Not in CI
+SKIP_ENV_VALIDATION=true                     # ❌ Not in CI
+NEXT_PUBLIC_USE_MOCK_PURCHASE=true          # ❌ Not in CI
+SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1  # ❌ Not in CI
+ADMIN_API_KEY=test-admin-key-local-only      # ❌ Not in CI
+VERCEL_TOKEN=[REDACTED]        # ❌ Not in CI (unused now)
+```
+
+**Variables in CI but NOT in LOCAL:**
+
+```yaml
+CI_MOCK_STRIPE: 'true'              # ✅ CI only
+CI_MOCK_ANALYTICS: 'true'           # ✅ CI only
+CI_MOCK_SUPABASE: 'true'            # ✅ CI only
+NEXT_TELEMETRY_DISABLED: '1'        # ✅ CI only
+CURRENTS_PROJECT_ID: ***            # ✅ CI only (test reporting)
+CURRENTS_RECORD_KEY: ***            # ✅ CI only
+CURRENTS_API_KEY: ***               # ✅ CI only
+STRIPE_SECRET_KEY: ***              # ✅ CI only (from secrets)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ***  # ✅ CI only
+STRIPE_WEBHOOK_SECRET: ***          # ✅ CI only
+```
+
+**Common Variables (Same in Both):**
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/anthrasite_test
+DIRECT_URL=postgresql://postgres:postgres@localhost:5432/anthrasite_test
+NODE_ENV=test
+E2E=1
+NEXT_PUBLIC_E2E=1
+```
+
+**Impact Analysis:**
+
+1. **Mock Flag Mismatch**:
+
+   - Local uses `USE_MOCK_PURCHASE` / `NEXT_PUBLIC_USE_MOCK_PURCHASE`
+   - CI uses `CI_MOCK_STRIPE` / `CI_MOCK_ANALYTICS` / `CI_MOCK_SUPABASE`
+   - These may control different code paths in the application
+
+2. **Missing Stripe Keys Locally**:
+
+   - CI has real Stripe test keys from GitHub secrets
+   - Local has no Stripe keys at all
+   - Tests requiring Stripe integration may behave differently
+
+3. **SKIP_ENV_VALIDATION=true**:
+   - Local skips environment validation
+   - CI enforces full validation
+   - Could cause subtle initialization differences
+
+---
+
+### CI Workflow Status (After Revert)
+
+**File**: `.github/workflows/ci-v2.yml`
+
+**Current Build Process** (lines 89-100):
+
+```yaml
+- name: Build production
+  run: pnpm build # Uses next build
+
+- name: Start production server
+  run: |
+    pnpm start &                     # Uses next start -p 3333
+    npx wait-on http://localhost:3333 --timeout 60000
+```
+
+**✅ Correctly reverted to standard Next.js build**
+
+---
+
+### Recommended Fixes
+
+#### Priority 1: Fix Node Version Mismatch
+
+**Option A - Local matches CI** (Recommended):
+
+```bash
+# Install Node 20.16.0 using nvm or fnm
+nvm install 20.16.0
+nvm use 20.16.0
+
+# Verify
+node --version  # Should show v20.16.0
+```
+
+**Option B - Update CI to Node 22**:
+
+- Not recommended: package.json specifies 20.16.0
+- Would require verifying all dependencies work with Node 22
+
+#### Priority 2: Align Environment Variables
+
+**Add to local `.env`**:
+
+```bash
+# Stripe test keys (get from GitHub secrets or use test values)
+STRIPE_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# CI mock flags (align with CI behavior)
+CI_MOCK_STRIPE=true
+CI_MOCK_ANALYTICS=true
+CI_MOCK_SUPABASE=true
+
+# Telemetry
+NEXT_TELEMETRY_DISABLED=1
+```
+
+**Remove or comment out from local `.env` if causing issues**:
+
+```bash
+# SKIP_ENV_VALIDATION=true    # Let validation run
+# USE_MOCK_PURCHASE=true       # Use CI_MOCK_* flags instead
+# NEXT_PUBLIC_USE_MOCK_PURCHASE=true
+```
+
+#### Priority 3: Verify Build Parity
+
+After fixing Node version and env vars:
+
+```bash
+# Clean build
+rm -rf .next node_modules/.cache
+
+# Build exactly as CI does
+pnpm build
+
+# Start exactly as CI does
+pnpm start &
+npx wait-on http://localhost:3333 --timeout 60000
+
+# Run E2E tests
+pnpm test:e2e:ci --project=chromium-desktop
+```
+
+---
+
+### Test Results History
+
+| Run            | Build Method                  | Pass Rate | Key Issue                                         |
+| -------------- | ----------------------------- | --------- | ------------------------------------------------- |
+| Initial        | `next build`                  | 12.5%     | Missing `gotoHome`/`gotoReady` functions          |
+| Phase 1        | `next build`                  | 39%       | Fixed helper functions                            |
+| Phase 2        | `next build` + middleware fix | 50%       | Fixed static asset blocking                       |
+| Vercel Attempt | `vercel build` (failed)       | 0%        | `vercel dev --prebuilt` doesn't exist             |
+| **Current**    | `next build` (reverted)       | TBD       | Need to test with Node 20.16.0 + aligned env vars |
+
+**Expected after fixes**: 70-90%+ pass rate with proper Node version and environment parity.
+
+---
+
+### Files Modified
+
+1. `.github/workflows/ci-v2.yml` - Reverted to `pnpm build` + `pnpm start`
+2. `package.json` - Already has `engines` field specifying Node 20.16.0
+3. `.env` - Needs updates to match CI environment
+
+### Next Steps
+
+1. **User action**: Switch to Node 20.16.0 locally
+2. **User action**: Add missing CI env vars to local `.env` (especially Stripe keys)
+3. **Test locally**: Run E2E suite with aligned configuration
+4. **Commit revert**: Push CI workflow changes back to standard build
+5. **Monitor CI**: Verify pass rate with identical configurations
+
+---
+
+_Analysis completed: 2025-10-13_  
+_Status: Awaiting Node version fix and env var alignment_
+
+### 📋 Complete Environment Variable Audit (All .env\* Files)
+
+Next.js loads environment files in this order (later overrides earlier):
+
+- **Development**: `.env` → `.env.local`
+- **Test**: `.env` → `.env.test` → `.env.test.local`
+- **Production**: `.env` → `.env.production` → `.env.production.local`
+
+**Note**: `.env.local` is **NOT** loaded in test mode (NODE_ENV=test).
+
+#### File: `.env` (Base config, all environments)
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/anthrasite_test
+DIRECT_URL=postgresql://postgres:postgres@localhost:5432/anthrasite_test
+NODE_ENV=test
+E2E=1
+NEXT_PUBLIC_E2E=1
+PORT=3333
+USE_MOCK_PURCHASE=true
+SKIP_ENV_VALIDATION=true
+NEXT_PUBLIC_USE_MOCK_PURCHASE=true
+SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1
+ADMIN_API_KEY=test-admin-key-local-only
+VERCEL_TOKEN=[REDACTED]
+```
+
+#### File: `.env.local` (Development only - IGNORED in test mode!)
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/anthrasite_test
+DIRECT_URL=postgresql://postgres:postgres@localhost:5432/anthrasite_test
+SKIP_ENV_VALIDATION=true
+E2E=1
+NEXT_PUBLIC_E2E=1
+USE_MOCK_PURCHASE=true
+NEXT_PUBLIC_USE_MOCK_PURCHASE=true
+SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1
+ADMIN_API_KEY=test-admin-key-local-only
+
+# ✅ STRIPE TEST KEYS PRESENT
+STRIPE_SECRET_KEY=[REDACTED_STRIPE_SK]
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=[REDACTED_STRIPE_PK]
+STRIPE_WEBHOOK_SECRET=[REDACTED_STRIPE_WEBHOOK]
+
+NEXT_PUBLIC_FF_PURCHASE_ENABLED=true
+```
+
+#### File: `.env.test` (Test environment, E2E tests)
+
+```bash
+NODE_ENV=test
+E2E=1
+NEXT_PUBLIC_E2E=1
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/anthrasite_test"
+PORT=3333
+
+# ✅ STRIPE TEST KEYS PRESENT (SAME AS .env.local)
+STRIPE_SECRET_KEY=[REDACTED_STRIPE_SK]
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=[REDACTED_STRIPE_PK]
+STRIPE_WEBHOOK_SECRET=[REDACTED_STRIPE_WEBHOOK]
+
+EDGE_CONFIG_BASE64_KEY=""
+EDGE_CONFIG=""
+NEXT_PUBLIC_FF_PURCHASE_ENABLED="true"
+USE_MOCK_PURCHASE="true"
+BYPASS_UTM_VALIDATION="false"
+NEXT_PUBLIC_ENABLE_TEST_HARNESS="true"
+NEXT_PUBLIC_TEST_HARNESS_KEY="test-key-12345"
+
+# ✅ CURRENTS.DEV KEYS PRESENT (TEST REPORTING)
+CURRENTS_PROJECT_ID="[REDACTED]"
+CURRENTS_RECORD_KEY="[REDACTED]"
+CURRENTS_API_KEY="[REDACTED]"
+```
+
+#### File: `.env.test.local` (Local test overrides)
+
+```bash
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/anthrasite_test"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/anthrasite_test"
+USE_MOCK_PURCHASE="true"
+
+# ⚠️ FAKE STRIPE KEYS (Overridden by .env.test)
+STRIPE_SECRET_KEY="sk_test_fake"
+STRIPE_WEBHOOK_SECRET="whsec_test_fake"
+```
+
+#### File: `.env.vercel` (Vercel CLI generated, production connection)
+
+```bash
+# ⚠️ PRODUCTION DATABASE CONNECTION
+DIRECT_URL="postgresql://postgres:[REDACTED]@[REDACTED].supabase.co:5432/postgres"
+USE_FALLBACK_STORAGE="false"
+VERCEL_OIDC_TOKEN="eyJhbGc..."  # Long JWT token
+```
+
+---
+
+### 🔍 Environment Variable Load Order Analysis
+
+When running E2E tests locally with `NODE_ENV=test`:
+
+**Load order**:
+
+1. `.env` (base)
+2. `.env.test` (test-specific, **overrides .env**)
+3. `.env.test.local` (local overrides, **overrides .env.test**)
+
+**Final effective values** (LOCAL):
+
+```bash
+# From .env (not overridden)
+SKIP_ENV_VALIDATION=true                ❌ NOT in CI
+SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1  ❌ NOT in CI
+ADMIN_API_KEY=test-admin-key-local-only  ❌ NOT in CI
+VERCEL_TOKEN=[REDACTED]   ❌ NOT in CI (unused)
+
+# From .env.test (loaded in test mode)
+NODE_ENV=test                           ✅ Same in CI
+E2E=1                                   ✅ Same in CI
+NEXT_PUBLIC_E2E=1                       ✅ Same in CI (though different case: '1' vs 'true')
+DATABASE_URL=...                        ✅ Same in CI
+PORT=3333                               ❌ NOT in CI
+STRIPE_SECRET_KEY=sk_test_51...        ✅ Same keys in CI (from GitHub secrets)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51...  ✅ Same keys in CI
+STRIPE_WEBHOOK_SECRET=whsec_4dbb...    ✅ Same keys in CI
+USE_MOCK_PURCHASE="true"                ❌ Different flag! CI uses CI_MOCK_STRIPE
+BYPASS_UTM_VALIDATION="false"           ❌ NOT in CI
+CURRENTS_PROJECT_ID="[REDACTED]"            ✅ Same in CI (from secrets)
+CURRENTS_RECORD_KEY="mbl295..."        ✅ Same in CI (from secrets)
+CURRENTS_API_KEY="QjPkSEn0..."         ✅ Same in CI (from secrets)
+
+# From .env.test.local (overrides .env.test)
+USE_MOCK_PURCHASE="true"                ❌ Confirms mock mode (different from CI)
+
+# CI-only variables (NOT in any local .env)
+CI_MOCK_STRIPE='true'                   ✅ CI only
+CI_MOCK_ANALYTICS='true'                ✅ CI only
+CI_MOCK_SUPABASE='true'                 ✅ CI only
+NEXT_TELEMETRY_DISABLED='1'             ✅ CI only
+```
+
+---
+
+### ⚠️ Critical Differences Found
+
+#### 1. Mock Mode Flag Mismatch
+
+**Local uses**:
+
+```bash
+USE_MOCK_PURCHASE="true"               # Controls mock purchase service
+NEXT_PUBLIC_USE_MOCK_PURCHASE=true     # From .env (not .env.test!)
+```
+
+**CI uses**:
+
+```yaml
+CI_MOCK_STRIPE: 'true'
+CI_MOCK_ANALYTICS: 'true'
+CI_MOCK_SUPABASE: 'true'
+```
+
+**Impact**: These flags likely control different code paths. The application may check for:
+
+- `USE_MOCK_PURCHASE` in local tests
+- `CI_MOCK_*` flags in CI tests
+
+If the code checks for CI-specific flags, local tests will behave differently!
+
+#### 2. Environment Variable Source Issues
+
+**Problem**: `.env` is being loaded even in test mode, adding variables that shouldn't be there:
+
+- `SKIP_ENV_VALIDATION=true` - Only in `.env`, skips validation locally
+- `NEXT_PUBLIC_USE_MOCK_PURCHASE=true` - Conflicts with `.env.test` settings
+- `SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1` - Dev-only
+
+**Solution**: Clean up `.env` to only contain production-safe defaults. Move test-specific vars to `.env.test`.
+
+#### 3. Currents Keys Match (Good!)
+
+Both local (`.env.test`) and CI have the same Currents.dev keys, so test reporting should work identically.
+
+#### 4. Stripe Keys Match (Good!)
+
+Both local (`.env.test`) and CI use the same Stripe test keys, though CI gets them from GitHub secrets while local reads from `.env.test`.
+
+---
+
+### ✅ Corrective Actions Required
+
+#### Action 1: Clean up `.env` file
+
+Remove test-specific variables from `.env` (they belong in `.env.test`):
+
+```bash
+# Keep in .env (production-safe defaults)
+NODE_ENV=production
+DATABASE_URL=postgresql://...  # Production connection
+DIRECT_URL=postgresql://...
+
+# REMOVE from .env (test-only, move to .env.test if needed)
+# E2E=1
+# NEXT_PUBLIC_E2E=1
+# PORT=3333
+# USE_MOCK_PURCHASE=true
+# SKIP_ENV_VALIDATION=true
+# NEXT_PUBLIC_USE_MOCK_PURCHASE=true
+# SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING=1
+# ADMIN_API_KEY=test-admin-key-local-only
+# VERCEL_TOKEN=...
+```
+
+#### Action 2: Align mock flags
+
+**Option A - Use CI flags locally** (Recommended):
+Add to `.env.test`:
+
+```bash
+CI_MOCK_STRIPE=true
+CI_MOCK_ANALYTICS=true
+CI_MOCK_SUPABASE=true
+```
+
+**Option B - Use local flags in CI**:
+Update CI workflow to use:
+
+```yaml
+USE_MOCK_PURCHASE: 'true'
+NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true'
+```
+
+Check application code to see which flags are actually being used!
+
+#### Action 3: Add missing CI variables to `.env.test`
+
+```bash
+# Add to .env.test for CI parity
+NEXT_TELEMETRY_DISABLED=1
+SKIP_ENV_VALIDATION=false  # Enforce validation like CI does
+```
+
+---
+
+_Environment audit completed: 2025-10-13_  
+_Files analyzed: .env, .env.local, .env.test, .env.test.local, .env.vercel_

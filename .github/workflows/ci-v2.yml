@@ -45,10 +45,6 @@ jobs:
       CURRENTS_PROJECT_ID: ${{ secrets.CURRENTS_PROJECT_ID }}
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
       CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
-      # Vercel CLI (for build parity with production)
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       # Project for matrix strategy
       PW_PROJECT: ${{ matrix.project }}
 
@@ -86,14 +82,8 @@ jobs:
           pnpm prisma db push --accept-data-loss
           pnpm tsx scripts/seed-test-data.ts
 
-      - name: Install Vercel CLI
-        run: pnpm add -g vercel@latest
-
-      - name: Pull Vercel project settings
-        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-
-      - name: Build with Vercel (production parity)
-        run: vercel build --prod --token=$VERCEL_TOKEN
+      - name: Build production
+        run: pnpm build
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -104,9 +94,9 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Start production server (Vercel runtime)
+      - name: Start production server
         run: |
-          vercel dev --prebuilt --listen 0.0.0.0:3333 &
+          pnpm start &
           npx wait-on http://localhost:3333 --timeout 60000
 
       - name: Run E2E tests - ${{ matrix.project }}
