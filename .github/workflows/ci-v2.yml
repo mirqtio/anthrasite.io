@@ -89,8 +89,8 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm add -g vercel@latest
 
-      - name: Pull Vercel environment variables
-        run: vercel env pull .env.vercel --yes --token=$VERCEL_TOKEN
+      - name: Pull Vercel project settings
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
       - name: Build with Vercel (production parity)
         run: vercel build --prod --token=$VERCEL_TOKEN
