@@ -161,6 +161,13 @@ export default defineConfig({
       DISABLE_EMAIL: 'true',
       // Mock services
       NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true',
+      USE_MOCK_PURCHASE: 'true', // Server-side mock (aligns with .env.test)
+      // Feature Flags (must match .env.test for test parity)
+      NEXT_PUBLIC_FF_PURCHASE_ENABLED: 'true',
+      BYPASS_UTM_VALIDATION: 'false',
+      // Test Harness
+      NEXT_PUBLIC_ENABLE_TEST_HARNESS: 'true',
+      NEXT_PUBLIC_TEST_HARNESS_KEY: 'test-key-12345',
       // Config
       SKIP_ENV_VALIDATION: 'true',
       SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1',
