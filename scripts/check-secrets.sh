@@ -13,17 +13,33 @@ PATTERNS=(
   # Stripe
   "sk_live_[0-9a-zA-Z]{24,}"
   "sk_test_[0-9a-zA-Z]{24,}"
-  
+  "pk_live_[0-9a-zA-Z]{24,}"
+  "pk_test_[0-9a-zA-Z]{24,}"
+  "whsec_[0-9a-zA-Z]{24,}"
+
+  # Vercel
+  "VERCEL_TOKEN[\"']?\s*[:=]\s*[\"']?[0-9a-zA-Z]{16,}"
+  "vercel_token[\"']?\s*[:=]\s*[\"']?[0-9a-zA-Z]{16,}"
+
+  # PostgreSQL connection strings with passwords
+  "postgresql://[^:]+:[^@]+@"
+  "postgres://[^:]+:[^@]+@"
+
+  # Currents.dev (test reporting service)
+  "CURRENTS_API_KEY[\"']?\s*[:=]\s*[\"'][^\"']{32,}"
+  "CURRENTS_RECORD_KEY[\"']?\s*[:=]\s*[\"'][^\"']{8,}"
+  "CURRENTS_PROJECT_ID[\"']?\s*[:=]\s*[\"'][^\"']{6,}"
+
   # SendGrid
   "SG\.[a-zA-Z0-9_-]{22}\.[a-zA-Z0-9_-]{43}"
-  
+
   # Generic API keys
   "api[_-]?key[\"']?\s*[:=]\s*[\"'][^\"']{32,}"
   "secret[_-]?key[\"']?\s*[:=]\s*[\"'][^\"']{32,}"
-  
+
   # AWS
   "AKIA[0-9A-Z]{16}"
-  
+
   # GitHub
   "ghp_[0-9a-zA-Z]{36}"
   "gho_[0-9a-zA-Z]{36}"
@@ -42,8 +58,8 @@ FOUND_SECRETS=0
 
 # Check each pattern only in staged files
 for pattern in "${PATTERNS[@]}"; do
-  # Get list of staged files
-  staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx|json|env)$' | grep -v '.env.test')
+  # Get list of staged files (including markdown for documentation)
+  staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx|json|env|md)$' | grep -v '.env.test')
 
   if [ ! -z "$staged_files" ]; then
     # Search for pattern only in staged files
