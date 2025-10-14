@@ -27,6 +27,7 @@ jobs:
       - name: Install deps
         run: |
           corepack enable
+          corepack prepare pnpm@9 --activate
           pnpm i --frozen-lockfile
 
       - name: Generate Playwright selection from CSV
@@ -52,6 +53,7 @@ jobs:
       - name: Install browsers (Playwright)
         run: |
           corepack enable
+          corepack prepare pnpm@9 --activate
           pnpm i --frozen-lockfile
           npx playwright install --with-deps
 
