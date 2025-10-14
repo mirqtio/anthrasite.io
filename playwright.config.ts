@@ -1,16 +1,5 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Tests to exclude (incomplete/debug tests)
-// IMPORTANT: Project-level testIgnore REPLACES (not extends) top-level config
-// Must combine all patterns at project level for proper exclusion
-const EXCLUDED_TESTS = [
-  /.*waitlist-functional\.spec\.ts$/,
-  /.*purchase-payment-element\.spec\.ts$/,
-  /.*journeys\.spec\.ts$/,
-  /.*\/_debug\/.*\.spec\.ts$/,
-  /.*waitlist\.spec\.ts$/, // Did NOT run in local baseline run 5438b418d431bae7
-]
-
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -39,7 +28,6 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium-desktop',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
@@ -47,7 +35,6 @@ export default defineConfig({
     },
     {
       name: 'firefox-desktop',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1920, height: 1080 },
@@ -58,7 +45,6 @@ export default defineConfig({
     },
     {
       name: 'webkit-desktop',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1920, height: 1080 },
@@ -66,14 +52,12 @@ export default defineConfig({
     },
     {
       name: 'chromium-mobile',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Pixel 7'],
       },
     },
     {
       name: 'webkit-mobile',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['iPhone 14'],
       },

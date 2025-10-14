@@ -12,18 +12,6 @@ import base from './playwright.config'
  * - Longer timeouts for cold starts
  */
 
-// Tests to exclude from main browser projects (incomplete/debug/consent tests)
-// IMPORTANT: Project-level testIgnore REPLACES (not extends) top-level config
-// Must combine all patterns at project level for proper exclusion
-const EXCLUDED_TESTS = [
-  /.*waitlist-functional\.spec\.ts$/,
-  /.*purchase-payment-element\.spec\.ts$/,
-  /.*journeys\.spec\.ts$/,
-  /.*\/_debug\/.*\.spec\.ts$/,
-  /.*waitlist\.spec\.ts$/, // Did NOT run in local baseline run 5438b418d431bae7
-  /.*consent.*\.spec\.ts$/, // Consent tests run separately in dedicated projects
-]
-
 export default defineConfig({
   ...base,
   workers: 6, // Conservative parallelism for CI
@@ -38,7 +26,6 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium-desktop',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
@@ -56,7 +43,6 @@ export default defineConfig({
     },
     {
       name: 'firefox-desktop',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1920, height: 1080 },
@@ -76,7 +62,6 @@ export default defineConfig({
     },
     {
       name: 'webkit-desktop',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1920, height: 1080 },
@@ -96,7 +81,6 @@ export default defineConfig({
     },
     {
       name: 'chromium-mobile',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['Pixel 7'],
         storageState: 'e2e/storage/consent-accepted.json',
@@ -112,7 +96,6 @@ export default defineConfig({
     },
     {
       name: 'webkit-mobile',
-      testIgnore: EXCLUDED_TESTS,
       use: {
         ...devices['iPhone 14'],
         actionTimeout: 20_000, // Extra time for WebKit
