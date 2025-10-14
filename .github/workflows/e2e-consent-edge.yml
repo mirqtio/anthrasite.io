@@ -1,6 +1,8 @@
 name: Consent Edge Tests (Non-blocking)
 
-on:
+# DISABLED - Replaced by bdd-e2e.yml
+# To re-enable, uncomment the "on:" section below
+on_disabled:
   push:
     branches: [main]
   pull_request:

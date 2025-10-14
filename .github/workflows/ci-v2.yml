@@ -1,5 +1,7 @@
 name: CI v2
-on: [push, pull_request]
+# DISABLED - Replaced by bdd-e2e.yml
+# To re-enable, uncomment the "on:" section below
+on_disabled: [push, pull_request]
 
 jobs:
   e2e:

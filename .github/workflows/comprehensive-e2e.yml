@@ -1,6 +1,8 @@
 name: Comprehensive E2E Tests (DISABLED - use ci.yml instead)
 
-on:
+# DISABLED - Replaced by bdd-e2e.yml
+# To re-enable, uncomment the "on:" section below
+on_disabled:
   workflow_dispatch:
 
 jobs:
