@@ -40,7 +40,7 @@ export const startTransaction = (name: string, op: string = 'navigation') => {
 }
 
 // User identification
-export const identifyUser = (user: {
+export const identifyUser = async (user: {
   id: string
   email?: string
   name?: string
@@ -50,8 +50,8 @@ export const identifyUser = (user: {
 
   // Datadog
   if (typeof window !== 'undefined') {
-    const { setDatadogUser } = require('./datadog')
-    setDatadogUser(user)
+    const { setDatadogUser } = await import('./datadog')
+    await setDatadogUser(user)
   }
 }
 

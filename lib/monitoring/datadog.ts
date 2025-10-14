@@ -1,12 +1,13 @@
-import { datadogRum, type RumInitConfiguration } from '@datadog/browser-rum'
-import { datadogLogs } from '@datadog/browser-logs'
+import type { RumInitConfiguration } from '@datadog/browser-rum'
 
-// Singleton guard to prevent multiple initializations
-let datadogInitialized = false
+export const initDatadog = async () => {
+  // Only run in browser
+  if (typeof window === 'undefined') {
+    return
+  }
 
-export const initDatadog = () => {
-  // Skip if already initialized
-  if (datadogInitialized) {
+  // Skip if already initialized (check SDK's internal state)
+  if ((window as any).DD_RUM?.getInternalContext) {
     return
   }
 
@@ -28,6 +29,12 @@ export const initDatadog = () => {
     console.warn('Datadog RUM not initialized: missing configuration')
     return
   }
+
+  // Dynamic imports to prevent loading during SSR/build
+  const [{ datadogRum }, { datadogLogs }] = await Promise.all([
+    import('@datadog/browser-rum'),
+    import('@datadog/browser-logs'),
+  ])
 
   // Initialize RUM
   datadogRum.init({
@@ -79,28 +86,34 @@ export const initDatadog = () => {
 
   // Start RUM session
   datadogRum.startSessionReplayRecording()
-
-  // Mark as initialized
-  datadogInitialized = true
 }
 
 // Custom logging functions
-export const logInfo = (message: string, context?: Record<string, unknown>) => {
-  datadogLogs.logger.info(message, context)
-}
-
-export const logWarning = (
+export const logInfo = async (
   message: string,
   context?: Record<string, unknown>
 ) => {
+  if (typeof window === 'undefined') return
+  const { datadogLogs } = await import('@datadog/browser-logs')
+  datadogLogs.logger.info(message, context)
+}
+
+export const logWarning = async (
+  message: string,
+  context?: Record<string, unknown>
+) => {
+  if (typeof window === 'undefined') return
+  const { datadogLogs } = await import('@datadog/browser-logs')
   datadogLogs.logger.warn(message, context)
 }
 
-export const logError = (
+export const logError = async (
   message: string,
   error?: Error,
   context?: Record<string, unknown>
 ) => {
+  if (typeof window === 'undefined') return
+  const { datadogLogs } = await import('@datadog/browser-logs')
   datadogLogs.logger.error(message, {
     ...context,
     error: {
@@ -112,14 +125,17 @@ export const logError = (
 }
 
 // Performance monitoring helpers
-export const measurePerformance = (
+export const measurePerformance = async (
   name: string,
   fn: () => void | Promise<void>
 ) => {
+  if (typeof window === 'undefined') return fn()
+
   const startTime = performance.now()
 
-  const complete = () => {
+  const complete = async () => {
     const duration = performance.now() - startTime
+    const { datadogRum } = await import('@datadog/browser-rum')
     datadogRum.addTiming(name, duration)
   }
 
@@ -128,20 +144,22 @@ export const measurePerformance = (
     if (result instanceof Promise) {
       return result.finally(complete)
     }
-    complete()
+    await complete()
     return result
   } catch (error) {
-    complete()
+    await complete()
     throw error
   }
 }
 
 // User tracking
-export const setDatadogUser = (user: {
+export const setDatadogUser = async (user: {
   id: string
   email?: string
   name?: string
 }) => {
+  if (typeof window === 'undefined') return
+  const { datadogRum } = await import('@datadog/browser-rum')
   datadogRum.setUser({
     id: user.id,
     email: user.email,
@@ -150,14 +168,18 @@ export const setDatadogUser = (user: {
 }
 
 // Custom actions
-export const trackAction = (
+export const trackAction = async (
   name: string,
   context?: Record<string, unknown>
 ) => {
+  if (typeof window === 'undefined') return
+  const { datadogRum } = await import('@datadog/browser-rum')
   datadogRum.addAction(name, context)
 }
 
 // Feature flags
-export const trackFeatureFlag = (name: string, value: boolean) => {
+export const trackFeatureFlag = async (name: string, value: boolean) => {
+  if (typeof window === 'undefined') return
+  const { datadogRum } = await import('@datadog/browser-rum')
   datadogRum.addFeatureFlagEvaluation(name, value)
 }

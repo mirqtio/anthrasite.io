@@ -1,7 +1,20 @@
 {
   "mcpServers": {
     "gitguardian": {
-      "command": "/Users/charlieirwin/Documents/GitHub/anthrasite.io/.mcp-gitguardian.sh"
+      "command": "/Users/charlieirwin/Developer/anthrasite-clean/.mcp-gitguardian.sh",
+      "args": []
+    },
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"],
+      "env": {}
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {}
     }
   }
 }

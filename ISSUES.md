@@ -1,8 +1,8 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
-- **Total Effort (Estimated)**: 155 Story Points
-- **Completed Points**: 61 Points
-- **Remaining Points**: 94 Points
+- **Total Effort (Estimated)**: 183 Story Points
+- **Completed Points**: 69 Points
+- **Remaining Points**: 114 Points
 - **Estimated Completion**: ~10 Workdays
 
 ---
@@ -49,12 +49,11 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **B2 (3 pts)**: Business creation (admin)
 - **B3 (2 pts)**: Page personalization & safe failure states
 
-### EPIC C — Webhook → LeadShop Bridge & Orchestration — 10 pts
+### EPIC C — Webhook → LeadShop Bridge & Orchestration — 11 pts
 
 **Goal:** Durable payment→workflow pipeline, idempotent and observable.
 
-- **C1 (3 pts)**: Public Stripe webhook listener (Anthrasite.io)
-- **C2 (4 pts)**: Managed queue bridge
+- **C1-C2 (8 pts)**: Stripe Event Ingestion & Managed Queue Bridge
 - **C3 (3 pts)**: Temporal kickoff contract
 
 ### EPIC D — Report Generation & Delivery — 13 pts
@@ -78,7 +77,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **E4 (2 pts)**: Pre-launch Site QA
 - **E5 (3 pts)**: Delivery Failure Detection
 
-### EPIC F — Ops, Support, Compliance — 40 pts
+### EPIC F — Ops, Support, Compliance — 45 pts
 
 **Goal:** Safe operations from Day 1, with runbooks and guardrails.
 
@@ -92,6 +91,8 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **F7 (5 pts)**: Privacy compliance
 - **F8 (3 pts)**: Final Production E2E Checkout & Validation
 - **F9 (3 pts)**: Secret Management & Env Audit
+- **F10 (2 pts)**: Mac mini Decommission (partial)
+- **F11 (3 pts)**: Worker Health Monitoring
 
 ### EPIC I - Test Suite Hardening - (15 pts)
 
@@ -119,17 +120,22 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **I8 (13 pts)**: EPIC I - Final Cleanup & Deferred Tasks
 - **Status**: `CLOSED`
 - **Commit**: `57fc0fc1`
+- **I4 (1 pt)**: Triage Quarantined Tests
 
-### EPIC H - Hardening & CI/CD - (24 pts)
+### EPIC H - Hardening & CI/CD - (38 pts)
 
 **Goal:** Ensure the repository is secure and the CI/CD pipeline is reliable before public launch.
 
 - **H1 (3 pts)**: Integrate GitGuardian for secret scanning.
 - **Status**: `CLOSED`
-- **H2 (13 pts)**: Review and update CI/CD to run correct E2E and unit tests.
+- **H2 (17 pts)**: CI v2 - Hermetic E2E Pipeline (Phases 1-4)
 - **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
 - **H4 (3 pts)**: Fix Stripe SDK Build-Time Initialization in CI
 - **Status**: `IN PROGRESS`
+- **H5 (3 pts)**: Fix macOS Spotlight Codebase Corruption
+- **H6 (8 pts)**: Recover from iCloud Codebase Corruption
+- **Status**: `CLOSED`
+- **H7 (2 pts)**: Docs: Update SYSTEM.md and create ADR-P08
 
 ### EPIC Admin UI Overhaul — 15 pts
 
@@ -138,6 +144,13 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **Admin UI Overhaul (Epic)** (2 pts): Coordination, QA, and polish for the Admin UI MVP.
 - **Fix Existing Admin UI Bugs** (5 pts): Audit and fix known issues in the current Admin UI.
 - **"Prompt Lab" UI** (8 pts): Build a minimal UI for testing AI model configurations.
+
+### EPIC J - Organic Report Generation Funnel - (16 pts)
+
+**Goal:** Implement an end-to-end organic user funnel allowing visitors to generate and purchase a report directly from the website.
+
+- **J1 (16 pts)**: EPIC: Organic Report Generation Funnel
+- **Status**: `DEFERRED`
 
 ---
 
