@@ -37,6 +37,7 @@
     "visual-tests/**/*",
     "scripts/**/*",
     "CI_logs/**/*",
+    "_archive/**/*",
     "playwright*.config*.ts",
     "*.js",
     "*.mjs"
