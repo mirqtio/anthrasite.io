@@ -23,7 +23,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x' # Match local Node v22.15.0
-          cache: 'pnpm'
 
       - name: Install deps
         run: |
@@ -49,7 +48,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x' # Match local Node v22.15.0
-          cache: 'pnpm'
 
       - name: Install browsers (Playwright)
         run: |
