@@ -1,7 +1,8 @@
 name: CI v2
 # DISABLED - Replaced by bdd-e2e.yml
 # To re-enable, uncomment the "on:" section below
-on_disabled: [push, pull_request]
+on:
+  workflow_dispatch: # Manual trigger only - automated triggers disabled
 
 jobs:
   e2e:
