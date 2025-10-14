@@ -56,6 +56,15 @@ export function withRateLimit(
   handler: (req: Request) => Promise<Response>
 ): (req: Request) => Promise<Response> {
   return async (req: Request) => {
+    // Skip rate limiting in development mode or when explicitly disabled for tests
+    const skipRateLimit =
+      process.env.NODE_ENV === 'development' ||
+      process.env.DISABLE_RATE_LIMIT === 'true'
+
+    if (skipRateLimit) {
+      return handler(req)
+    }
+
     // Extract IP from request
     const ip = getClientIp(req)
 
