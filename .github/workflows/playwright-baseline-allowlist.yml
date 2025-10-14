@@ -1,0 +1,79 @@
+name: Playwright Baseline Allowlist
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [recovery/clean-slate-2025-10-13]
+    paths:
+      - '**/*.spec.ts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'scripts/ci-select-from-csv.mjs'
+      - '.github/workflows/playwright-baseline-allowlist.yml'
+      - '.ci/baseline-results.csv'
+
+jobs:
+  gen-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      selection: ${{ steps.select.outputs.selection }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x' # Match local Node v22.15.0
+          cache: 'pnpm'
+
+      - name: Install deps
+        run: |
+          corepack enable
+          pnpm i --frozen-lockfile
+
+      - name: Generate Playwright selection from CSV
+        id: select
+        run: |
+          node scripts/ci-select-from-csv.mjs ./.ci/baseline-results.csv > selection.json
+          echo "selection=$(cat selection.json | tr -d '\n')" >> $GITHUB_OUTPUT
+        shell: bash
+
+  run-allowlisted:
+    needs: gen-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.gen-matrix.outputs.selection) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x' # Match local Node v22.15.0
+          cache: 'pnpm'
+
+      - name: Install browsers (Playwright)
+        run: |
+          corepack enable
+          pnpm i --frozen-lockfile
+          npx playwright install --with-deps
+
+      # Inject the same env flags as local baseline
+      - name: Baseline env
+        run: |
+          echo "NEXT_PUBLIC_E2E=true" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_E2E_TESTING=true" >> $GITHUB_ENV
+          echo "DISABLE_ANALYTICS=true" >> $GITHUB_ENV
+          echo "DISABLE_SENTRY=true" >> $GITHUB_ENV
+          echo "DISABLE_DD=true" >> $GITHUB_ENV
+
+      - name: Run allowlisted tests for this spec+project
+        env:
+          PWDEBUG: '0'
+        run: |
+          echo "Project: ${{ matrix.project }}"
+          echo "Spec:    ${{ matrix.spec }}"
+          # The grep comes from our generator. Quote carefully so the regex survives the shell.
+          npx playwright test "${{ matrix.spec }}" \
+            --project="${{ matrix.project }}" \
+            --grep='${{ matrix.grep }}' \
+            --reporter=list
