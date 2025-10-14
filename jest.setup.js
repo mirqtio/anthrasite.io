@@ -151,6 +151,3 @@ Object.defineProperty(global, 'crypto', {
   configurable: true,
   enumerable: true,
 })
-
-// Set Stripe test key for unit tests
-process.env.STRIPE_SECRET_KEY = 'sk_test_fake_key_for_unit_tests'

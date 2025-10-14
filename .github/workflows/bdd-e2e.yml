@@ -46,6 +46,9 @@ jobs:
       CURRENTS_PROJECT_ID: ${{ secrets.CURRENTS_PROJECT_ID }}
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
       CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+      STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
 
     steps:
       - name: Checkout code
@@ -75,6 +78,11 @@ jobs:
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
+
+      - name: Start Next.js server
+        run: |
+          pnpm start &
+          npx wait-on http://localhost:3333 --timeout 60000
 
       - name: Run BDD E2E tests
         run: pnpm test:e2e --project=chromium-desktop
