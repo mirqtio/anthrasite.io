@@ -2,18 +2,8 @@ name: Playwright Baseline Allowlist
 
 # DISABLED - Replaced by bdd-e2e.yml
 # To re-enable, uncomment the "on:" section below
-on_disabled:
-  workflow_dispatch:
-  push:
-    branches: [recovery/clean-slate-2025-10-13]
-    paths:
-      - '**/*.spec.ts'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'scripts/ci-select-from-csv.mjs'
-      - '.github/workflows/playwright-baseline-allowlist.yml'
-      - '.ci/baseline-results.csv'
-
+on:
+  workflow_dispatch: # Manual trigger only - automated triggers disabled
 jobs:
   gen-matrix:
     runs-on: ubuntu-latest

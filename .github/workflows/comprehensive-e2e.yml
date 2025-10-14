@@ -2,9 +2,8 @@ name: Comprehensive E2E Tests (DISABLED - use ci.yml instead)
 
 # DISABLED - Replaced by bdd-e2e.yml
 # To re-enable, uncomment the "on:" section below
-on_disabled:
-  workflow_dispatch:
-
+on:
+  workflow_dispatch: # Manual trigger only - automated triggers disabled
 jobs:
   comprehensive-e2e:
     runs-on: ubuntu-latest

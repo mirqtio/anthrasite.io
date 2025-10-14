@@ -2,9 +2,8 @@ name: Complete E2E Success (DISABLED - use ci.yml instead)
 
 # DISABLED - Replaced by bdd-e2e.yml
 # To re-enable, uncomment the "on:" section below
-on_disabled:
-  workflow_dispatch:
-
+on:
+  workflow_dispatch: # Manual trigger only - automated triggers disabled
 jobs:
   complete-e2e:
     runs-on: ubuntu-latest

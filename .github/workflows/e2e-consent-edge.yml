@@ -2,12 +2,8 @@ name: Consent Edge Tests (Non-blocking)
 
 # DISABLED - Replaced by bdd-e2e.yml
 # To re-enable, uncomment the "on:" section below
-on_disabled:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
+on:
+  workflow_dispatch: # Manual trigger only - automated triggers disabled
 concurrency:
   group: e2e-consent-edge-${{ github.ref }}
   cancel-in-progress: true
