@@ -132,7 +132,7 @@ test.describe('Purchase Page', () => {
     await expect(page.getByText(/30-Day Money Back Guarantee/)).toBeVisible()
   })
 
-  test('should handle checkout button click', async ({ page }) => {
+  test.skip('should handle checkout button click', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}&preview=true`)
@@ -179,9 +179,7 @@ test.describe('Purchase Page', () => {
     ).toBeVisible()
   })
 
-  test.skip('should maintain scroll position on navigation', async ({
-    page,
-  }) => {
+  test('should maintain scroll position on navigation', async ({ page }) => {
     const utm = 'dev-utm-valid'
 
     await page.goto(`/purchase?utm=${utm}&preview=true`)

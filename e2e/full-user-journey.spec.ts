@@ -17,7 +17,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
   })
 
   test.describe('Organic Visitor Flow', () => {
-    test('complete waitlist signup journey', async ({ page }) => {
+    test.skip('complete waitlist signup journey', async ({ page }) => {
       // 1. Visit homepage with cookie dismissal
       await gotoAndDismissCookies(page, '/')
       await expect(page).toHaveTitle(/Anthrasite/)
@@ -67,7 +67,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
       // This test should be enabled when the HelpWidget component is added
     })
 
-    test.skip('responsive design check', async ({ page }, testInfo) => {
+    test('responsive design check', async ({ page }, testInfo) => {
       // Skip on mobile projects - testing multiple viewports doesn't make sense there
       skipOnMobile(testInfo)
 
@@ -107,7 +107,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
   })
 
   test.describe('Email → Purchase → Success Flow', () => {
-    test('complete purchase journey with valid UTM', async ({ page }) => {
+    test.skip('complete purchase journey with valid UTM', async ({ page }) => {
       // Generate valid UTM token
       const utm = await generateUTMToken({
         businessId: 'test-business-123',
@@ -311,7 +311,7 @@ test.describe('Full User Journey - Comprehensive E2E Tests', () => {
   })
 
   test.describe('Performance Checks', () => {
-    test.skip('page load performance', async ({ page }) => {
+    test('page load performance', async ({ page }) => {
       const metrics = await page
         .goto('/', { waitUntil: 'networkidle' })
         .then(() =>

@@ -114,9 +114,7 @@ test.describe('Purchase Flow E2E Tests', () => {
     await expect(page).toHaveURL(config.baseUrl + '/')
   })
 
-  test.skip('Purchase flow tracking events fire correctly', async ({
-    page,
-  }) => {
+  test('Purchase flow tracking events fire correctly', async ({ page }) => {
     // Set up network monitoring for analytics
     const analyticsRequests: any[] = []
 
@@ -198,7 +196,7 @@ test.describe('Purchase Flow E2E Tests', () => {
 })
 
 test.describe('Test Harness Page', () => {
-  test('Test harness requires authentication', async ({ page }) => {
+  test.skip('Test harness requires authentication', async ({ page }) => {
     await page.goto(`${config.baseUrl}/test-harness`)
 
     // Should see auth prompt

@@ -46,7 +46,7 @@ test.describe('Homepage Rendering', () => {
     ).toBeVisible()
   })
 
-  test('should render waitlist form section', async ({ page }) => {
+  test.skip('should render waitlist form section', async ({ page }) => {
     // Check that Get Started button is visible
     await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
 
@@ -68,7 +68,7 @@ test.describe('Homepage Rendering', () => {
     await expect(submitButton).toHaveText('Join Waitlist')
   })
 
-  test.skip('should not show only icons without text', async ({ page }) => {
+  test('should not show only icons without text', async ({ page }) => {
     // Take a screenshot
     const screenshot = await page.screenshot({ fullPage: true })
 

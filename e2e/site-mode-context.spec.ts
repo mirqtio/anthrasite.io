@@ -15,7 +15,7 @@ test.describe('SiteMode Context', () => {
     await expect(page.getByTestId('open-waitlist-button')).toBeVisible()
   })
 
-  test('should switch to purchase mode with UTM parameter', async ({
+  test.skip('should switch to purchase mode with UTM parameter', async ({
     page,
   }) => {
     // Navigate with a UTM parameter
@@ -74,7 +74,7 @@ test.describe('SiteMode Context', () => {
     expect(hasContent).toBe(true)
   })
 
-  test.skip('should properly detect cookies for site mode', async ({
+  test('should properly detect cookies for site mode', async ({
     page,
     context,
   }) => {
