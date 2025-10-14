@@ -21,11 +21,13 @@ export default defineConfig({
     timeout: 15_000, // 15s for production build hydration (increased from 8s)
   },
   // CI tests all 5 browsers via matrix strategy
+  // Main projects exclude consent tests (which run separately in consent-* projects)
   // Regular tests use storageState to bypass consent modal (fixes 80% timeout issue)
   // Consent tests run without storageState to actually test the consent modal
   projects: [
     {
       name: 'chromium-desktop',
+      testIgnore: /.*consent.*\.spec\.ts$/, // Consent tests run in consent-chromium-desktop
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
@@ -43,6 +45,7 @@ export default defineConfig({
     },
     {
       name: 'firefox-desktop',
+      testIgnore: /.*consent.*\.spec\.ts$/, // Consent tests run in consent-firefox-desktop
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1920, height: 1080 },
@@ -62,6 +65,7 @@ export default defineConfig({
     },
     {
       name: 'webkit-desktop',
+      testIgnore: /.*consent.*\.spec\.ts$/, // Consent tests run in consent-webkit-desktop
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1920, height: 1080 },
@@ -81,6 +85,7 @@ export default defineConfig({
     },
     {
       name: 'chromium-mobile',
+      testIgnore: /.*consent.*\.spec\.ts$/, // Consent tests run in consent-chromium-mobile
       use: {
         ...devices['Pixel 7'],
         storageState: 'e2e/storage/consent-accepted.json',
@@ -96,6 +101,7 @@ export default defineConfig({
     },
     {
       name: 'webkit-mobile',
+      testIgnore: /.*consent.*\.spec\.ts$/, // Consent tests run in consent-webkit-mobile
       use: {
         ...devices['iPhone 14'],
         actionTimeout: 20_000, // Extra time for WebKit
