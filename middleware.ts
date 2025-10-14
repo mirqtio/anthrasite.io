@@ -121,14 +121,16 @@ export async function middleware(request: NextRequest) {
 
     // Mock purchase mode - use mock services (Stripe, business data)
     // SECURITY: Only allow in E2E test mode or non-production with explicit flag
+    // Check E2E at runtime, not build time (isE2E const is baked in during build)
+    const isE2ERuntime = process.env.E2E === '1'
     const mockAllowed =
-      (isE2E || process.env.NODE_ENV !== 'production') &&
+      (isE2ERuntime || process.env.NODE_ENV !== 'production') &&
       process.env.USE_MOCK_PURCHASE === 'true'
 
     // UTM validation bypass - skip redirect logic for tests that need unrestricted access
     // This is INDEPENDENT of mockAllowed to allow testing redirects with mocks
     const bypassUTM =
-      (isE2E || process.env.NODE_ENV !== 'production') &&
+      (isE2ERuntime || process.env.NODE_ENV !== 'production') &&
       process.env.BYPASS_UTM_VALIDATION === 'true'
 
     if (mockAllowed && bypassUTM) {
