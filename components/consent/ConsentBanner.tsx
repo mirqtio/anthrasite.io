@@ -35,6 +35,7 @@ export function ConsentBanner() {
 
   return (
     <div
+      data-testid="consent-banner"
       className={`fixed bottom-0 left-0 right-0 z-[9999] p-4 md:p-6 transition-all ${animation.duration.normal}`}
       style={{
         transform:

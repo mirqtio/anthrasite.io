@@ -224,7 +224,10 @@ export default async function PurchasePage({
   }
 
   return (
-    <main className="min-h-screen bg-carbon text-white">
+    <main
+      className="min-h-screen bg-carbon text-white"
+      data-testid="purchase-root"
+    >
       <Suspense fallback={<PurchasePageSkeleton />}>
         <PurchaseContent utm={effectiveUtm} preview={preview} tier={tier} />
       </Suspense>
