@@ -24,11 +24,12 @@ jobs:
         with:
           node-version: '20.16.0' # Match package.json engines.node
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Install deps
-        run: |
-          corepack enable
-          corepack prepare pnpm@9 --activate
-          pnpm i --frozen-lockfile
+        run: pnpm i --frozen-lockfile
 
       - name: Generate Playwright selection from CSV
         id: select
@@ -50,10 +51,12 @@ jobs:
         with:
           node-version: '20.16.0' # Match package.json engines.node
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Install browsers (Playwright)
         run: |
-          corepack enable
-          corepack prepare pnpm@9 --activate
           pnpm i --frozen-lockfile
           npx playwright install --with-deps
 
