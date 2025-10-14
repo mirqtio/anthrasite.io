@@ -4,8 +4,6 @@ const { withSentryConfig } = require('@sentry/nextjs')
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
-  // Standalone output for better artifact portability in CI
-  output: 'standalone',
   // Sentry error page optimization
   excludeDefaultMomentLocales: true,
   // Enable source maps to debug E2E crashes
@@ -31,7 +29,7 @@ const nextConfig = {
         // Skip core-js polyfills
         'core-js': false,
       }
-      
+
       // Disable polyfills that Next.js adds by default
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -40,7 +38,7 @@ const nextConfig = {
         path: false,
         crypto: false,
       }
-      
+
       // Target modern browsers only
       if (!dev) {
         config.target = 'web'

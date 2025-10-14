@@ -34,11 +34,7 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
       DIRECT_URL: postgresql://postgres:postgres@localhost:5432/anthrasite_test
       NODE_ENV: test
-      E2E: '1'
-      NEXT_PUBLIC_E2E: '1'
-      USE_MOCK_PURCHASE: 'true'
-      NEXT_PUBLIC_USE_MOCK_PURCHASE: 'true'
-      BYPASS_UTM_VALIDATION: 'true'
+
       SKIP_ENV_VALIDATION: 'true'
       SENTRY_SUPPRESS_GLOBAL_ERROR_HANDLER_FILE_WARNING: '1'
       ADMIN_API_KEY: test-admin-key-ci
