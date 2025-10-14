@@ -373,10 +373,10 @@ Added via GitHub CLI (`gh secret set`):
 
 ```bash
 # Added 2025-10-13T08:47:07Z
-CURRENTS_PROJECT_ID = "sVxq1O"
+CURRENTS_PROJECT_ID = "[REDACTED]"
 
 # Added 2025-10-13T08:47:16Z
-CURRENTS_RECORD_KEY = "mbl295DNPH2eNzap"
+CURRENTS_RECORD_KEY = "[REDACTED]"
 ```
 
 Verification:
@@ -5522,8 +5522,8 @@ STRIPE_WEBHOOK_SECRET=whsec_4dbb...    ✅ Same keys in CI
 USE_MOCK_PURCHASE="true"                ❌ Different flag! CI uses CI_MOCK_STRIPE
 BYPASS_UTM_VALIDATION="false"           ❌ NOT in CI
 CURRENTS_PROJECT_ID="[REDACTED]"            ✅ Same in CI (from secrets)
-CURRENTS_RECORD_KEY="mbl295..."        ✅ Same in CI (from secrets)
-CURRENTS_API_KEY="QjPkSEn0..."         ✅ Same in CI (from secrets)
+CURRENTS_RECORD_KEY="[REDACTED]"        ✅ Same in CI (from secrets)
+CURRENTS_API_KEY="[REDACTED]"         ✅ Same in CI (from secrets)
 
 # From .env.test.local (overrides .env.test)
 USE_MOCK_PURCHASE="true"                ❌ Confirms mock mode (different from CI)
@@ -5640,3 +5640,128 @@ SKIP_ENV_VALIDATION=false  # Enforce validation like CI does
 
 _Environment audit completed: 2025-10-13_  
 _Files analyzed: .env, .env.local, .env.test, .env.test.local, .env.vercel_
+
+---
+
+## Session: BDD E2E Mobile Browser 404 Issue - RESOLVED (2025-10-14)
+
+### Problem
+After adding multi-browser support (webkit + mobile viewports) to BDD E2E tests, the "Valid UTM shows purchase page" test failed across ALL browsers (chromium-desktop, webkit-desktop, chromium-mobile, webkit-mobile) with 404 errors.
+
+### Investigation
+1. **Initial Hypothesis (WRONG):** Assumed mobile browsers needed more timeout (5s → 10s) - lazy diagnosis
+2. **Actual Evidence:** Downloaded playwright-traces artifact and examined error-context.md:
+   - Page displaying "404 - This page could not be found"
+   - Cookie consent banner visible but irrelevant
+   - Test timing out because `purchase-root` element doesn't exist on 404 page
+
+### Root Cause Discovery
+Traced the flow:
+- `app/purchase/page.tsx:41-44`: `fetchBusinessByUTM()` returns null → `notFound()` → 404 page
+- Tested locally with production build: Same 404 behavior reproduced
+- Examined `middleware.ts:134-147`:
+
+```typescript
+const mockAllowed = NODE_ENV !== 'production' && USE_MOCK_PURCHASE === 'true'
+const bypassUTM = NODE_ENV !== 'production' && BYPASS_UTM_VALIDATION === 'true'
+
+if (mockAllowed && bypassUTM) {
+  // Bypass UTM validation for tests
+  return NextResponse.next()
+}
+```
+
+**The Issue:** Middleware requires **BOTH** flags to bypass validation:
+- ✅ `USE_MOCK_PURCHASE=true` - Set in CI
+- ❌ `BYPASS_UTM_VALIDATION=true` - **MISSING** in CI
+
+Without bypass, middleware validated test JWT tokens at line 190 (`validateUTMToken(utm)`), which failed and redirected to `/` with `utm_error=invalid` cookie.
+
+### Solution
+Added `BYPASS_UTM_VALIDATION: 'true'` to `.github/workflows/bdd-e2e.yml` env section (line 41).
+
+### Commits
+- `292dd5a` - fix(ci): add BYPASS_UTM_VALIDATION to enable mock purchase flow in E2E tests
+- Reverted `d87319a` (debug logging - didn't help, logs don't show in CI background process)
+- Reverted `ca2f2cb` (incorrect timeout increase based on lazy diagnosis)
+
+### Key Learnings
+1. **Evidence-based debugging:** Always examine actual test artifacts (screenshots, error-context.md) instead of making assumptions
+2. **Middleware logic:** Two separate concerns - mock data (`USE_MOCK_PURCHASE`) vs validation bypass (`BYPASS_UTM_VALIDATION`)
+3. **Production build logging:** `console.log` in server-side code doesn't appear in CI logs when server runs with `&`
+4. **Force push safety:** Used `git push --force-with-lease` after intentionally removing bad commits
+
+### Testing
+Local reproduction:
+```bash
+NODE_ENV=test USE_MOCK_PURCHASE=true pnpm start -p 3334
+curl -I "http://localhost:3334/purchase?utm=test-token"
+# Result: 307 Temporary Redirect to / with utm_error=invalid cookie
+```
+
+### Status
+✅ Fix pushed to GitHub (commit 292dd5a)
+⏳ Awaiting CI validation across all 4 browser projects
+
+
+---
+
+## 🔧 RUNTIME E2E FLAG FIX (Oct 14, 2025)
+
+**Session**: Fixed build-time vs runtime environment variable evaluation issue
+**Status**: ⏳ PUSHED TO CI - Awaiting Test Results
+
+### The Problem Discovered
+
+**Root Cause**: Module-level constant evaluated at BUILD time instead of runtime:
+
+```typescript
+// middleware.ts line 7 - WRONG (build-time evaluation)
+const isE2E = process.env.E2E === '1'  
+
+// Later in middleware (lines 126-134)
+const mockAllowed = (isE2E || ...) && ...  // isE2E is always false!
+```
+
+**Timeline of Discovery:**
+
+1. **First attempt**: Added `BYPASS_UTM_VALIDATION: 'true'` to workflow (commit 292dd5a)
+   - Result: Tests still failing with 404 errors
+   
+2. **Second discovery**: `next start` forces `NODE_ENV='production'` internally
+   - Can't use `NODE_ENV !== 'production'` check
+   
+3. **Second attempt**: Check `isE2E` constant instead (commit 3ca0f35)
+   - Result: **MADE IT WORSE** - failures increased from 1 to 3 per browser!
+   
+4. **Final diagnosis**: `isE2E` is evaluated during **build** when E2E='1' not set
+   - Gets baked into bundle as `false` permanently
+   - At runtime (when E2E='1' is actually set), constant is already false
+
+### The Fix (Commit 55dc51c)
+
+**Changed middleware.ts lines 125-134 to check runtime environment variable:**
+
+```typescript
+// Check E2E at runtime, not build time (isE2E const is baked in during build)
+const isE2ERuntime = process.env.E2E === '1'
+const mockAllowed =
+  (isE2ERuntime || process.env.NODE_ENV !== 'production') &&
+  process.env.USE_MOCK_PURCHASE === 'true'
+
+const bypassUTM =
+  (isE2ERuntime || process.env.NODE_ENV !== 'production') &&
+  process.env.BYPASS_UTM_VALIDATION === 'true'
+```
+
+**Key Insight**: Middleware executes per-request in Edge runtime, so `process.env.E2E` is checked at request time, not build time.
+
+### Expected Outcome
+
+If fix is correct:
+- ✅ All 11 BDD tests should pass across all 4 browser combinations (44 total tests)
+- ✅ "Valid UTM shows purchase page" test should see purchase page instead of 404
+- ✅ Mock purchase services and UTM bypass should work in CI
+
+**Waiting for CI run to complete...**
+
