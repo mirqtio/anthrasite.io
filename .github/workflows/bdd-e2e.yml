@@ -81,7 +81,7 @@ jobs:
 
       - name: Start Next.js server
         run: |
-          pnpm start &
+          node .next/standalone/server.js &
           npx wait-on http://localhost:3333 --timeout 60000
 
       - name: Run BDD E2E tests

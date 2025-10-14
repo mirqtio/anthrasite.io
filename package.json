@@ -2,8 +2,9 @@
   "name": "anthrasite.io",
   "version": "1.0.0",
   "main": "index.js",
+  "packageManager": "pnpm@9.15.0",
   "engines": {
-    "node": "20.16.0",
+    "node": "20.x",
     "pnpm": "9"
   },
   "scripts": {
