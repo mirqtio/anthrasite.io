@@ -75,7 +75,7 @@ jobs:
         run: pnpm test:unit
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: Start Next.js server
         run: |
@@ -83,7 +83,7 @@ jobs:
           npx wait-on http://localhost:3333 --timeout 60000
 
       - name: Run BDD E2E tests
-        run: pnpm test:e2e --project=chromium-desktop
+        run: pnpm test:e2e --project=chromium-desktop --project=chromium-mobile --project=webkit-desktop --project=webkit-mobile
 
       - name: Upload test results
         if: always()
