@@ -120,15 +120,15 @@ export async function middleware(request: NextRequest) {
       utm === 'dev-test-token' // Hard-coded fallback for development
 
     // Mock purchase mode - use mock services (Stripe, business data)
-    // SECURITY: Only allow in non-production environments
+    // SECURITY: Only allow in E2E test mode or non-production with explicit flag
     const mockAllowed =
-      process.env.NODE_ENV !== 'production' &&
+      (isE2E || process.env.NODE_ENV !== 'production') &&
       process.env.USE_MOCK_PURCHASE === 'true'
 
     // UTM validation bypass - skip redirect logic for tests that need unrestricted access
     // This is INDEPENDENT of mockAllowed to allow testing redirects with mocks
     const bypassUTM =
-      process.env.NODE_ENV !== 'production' &&
+      (isE2E || process.env.NODE_ENV !== 'production') &&
       process.env.BYPASS_UTM_VALIDATION === 'true'
 
     if (mockAllowed && bypassUTM) {
