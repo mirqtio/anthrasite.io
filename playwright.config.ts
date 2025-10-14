@@ -15,6 +15,18 @@ export default defineConfig({
     ['list'],
     ['html', { open: 'never' }],
     ['json', { outputFile: 'test-results/results.json' }],
+    ...(process.env.CURRENTS_PROJECT_ID
+      ? [
+          [
+            '@currents/playwright',
+            {
+              project: process.env.CURRENTS_PROJECT_ID,
+              recordKey: process.env.CURRENTS_RECORD_KEY,
+              apiKey: process.env.CURRENTS_API_KEY,
+            },
+          ] as const,
+        ]
+      : []),
   ],
 
   use: {

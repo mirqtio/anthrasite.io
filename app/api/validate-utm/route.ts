@@ -54,6 +54,32 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
 
     const payload = validation.payload!
 
+    // Mock mode - skip database checks and return mock data
+    const mockMode =
+      (process.env.NODE_ENV === 'development' ||
+        process.env.NODE_ENV === 'test' ||
+        process.env.E2E === '1') &&
+      process.env.USE_MOCK_PURCHASE === 'true'
+
+    if (mockMode) {
+      // In mock mode, skip one-time-use checks and return mock business data
+      trackEvent('utm.validation.success', {
+        businessId: payload.businessId,
+        domain: 'mock-domain.com',
+      })
+
+      return NextResponse.json<ValidateUTMResponse>({
+        valid: true,
+        businessId: payload.businessId,
+        businessName: 'Mock Business',
+        reportData: {
+          price: 49900,
+          campaign_id: 'mock-campaign',
+          business_id: payload.businessId,
+        },
+      })
+    }
+
     // Check if token has been used (one-time use enforcement)
     const storedToken = await getUTMToken(payload.nonce)
 

@@ -10,8 +10,10 @@ test.describe('Site health', () => {
 
     // Verify response structure
     const body = await response.json()
-    expect(body).toHaveProperty('ok', true)
-    expect(body).toHaveProperty('now')
+    expect(body).toHaveProperty('database', 'healthy')
+    expect(body).toHaveProperty('service', 'healthy')
+    expect(body).toHaveProperty('timestamp')
+    expect(body).toHaveProperty('version')
   })
 
   test('Homepage has no severe console errors', async ({ page }) => {

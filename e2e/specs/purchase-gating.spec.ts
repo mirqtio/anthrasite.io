@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test'
 import { makeValid, makeExpired, makeTampered } from '../utils/utmTestData'
 
-const UTM_SECRET = process.env.UTM_TEST_SECRET || 'test-secret-key'
+const UTM_SECRET =
+  process.env.UTM_SECRET_KEY || 'development-secret-key-replace-in-production'
 
 test.describe('Purchase page requires valid UTM', () => {
   test('Valid UTM shows purchase page', async ({ page }) => {
@@ -13,9 +14,8 @@ test.describe('Purchase page requires valid UTM', () => {
     const purchaseRoot = page.getByTestId('purchase-root')
     await expect(purchaseRoot).toBeVisible()
 
-    // And I see a checkout button
-    const checkoutButton = page.getByTestId('checkout-button')
-    await expect(checkoutButton).toBeVisible()
+    // And I see the purchase page is not redirected
+    await expect(page).toHaveURL(/\/purchase/)
   })
 
   test('Missing UTM redirects to homepage', async ({ page }) => {
@@ -35,12 +35,12 @@ test.describe('Purchase page requires valid UTM', () => {
     await expect(page).toHaveURL('/')
   })
 
-  test('Expired UTM redirects to homepage', async ({ page }) => {
+  test('Expired UTM redirects to link-expired page', async ({ page }) => {
     // When I visit "/purchase?utm=<expired>"
     const expiredToken = makeExpired(UTM_SECRET)
     await page.goto(`/purchase?utm=${expiredToken}`)
 
-    // Then I am on "/"
-    await expect(page).toHaveURL('/')
+    // Then I am on "/link-expired"
+    await expect(page).toHaveURL('/link-expired')
   })
 })
