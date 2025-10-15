@@ -130,7 +130,8 @@ describe('OrganicHomepage', () => {
     expect(footer).toHaveTextContent(
       /© \d{4} Anthrasite. All rights reserved./i
     )
-    expect(footer).toHaveTextContent(/Privacy & Terms/i)
+    expect(footer).toHaveTextContent(/Privacy Policy/i)
+    expect(footer).toHaveTextContent(/Terms of Service/i)
   })
 
   it('should have proper styling classes', () => {

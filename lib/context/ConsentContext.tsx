@@ -13,6 +13,7 @@ export interface ConsentPreferences {
   marketing: boolean
   performance: boolean
   functional: boolean
+  doNotSell: boolean // Added for CPRA 'Do Not Sell or Share'
   timestamp: string
 }
 
@@ -54,9 +55,11 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
 
-  // Load preferences from localStorage on mount
+  // Load preferences from localStorage and cookies on mount
   useEffect(() => {
     setIsMounted(true)
+
+    const doNotShareCookie = document.cookie.includes('do_not_share=1')
 
     // In test environment, load synchronously
     if (process.env.NODE_ENV === 'test') {
@@ -75,6 +78,11 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
         } else {
           // No consent stored, show banner
           setShowBanner(true)
+        }
+
+        // If GPC/do_not_share cookie is set, enforce it
+        if (doNotShareCookie) {
+          updateConsent({ doNotSell: true })
         }
       } catch (error) {
         console.error('Error loading consent preferences:', error)
@@ -132,13 +140,25 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
   }
 
   const updateConsent = (updates: Partial<ConsentPreferences>) => {
+    const isOptingOut =
+      updates.doNotSell === true ||
+      (updates.doNotSell !== false && (preferences?.doNotSell ?? false))
+
     const newPreferences: ConsentPreferences = {
-      analytics: updates.analytics ?? preferences?.analytics ?? false,
+      analytics: isOptingOut
+        ? false
+        : (updates.analytics ?? preferences?.analytics ?? false),
       marketing: updates.marketing ?? preferences?.marketing ?? false,
       performance: updates.performance ?? preferences?.performance ?? false,
       functional: updates.functional ?? preferences?.functional ?? true,
+      doNotSell: isOptingOut,
       timestamp: new Date().toISOString(),
     }
+
+    if (isOptingOut) {
+      document.cookie = 'do_not_share=1;path=/;max-age=31536000' // 1 year
+    }
+
     savePreferences(newPreferences)
   }
 
@@ -148,6 +168,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
       marketing: true,
       performance: true,
       functional: true,
+      doNotSell: false,
       timestamp: new Date().toISOString(),
     }
     savePreferences(newPreferences)
@@ -160,6 +181,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
       marketing: false,
       performance: false,
       functional: true, // Functional cookies are required for basic site operation
+      doNotSell: true, // Rejecting all implies opting out of sale/share
       timestamp: new Date().toISOString(),
     }
     savePreferences(newPreferences)

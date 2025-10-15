@@ -212,14 +212,18 @@ export function PurchaseHomepage() {
       </main>
 
       {/* Footer */}
-      <footer className="py-[60px] px-10 border-t border-white/5 text-center">
+      {/* Footer */}
+      <footer className="py-[60px] px-10 border-t border-smoke text-center">
         <div className="footer-links">
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of Service</a>
+          <a href="/legal/privacy">Privacy Policy</a>
+          <a href="/legal/terms">Terms of Service</a>
+          <a href="/legal/do-not-sell">
+            Do Not Sell or Share My Personal Information
+          </a>
           <a href="mailto:hello@anthrasite.io">Contact</a>
         </div>
-        <p className="text-tiny opacity-30">
-          © 2024 Anthrasite. All rights reserved.
+        <p className="text-[14px] opacity-30 mt-[20px]">
+          © {new Date().getFullYear()} Anthrasite. All rights reserved.
         </p>
       </footer>
 

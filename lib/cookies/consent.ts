@@ -11,6 +11,7 @@ export function getCookieConsent(): ConsentPreferences {
       marketing: false,
       performance: false,
       functional: true,
+      doNotSell: false,
       timestamp: new Date().toISOString(),
     }
   }
@@ -26,6 +27,7 @@ export function getCookieConsent(): ConsentPreferences {
           marketing: parsed.preferences.marketing ?? false,
           performance: parsed.preferences.performance ?? false,
           functional: parsed.preferences.functional ?? true,
+          doNotSell: parsed.preferences.doNotSell ?? false,
           timestamp: parsed.preferences.timestamp ?? new Date().toISOString(),
         }
       }
@@ -35,6 +37,7 @@ export function getCookieConsent(): ConsentPreferences {
         marketing: parsed.marketing ?? false,
         performance: parsed.performance ?? false,
         functional: parsed.functional ?? true,
+        doNotSell: parsed.doNotSell ?? false,
         timestamp: parsed.timestamp ?? new Date().toISOString(),
       }
     }
@@ -47,6 +50,7 @@ export function getCookieConsent(): ConsentPreferences {
     marketing: false,
     performance: false,
     functional: true,
+    doNotSell: false,
     timestamp: new Date().toISOString(),
   }
 }

@@ -459,7 +459,11 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
           <div className="container-narrow text-center">
             {/* Logo removed from footer */}
             <div className="footer-links mt-[30px]">
-              <a href="/legal">Privacy & Terms</a>
+              <a href="/legal/privacy">Privacy Policy</a>
+              <a href="/legal/terms">Terms of Service</a>
+              <a href="/legal/do-not-sell">
+                Do Not Sell or Share My Personal Information
+              </a>
               <a href="mailto:hello@anthrasite.io">Contact</a>
             </div>
             <p className="text-[14px] opacity-30 mt-[20px]">

@@ -17,6 +17,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: false,
         functional: true,
+        doNotSell: false,
         timestamp: expect.any(String),
       })
     })
@@ -44,6 +45,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: true,
         functional: true,
+        doNotSell: false,
         timestamp: '2024-01-15T10:00:00Z',
       })
     })
@@ -58,6 +60,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: false,
         functional: true,
+        doNotSell: false,
         timestamp: expect.any(String),
       })
     })
@@ -73,6 +76,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: false,
         functional: true,
+        doNotSell: false,
         timestamp: expect.any(String),
       })
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -94,6 +98,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: false,
         functional: true,
+        doNotSell: false,
         timestamp: expect.any(String),
       })
 
@@ -114,6 +119,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: false,
         functional: true,
+        doNotSell: false,
         timestamp: expect.any(String),
       })
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -136,6 +142,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: true,
         functional: true,
+        doNotSell: false,
         timestamp: '2024-01-15T10:00:00Z',
       }
 
@@ -159,6 +166,7 @@ describe('Cookie Consent', () => {
           marketing: false,
           performance: false,
           functional: true,
+          doNotSell: false,
           timestamp: '2024-01-15T10:00:00Z',
         },
       })
@@ -179,6 +187,7 @@ describe('Cookie Consent', () => {
         marketing: true,
         performance: true,
         functional: true,
+        doNotSell: false,
         timestamp: '2024-01-15T10:00:00Z',
       }
 
@@ -219,6 +228,7 @@ describe('Cookie Consent', () => {
         marketing: false,
         performance: false,
         functional: true,
+        doNotSell: false,
         timestamp: '2024-01-15T10:00:00Z',
       }
 

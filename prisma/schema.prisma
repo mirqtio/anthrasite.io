@@ -121,3 +121,19 @@ model AbandonedCart {
   @@index([createdAt])
   @@map("abandoned_carts")
 }
+
+// Privacy requests (DSAR)
+model PrivacyRequest {
+  id          String   @id @default(uuid())
+  email       String
+  requestType String   // e.g., access, deletion, correction, do_not_sell_share, appeal
+  status      String   @default("pending") // e.g., pending, in_progress, completed, denied
+  trackingId  String   @unique @default(uuid())
+  createdAt   DateTime @default(now())
+  dueDate     DateTime
+  resolvedAt  DateTime?
+  notes       String?
+
+  @@index([email, status])
+  @@map("privacy_requests")
+}

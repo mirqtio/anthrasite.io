@@ -1,8 +1,8 @@
 # Anthrasite.io Payment Site - Project Dashboard (v1.0)
 
-- **Total Effort (Estimated)**: 183 Story Points
-- **Completed Points**: 69 Points
-- **Remaining Points**: 114 Points
+- **Total Effort (Estimated)**: 192 Story Points
+- **Completed Points**: 114 Points
+- **Remaining Points**: 78 Points
 - **Estimated Completion**: ~10 Workdays
 
 ---
@@ -89,6 +89,7 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **F5 (3 pts)**: Refund policy & implementation
 - **F6 (13 pts)**: Support Tooling MVP
 - **F7 (5 pts)**: Privacy compliance
+- **Status**: `CLOSED`
 - **F8 (3 pts)**: Final Production E2E Checkout & Validation
 - **F9 (3 pts)**: Secret Management & Env Audit
 - **F10 (2 pts)**: Mac mini Decommission (partial)
@@ -122,20 +123,23 @@ This section lists all launch-critical issues for the Anthrasite.io payment site
 - **Commit**: `57fc0fc1`
 - **I4 (1 pt)**: Triage Quarantined Tests
 
-### EPIC H - Hardening & CI/CD - (38 pts)
+### EPIC H - Hardening & CI/CD - (47 pts)
 
 **Goal:** Ensure the repository is secure and the CI/CD pipeline is reliable before public launch.
 
 - **H1 (3 pts)**: Integrate GitGuardian for secret scanning.
 - **Status**: `CLOSED`
-- **H2 (17 pts)**: CI v2 - Hermetic E2E Pipeline (Phases 1-4)
+- **H2 (21 pts)**: CI v2 - Hermetic E2E Pipeline (Phases 1-4)
+- **Status**: `CLOSED`
 - **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
 - **H4 (3 pts)**: Fix Stripe SDK Build-Time Initialization in CI
-- **Status**: `IN PROGRESS`
+- **Status**: `CLOSED`
 - **H5 (3 pts)**: Fix macOS Spotlight Codebase Corruption
 - **H6 (8 pts)**: Recover from iCloud Codebase Corruption
 - **Status**: `CLOSED`
 - **H7 (2 pts)**: Docs: Update SYSTEM.md and create ADR-P08
+- **H8 (5 pts)**: Refactor: Simplify Middleware and Unify Environment Configuration
+- **Status**: `CLOSED`
 
 ### EPIC Admin UI Overhaul — 15 pts
 

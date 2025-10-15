@@ -4,12 +4,14 @@ import { withSession } from './middleware/01-session'
 import { withSecurity } from './middleware/02-security'
 import { withABTesting } from './middleware/02b-ab-testing'
 import { withAccessControl } from './middleware/03-access-control'
+import { withPrivacyGPC } from './middleware/04-privacy-gpc'
 
 export default chain([
   withSession,
   withSecurity,
   withABTesting,
   withAccessControl,
+  withPrivacyGPC,
 ])
 
 export const config = {
