@@ -42,12 +42,21 @@ export function getSql() {
     )
   }
 
-  console.log('[db] Initializing postgres.js client with connection string')
+  // Sanitize connection string for logging (mask password)
+  const sanitized = connectionString.replace(/:([^:@]+)@/, ':****@')
+  console.log('[db] Initializing postgres.js client')
+  console.log(
+    '[db] Using:',
+    process.env.POOL_DATABASE_URL ? 'POOL_DATABASE_URL' : 'DATABASE_URL'
+  )
+  console.log('[db] Connection string (sanitized):', sanitized)
 
   // Determine if we need SSL (production/Supabase) or not (local development)
   const isLocalDB =
     connectionString.includes('localhost') ||
     connectionString.includes('127.0.0.1')
+
+  console.log('[db] Local DB:', isLocalDB)
 
   // Auto-append sslmode=require for remote connections if missing
   let effectiveConnStr = connectionString
@@ -57,20 +66,34 @@ export function getSql() {
       effectiveConnStr += connectionString.includes('?')
         ? '&sslmode=require'
         : '?sslmode=require'
+      console.log('[db] Added sslmode=require to connection string')
     }
   }
 
-  const sql = postgres(effectiveConnStr, {
-    max: 5, // Keep pool small on Vercel
-    prepare: false, // Required for PgBouncer - no prepared statements
-    ssl: isLocalDB ? false : { rejectUnauthorized: false }, // Allow self-signed chain in serverless
+  console.log('[db] Creating postgres.js client with:', {
+    max: 5,
+    prepare: false,
+    ssl: isLocalDB ? false : { rejectUnauthorized: false },
   })
 
-  if (process.env.NODE_ENV !== 'production') {
-    global.pgSql = sql
-  }
+  try {
+    const sql = postgres(effectiveConnStr, {
+      max: 5, // Keep pool small on Vercel
+      prepare: false, // Required for PgBouncer - no prepared statements
+      ssl: isLocalDB ? false : { rejectUnauthorized: false }, // Allow self-signed chain in serverless
+    })
 
-  return sql
+    console.log('[db] postgres.js client created successfully')
+
+    if (process.env.NODE_ENV !== 'production') {
+      global.pgSql = sql
+    }
+
+    return sql
+  } catch (error) {
+    console.error('[db] Failed to create postgres.js client:', error)
+    throw error
+  }
 }
 
 // Export the function as default for lazy initialization
