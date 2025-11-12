@@ -2197,3 +2197,56 @@ The `survey_responses` table uses camelCase column names with quotes (matching p
 2. If not, run migrations using DATABASE_URL_DIRECT
 3. Get actual error logs from Vercel to see the specific error message
 4. Test again after migrations are confirmed
+
+### Update 2025-11-12 18:30 UTC - Deployed Prisma Client Fix
+
+**Deployed Fix**: Commit 71c0ceb "fix(db): configure Prisma Client to use direct database connection"
+
+**What was fixed:**
+
+- Prisma Client now uses `DATABASE_URL_DIRECT` (port 5432) instead of `DATABASE_URL` (pooled/PgBouncer)
+- This allows Prisma Client to work for existing features (waitlist, purchases, etc.)
+- postgres.js continues using `POOL_DATABASE_URL` for survey queries
+
+**Deployment Status:**
+
+- ✅ Code pushed to GitHub successfully
+- ✅ Build completed without errors
+- ✅ Vercel deployment triggered (commit 71c0ceb)
+- ❌ Survey API still returning 500 errors after deployment
+
+**Remaining Issue:**
+The survey API is still failing with server_error. Possible causes:
+
+1. **Database Migrations Not Run**
+   The `survey_responses` table may not exist in the production database.
+   **Action needed:** Run migrations against DATABASE_URL_DIRECT:
+
+   ```bash
+   DATABASE_URL="postgresql://...see survey-secrets.md..." npx prisma migrate deploy
+   ```
+
+2. **Check Actual Error in Vercel Logs**
+   Cannot access detailed error logs from CLI.
+   **Action needed:** Check Vercel dashboard for function logs showing the actual error
+
+3. **Verify Environment Variables are Loaded**
+   **Action needed:** Check Vercel deployment logs to confirm DATABASE_URL_DIRECT is being loaded
+
+**Test Command:**
+
+```bash
+curl "https://www.anthrasite.io/api/survey/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsZWFkSWQiOiIzMDkzIiwicnVuSWQiOiJsZWFkXzMwOTNfYmF0Y2hfMjAyNTExMTFfMjExMTE5XzEzNjY4M2FjIiwianRpIjoiYmIzZWRkMjEtZTUwYi00MDYxLWJjNTAtMDhmOGZkMTZmM2JhIiwiYXVkIjoic3VydmV5Iiwic2NvcGUiOiJmZWVkYmFjayIsInZlcnNpb24iOiJ2MSIsImlhdCI6MTc2Mjk1MDI0MywiZXhwIjoxNzY1NTQyMjQzfQ.q1k47E5JJ0pfKKHiWyuR2yFLeJJOVr4ceG_GcwwEr9M" | jq
+```
+
+Expected (success):
+
+```json
+{"valid": true, "survey": {...}}
+```
+
+Actual (current):
+
+```json
+{ "valid": false, "error": "server_error", "message": "An error occurred" }
+```
