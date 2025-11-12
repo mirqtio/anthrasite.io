@@ -182,7 +182,10 @@ export default function SurveyContainer({ token }: { token: string }) {
         className="min-h-screen flex items-center justify-center px-4"
         style={{ backgroundColor: '#0a0a0a' }}
       >
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+        <div
+          className="w-full bg-white rounded-lg shadow-lg p-8 text-center"
+          style={{ maxWidth: '28rem' }}
+        >
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Survey Unavailable
           </h1>
