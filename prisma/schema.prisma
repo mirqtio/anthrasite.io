@@ -137,3 +137,30 @@ model PrivacyRequest {
   @@index([email, status])
   @@map("privacy_requests")
 }
+
+// Survey responses
+model SurveyResponse {
+  id                String    @id @default(cuid())
+  leadId            String
+  runId             String?
+  jtiHash           String    @unique // SHA256 hash of JWT jti for idempotency
+  version           String    @default("v1")
+  batchId           String?
+
+  // Response data
+  beforeAnswers     Json?
+  afterAnswers      Json?
+  metrics           Json?     // timing: time_before_ms, time_after_ms, time_to_report_click
+
+  // Timestamps
+  reportAccessedAt  DateTime?
+  beforeCompletedAt DateTime?
+  afterCompletedAt  DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([leadId, completedAt])
+  @@index([createdAt])
+  @@map("survey_responses")
+}
