@@ -21,11 +21,11 @@ export async function validateSurveyToken(
     // Verify JWT
     const { payload } = await jwtVerify(token, secret, {
       algorithms: ['HS256'],
-      audience: 'anthrasite.io',
+      audience: 'survey',
     })
 
     // Validate required fields
-    if (!payload.leadId || !payload.jti || payload.scope !== 'survey') {
+    if (!payload.leadId || !payload.jti || payload.scope !== 'feedback') {
       console.error('Token missing required fields or invalid scope')
       return null
     }
