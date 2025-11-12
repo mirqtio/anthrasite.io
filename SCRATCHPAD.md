@@ -2138,3 +2138,62 @@ The user needs to retrieve the latest function logs to see the actual error. Opt
 **Alternative:** Create a debug endpoint that exposes the actual error (requires code changes).
 
 ---
+
+---
+
+## postgres.js Migration - Deployment Troubleshooting - 2025-11-12 18:27 UTC
+
+### Status: DEPLOYED BUT FAILING
+
+The postgres.js migration has been successfully deployed (commit 020307a), but the survey API is returning 500 errors.
+
+### Deployment Details:
+
+- **Commit**: 020307a "fix(survey): replace Prisma Client with postgres.js for PgBouncer compatibility"
+- **Deployed to**: Production (Vercel)
+- **Test request**: `GET /api/survey/[token]`
+- **Response**: `{"valid":false,"error":"server_error","message":"An error occurred"}`
+- **HTTP Status**: 500
+- **Vercel ID**: iad1::iad1::w4r5t-1762972027819-aa1f9feb2f92
+
+### Environment Variables Verified:
+
+All database environment variables are correctly set in Vercel:
+
+- ✅ `DATABASE_URL`: pooled connection (port 6543)
+- ✅ `POOL_DATABASE_URL`: pooled connection (port 6543)
+- ✅ `DATABASE_URL_DIRECT`: direct connection (port 5432)
+
+All targeting: production, preview, development
+
+### Table Schema Verified:
+
+The `survey_responses` table uses camelCase column names with quotes (matching postgres.js queries):
+
+- "leadId", "jtiHash", "runId", etc. (NOT snake_case)
+- postgres.js queries correctly use quoted identifiers: `"leadId"`, `"jtiHash"`, etc.
+
+### Possible Root Causes:
+
+1. **Migrations Not Run on Production Database**
+
+   - The `survey_responses` table may not exist in the production database yet
+   - Migration file exists: `prisma/migrations/20251112035200_add_survey_responses/migration.sql`
+   - Need to run: `npx prisma migrate deploy` with DATABASE_URL_DIRECT
+
+2. **Runtime Error in postgres.js Client Initialization**
+
+   - Connection string format issue
+   - SSL/TLS configuration problem
+   - PgBouncer connection timeout
+
+3. **Token Validation Failure**
+   - Issue in `validateSurveyToken()` before database query
+   - JWT decoding error
+
+### Next Steps:
+
+1. Check if migrations have been run on production database
+2. If not, run migrations using DATABASE_URL_DIRECT
+3. Get actual error logs from Vercel to see the specific error message
+4. Test again after migrations are confirmed
