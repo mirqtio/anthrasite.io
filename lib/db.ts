@@ -52,7 +52,7 @@ export function getSql() {
   const sql = postgres(connectionString, {
     max: 5, // Keep pool small on Vercel
     prepare: false, // Required for PgBouncer - no prepared statements
-    ssl: isLocalDB ? false : true, // SSL only for remote connections (Supabase)
+    ssl: isLocalDB ? false : { rejectUnauthorized: false }, // SSL for remote with relaxed cert validation
   })
 
   if (process.env.NODE_ENV !== 'production') {
