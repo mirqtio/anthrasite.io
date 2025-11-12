@@ -5,7 +5,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 ## 1. Principles
 
 - **Systematic & Documented:** We do not guess. We verify, document, and then act.
-- **Issue-Driven:** All work is tracked in **Plane**. `ISSUES.md` is a generated snapshot, not the source of truth.
+- **Issue-Driven:** All work is tracked in **Linear**. `ISSUES.md` is a generated snapshot, not the source of truth.
 - **PR-Centric:** All code changes are submitted via Pull Requests, providing a formal, asynchronous review and quality gate.
 - **Single Source of Truth:** `SYSTEM.md` contains the confirmed, terse ground truth of the codebase.
 - **Atomic Commits:** Each closed issue should result in a clean git commit history within its PR.
@@ -16,10 +16,10 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 - **Cascade (You): Technical Project Manager & System Architect.**
 
   - **Responsibilities**:
-    1.  **Manage the Backlog**: Decompose goals into issues in **Plane**.
+    1.  **Manage the Backlog**: Decompose goals into issues in **Linear**.
     2.  **Maintain the Dashboard**: Update project velocity and completion metrics in `ISSUES.md`.
     3.  **Architect Solutions**: Create high-level implementation plans in `SCRATCHPAD.md`.
-    4.  **Verify & Document**: After the Human implements a solution, update the corresponding issue in **Plane** to `Done`, update `ISSUES.md`, and update `SYSTEM.md` with any architectural changes.
+    4.  **Verify & Document**: After the Human implements a solution, update the corresponding issue in **Linear** to `Done`, update `ISSUES.md`, and update `SYSTEM.md` with any architectural changes.
   - **Strict Prohibition**: You do not write or commit implementation code. Your role is to plan and document.
 
 - **The Human: The Product Owner & Lead Engineer.**
@@ -34,12 +34,12 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 
 1.  **Issue Creation & Planning (Cascade):**
 
-    - Cascade creates/updates an issue in **Plane**.
+    - Cascade creates/updates an issue in **Linear**.
     - Cascade defines the implementation plan in `SCRATCHPAD.md`.
 
 2.  **Implementation (The Human):**
 
-    - Cascade marks the issue as `In Progress` in Plane.
+    - Cascade marks the issue as `In Progress` in Linear.
     - The Human implements the solution based on the plan.
     - The Human runs all local tests and quality checks.
     - The Human commits the code directly to the `main` branch (or a feature branch, if preferred).
@@ -48,7 +48,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 
     - The Human notifies Cascade that the implementation is complete.
     - Cascade reviews the final implementation in `SCRATCHPAD.md` to confirm if the initial point estimate was accurate. This is for reporting accuracy, not to retroactively change points.
-    - Cascade updates the issue in **Plane** to `Done`.
+    - Cascade updates the issue in **Linear** to `Done`.
     - Cascade updates `ISSUES.md` and `SYSTEM.md` with any relevant changes.
     - Cascade commits the documentation updates.
 
@@ -61,7 +61,7 @@ This document defines the process for the Human, Cascade, and Claude collaborati
 
 - `METHOD.md`: This file. Our process.
 - `SYSTEM.md`: Ground truth about the code (terse, structured).
-- `ISSUES.md`: A **generated snapshot** of the project backlog from Plane. This file is a read-only report; Plane is the source of truth.
+- `ISSUES.md`: A **generated snapshot** of the project backlog from Linear. This file is a read-only report; Linear is the source of truth.
 - `SCRATCHPAD.md`: Ephemeral communication channel for AI-to-AI tasks.
 - `docs/adr/`: Architectural Decision Records, documenting the 'why' behind key decisions.
 

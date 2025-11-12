@@ -1772,3 +1772,62 @@ To fix this, we need to trigger a new deployment so that:
 **Resolution:** Triggering deployment via git commit
 
 ---
+
+## 🔍 Root Cause Identified - 2025-11-12T13:25:00Z
+
+### The Real Problem: Missing DIRECT_URL Environment Variable
+
+After triggering a new deployment and testing again, the API still returned `server_error`. Further investigation revealed the actual root cause:
+
+**Prisma Schema Configuration:**
+
+The `prisma/schema.prisma` file defines:
+
+```typescript
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")      // ✅ Configured
+  directUrl = env("DIRECT_URL")        // ❌ NOT configured in Vercel
+}
+```
+
+**Impact:**
+
+When Prisma initializes, it expects BOTH environment variables:
+
+- `DATABASE_URL` - Pooled connection via PgBouncer (port 6543) for queries
+- `DIRECT_URL` - Direct connection (port 5432) for migrations and schema operations
+
+Without `DIRECT_URL`, the Prisma client fails to initialize properly, causing all database operations to throw errors.
+
+### Solution: Add DIRECT_URL to Vercel
+
+**Required Environment Variable:**
+
+- **Key:** `DIRECT_URL`
+- **Value:** See `survey-secrets.md` for full connection string
+  - Same as DATABASE_URL but with port 5432 (direct) instead of 6543 (pooled)
+- **Difference from DATABASE_URL:**
+  - Port changed from 6543 (pooled) to 5432 (direct)
+  - Same credentials and hostname
+- **Target:** Production, Preview, Development
+
+**How to Add:**
+
+1. Go to Vercel project settings: https://vercel.com/anthrasite/anthrasite-io/settings/environment-variables
+2. Click "Add Variable"
+3. Name: `DIRECT_URL`
+4. Value: (see above)
+5. Environments: Select all three (Production, Preview, Development)
+6. Click "Save"
+
+**After Adding:**
+
+The next deployment will automatically pick up the new environment variable and Prisma will initialize correctly.
+
+---
+
+**Root Cause Identified:** 2025-11-12T13:25:00Z
+**Awaiting:** User to add DIRECT_URL via Vercel dashboard
+
+---

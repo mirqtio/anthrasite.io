@@ -11,150 +11,34 @@
 
 This section lists all launch-critical issues for the Anthrasite.io payment site.
 
-### EPIC G - Codebase Cleanup & Build Stabilization - (21 pts)
+### EPIC: Final GTM Validation (3 pts)
 
-**Goal:** Aggressively refactor the codebase, fix critical build issues, and establish a clean, stable baseline for future development.
+- **ANT-155 (1 pt): Final Production E2E Checkout & Validation**
+  This issue covers a complete, real-money, end-to-end test of the entire user journey, from lead creation to final report delivery. This is the final validation step before public launch.
 
-- **G1 (21 pts)**: Combined task including initial codebase cleanup (G1), fixing critical build hangs (G2), and archiving unused features (G3).
-- **Status**: `CLOSED`
-- **Commit**: `30835ed`
-- **Checklist**:
-  - [x] 0. Pre-flight: Create safety branch and golden path smoke test.
-  - [x] 1. Archive: Move non-essential files to a tracked `_archive` directory.
-  - [x] 2. Validate & Fix: Run `typecheck`, `build`, and `test:e2e` in a loop until the smoke test passes.
-  - [x] 3. Evidence: Provide passing test logs, git status, and final file tree.
-  - [x] 4. Guardrails: Added environment checks and a `@smoke` test suite to CI before merging.
+- **ANT-157 (2 pts): Pre-launch Site QA**
+  A final quality assurance pass before launch to check all links, verify Google Analytics (GA4) and SEO tags are firing correctly, and ensure copy is consistent across the entire site. This is a quick regression pass to catch any surface-level issues.
 
-### EPIC A — Embedded Payments (Stripe) — 12 pts
+### EPIC: GTM Operational Readiness (11 pts)
 
-**Goal:** On-page payment; branded receipts; robust tests.
-**Status**: `CLOSED` - All implementation work is complete as of 2025-10-10.
+- **ANT-91 (8 pts): Support Tooling MVP (Admin purchase dashboard, resend, manual PDF trigger)**
+  Build minimal admin dashboard that allows operators to resolve “paid but didn’t receive report” issues in under two minutes. Focus on visibility and manual triggers; advanced features (RBAC, Postmark ingestion, full audit log) deferred.
 
-- **A1 (2 pts)**: Wire Payment Element to /purchase; idempotent PaymentIntent API with tier support
-- **Status**: `CLOSED`
-- **A2 (2 pts)**: PRICE_TIERS config (basic=$399, pro=$699) with unit tests
-- **Status**: `CLOSED`
-- **A3 (2 pts)**: Stripe receipts + business identity (manual Dashboard config)
-- **Status**: `CLOSED`
-- **A4 (1 pt)**: Feature flag enforcement (UI + API gating)
-- **Status**: `CLOSED`
-- **A5 (5 pts)**: E2E iframe tests (happy path + decline) with CI parity
-- **Status**: `CLOSED`
+- **ANT-251 (3 pts): Display Basic Email Funnel Metrics**
+  Enhance the admin support dashboard to display basic email funnel metrics for the last 7 days. The required metrics are: Emails Sent, Delivery Rate, Open Rate, and Click-Through Rate.
 
-### EPIC B — UTM & Business Onboarding — 8 pts
+### EPIC: Report Delivery Pipeline (2 pts)
 
-**Goal:** Personalized purchase from cold email; admin can seed data.
+- **ANT-250 (2 pts): Add 1x1 Tracking Pixel for Open Tracking**
+  Embed a unique, 1x1 transparent tracking pixel in all outgoing report emails. The pixel's URL should contain a unique identifier that allows us to record when an email is opened. This requires creating an endpoint to serve the pixel and record the open event.
 
-- **B1 (3 pts)**: Production UTM generator (admin-only)
-- **B2 (3 pts)**: Business creation (admin)
-- **B3 (2 pts)**: Page personalization & safe failure states
+### Other Open Issues (11 pts)
 
-### EPIC C — Webhook → LeadShop Bridge & Orchestration — 11 pts
+- **ANT-181 (8 pts): Stripe Event Ingestion & Managed Queue Bridge**
+  Implement a durable, idempotent Stripe→Queue→Worker bridge. The public webhook listener validates and deduplicates Stripe events, then enqueues a durable payment_completed job for asynchronous processing. A lightweight worker consumes the queue and triggers the Temporal workflow that assembles and emails a report.
 
-**Goal:** Durable payment→workflow pipeline, idempotent and observable.
-
-- **C1-C2 (8 pts)**: Stripe Event Ingestion & Managed Queue Bridge
-- **C3 (3 pts)**: Temporal kickoff contract
-
-### EPIC D — Report Generation & Delivery — 13 pts
-
-**Goal:** Deterministic PDF + emailed attachment from a robust ESP.
-
-- **D1 (3 pts)**: PDF generation service
-- **D2 (2 pts)**: Storage & traceability
-- **D3 (3 pts)**: Activate Gmail SMTP Provider in Webhook
-- **Status**: `CLOSED`
-- **Commit**: `f5a638f`
-- **D4 (2 pts)**: Resend & fallback download
-
-### EPIC E — Sales Page & Messaging — 11 pts
-
-**Goal:** Tight sales page; locked email copy; clear post-purchase UX.
-
-- **E1 (3 pts)**: Sales page redesign (final copy/UX)
-- **E2 (1 pt)**: Report email subject/body (plain + HTML)
-- **E3 (2 pts)**: Success page states
-- **E4 (2 pts)**: Pre-launch Site QA
-- **E5 (3 pts)**: Delivery Failure Detection
-
-### EPIC F — Ops, Support, Compliance — 45 pts
-
-**Goal:** Safe operations from Day 1, with runbooks and guardrails.
-
-- **F1 (5 pts)**: Idempotency & event log
-- **F2 (2 pts)**: Domain/DNS hardening
-- **Status**: `CLOSED`
-- **F3 (5 pts)**: Monitoring & alerts
-- **F4 (3 pts)**: Runbooks
-- **F5 (3 pts)**: Refund policy & implementation
-- **F6 (13 pts)**: Support Tooling MVP
-- **F7 (5 pts)**: Privacy compliance
-- **Status**: `CLOSED`
-- **F8 (3 pts)**: Final Production E2E Checkout & Validation
-- **F9 (3 pts)**: Secret Management & Env Audit
-- **F10 (2 pts)**: Mac mini Decommission (partial)
-- **F11 (3 pts)**: Worker Health Monitoring
-
-### EPIC I - Test Suite Hardening - (15 pts)
-
-**Goal:** Achieve a fully green CI by resolving all remaining E2E and unit test failures.
-
-- **I1 (3 pts)**: Fix Consent Modal Visibility (E2E)
-- **Status**: `CLOSED`
-- **I2 (2 pts)**: Implement Waitlist Validation Logic (E2E)
-- **Status**: `CLOSED`
-- **I3 (2 pts)**: Fix UTM Cookie Persistence & Expired Route (E2E)
-- **Status**: `CLOSED`
-- **Commit**: `fc9259a`
-- **I4 (2 pts)**: Fix Homepage Component Drift in Tests (Unit)
-- **Status**: `CLOSED`
-- **Commits**: `7becd48`, `2955eb9`, `3f05f3c`
-- **I5 (1 pt)**: Fix Analytics Test Mock (Unit)
-- **Status**: `CLOSED`
-- **Commit**: `6af616f`
-- **I6 (2 pts)**: Fix Client-Side Journey Tests (E2E)
-- **Status**: `CLOSED`
-- **Commits**: `ebbae60`, `b7e7440`, `4d13fef`
-- **I7 (5 pts)**: Address Remaining Skipped Unit Tests
-- **Status**: `CLOSED`
-- **Commit**: `5d89582`
-- **I8 (13 pts)**: EPIC I - Final Cleanup & Deferred Tasks
-- **Status**: `CLOSED`
-- **Commit**: `57fc0fc1`
-- **I4 (1 pt)**: Triage Quarantined Tests
-
-### EPIC H - Hardening & CI/CD - (47 pts)
-
-**Goal:** Ensure the repository is secure and the CI/CD pipeline is reliable before public launch.
-
-- **H1 (3 pts)**: Integrate GitGuardian for secret scanning.
-- **Status**: `CLOSED`
-- **H2 (21 pts)**: CI v2 - Hermetic E2E Pipeline (Phases 1-4)
-- **Status**: `CLOSED`
-- **H3 (8 pts)**: (DEFERRED) Refactor testing system for clarity and maintainability.
-- **H4 (3 pts)**: Fix Stripe SDK Build-Time Initialization in CI
-- **Status**: `CLOSED`
-- **H5 (3 pts)**: Fix macOS Spotlight Codebase Corruption
-- **H6 (8 pts)**: Recover from iCloud Codebase Corruption
-- **Status**: `CLOSED`
-- **H7 (2 pts)**: Docs: Update SYSTEM.md and create ADR-P08
-- **H8 (5 pts)**: Refactor: Simplify Middleware and Unify Environment Configuration
-- **Status**: `CLOSED`
-
-### EPIC Admin UI Overhaul — 15 pts
-
-**Goal:** Build a minimal, stable admin UI for internal testing and demos, focusing on a "Prompt Lab" and fixing existing bugs.
-
-- **Admin UI Overhaul (Epic)** (2 pts): Coordination, QA, and polish for the Admin UI MVP.
-- **Fix Existing Admin UI Bugs** (5 pts): Audit and fix known issues in the current Admin UI.
-- **"Prompt Lab" UI** (8 pts): Build a minimal UI for testing AI model configurations.
-
-### EPIC J - Organic Report Generation Funnel - (16 pts)
-
-**Goal:** Implement an end-to-end organic user funnel allowing visitors to generate and purchase a report directly from the website.
-
-- **J1 (16 pts)**: EPIC: Organic Report Generation Funnel
-- **Status**: `DEFERRED`
+- **ANT-246 (3 pts): Create ADR for Linear as ticketing system**
+  Document the decision to use Linear as the authoritative ticketing system, replacing the previous "Plane" and flat-file `ISSUES.md` workflow. The ADR should cover the rationale (tool consolidation, better API), the new workflow, and the role of `ISSUES.md` as a generated context file for AI agents.
 
 ---
 

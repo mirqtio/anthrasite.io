@@ -6,6 +6,8 @@
 **Owner**: Anthrasite Platform Team
 **Status**: Canonical Architecture Document (Ground Truth)
 
+**LeadShop**: LeadShop is the backend system that powers Anthrasite. Details can be found in the [LeadShop SYSTEM.md](../LeadShop-v3-clean/SYSTEM.md).
+
 ## 1. Purpose & Core Principles
 
 This document defines the authoritative architecture of the **Anthrasite.io Payment Site**. It captures both design intent and operational invariants to ensure the system remains reliable, secure, and maintainable.
