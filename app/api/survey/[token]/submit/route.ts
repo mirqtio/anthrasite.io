@@ -65,16 +65,17 @@ export async function POST(
 
       // Update leadId from token if not set
       if (!response.leadId || response.leadId === '') {
-        const { prisma } = await import('@/lib/db')
-        await prisma.surveyResponse.update({
-          where: { id: response.id },
-          data: {
-            leadId: payload.leadId,
-            runId: payload.runId,
-            version: payload.version || 'v1',
-            batchId: payload.batchId,
-          },
-        })
+        const sql = (await import('@/lib/db')).default
+        await sql`
+          UPDATE survey_responses
+          SET
+            "leadId" = ${payload.leadId},
+            "runId" = ${payload.runId || null},
+            version = ${payload.version || 'v1'},
+            "batchId" = ${payload.batchId || null},
+            "updatedAt" = NOW()
+          WHERE id = ${response.id}
+        `
       }
 
       return NextResponse.json({

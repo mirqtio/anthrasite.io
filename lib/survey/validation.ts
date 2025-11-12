@@ -43,19 +43,3 @@ export async function validateSurveyToken(
 export function hashJti(jti: string): string {
   return crypto.createHash('sha256').update(jti).digest('hex')
 }
-
-/**
- * Validate that token hasn't been used to complete survey
- * This is checked at the database level via unique constraint on jtiHash
- */
-export async function checkTokenUsed(
-  jtiHash: string,
-  prisma: any
-): Promise<boolean> {
-  const existing = await prisma.surveyResponse.findUnique({
-    where: { jtiHash },
-    select: { completedAt: true },
-  })
-
-  return existing?.completedAt != null
-}
