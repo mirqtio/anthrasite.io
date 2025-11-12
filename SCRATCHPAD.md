@@ -1690,3 +1690,85 @@ I apologize for this catastrophic error and the significant data loss and recove
 **Responsible:** Claude Code (me)
 
 ---
+
+## 🔧 Post-Recovery Troubleshooting - 2025-11-12T13:15:00Z
+
+### Database Recovery Status
+
+✅ **Database table created successfully**
+
+The human manually created the `survey_responses` table via Supabase dashboard with all correct columns and indexes:
+
+```sql
+-- Table structure verified
+CREATE TABLE "survey_responses" (
+    "id" TEXT NOT NULL,
+    "leadId" TEXT NOT NULL,
+    "runId" TEXT,
+    "jtiHash" TEXT NOT NULL,
+    "version" TEXT NOT NULL DEFAULT 'v1',
+    "batchId" TEXT,
+    "beforeAnswers" JSONB,
+    "afterAnswers" JSONB,
+    "metrics" JSONB,
+    "reportAccessedAt" TIMESTAMP(3),
+    "beforeCompletedAt" TIMESTAMP(3),
+    "afterCompletedAt" TIMESTAMP(3),
+    "completedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "survey_responses_pkey" PRIMARY KEY ("id")
+);
+
+-- All indexes created
+CREATE UNIQUE INDEX "survey_responses_jtiHash_key" ON "survey_responses"("jtiHash");
+CREATE INDEX "survey_responses_leadId_completedAt_idx" ON "survey_responses"("leadId", "completedAt");
+CREATE INDEX "survey_responses_createdAt_idx" ON "survey_responses"("createdAt");
+```
+
+### Current Issue: API Still Returning server_error
+
+**Symptom:** Production API endpoint still returns `{"valid":false,"error":"server_error"}`
+
+**Test:**
+
+```bash
+curl "https://www.anthrasite.io/api/survey/{token}"
+# Returns: {"valid":false,"error":"server_error","message":"An error occurred"}
+```
+
+**Root Cause Analysis:**
+
+The error occurs at line 32 of `app/api/survey/[token]/route.ts` when calling `isSurveyCompleted()`. This function uses the Prisma client to query the database.
+
+The issue is that the Prisma client on Vercel was generated **BEFORE** the `DATABASE_URL` environment variable was added. When the Prisma client instantiates in `lib/db.ts`, it either:
+
+1. Has no database connection configured
+2. Is trying to use an old/invalid connection
+3. Cannot connect because the client wasn't regenerated after env var addition
+
+**Affected Code:**
+
+- `lib/db.ts:8-15` - Prisma client instantiation
+- `lib/survey/storage.ts:150-153` - `isSurveyCompleted()` function
+- `app/api/survey/[token]/route.ts:32` - Call site where error occurs
+
+### Solution: Trigger New Deployment
+
+To fix this, we need to trigger a new deployment so that:
+
+1. Vercel runs `npm install` / `pnpm install`
+2. Prisma client is regenerated via `prisma generate` with the new `DATABASE_URL`
+3. The `@prisma/client` package picks up the environment variable
+4. The Prisma client can successfully connect to Supabase
+
+**Action:** Updating this SCRATCHPAD file and committing to trigger deployment.
+
+**Expected Result:** After deployment completes, the API should successfully query the `survey_responses` table and return valid survey data.
+
+---
+
+**Troubleshooting Started:** 2025-11-12T13:15:00Z
+**Resolution:** Triggering deployment via git commit
+
+---
