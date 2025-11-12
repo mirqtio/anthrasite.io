@@ -44,10 +44,15 @@ export function getSql() {
 
   console.log('[db] Initializing postgres.js client with connection string')
 
+  // Determine if we need SSL (production/Supabase) or not (local development)
+  const isLocalDB =
+    connectionString.includes('localhost') ||
+    connectionString.includes('127.0.0.1')
+
   const sql = postgres(connectionString, {
     max: 5, // Keep pool small on Vercel
     prepare: false, // Required for PgBouncer - no prepared statements
-    ssl: 'require', // Required for Supabase
+    ssl: isLocalDB ? false : 'require', // SSL only for remote connections (Supabase)
   })
 
   if (process.env.NODE_ENV !== 'production') {
