@@ -167,7 +167,10 @@ export default function SurveyContainer({ token }: { token: string }) {
 
   if (state.step === 'loading') {
     return (
-      <div className="min-h-screen bg-carbon flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: '#0a0a0a' }}
+      >
         <div className="text-white">Loading survey...</div>
       </div>
     )
@@ -175,7 +178,10 @@ export default function SurveyContainer({ token }: { token: string }) {
 
   if (state.step === 'error') {
     return (
-      <div className="min-h-screen bg-carbon flex items-center justify-center px-4">
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{ backgroundColor: '#0a0a0a' }}
+      >
         <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Survey Unavailable
@@ -190,7 +196,10 @@ export default function SurveyContainer({ token }: { token: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-carbon py-8 sm:py-12 px-4">
+    <div
+      className="min-h-screen py-8 sm:py-12 px-4"
+      style={{ backgroundColor: '#0a0a0a' }}
+    >
       <div className="mx-auto" style={{ maxWidth: '768px' }}>
         {(state.step === 'before' ||
           state.step === 'report' ||
