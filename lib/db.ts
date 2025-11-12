@@ -49,10 +49,21 @@ export function getSql() {
     connectionString.includes('localhost') ||
     connectionString.includes('127.0.0.1')
 
-  const sql = postgres(connectionString, {
+  // Auto-append sslmode=require for remote connections if missing
+  let effectiveConnStr = connectionString
+  if (!isLocalDB) {
+    const hasSSLMode = /[?&]sslmode=/i.test(connectionString)
+    if (!hasSSLMode) {
+      effectiveConnStr += connectionString.includes('?')
+        ? '&sslmode=require'
+        : '?sslmode=require'
+    }
+  }
+
+  const sql = postgres(effectiveConnStr, {
     max: 5, // Keep pool small on Vercel
     prepare: false, // Required for PgBouncer - no prepared statements
-    ssl: isLocalDB ? false : { rejectUnauthorized: false }, // SSL for remote with relaxed cert validation
+    ssl: isLocalDB ? false : true, // Enforce TLS for Supabase pooler
   })
 
   if (process.env.NODE_ENV !== 'production') {
