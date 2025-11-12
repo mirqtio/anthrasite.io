@@ -1892,3 +1892,249 @@ datasource db {
 Committing this change to trigger a new deployment with the simplified schema.
 
 ---
+
+## 🚨 Still Getting server_error - 2025-11-12T13:42:00Z
+
+After deploying with simplified Prisma schema (no directUrl), the API still returns `server_error`.
+
+**Investigation Needed:**
+
+The issue persists even after:
+
+1. ✅ Token validation fixed (returns correct format)
+2. ✅ Error page layout fixed
+3. ✅ DATABASE_URL environment variable added
+4. ✅ DIRECT_URL environment variable added
+5. ✅ survey_responses table created in database
+6. ✅ Prisma schema simplified (removed directUrl)
+
+**Current Hypothesis:**
+
+Since token validation passes (we're not getting `invalid_token`), the error must be occurring at line 32 of `app/api/survey/[token]/route.ts` when calling `isSurveyCompleted()`.
+
+**Possible Issues:**
+
+1. DATABASE_URL value might be incorrect or malformed
+2. Prisma client connection is timing out
+3. Table name or column casing mismatch
+4. Missing Prisma client regeneration on Vercel
+
+**Verified Configuration:**
+
+- ✅ DATABASE_URL: (see survey-secrets.md) - pooled connection port 6543
+- ✅ SURVEY_SECRET_KEY: Configured (correct)
+- ✅ DIRECT_URL: Configured
+- ✅ survey_responses table exists with correct structure
+- ✅ Prisma schema correct (no directUrl)
+- ✅ Token validation passes (not getting invalid_token)
+
+**Next Steps:**
+
+**BLOCKED:** Cannot progress without Vercel function logs. The error is occurring inside the API route but the generic `server_error` message doesn't reveal the actual issue.
+
+**Recommended Actions:**
+
+1. Check Vercel function logs via dashboard or CLI to see actual error
+2. Possible commands to get logs:
+   ```bash
+   vercel logs https://www.anthrasite.io/api/survey/[token]
+   ```
+3. Check recent deployments to ensure latest code is deployed
+
+**Alternative Debugging:**
+Create a simple test endpoint that just tries to query the database directly to isolate whether it's:
+
+- A Prisma connection issue
+- A table/column name issue
+- A permission issue
+
+---
+
+## 🎯 ROOT CAUSE FOUND - 2025-11-12T13:45:00Z
+
+### Error from Vercel Logs:
+
+```
+prisma:error
+Invalid `prisma.surveyResponse.findUnique()` invocation:
+
+Error querying the database: FATAL: Tenant or user not found
+```
+
+### The Problem: Supabase Pooler Incompatibility with Prisma
+
+The error "**FATAL: Tenant or user not found**" occurs because we're using Supabase's **pooled connection** (port 6543) with Prisma Client.
+
+**Current DATABASE_URL:**
+
+```
+(DATABASE_URL - see survey-secrets.md)
+```
+
+**Issue:**
+
+- Port **6543** = Supabase PgBouncer in **transaction mode**
+- Prisma Client requires **session mode** connections or direct connections
+- Transaction mode pooling doesn't support all Prisma operations
+
+### Solution: Use Direct Connection
+
+Change DATABASE_URL to use port **5432** (direct connection) instead of 6543 (pooled):
+
+```
+(DATABASE_URL - see survey-secrets.md)
+```
+
+**Change:** `6543` → `5432`
+
+**Why this fixes it:**
+
+- Port 5432 = Direct PostgreSQL connection
+- Prisma Client fully compatible with direct connections
+- All Prisma operations work correctly
+
+**Reference:**
+
+- Supabase docs: https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler
+- Prisma docs: https://www.prisma.io/docs/guides/performance-and-optimization/connection-management#pgbouncer
+
+---
+
+## 🔧 DATABASE_URL Port Change - 2025-11-12T13:50:00Z
+
+### Action Taken:
+
+Changed DATABASE_URL from port 6543 to 5432 via Vercel API at 1762968827391.
+
+**Updated URL:**
+
+```
+(DATABASE_URL - see survey-secrets.md)
+```
+
+### Result:
+
+Triggered new deployment `dpl_57xLMxTEeXaFxj2XRCvZa4iArV7E` which completed successfully at deployment.readyState = READY.
+
+**Testing:** Survey API still returns `server_error`.
+
+---
+
+## 🎯 CORRECTED ROOT CAUSE - 2025-11-12T14:00:00Z
+
+### The REAL Problem: Wrong Hostname for Direct Connections
+
+I changed the port to 5432 but **kept using the pooler hostname**. This is incorrect.
+
+**Current (WRONG):**
+
+```
+(DATABASE_URL - see survey-secrets.md)
+```
+
+**Supabase Connection Types:**
+
+1. **Pooled (Transaction Mode)** - For serverless functions:
+
+   - Username: `postgres.{project-ref}`
+   - Hostname: `aws-0-us-east-1.pooler.supabase.com`
+   - Port: `6543`
+   - ❌ Not compatible with Prisma Client
+
+2. **Direct Connection** - For Prisma Client:
+   - Username: `postgres` (NO project-ref suffix)
+   - Hostname: `db.{project-ref}.supabase.co`
+   - Port: `5432`
+   - ✅ Fully compatible with Prisma
+
+### Correct DATABASE_URL:
+
+Extract project-ref from username: `euqnmaehjkpcsyuzfzgu`
+
+**Correct direct connection URL:**
+
+```
+(DATABASE_URL - see survey-secrets.md)
+```
+
+**Changes:**
+
+- Username: `postgres.euqnmaehjkpcsyuzfzgu` → `postgres`
+- Hostname: `aws-0-us-east-1.pooler.supabase.com` → `db.euqnmaehjkpcsyuzfzgu.supabase.co`
+- Port: stays `5432`
+
+---
+
+## 🔧 DATABASE_URL Corrected - 2025-11-12T14:05:00Z
+
+### Action Taken:
+
+Updated DATABASE_URL to use correct Supabase direct connection format via Vercel API at 1762969113778.
+
+**Corrected URL:**
+
+```
+(DATABASE_URL - see survey-secrets.md)
+```
+
+### Result:
+
+Triggered new deployment `dpl_Gv2VZowXi3ntZ9jhkwEbRU1ZGDAS` which completed successfully at deployment.readyState = READY.
+
+**Testing:** Survey API **STILL** returns `server_error`.
+
+### Current Status: BLOCKED
+
+**Problem:** Cannot diagnose further without Vercel function runtime logs.
+
+**What's Been Tried:**
+
+1. ✅ Fixed token validation (correct aud/scope)
+2. ✅ Fixed error page layout
+3. ✅ Added DATABASE_URL environment variable
+4. ✅ Created survey_responses table in database
+5. ✅ Changed DATABASE_URL from pooled (port 6543) to direct (port 5432)
+6. ✅ Corrected DATABASE_URL hostname format (pooler → db.{ref}.supabase.co)
+7. ✅ Verified all environment variables are set
+8. ✅ Triggered multiple deployments to ensure latest code is deployed
+
+**All Environment Variables Configured:**
+
+- ✅ DATABASE_URL (corrected format)
+- ✅ SURVEY_SECRET_KEY
+- ✅ AWS_ACCESS_KEY_ID
+- ✅ AWS_SECRET_ACCESS_KEY
+- ✅ AWS_REGION
+- ✅ REPORTS_BUCKET
+
+**Possible Remaining Issues:**
+
+1. Database firewall/IP restrictions blocking Vercel
+2. Database credentials invalid for direct connection
+3. Different error than pooler issue (need logs to confirm)
+4. Prisma Client not regenerating in Vercel deployments
+5. SSL/TLS certificate verification failing
+
+### Next Steps:
+
+**CRITICAL: Need Vercel Function Logs**
+
+The user needs to retrieve the latest function logs to see the actual error. Options:
+
+1. **Vercel Dashboard:**
+
+   - Go to: https://vercel.com/charlies-projects-934300ba/anthrasite/Gv2VZowXi3ntZ9jhkwEbRU1ZGDAS
+   - Navigate to Functions → Select the survey route → View logs
+
+2. **Vercel CLI (if authenticated):**
+
+   ```bash
+   vercel logs https://www.anthrasite.io --since 5m
+   ```
+
+3. **Download logs and provide to Claude:**
+   - Same as before: Download JSON file and provide path
+
+**Alternative:** Create a debug endpoint that exposes the actual error (requires code changes).
+
+---

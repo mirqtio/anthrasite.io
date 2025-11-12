@@ -67,6 +67,9 @@ importers:
       pg:
         specifier: ^8.16.3
         version: 8.16.3
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.7
       posthog-js:
         specifier: ^1.253.4
         version: 1.255.0
@@ -8082,6 +8085,13 @@ packages:
       }
     engines: { node: '>=0.10.0' }
 
+  postgres@3.4.7:
+    resolution:
+      {
+        integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==,
+      }
+    engines: { node: '>=12' }
+
   posthog-js@1.255.0:
     resolution:
       {
@@ -15776,6 +15786,8 @@ snapshots:
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
+
+  postgres@3.4.7: {}
 
   posthog-js@1.255.0:
     dependencies:

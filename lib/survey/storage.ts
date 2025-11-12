@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/db'
+import sql from '@/lib/db'
 import type { BeforeAnswers, AfterAnswers, SurveyMetrics } from './types'
 import { hashJti } from './validation'
 
@@ -22,11 +22,11 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
   const jtiHash = hashJti(options.jti)
   const now = new Date()
 
-  const data: any = {
+  const data: Record<string, any> = {
     leadId: options.leadId,
-    runId: options.runId,
+    runId: options.runId || null,
     version: options.version || 'v1',
-    batchId: options.batchId,
+    batchId: options.batchId || null,
     updatedAt: now,
   }
 
@@ -52,14 +52,51 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
     data.reportAccessedAt = now
   }
 
-  const response = await prisma.surveyResponse.upsert({
-    where: { jtiHash },
-    update: data,
-    create: {
-      jtiHash,
-      ...data,
-    },
-  })
+  // UPSERT using postgres.js
+  const [response] = await sql`
+    INSERT INTO survey_responses (
+      "jtiHash",
+      "leadId",
+      "runId",
+      version,
+      "batchId",
+      "beforeAnswers",
+      "afterAnswers",
+      metrics,
+      "reportAccessedAt",
+      "beforeCompletedAt",
+      "afterCompletedAt",
+      "createdAt",
+      "updatedAt"
+    ) VALUES (
+      ${jtiHash},
+      ${data.leadId},
+      ${data.runId},
+      ${data.version},
+      ${data.batchId},
+      ${data.beforeAnswers ? JSON.stringify(data.beforeAnswers) : null}::jsonb,
+      ${data.afterAnswers ? JSON.stringify(data.afterAnswers) : null}::jsonb,
+      ${data.metrics ? JSON.stringify(data.metrics) : null}::jsonb,
+      ${data.reportAccessedAt || null},
+      ${data.beforeCompletedAt || null},
+      ${data.afterCompletedAt || null},
+      ${now},
+      ${now}
+    )
+    ON CONFLICT ("jtiHash") DO UPDATE SET
+      "leadId" = EXCLUDED."leadId",
+      "runId" = COALESCE(EXCLUDED."runId", survey_responses."runId"),
+      version = COALESCE(EXCLUDED.version, survey_responses.version),
+      "batchId" = COALESCE(EXCLUDED."batchId", survey_responses."batchId"),
+      "beforeAnswers" = COALESCE(EXCLUDED."beforeAnswers", survey_responses."beforeAnswers"),
+      "afterAnswers" = COALESCE(EXCLUDED."afterAnswers", survey_responses."afterAnswers"),
+      metrics = COALESCE(EXCLUDED.metrics, survey_responses.metrics),
+      "reportAccessedAt" = COALESCE(EXCLUDED."reportAccessedAt", survey_responses."reportAccessedAt"),
+      "beforeCompletedAt" = COALESCE(EXCLUDED."beforeCompletedAt", survey_responses."beforeCompletedAt"),
+      "afterCompletedAt" = COALESCE(EXCLUDED."afterCompletedAt", survey_responses."afterCompletedAt"),
+      "updatedAt" = EXCLUDED."updatedAt"
+    RETURNING *
+  `
 
   return response
 }
@@ -77,28 +114,40 @@ export async function completeSurveyResponse(
   const jtiHash = hashJti(jti)
   const now = new Date()
 
-  const response = await prisma.surveyResponse.upsert({
-    where: { jtiHash },
-    update: {
-      beforeAnswers,
-      afterAnswers,
-      metrics: metrics as any,
-      beforeCompletedAt: now,
-      afterCompletedAt: now,
-      completedAt: now,
-      updatedAt: now,
-    },
-    create: {
-      jtiHash,
-      leadId: '', // Will be populated from token
-      beforeAnswers,
-      afterAnswers,
-      metrics: metrics as any,
-      beforeCompletedAt: now,
-      afterCompletedAt: now,
-      completedAt: now,
-    },
-  })
+  const [response] = await sql`
+    INSERT INTO survey_responses (
+      "jtiHash",
+      "leadId",
+      "beforeAnswers",
+      "afterAnswers",
+      metrics,
+      "beforeCompletedAt",
+      "afterCompletedAt",
+      "completedAt",
+      "createdAt",
+      "updatedAt"
+    ) VALUES (
+      ${jtiHash},
+      '',
+      ${JSON.stringify(beforeAnswers)}::jsonb,
+      ${JSON.stringify(afterAnswers)}::jsonb,
+      ${metrics ? JSON.stringify(metrics) : null}::jsonb,
+      ${now},
+      ${now},
+      ${now},
+      ${now},
+      ${now}
+    )
+    ON CONFLICT ("jtiHash") DO UPDATE SET
+      "beforeAnswers" = EXCLUDED."beforeAnswers",
+      "afterAnswers" = EXCLUDED."afterAnswers",
+      metrics = COALESCE(EXCLUDED.metrics, survey_responses.metrics),
+      "beforeCompletedAt" = EXCLUDED."beforeCompletedAt",
+      "afterCompletedAt" = EXCLUDED."afterCompletedAt",
+      "completedAt" = EXCLUDED."completedAt",
+      "updatedAt" = EXCLUDED."updatedAt"
+    RETURNING *
+  `
 
   return response
 }
@@ -115,20 +164,29 @@ export async function logReportAccess(
   const jtiHash = hashJti(jti)
   const now = new Date()
 
-  const response = await prisma.surveyResponse.upsert({
-    where: { jtiHash },
-    update: {
-      reportAccessedAt: now,
-      updatedAt: now,
-    },
-    create: {
-      jtiHash,
-      leadId,
-      version: version || 'v1',
-      batchId: batchId || undefined,
-      reportAccessedAt: now,
-    },
-  })
+  const [response] = await sql`
+    INSERT INTO survey_responses (
+      "jtiHash",
+      "leadId",
+      version,
+      "batchId",
+      "reportAccessedAt",
+      "createdAt",
+      "updatedAt"
+    ) VALUES (
+      ${jtiHash},
+      ${leadId},
+      ${version || 'v1'},
+      ${batchId || null},
+      ${now},
+      ${now},
+      ${now}
+    )
+    ON CONFLICT ("jtiHash") DO UPDATE SET
+      "reportAccessedAt" = EXCLUDED."reportAccessedAt",
+      "updatedAt" = EXCLUDED."updatedAt"
+    RETURNING *
+  `
 
   return response
 }
@@ -139,9 +197,12 @@ export async function logReportAccess(
 export async function getSurveyResponse(jti: string) {
   const jtiHash = hashJti(jti)
 
-  return await prisma.surveyResponse.findUnique({
-    where: { jtiHash },
-  })
+  const [response] = await sql`
+    SELECT * FROM survey_responses
+    WHERE "jtiHash" = ${jtiHash}
+  `
+
+  return response || null
 }
 
 /**

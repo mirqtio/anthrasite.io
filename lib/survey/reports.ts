@@ -1,26 +1,4 @@
-import { Pool } from 'pg'
-
-let supabasePool: Pool | null = null
-
-// Create connection pool for Supabase (LeadShop database) - lazy initialization
-function getSupabasePool(): Pool {
-  if (!supabasePool) {
-    if (!process.env.SUPABASE_DATABASE_URL) {
-      throw new Error('SUPABASE_DATABASE_URL environment variable is required')
-    }
-
-    supabasePool = new Pool({
-      connectionString: process.env.SUPABASE_DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-      max: 5,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    })
-  }
-  return supabasePool
-}
+import sql from '@/lib/db'
 
 /**
  * Look up report S3 key from Supabase database
@@ -31,41 +9,38 @@ export async function lookupReportS3Key(
   runId?: string
 ): Promise<string | null> {
   try {
-    let query: string
-    let params: any[]
+    const leadIdInt = parseInt(leadId)
+
+    let result
 
     if (runId) {
       // Query by both lead_id and run_id for exact match
-      query = `
+      result = await sql`
         SELECT pdf_s3_key
         FROM reports
-        WHERE lead_id = $1 AND run_id = $2
+        WHERE lead_id = ${leadIdInt} AND run_id = ${runId}
         AND pdf_s3_key IS NOT NULL
         ORDER BY created_at DESC
         LIMIT 1
       `
-      params = [parseInt(leadId), runId]
     } else {
       // Query by lead_id only, get most recent
-      query = `
+      result = await sql`
         SELECT pdf_s3_key
         FROM reports
-        WHERE lead_id = $1
+        WHERE lead_id = ${leadIdInt}
         AND pdf_s3_key IS NOT NULL
         ORDER BY created_at DESC
         LIMIT 1
       `
-      params = [parseInt(leadId)]
     }
 
-    const result = await getSupabasePool().query(query, params)
-
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       console.error(`No report found for leadId=${leadId}, runId=${runId}`)
       return null
     }
 
-    return result.rows[0].pdf_s3_key
+    return result[0].pdf_s3_key
   } catch (error) {
     console.error('Failed to lookup report S3 key:', error)
     return null
