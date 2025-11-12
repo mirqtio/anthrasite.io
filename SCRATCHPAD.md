@@ -1831,3 +1831,64 @@ The next deployment will automatically pick up the new environment variable and 
 **Awaiting:** User to add DIRECT_URL via Vercel dashboard
 
 ---
+
+## ✅ DIRECT_URL Added Successfully - 2025-11-12T13:28:27Z
+
+Used Vercel REST API to add the `DIRECT_URL` environment variable:
+
+**API Response:**
+
+```json
+{
+  "created": {
+    "type": "encrypted",
+    "key": "DIRECT_URL",
+    "target": ["production", "preview", "development"],
+    "id": "UGW6sQuRLAky6XyY",
+    "createdAt": 1762967307754
+  }
+}
+```
+
+**Next Steps:**
+
+1. ⏳ **Waiting for automatic deployment** - Vercel triggers a new deployment when environment variables are added
+2. 🧪 **Test survey API** once deployment completes (~2-3 minutes)
+3. 🎯 **Expected result:** API should return survey data instead of `server_error`
+
+**Status:** Deployment in progress...
+
+---
+
+## 🔧 Troubleshooting: Removed directUrl from Prisma Schema - 2025-11-12T13:33:00Z
+
+After adding DIRECT_URL, the API still returned `server_error`. Investigation revealed:
+
+**Issue:**
+The `directUrl` field in Prisma schema is optional and only used for migrations/introspection. Since:
+
+- The `survey_responses` table already exists in production
+- We're not running migrations via Prisma
+- The application only needs to query the database
+
+**Solution:**
+Removed `directUrl` from `prisma/schema.prisma`:
+
+```diff
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+- directUrl = env("DIRECT_URL")
+}
+```
+
+**Rationale:**
+
+- Simplifies the configuration
+- Eliminates potential issues with DIRECT_URL environment variable
+- DATABASE_URL alone is sufficient for Prisma Client queries
+
+**Next Step:**
+Committing this change to trigger a new deployment with the simplified schema.
+
+---
