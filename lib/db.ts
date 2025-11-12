@@ -63,7 +63,7 @@ export function getSql() {
   const sql = postgres(effectiveConnStr, {
     max: 5, // Keep pool small on Vercel
     prepare: false, // Required for PgBouncer - no prepared statements
-    ssl: isLocalDB ? false : true, // Enforce TLS for Supabase pooler
+    ssl: isLocalDB ? false : { rejectUnauthorized: false }, // Allow self-signed chain in serverless
   })
 
   if (process.env.NODE_ENV !== 'production') {
