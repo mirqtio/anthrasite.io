@@ -104,7 +104,6 @@ test.describe('Privacy Compliance Features', () => {
       },
     })
 
-    // Should be 400 (bad request) or 429 (rate limited from previous tests)
-    expect([400, 429]).toContain(response.status())
+    expect(response.status()).toBe(400)
   })
 })
