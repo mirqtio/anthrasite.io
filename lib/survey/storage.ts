@@ -195,14 +195,32 @@ export async function logReportAccess(
  * Get survey response by JTI
  */
 export async function getSurveyResponse(jti: string) {
-  const jtiHash = hashJti(jti)
+  try {
+    console.log(
+      '[getSurveyResponse] Starting with jti:',
+      jti?.substring(0, 8) + '...'
+    )
+    const jtiHash = hashJti(jti)
+    console.log(
+      '[getSurveyResponse] jtiHash:',
+      jtiHash?.substring(0, 16) + '...'
+    )
 
-  const [response] = await sql`
-    SELECT * FROM survey_responses
-    WHERE "jtiHash" = ${jtiHash}
-  `
+    console.log('[getSurveyResponse] Executing query...')
+    const [response] = await sql`
+      SELECT * FROM survey_responses
+      WHERE "jtiHash" = ${jtiHash}
+    `
+    console.log(
+      '[getSurveyResponse] Query successful, found:',
+      response ? 'record' : 'null'
+    )
 
-  return response || null
+    return response || null
+  } catch (error) {
+    console.error('[getSurveyResponse] Error:', error)
+    throw error
+  }
 }
 
 /**

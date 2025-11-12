@@ -57,8 +57,23 @@ export async function GET(
     })
   } catch (error) {
     console.error('Survey GET error:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined,
+    })
     return NextResponse.json(
-      { valid: false, error: 'server_error', message: 'An error occurred' },
+      {
+        valid: false,
+        error: 'server_error',
+        message: 'An error occurred',
+        debug:
+          process.env.NODE_ENV === 'development'
+            ? {
+                error: error instanceof Error ? error.message : String(error),
+              }
+            : undefined,
+      },
       { status: 500 }
     )
   }
