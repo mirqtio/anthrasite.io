@@ -1,4 +1,4 @@
-import sql from '@/lib/db'
+import getSql from '@/lib/db'
 import type { BeforeAnswers, AfterAnswers, SurveyMetrics } from './types'
 import { hashJti } from './validation'
 
@@ -19,6 +19,7 @@ export interface SaveSurveyOptions {
  * Uses UPSERT pattern on jtiHash for idempotency
  */
 export async function saveSurveyResponse(options: SaveSurveyOptions) {
+  const sql = getSql()
   const jtiHash = hashJti(options.jti)
   const now = new Date()
 
@@ -111,6 +112,7 @@ export async function completeSurveyResponse(
   afterAnswers: AfterAnswers,
   metrics?: SurveyMetrics
 ) {
+  const sql = getSql()
   const jtiHash = hashJti(jti)
   const now = new Date()
 
@@ -161,6 +163,7 @@ export async function logReportAccess(
   version?: string,
   batchId?: string
 ) {
+  const sql = getSql()
   const jtiHash = hashJti(jti)
   const now = new Date()
 
@@ -196,6 +199,7 @@ export async function logReportAccess(
  */
 export async function getSurveyResponse(jti: string) {
   try {
+    const sql = getSql()
     console.log(
       '[getSurveyResponse] Starting with jti:',
       jti?.substring(0, 8) + '...'

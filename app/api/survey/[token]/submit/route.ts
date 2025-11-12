@@ -65,7 +65,8 @@ export async function POST(
 
       // Update leadId from token if not set
       if (!response.leadId || response.leadId === '') {
-        const sql = (await import('@/lib/db')).default
+        const getSql = (await import('@/lib/db')).default
+        const sql = getSql()
         await sql`
           UPDATE survey_responses
           SET

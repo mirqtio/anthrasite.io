@@ -1,4 +1,4 @@
-import sql from '@/lib/db'
+import getSql from '@/lib/db'
 
 /**
  * Look up report S3 key from Supabase database
@@ -9,6 +9,7 @@ export async function lookupReportS3Key(
   runId?: string
 ): Promise<string | null> {
   try {
+    const sql = getSql()
     const leadIdInt = parseInt(leadId)
 
     let result
