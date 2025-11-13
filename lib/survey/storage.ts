@@ -163,10 +163,12 @@ export async function logReportAccess(
   version?: string,
   batchId?: string
 ) {
+  console.log('[logReportAccess] Starting', { jti, leadId, version, batchId })
   const sql = getSql()
   const jtiHash = hashJti(jti)
   const now = new Date()
 
+  console.log('[logReportAccess] Executing UPSERT', { jtiHash })
   const [response] = await sql`
     INSERT INTO survey_responses (
       "jtiHash",

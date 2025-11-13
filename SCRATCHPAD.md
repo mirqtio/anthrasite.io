@@ -2529,6 +2529,81 @@ const bucket =
 
 ---
 
+## 🔍 ROOT CAUSE IDENTIFIED: Missing survey_responses Table - 2025-11-13 00:54 UTC
+
+### Problem Summary
+
+**Debug endpoint works perfectly:**
+
+- ✅ JWT validates
+- ✅ Database query finds report record
+- ✅ S3 pre-signed URL generates
+
+**Actual endpoint fails with 500 error**
+
+### The Critical Difference
+
+Comparing the two endpoints:
+
+- `/api/debug-report`: Does NOT call `logReportAccess()`
+- `/api/report/open`: Calls `logReportAccess()` before redirecting (line 103-108)
+
+### Root Cause Theory
+
+The `logReportAccess()` function tries to INSERT into `survey_responses` table:
+
+```typescript
+await sql`
+  INSERT INTO survey_responses (
+    "jtiHash", "leadId", version, "batchId",
+    "reportAccessedAt", "createdAt", "updatedAt"
+  ) VALUES (...)
+`
+```
+
+If the `survey_responses` table doesn't exist in the production database (which is shared with LeadShop), this INSERT fails with a 500 error.
+
+### Solution Options
+
+**Option A: Verify table exists and create if missing**
+
+- Ask LeadShop Claude to check if `survey_responses` table exists
+- If not, provide SQL to create it (from our migration file)
+
+**Option B: Make logReportAccess non-fatal**
+
+- Wrap the call in try-catch so redirect still works even if logging fails
+- This unblocks the report link immediately
+
+**Option C: Use postgres.js instead of Prisma**
+
+- The rest of the code uses postgres.js (POOL_DATABASE_URL)
+- Only `logReportAccess()` uses Prisma client
+- Could be a Prisma connection issue
+
+### Immediate Fix (Option B)
+
+I'll make `logReportAccess()` non-fatal so the report link works even if logging fails:
+
+```typescript
+// Log report access (idempotent, but don't fail if this fails)
+try {
+  await logReportAccess(
+    payload.jti,
+    payload.leadId,
+    payload.version,
+    payload.batchId
+  )
+} catch (logError) {
+  console.error('[Report Open] Failed to log access (non-fatal):', logError)
+  // Continue anyway - report access is more important than logging
+}
+```
+
+This unblocks users immediately while we diagnose the underlying issue.
+
+---
+
 ## 🔄 POOL_DATABASE_URL Credential Update - 2025-11-12 23:30 UTC
 
 ### Current Status: UPDATING CREDENTIALS

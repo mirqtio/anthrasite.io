@@ -99,13 +99,22 @@ export async function GET(request: NextRequest) {
     const presignedUrl = await generateReportPresignedUrl(reportS3Key, 900)
 
     console.log('[Report Open] Pre-signed URL generated, logging access')
-    // Log report access (idempotent)
-    await logReportAccess(
-      payload.jti,
-      payload.leadId,
-      payload.version,
-      payload.batchId
-    )
+    // Log report access (idempotent, but don't fail if this fails)
+    try {
+      await logReportAccess(
+        payload.jti,
+        payload.leadId,
+        payload.version,
+        payload.batchId
+      )
+      console.log('[Report Open] Report access logged successfully')
+    } catch (logError) {
+      console.error(
+        '[Report Open] Failed to log access (non-fatal):',
+        logError instanceof Error ? logError.message : String(logError)
+      )
+      // Continue anyway - report access is more important than logging
+    }
 
     console.log('[Report Open] Redirecting to pre-signed URL')
     // Redirect to pre-signed URL
