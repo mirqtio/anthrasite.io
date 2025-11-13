@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import getSql from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     // Check if DATABASE_URL is set
@@ -65,19 +67,22 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({
-      environment: process.env.NODE_ENV,
-      hasDbUrl,
-      useFallback,
-      dbConnection,
-      tableExists,
-      error,
-      databaseUrl: process.env.DATABASE_URL ? 'SET (hidden)' : 'NOT SET',
-      hasPoolUrl,
-      poolConnection,
-      poolTableExists,
-      poolError,
-    })
+    return NextResponse.json(
+      {
+        environment: process.env.NODE_ENV,
+        hasDbUrl,
+        useFallback,
+        dbConnection,
+        tableExists,
+        error,
+        databaseUrl: process.env.DATABASE_URL ? 'SET (hidden)' : 'NOT SET',
+        hasPoolUrl,
+        poolConnection,
+        poolTableExists,
+        poolError,
+      },
+      { headers: { 'Cache-Control': 'no-store' } }
+    )
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 })
   }

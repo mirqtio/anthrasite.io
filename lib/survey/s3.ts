@@ -20,7 +20,8 @@ export async function generateReportPresignedUrl(
   reportKey: string,
   expiresIn: number = 900 // 15 minutes
 ): Promise<string> {
-  const bucket = process.env.REPORTS_BUCKET || 'leadshop-raw'
+  const bucket =
+    process.env.REPORTS_BUCKET || process.env.S3_BUCKET || 'leadshop-raw'
 
   const command = new GetObjectCommand({
     Bucket: bucket,

@@ -57,3 +57,8 @@ storybook-static
 
 # survey secrets
 survey-secrets.md
+
+# vercel environment import files (contain credentials)
+vercel-env-import/
+test_postgres_connection.mjs
+.github/workflows/vercel-deploy.yml
