@@ -28,7 +28,12 @@ export async function GET(request: NextRequest) {
 
     // Validate S3 configuration
     if (!validateS3Config()) {
-      console.error('S3 configuration missing')
+      console.error('S3 configuration missing', {
+        hasAccessKeyId: !!process.env.AWS_ACCESS_KEY_ID,
+        hasSecretAccessKey: !!process.env.AWS_SECRET_ACCESS_KEY,
+        hasRegion: !!process.env.AWS_REGION,
+        hasBucket: !!(process.env.REPORTS_BUCKET || process.env.S3_BUCKET),
+      })
       return NextResponse.json(
         { error: 'server_error', message: 'Report system not configured' },
         { status: 500 }
@@ -82,7 +87,14 @@ export async function GET(request: NextRequest) {
 
     return response
   } catch (error) {
-    console.error('Report open error:', error)
+    console.error('Report open error:', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      hasAccessKeyId: !!process.env.AWS_ACCESS_KEY_ID,
+      hasSecretAccessKey: !!process.env.AWS_SECRET_ACCESS_KEY,
+      hasRegion: !!process.env.AWS_REGION,
+      hasBucket: !!(process.env.REPORTS_BUCKET || process.env.S3_BUCKET),
+    })
     return NextResponse.json(
       { error: 'server_error', message: 'Failed to open report' },
       { status: 500 }
