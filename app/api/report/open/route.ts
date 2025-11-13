@@ -16,19 +16,22 @@ import { lookupReportS3Key } from '@/lib/survey/reports'
  */
 export async function GET(request: NextRequest) {
   try {
+    console.log('[Report Open] Starting request')
     const { searchParams } = new URL(request.url)
     const sid = searchParams.get('sid')
 
     if (!sid) {
+      console.error('[Report Open] Missing sid parameter')
       return NextResponse.json(
         { error: 'missing_session', message: 'Session ID required' },
         { status: 400 }
       )
     }
 
+    console.log('[Report Open] Validating S3 config')
     // Validate S3 configuration
     if (!validateS3Config()) {
-      console.error('S3 configuration missing', {
+      console.error('[Report Open] S3 configuration missing', {
         hasAccessKeyId: !!process.env.AWS_ACCESS_KEY_ID,
         hasSecretAccessKey: !!process.env.AWS_SECRET_ACCESS_KEY,
         hasRegion: !!process.env.AWS_REGION,
@@ -40,26 +43,47 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    console.log('[Report Open] Validating JWT token')
     // Validate JWT token
     const payload = await validateSurveyToken(sid)
     if (!payload) {
+      console.error('[Report Open] Token validation failed')
       return NextResponse.json(
         { error: 'invalid_session', message: 'Session not found or expired' },
         { status: 401 }
       )
     }
 
+    console.log('[Report Open] Token valid, payload:', {
+      leadId: payload.leadId,
+      runId: payload.runId,
+      jti: payload.jti,
+    })
+
     // Verify required fields
     if (!payload.leadId || !payload.jti) {
+      console.error('[Report Open] Token missing required fields', payload)
       return NextResponse.json(
         { error: 'invalid_token', message: 'Token missing required fields' },
         { status: 400 }
       )
     }
 
+    console.log(
+      '[Report Open] Looking up report S3 key for leadId:',
+      payload.leadId,
+      'runId:',
+      payload.runId
+    )
     // Look up report S3 key from Supabase database
     const reportS3Key = await lookupReportS3Key(payload.leadId, payload.runId)
     if (!reportS3Key) {
+      console.error(
+        '[Report Open] Report S3 key not found for leadId:',
+        payload.leadId,
+        'runId:',
+        payload.runId
+      )
       return NextResponse.json(
         {
           error: 'report_not_found',
@@ -69,9 +93,12 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    console.log('[Report Open] Found report S3 key:', reportS3Key)
+    console.log('[Report Open] Generating pre-signed URL')
     // Generate pre-signed URL (15 minutes)
     const presignedUrl = await generateReportPresignedUrl(reportS3Key, 900)
 
+    console.log('[Report Open] Pre-signed URL generated, logging access')
     // Log report access (idempotent)
     await logReportAccess(
       payload.jti,
@@ -80,6 +107,7 @@ export async function GET(request: NextRequest) {
       payload.batchId
     )
 
+    console.log('[Report Open] Redirecting to pre-signed URL')
     // Redirect to pre-signed URL
     const response = NextResponse.redirect(presignedUrl, 302)
     response.headers.set('Referrer-Policy', 'no-referrer')
