@@ -73,6 +73,31 @@ export async function GET(request: NextRequest) {
     }
 
     steps.push('Looking up report S3 key')
+
+    // Add raw database query test
+    steps.push('Testing raw SQL query')
+    const getSql = (await import('@/lib/db')).default
+    const sql = getSql()
+    const leadIdInt = parseInt(payload.leadId)
+
+    try {
+      const rawResult = await sql`
+        SELECT lead_id, run_id, pdf_s3_key, created_at
+        FROM reports
+        WHERE lead_id = ${leadIdInt}
+        ORDER BY created_at DESC
+        LIMIT 5
+      `
+      details.rawQueryResult = {
+        rowCount: rawResult.length,
+        rows: rawResult,
+      }
+      steps.push(`Raw query returned ${rawResult.length} rows`)
+    } catch (err) {
+      details.rawQueryError = err instanceof Error ? err.message : String(err)
+      steps.push('Raw query failed')
+    }
+
     const reportS3Key = await lookupReportS3Key(payload.leadId, payload.runId)
 
     if (!reportS3Key) {
