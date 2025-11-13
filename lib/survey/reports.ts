@@ -12,9 +12,22 @@ export async function lookupReportS3Key(
     const sql = getSql()
     const leadIdInt = parseInt(leadId)
 
+    console.log('[lookupReportS3Key] Input parameters:', {
+      leadId,
+      leadIdInt,
+      leadIdType: typeof leadId,
+      leadIdIntType: typeof leadIdInt,
+      runId,
+      runIdType: typeof runId,
+    })
+
     let result
 
     if (runId) {
+      console.log('[lookupReportS3Key] Executing query with runId:', {
+        leadIdInt,
+        runId,
+      })
       // Query by both lead_id and run_id for exact match
       result = await sql`
         SELECT pdf_s3_key
@@ -24,6 +37,10 @@ export async function lookupReportS3Key(
         ORDER BY created_at DESC
         LIMIT 1
       `
+      console.log('[lookupReportS3Key] Query result:', {
+        rowCount: result.length,
+        result: result.length > 0 ? result[0] : null,
+      })
     } else {
       // Query by lead_id only, get most recent
       result = await sql`
