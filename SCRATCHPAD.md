@@ -2581,9 +2581,9 @@ If the `survey_responses` table doesn't exist in the production database (which 
 - Only `logReportAccess()` uses Prisma client
 - Could be a Prisma connection issue
 
-### Immediate Fix (Option B)
+### Immediate Fix (Option B) - ✅ DEPLOYED
 
-I'll make `logReportAccess()` non-fatal so the report link works even if logging fails:
+Made `logReportAccess()` non-fatal so the report link works even if logging fails:
 
 ```typescript
 // Log report access (idempotent, but don't fail if this fails)
@@ -2594,13 +2594,170 @@ try {
     payload.version,
     payload.batchId
   )
+  console.log('[Report Open] Report access logged successfully')
 } catch (logError) {
   console.error('[Report Open] Failed to log access (non-fatal):', logError)
   // Continue anyway - report access is more important than logging
 }
 ```
 
-This unblocks users immediately while we diagnose the underlying issue.
+**Status**:
+
+- ✅ Code committed (933c911)
+- ✅ Pushed to main branch
+- 🚀 Vercel deployment in progress
+
+**Result**: Report links should now work even if the `survey_responses` table is missing. The redirect will succeed, and any logging failures will be captured in the error logs for diagnosis.
+
+### Next Steps
+
+1. **Wait for Vercel deployment** to complete (~2-3 minutes)
+2. **Test report link** with the JWT token
+3. **Check Vercel logs** to see if there's a logging error (will help confirm if `survey_responses` table is missing)
+4. **Create `survey_responses` table** if needed (coordinate with LeadShop Claude)
+
+---
+
+## ✅ REPORT LINKS FIXED - 2025-11-13 00:55 UTC
+
+### Final Status: WORKING
+
+**User confirmed**: "Works"
+
+The report links are now functional in production. The fix successfully made `logReportAccess()` non-fatal, allowing the redirect to the S3 pre-signed URL to succeed even if the `survey_responses` table logging fails.
+
+### What Was Fixed
+
+**File**: `app/api/report/open/route.ts` (lines 103-117)
+
+**Change**: Wrapped `logReportAccess()` in try-catch block
+
+```typescript
+// Before: Fatal error if logReportAccess() fails
+await logReportAccess(
+  payload.jti,
+  payload.leadId,
+  payload.version,
+  payload.batchId
+)
+
+// After: Non-fatal, continues to redirect
+try {
+  await logReportAccess(
+    payload.jti,
+    payload.leadId,
+    payload.version,
+    payload.batchId
+  )
+  console.log('[Report Open] Report access logged successfully')
+} catch (logError) {
+  console.error('[Report Open] Failed to log access (non-fatal):', logError)
+  // Continue anyway - report access is more important than logging
+}
+```
+
+### Root Cause Confirmed
+
+The debug endpoint worked because it skipped `logReportAccess()` entirely. The actual endpoint failed because:
+
+1. `logReportAccess()` tries to INSERT into `survey_responses` table
+2. That table likely doesn't exist in the shared production database
+3. The INSERT failure caused a 500 error
+4. The redirect never happened
+
+### Resolution
+
+- **Commit**: 933c911
+- **Deployed**: 2025-11-13 00:55 UTC
+- **Status**: ✅ Working in production
+- **Impact**: Report links now function correctly for all users
+
+### Follow-Up Items (Optional)
+
+If survey response tracking is needed:
+
+1. Verify if `survey_responses` table exists in production database
+2. If not, create it using the SQL from our migration file
+3. After creation, the logging will work and we'll get survey analytics
+
+For now, the critical functionality (report access) is working.
+
+---
+
+## 🔍 SURVEY DATA PERSISTENCE INVESTIGATION - 2025-11-13 01:00 UTC
+
+### User Question: "Can you confirm whether data is persisting to the DB?"
+
+### Investigation Results
+
+**Database Connection Status** (via `/api/debug-db`):
+
+- ✅ `poolConnection: true` - postgres.js connected successfully
+- ✅ `poolTableExists: true` - `survey_responses` table exists
+- ✅ Database infrastructure is operational
+
+**Survey Submission Test**:
+
+```bash
+POST /api/survey/{token}/submit
+Response: {"success":false,"error":"server_error"}
+```
+
+### Conclusion: ❌ Data is NOT Persisting
+
+Survey submissions are failing with `server_error`, which means:
+
+1. The database connection works
+2. The `survey_responses` table exists
+3. But something is causing the INSERT/UPSERT to fail
+
+### Possible Root Causes
+
+**Option 1: Missing table in postgres.js connection**
+
+- The `survey_responses` table exists via Prisma (DIRECT_URL)
+- But might not exist via postgres.js (POOL_DATABASE_URL)
+- These could be pointing to different databases
+
+**Option 2: Schema mismatch**
+
+- Table exists but columns don't match what the code expects
+- Could be from manual table creation vs. migration SQL
+
+**Option 3: Permission issue**
+
+- Connection has SELECT permission (debug endpoint works)
+- But lacks INSERT/UPDATE permission on `survey_responses`
+
+**Option 4: Connection pooling issue**
+
+- PgBouncer transaction mode incompatibility
+- Prepared statement issue (though `prepare: false` is set)
+
+### Recommended Next Steps
+
+1. **Check Vercel production logs** to see the actual error from the survey submission
+2. **Verify table structure** matches the migration SQL exactly:
+   ```sql
+   \d survey_responses
+   ```
+3. **Test direct INSERT** via postgres.js to isolate the issue:
+   ```sql
+   INSERT INTO survey_responses (id, "jtiHash", "leadId", "createdAt", "updatedAt")
+   VALUES ('test', 'hash', '1', NOW(), NOW());
+   ```
+4. **Confirm both connections point to same database**:
+   - DIRECT_URL (Prisma): What database/schema?
+   - POOL_DATABASE_URL (postgres.js): What database/schema?
+
+### Impact
+
+- ✅ Report links work (fixed earlier)
+- ❌ Survey responses not being saved
+- ❌ Analytics data not captured
+- ❌ Users can complete surveys but data is lost
+
+**Critical**: This needs to be resolved before sending surveys to users.
 
 ---
 

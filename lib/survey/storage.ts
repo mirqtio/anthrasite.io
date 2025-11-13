@@ -1,6 +1,7 @@
 import getSql from '@/lib/db'
 import type { BeforeAnswers, AfterAnswers, SurveyMetrics } from './types'
 import { hashJti } from './validation'
+import { randomUUID } from 'crypto'
 
 export interface SaveSurveyOptions {
   jti: string
@@ -56,6 +57,7 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
   // UPSERT using postgres.js
   const [response] = await sql`
     INSERT INTO survey_responses (
+      id,
       "jtiHash",
       "leadId",
       "runId",
@@ -70,6 +72,7 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
       "createdAt",
       "updatedAt"
     ) VALUES (
+      ${randomUUID()},
       ${jtiHash},
       ${data.leadId},
       ${data.runId},
@@ -118,6 +121,7 @@ export async function completeSurveyResponse(
 
   const [response] = await sql`
     INSERT INTO survey_responses (
+      id,
       "jtiHash",
       "leadId",
       "beforeAnswers",
@@ -129,6 +133,7 @@ export async function completeSurveyResponse(
       "createdAt",
       "updatedAt"
     ) VALUES (
+      ${randomUUID()},
       ${jtiHash},
       '',
       ${JSON.stringify(beforeAnswers)}::jsonb,
@@ -171,6 +176,7 @@ export async function logReportAccess(
   console.log('[logReportAccess] Executing UPSERT', { jtiHash })
   const [response] = await sql`
     INSERT INTO survey_responses (
+      id,
       "jtiHash",
       "leadId",
       version,
@@ -179,6 +185,7 @@ export async function logReportAccess(
       "createdAt",
       "updatedAt"
     ) VALUES (
+      ${randomUUID()},
       ${jtiHash},
       ${leadId},
       ${version || 'v1'},
