@@ -20,7 +20,7 @@ export interface SaveSurveyOptions {
  * Uses UPSERT pattern on jtiHash for idempotency
  */
 export async function saveSurveyResponse(options: SaveSurveyOptions) {
-  const sql = getSql()
+  const sql = getSql() as any
   const jtiHash = hashJti(options.jti)
   const now = new Date()
 
@@ -78,9 +78,9 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
       ${data.runId},
       ${data.version},
       ${data.batchId},
-      ${data.beforeAnswers ? JSON.stringify(data.beforeAnswers) : null}::jsonb,
-      ${data.afterAnswers ? JSON.stringify(data.afterAnswers) : null}::jsonb,
-      ${data.metrics ? JSON.stringify(data.metrics) : null}::jsonb,
+      ${data.beforeAnswers || null},
+      ${data.afterAnswers || null},
+      ${data.metrics || null},
       ${data.reportAccessedAt || null},
       ${data.beforeCompletedAt || null},
       ${data.afterCompletedAt || null},
@@ -115,7 +115,7 @@ export async function completeSurveyResponse(
   afterAnswers: AfterAnswers,
   metrics?: SurveyMetrics
 ) {
-  const sql = getSql()
+  const sql = getSql() as any
   const jtiHash = hashJti(jti)
   const now = new Date()
 
@@ -136,9 +136,9 @@ export async function completeSurveyResponse(
       ${randomUUID()},
       ${jtiHash},
       '',
-      ${JSON.stringify(beforeAnswers)}::jsonb,
-      ${JSON.stringify(afterAnswers)}::jsonb,
-      ${metrics ? JSON.stringify(metrics) : null}::jsonb,
+      ${beforeAnswers},
+      ${afterAnswers},
+      ${metrics || null},
       ${now},
       ${now},
       ${now},

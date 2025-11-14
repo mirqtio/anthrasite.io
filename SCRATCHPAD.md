@@ -1,5 +1,156 @@
 # SCRATCHPAD.md
 
+## ⚠️ REQUIRED: Waitlist Table Migration - 2025-11-13 19:45 UTC
+
+### Confirmation
+
+**YES**, a database migration is required before the waitlist will work.
+
+### Status
+
+- ✅ Prisma schema defines `WaitlistEntry` model (schema.prisma:31-44)
+- ✅ Migration files exist in `prisma/migrations/`
+- ❌ **Waitlist table does NOT exist in production database**
+
+### Required Migration SQL
+
+Run these SQL statements **in order** on your production database:
+
+```sql
+-- 1. Create waitlist table (from migration 20251008005737)
+CREATE TABLE "waitlist" (
+    "id" TEXT NOT NULL,
+    "domain" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "ip_location" JSONB,
+    "variant_data" JSONB,
+    "position" SERIAL NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "waitlist_pkey" PRIMARY KEY ("id")
+);
+
+-- 2. Create indexes
+CREATE INDEX "waitlist_domain_idx" ON "waitlist"("domain");
+CREATE INDEX "waitlist_created_at_idx" ON "waitlist"("created_at");
+
+-- 3. Add case-insensitive domain uniqueness (from migration 20251009005655)
+CREATE EXTENSION IF NOT EXISTS citext;
+CREATE UNIQUE INDEX "waitlist_domain_lower_unique" ON "waitlist" (LOWER("domain"));
+
+-- 4. Add updated_at column (from migration 20251009005847)
+ALTER TABLE "waitlist" ADD COLUMN "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+```
+
+### Alternative: Use Prisma Migrate
+
+If you have direct database access via `DATABASE_URL_DIRECT`, you can run:
+
+```bash
+npx prisma migrate deploy
+```
+
+This will apply all pending migrations automatically.
+
+### Verification
+
+After running the migration, verify with:
+
+```sql
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'waitlist'
+ORDER BY ordinal_position;
+```
+
+Expected columns: `id`, `domain`, `email`, `ip_location`, `variant_data`, `position`, `created_at`, `updated_at`
+
+---
+
+## ✅ CLEANUP: Diagnostic Endpoints Removed - 2025-11-13 19:40 UTC
+
+### Endpoints Removed
+
+Removed 7 temporary diagnostic/debug endpoints and their directories:
+
+1. `/app/api/debug-db/` - Database connection testing
+2. `/app/api/debug-waitlist/` - Waitlist table structure testing
+3. `/app/api/debug-report/` - Report opening flow testing
+4. `/app/api/debug-s3/` - S3 configuration testing
+5. `/app/api/debug-analytics/` - Analytics configuration testing
+6. `/app/api/debug-analytics-detailed/` - Detailed analytics configuration
+7. `/app/api/test-ga4/` - GA4 Measurement Protocol testing
+
+All endpoints were temporary troubleshooting tools and are no longer needed.
+
+---
+
+## ✅ FIXED: Double JSON Encoding in Survey Responses - 2025-11-13 19:35 UTC
+
+### Issue Discovery
+
+User confirmed survey responses ARE being saved to the database, but data inspection revealed **double JSON encoding**:
+
+**Actual (broken)**:
+
+```json
+"beforeAnswers": "\"{\\\"q1_website_rating\\\":2,...}\""
+```
+
+**Expected (correct)**:
+
+```json
+"beforeAnswers": {"q1_website_rating":2,...}
+```
+
+### Root Cause
+
+In `lib/survey/storage.ts`, three functions were calling `JSON.stringify()` on objects before passing them to postgres.js:
+
+1. **saveSurveyResponse** (lines 81-83)
+2. **completeSurveyResponse** (lines 139-141)
+3. **logReportAccess** (no JSONB fields, no issue)
+
+**Problem**: postgres.js automatically serializes objects in parameterized queries. Calling `JSON.stringify()` first creates a string, which postgres.js then serializes again, resulting in double-encoded JSON strings stored in JSONB columns.
+
+### Solution Applied
+
+Removed all `JSON.stringify()` calls and `::jsonb` casts. Let postgres.js handle serialization natively:
+
+**Before**:
+
+```typescript
+${data.beforeAnswers ? JSON.stringify(data.beforeAnswers) : null}::jsonb,
+${data.afterAnswers ? JSON.stringify(data.afterAnswers) : null}::jsonb,
+${data.metrics ? JSON.stringify(data.metrics) : null}::jsonb,
+```
+
+**After**:
+
+```typescript
+${data.beforeAnswers || null},
+${data.afterAnswers || null},
+${data.metrics || null},
+```
+
+### Files Modified
+
+- `lib/survey/storage.ts`:
+  - Lines 81-83: `saveSurveyResponse()` function
+  - Lines 139-141: `completeSurveyResponse()` function
+
+### Impact
+
+- ✅ **New records** will store proper JSONB objects
+- ⚠️ **Existing records** have double-encoded strings (may need migration if querying is required)
+- ✅ JSONB operators now work: `beforeAnswers->>'q1_website_rating'`
+
+### Next Steps
+
+Ready for commit and deployment.
+
+---
+
 ## ✅ DEPLOYMENT STATUS: Database Connections Verified - 2025-11-12
 
 ### Production Health Check Results
@@ -2791,3 +2942,69 @@ vercel env add POOL_DATABASE_URL production
 # Paste fresh credentials
 vercel --prod --force  # Redeploy
 ```
+
+## ✅ SURVEY DATA PERSISTENCE FIXED - 2025-11-13 01:05 UTC
+
+### Root Cause: Missing `id` Field in INSERT Statements
+
+The survey submissions were failing because **all three INSERT statements were missing the required `id` field**.
+
+**Table Schema** (from user):
+
+```sql
+id text not null  -- PRIMARY KEY, required NOT NULL
+```
+
+**The Problem**: All three functions were trying to INSERT without providing the `id` value:
+
+- `saveSurveyResponse()` - lib/survey/storage.ts:57-103
+- `completeSurveyResponse()` - lib/survey/storage.ts:122-157
+- `logReportAccess()` - lib/survey/storage.ts:177-201
+
+### The Fix
+
+**Added `randomUUID()` import**:
+
+```typescript
+import { randomUUID } from 'crypto'
+```
+
+**Updated all three INSERT statements** to include `id` field:
+
+```typescript
+INSERT INTO survey_responses (
+  id,              // ← ADDED
+  "jtiHash",
+  "leadId",
+  // ... rest of fields
+) VALUES (
+  ${randomUUID()}, // ← ADDED
+  ${jtiHash},
+  ${leadId},
+  // ... rest of values
+)
+```
+
+### Deployment
+
+- **Commit**: cccdb0d
+- **Status**: ✅ Pushed to production
+- **Impact**: Survey data will now persist correctly
+
+### Why No Errors Appeared in Vercel Logs
+
+The user noted "There are no errors in Vercel of any kind when interacting with the survey" - this is because:
+
+1. The survey frontend is designed to stream back responses
+2. Submissions likely failed silently in the catch block (line 127-131 of submit route)
+3. The generic `{success: false, error: "server_error"}` response hides the actual PostgreSQL error
+
+### Verification
+
+Once deployed, survey submissions should work. Data will persist with:
+
+- Unique UUID for each record
+- UPSERT on `jtiHash` for idempotency
+- Full streaming survey responses saved
+
+---
