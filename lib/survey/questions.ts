@@ -2,123 +2,94 @@ import type { Question } from './types'
 
 export const BEFORE_QUESTIONS: Question[] = [
   {
-    id: 'q1_website_rating',
-    type: 'rating',
-    question:
-      "How would you rate your business's website and Google presence overall?",
-    description: '1 = Terrible · 5 = Excellent',
-    max: 5,
-    required: true,
-  },
-  {
-    id: 'q2_customer_attraction',
+    id: 'format_preference',
     type: 'multiple_choice',
-    question: 'How do you usually attract new customers?',
+    question: 'How would you prefer the audit to be structured?',
     options: [
-      'Word-of-mouth / referrals',
-      'Google / web search',
-      'Social media',
-      'Ads (online or offline)',
+      'Prioritized summary (top issues first)',
+      'Full detailed list of everything we found',
+      'Both',
+      'Not sure',
     ],
-    allowOther: true,
     required: true,
   },
   {
-    id: 'q3_online_percentage',
-    type: 'slider',
+    id: 'revenue_estimate_preference',
+    type: 'multiple_choice',
     question:
-      'About what percentage of your new customers find you online (through your website or Google)?',
-    min: 0,
-    max: 100,
+      'Do you prefer this kind of audit to include estimated monthly revenue impact?',
+    options: [
+      'Yes, it helps me understand importance',
+      'Neutral',
+      'No, I prefer no $ estimates',
+      "I don't trust $ estimates generally",
+    ],
+    required: true,
+  },
+  {
+    id: 'price_fairness',
+    type: 'multiple_choice',
+    question: 'What would feel like a fair price for an audit like this?',
+    options: [
+      'Under $99',
+      '$100–199',
+      '$200–299',
+      '$300–399',
+      '$400–499',
+      '$500+',
+    ],
     required: true,
   },
 ]
 
 export const AFTER_QUESTIONS: Question[] = [
   {
-    id: 'q4_accuracy_rating',
+    id: 'accuracy_rating',
     type: 'rating',
-    question: 'How accurate did the report feel for your business?',
-    description: '1 = Way off · 5 = Spot on',
+    question: 'How accurate did the audit feel for your business?',
     max: 5,
     required: true,
   },
   {
-    id: 'q5_most_useful',
+    id: 'most_useful_section',
     type: 'text',
-    question: 'What part of the report felt most useful or surprising?',
-    placeholder: 'Your answer...',
+    question: 'Which part of the audit felt most useful or relevant?',
     required: false,
   },
   {
-    id: 'q6_priority_fix',
+    id: 'agency_referral_interest',
     type: 'multiple_choice',
     question:
-      'If you could fix only one thing next on your website or Google presence, what would it be?',
-    options: [
-      'Google Business Profile',
-      'Website content / structure',
-      'SEO visibility',
-      'Speed / mobile experience',
-      'Reviews / trust signals',
-    ],
-    allowOther: true,
+      'If you wanted help fixing some of these issues, would you want an introduction to a vetted partner?',
+    options: ['Yes', 'Maybe', 'No'],
     required: true,
   },
   {
-    id: 'q7_likelihood_to_act',
+    id: 'taxonomy_usefulness',
     type: 'rating',
-    question:
-      'How likely are you to act on the recommendations in the next 60 days?',
-    description: '1 = Not at all · 5 = Already started',
+    question: 'Was the FIND / KNOW / CONTACT / TRUST structure helpful?',
     max: 5,
-    required: true,
-  },
-  {
-    id: 'q8_fair_price',
-    type: 'multiple_choice',
-    question:
-      "If you hadn't received this report for free, what do you think a fair price would be?",
-    options: [
-      "$0 (I wouldn't pay for this)",
-      '$99',
-      '$199',
-      '$399',
-      '$599',
-      '$799+',
-    ],
-    allowOther: true,
-    required: true,
-  },
-  {
-    id: 'q9_business_value',
-    type: 'multiple_choice',
-    question:
-      'Roughly how much value do you think this report could unlock for your business if you acted on its insights?',
-    options: [
-      'None',
-      'Under $1,000',
-      '$1,000–$5,000',
-      '$5,000–$20,000',
-      'Over $20,000',
-    ],
-    required: true,
-  },
-  {
-    id: 'q10_improvements',
-    type: 'text',
-    question:
-      'What could we add or change to make this report more useful for your business?',
-    placeholder: 'Your suggestions...',
-    multiline: true,
     required: false,
   },
   {
-    id: 'q11_future_updates',
-    type: 'checkbox',
+    id: 'monitoring_interest',
+    type: 'multiple_choice',
+    question: 'Would ongoing monitoring of these metrics be useful to you?',
+    options: ['Yes', 'No', 'Not sure'],
+    required: false,
+  },
+  {
+    id: 'report_improvement_feedback',
+    type: 'text',
+    question: 'Anything you’d change or add to the audit?',
+    required: false,
+  },
+  {
+    id: 'one_to_one_conversation_interest',
+    type: 'multiple_choice',
     question:
-      'Would you like to receive future updates from Anthrasite, including new report features and insights?',
-    options: ['Yes, keep me updated'],
+      'Would you be open to a brief conversation so we can better understand SMB needs and improve this tool?',
+    options: ['Yes', 'Maybe', 'No'],
     required: false,
   },
 ]

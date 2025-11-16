@@ -84,20 +84,19 @@ export interface SurveyMetrics {
 
 // Validation Schemas
 export const beforeAnswersSchema = z.object({
-  q1_website_rating: z.number().min(1).max(5),
-  q2_customer_attraction: z.string().min(1),
-  q3_online_percentage: z.number().min(0).max(100),
+  format_preference: z.string().min(1),
+  revenue_estimate_preference: z.string().min(1),
+  price_fairness: z.string().min(1),
 })
 
 export const afterAnswersSchema = z.object({
-  q4_accuracy_rating: z.number().min(1).max(5),
-  q5_most_useful: z.string().optional(),
-  q6_priority_fix: z.string().min(1),
-  q7_likelihood_to_act: z.number().min(1).max(5),
-  q8_fair_price: z.string().min(1),
-  q9_business_value: z.string().min(1),
-  q10_improvements: z.string().optional(),
-  q11_future_updates: z.boolean().optional(),
+  accuracy_rating: z.number().min(1).max(5),
+  most_useful_section: z.string().optional(),
+  agency_referral_interest: z.string().min(1),
+  taxonomy_usefulness: z.number().min(1).max(5).optional(),
+  monitoring_interest: z.string().optional(),
+  report_improvement_feedback: z.string().optional(),
+  one_to_one_conversation_interest: z.string().optional(),
 })
 
 export type BeforeAnswers = z.infer<typeof beforeAnswersSchema>
