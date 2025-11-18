@@ -1,9 +1,9 @@
 # Survey Email Open Tracking — Implementation (FINAL)
 
 **Date:** 2025-11-18
-**Status:** ✅ BUG FIXED & DEPLOYED TO PRODUCTION
+**Status:** ✅ SCHEMA FIXED & DEPLOYED TO PRODUCTION
 
-## Critical Bug Fix (2025-11-18)
+## Critical Fixes (2025-11-18)
 
 🐛 **Bug:** Email tracking pixel returned 200 + GIF but did NOT write to database
 
@@ -20,11 +20,36 @@
 
 **Lesson Learned:** When debugging postgres.js issues, compare with working functions in same file. Vercel logs are useless without a drain setup.
 
+### Fix #2: Schema Mismatch (ROOT CAUSE)
+
+🐛 **Bug:** Anthrasite code used wrong column names and data types
+
+**Root Cause:** Anthrasite Prisma schema didn't match actual LeadShop database:
+
+- Used camelCase columns (`jtiHash`, `leadId`) instead of snake_case (`jti`, `lead_id`)
+- Expected UUID primary key instead of BIGSERIAL
+- Expected `jtiHash` (hashed) instead of `jti` (raw JTI string)
+- Included non-existent columns: `runId`, `version`, `batchId`, `openCount`
+
+**Fix:** Updated to match actual schema:
+
+- Column names: camelCase → snake_case (send_id, lead_id, ip_hash, user_agent, email_type)
+- Primary key: UUID → BIGSERIAL (auto-increment)
+- jti: Store raw JTI string (not hashed)
+- Removed: runId, version, batchId, openCount
+- Simplified UPSERT: only update opened_at, ip_hash, user_agent on conflict
+
+✅ **Deployed:** Commit `b3bd208` - "fix(pixel): match actual database schema with snake_case columns"
+
 ---
 
 ## Implementation Summary
 
-✅ **DEPLOYED** - Code pushed to production (initial: commit 4421c04, bug fix: commit faf782f):
+✅ **DEPLOYED** - Code pushed to production:
+
+- Initial: commit 4421c04
+- Bug fix #1: commit faf782f
+- Schema fix #2: commit b3bd208 (FINAL)
 
 1. ✅ **Environment variables configured:**
 
