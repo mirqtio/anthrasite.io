@@ -1,37 +1,58 @@
 # Survey Email Open Tracking — Implementation (FINAL)
 
 **Date:** 2025-11-18
-**Status:** ✅ IMPLEMENTATION COMPLETE
+**Status:** ✅ BUG FIXED & DEPLOYED TO PRODUCTION
+
+## Critical Bug Fix (2025-11-18)
+
+🐛 **Bug:** Email tracking pixel returned 200 + GIF but did NOT write to database
+
+**Root Cause:** Used raw SQL function `gen_random_uuid()` instead of parameterized `${randomUUID()}` in INSERT statement. postgres.js requires ALL values to be passed as tagged template parameters, not raw SQL.
+
+**Fix:** Changed line 301 in `lib/survey/storage.ts`:
+
+```diff
+- VALUES (gen_random_uuid(), ${jtiHash}, ...)
++ VALUES (${randomUUID()}, ${jtiHash}, ...)
+```
+
+✅ **Deployed:** Commit `faf782f` - "fix(survey): correct UUID generation in logEmailOpen"
+
+**Lesson Learned:** When debugging postgres.js issues, compare with working functions in same file. Vercel logs are useless without a drain setup.
+
+---
 
 ## Implementation Summary
 
-✅ **COMPLETE** - All setup tasks have been done:
+✅ **DEPLOYED** - Code pushed to production (initial: commit 4421c04, bug fix: commit faf782f):
 
-1. ✅ **Environment variables added** to `.env.local`:
+1. ✅ **Environment variables configured:**
 
-   - `SURVEY_SECRET_KEY` (copied from LeadShop)
-   - `IP_HASH_SALT` (generated and synced with LeadShop)
+   - `SURVEY_SECRET_KEY` - Added to local `.env.local` (synced with LeadShop)
+   - `IP_HASH_SALT` - Added to local `.env.local` AND Vercel production environment
 
-2. ✅ **LeadShop `.env` updated** with `IP_HASH_SALT` (same value)
+2. ✅ **LeadShop `.env` updated** with `IP_HASH_SALT` (same value as Anthrasite)
 
-3. ✅ **Database schema pushed** to local database (`prisma db push`)
+3. ✅ **Database schema synced** (`prisma db push` locally)
 
-4. ⚠️ **TODO: Add to Vercel environment variables:**
+4. ✅ **Code committed and pushed:**
+
+   - Commit: `4421c04` - "feat: add survey email tracking pixel endpoint"
+   - All checks passed (TypeScript, ESLint, unit tests, production build)
+   - Pushed to `origin/main`
+   - Vercel auto-deployment initiated
+
+5. **Production endpoint available at:**
 
    ```
-   IP_HASH_SALT=ewOK2Jv+hVG2kt77sM1t+HRH/oJnEprwBiJe+nNfTwU=
+   https://www.anthrasite.io/api/pixel/survey-open
    ```
 
-   **Note:** `SURVEY_SECRET_KEY` is already set in Vercel. Only `IP_HASH_SALT` needs to be added.
-
-5. **Test the endpoint** locally:
-
+6. **Test locally:**
    ```bash
-   # With valid JWT and send_id
    curl "http://localhost:3000/api/pixel/survey-open?token=<JWT>&send_id=<UUID>"
-
-   # Should return: 1x1 transparent GIF (always, even on errors)
-   # Check logs for: [Pixel] Successfully logged email open
+   # Returns: 1x1 transparent GIF
+   # Check logs: [Pixel] Successfully logged email open
    ```
 
 ## Files Created/Modified
