@@ -245,18 +245,15 @@ export async function isSurveyCompleted(jti: string): Promise<boolean> {
 }
 
 /**
- * Log email open event (idempotent via sendId)
+ * Log email open event (idempotent via send_id)
  * Used by tracking pixel endpoint
  */
 export async function logEmailOpen(options: {
   jti: string
   leadId: string
-  runId?: string
-  version?: string
-  batchId?: string
+  sendId: string
   emailType?: string
   campaign?: string
-  sendId?: string
   userAgent?: string
   ipHash?: string
 }) {
@@ -269,69 +266,58 @@ export async function logEmailOpen(options: {
   })
 
   const sql = getSql() as any
-  const jtiHash = hashJti(options.jti)
   const now = new Date()
 
-  console.log('[logEmailOpen] Computed values:', {
-    jtiHash: jtiHash.substring(0, 16) + '...',
+  // Parse sendId to BigInt (comes as string from query param)
+  const sendIdBigInt = BigInt(options.sendId)
+  // Parse leadId to integer (comes as string from JWT)
+  const leadIdInt = parseInt(options.leadId, 10)
+
+  console.log('[logEmailOpen] Parsed values:', {
+    sendIdBigInt: sendIdBigInt.toString(),
+    leadIdInt,
+    jti: options.jti.substring(0, 8) + '...',
     timestamp: now.toISOString(),
   })
 
-  // UPSERT using sendId as conflict target
-  // On first open: create record with openCount = 1
-  // On subsequent opens: increment openCount and update metadata
+  // UPSERT using send_id as conflict target
+  // On first open: create record
+  // On subsequent opens: update opened_at, ip_hash, user_agent
   console.log(
-    '[logEmailOpen] About to execute UPSERT with sendId:',
-    options.sendId
+    '[logEmailOpen] About to execute UPSERT with send_id:',
+    sendIdBigInt.toString()
   )
   console.log('[logEmailOpen] SQL connection type:', typeof sql)
 
   try {
     const [record] = await sql`
       INSERT INTO survey_email_opens (
-        id,
-        "jtiHash",
-        "leadId",
-        "runId",
-        version,
-        "batchId",
-        "emailType",
-        campaign,
-        "sendId",
-        "firstOpenedAt",
-        "lastOpenedAt",
-        "openCount",
-        "userAgentLast",
-        "ipHashLast"
+        send_id,
+        jti,
+        lead_id,
+        ip_hash,
+        user_agent,
+        email_type,
+        campaign
       ) VALUES (
-        ${randomUUID()},
-        ${jtiHash},
-        ${options.leadId},
-        ${options.runId || null},
-        ${options.version || 'v1'},
-        ${options.batchId || null},
-        ${options.emailType || null},
-        ${options.campaign || null},
-        ${options.sendId || null},
-        ${now},
-        ${now},
-        1,
+        ${sendIdBigInt.toString()},
+        ${options.jti},
+        ${leadIdInt},
+        ${options.ipHash || null},
         ${options.userAgent || null},
-        ${options.ipHash || null}
+        ${options.emailType || null},
+        ${options.campaign || null}
       )
-      ON CONFLICT ("sendId") DO UPDATE SET
-        "lastOpenedAt" = ${now},
-        "openCount" = survey_email_opens."openCount" + 1,
-        "userAgentLast" = ${options.userAgent || null},
-        "ipHashLast" = ${options.ipHash || null}
-      RETURNING *
+      ON CONFLICT (send_id) DO UPDATE SET
+        opened_at = NOW(),
+        ip_hash = EXCLUDED.ip_hash,
+        user_agent = EXCLUDED.user_agent
+      RETURNING id
     `
 
     console.log('[logEmailOpen] UPSERT successful:', {
-      recordId: record?.id,
-      sendId: record?.sendId,
-      openCount: record?.openCount,
-      isNewRecord: record?.openCount === 1,
+      recordId: record?.id?.toString(),
+      sendId: sendIdBigInt.toString(),
     })
 
     return record
@@ -339,8 +325,8 @@ export async function logEmailOpen(options: {
     console.error('[logEmailOpen] SQL ERROR:', {
       error: sqlError instanceof Error ? sqlError.message : String(sqlError),
       stack: sqlError instanceof Error ? sqlError.stack : undefined,
-      sendId: options.sendId,
-      jtiHash: jtiHash.substring(0, 16) + '...',
+      sendId: sendIdBigInt.toString(),
+      jti: options.jti.substring(0, 8) + '...',
     })
     throw sqlError
   }

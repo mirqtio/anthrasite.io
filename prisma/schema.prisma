@@ -165,21 +165,16 @@ model SurveyResponse {
 }
 
 model SurveyEmailOpen {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  jtiHash         String
-  leadId          String
-  runId           String?
-  version         String?
-  batchId         String?
-  emailType       String?
-  campaign        String?
-  sendId          String?  @unique
-  firstOpenedAt   DateTime @default(now())
-  lastOpenedAt    DateTime @updatedAt
-  openCount       Int      @default(1)
-  userAgentLast   String?
-  ipHashLast      String?
+  id         BigInt   @id @default(autoincrement())
+  sendId     BigInt   @unique @map("send_id")
+  jti        String
+  leadId     Int      @map("lead_id")
+  openedAt   DateTime @default(now()) @map("opened_at")
+  ipHash     String?  @map("ip_hash")
+  userAgent  String?  @map("user_agent")
+  emailType  String?  @map("email_type")
+  campaign   String?
+  createdAt  DateTime @default(now()) @map("created_at")
 
-  @@index([jtiHash])
   @@map("survey_email_opens")
 }

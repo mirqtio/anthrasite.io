@@ -104,15 +104,12 @@ export async function GET(request: NextRequest) {
 
     // Log to database (idempotent)
     try {
-      console.log('[Pixel] Calling logEmailOpen with full payload:', {
+      console.log('[Pixel] Calling logEmailOpen with payload:', {
         jti: payload.jti.substring(0, 8) + '...',
         leadId: payload.leadId,
-        runId: payload.runId,
-        version: payload.version,
-        batchId: payload.batchId,
+        sendId,
         emailType: emailType || undefined,
         campaign: campaign || undefined,
-        sendId,
         userAgent: userAgent.substring(0, 50) + '...',
         ipHash: ipHash.substring(0, 16) + '...',
       })
@@ -120,12 +117,9 @@ export async function GET(request: NextRequest) {
       await logEmailOpen({
         jti: payload.jti,
         leadId: payload.leadId,
-        runId: payload.runId,
-        version: payload.version,
-        batchId: payload.batchId,
+        sendId,
         emailType: emailType || undefined,
         campaign: campaign || undefined,
-        sendId,
         userAgent,
         ipHash,
       })
@@ -135,7 +129,8 @@ export async function GET(request: NextRequest) {
       // Log error but still return pixel (non-fatal)
       console.error(
         '[Pixel] Database write failed (non-fatal):',
-        dbError instanceof Error ? dbError.message : String(dbError)
+        dbError instanceof Error ? dbError.message : String(dbError),
+        dbError instanceof Error ? dbError.stack : undefined
       )
     }
 

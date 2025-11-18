@@ -39,38 +39,37 @@ export async function GET(request: NextRequest) {
 
     // 4. Try to INSERT a test record
     console.log('[TestPixelDB] Testing INSERT into survey_email_opens...')
-    const testId = randomUUID()
-    const testJtiHash = 'test-' + randomUUID()
-    const now = new Date()
+    const testSendId = Date.now()
+    const testJti = 'test-' + randomUUID()
 
     const [insertedRecord] = await sql`
       INSERT INTO survey_email_opens (
-        id,
-        "jtiHash",
-        "leadId",
-        "sendId",
-        "firstOpenedAt",
-        "lastOpenedAt",
-        "openCount"
+        send_id,
+        jti,
+        lead_id,
+        ip_hash,
+        user_agent,
+        email_type,
+        campaign
       ) VALUES (
-        ${testId},
-        ${testJtiHash},
-        'test-lead',
-        'test-send-' + ${Date.now()},
-        ${now},
-        ${now},
-        1
+        ${testSendId},
+        ${testJti},
+        999999,
+        'test-hash',
+        'test-agent',
+        'test',
+        'test-campaign'
       )
-      RETURNING *
+      RETURNING id
     `
 
     diagnostics.insertTest = insertedRecord ? 'PASS' : 'FAIL'
-    diagnostics.insertedRecordId = insertedRecord?.id
+    diagnostics.insertedRecordId = insertedRecord?.id?.toString()
     console.log('[TestPixelDB] INSERT test result:', diagnostics.insertTest)
 
     // 5. Clean up test record
     console.log('[TestPixelDB] Cleaning up test record...')
-    await sql`DELETE FROM survey_email_opens WHERE id = ${testId}`
+    await sql`DELETE FROM survey_email_opens WHERE send_id = ${testSendId}`
     diagnostics.cleanupTest = 'PASS'
 
     diagnostics.overallStatus = 'SUCCESS'
