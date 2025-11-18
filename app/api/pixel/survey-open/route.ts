@@ -104,6 +104,19 @@ export async function GET(request: NextRequest) {
 
     // Log to database (idempotent)
     try {
+      console.log('[Pixel] Calling logEmailOpen with full payload:', {
+        jti: payload.jti.substring(0, 8) + '...',
+        leadId: payload.leadId,
+        runId: payload.runId,
+        version: payload.version,
+        batchId: payload.batchId,
+        emailType: emailType || undefined,
+        campaign: campaign || undefined,
+        sendId,
+        userAgent: userAgent.substring(0, 50) + '...',
+        ipHash: ipHash.substring(0, 16) + '...',
+      })
+
       await logEmailOpen({
         jti: payload.jti,
         leadId: payload.leadId,

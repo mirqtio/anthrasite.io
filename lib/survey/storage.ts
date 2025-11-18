@@ -260,13 +260,27 @@ export async function logEmailOpen(options: {
   userAgent?: string
   ipHash?: string
 }) {
+  console.log('[logEmailOpen] Starting with options:', {
+    leadId: options.leadId,
+    sendId: options.sendId,
+    jti: options.jti.substring(0, 8) + '...',
+    emailType: options.emailType,
+    campaign: options.campaign,
+  })
+
   const sql = getSql() as any
   const jtiHash = hashJti(options.jti)
   const now = new Date()
 
+  console.log('[logEmailOpen] Computed values:', {
+    jtiHash: jtiHash.substring(0, 16) + '...',
+    timestamp: now.toISOString(),
+  })
+
   // UPSERT using sendId as conflict target
   // On first open: create record with openCount = 1
   // On subsequent opens: increment openCount and update metadata
+  console.log('[logEmailOpen] Executing UPSERT query...')
   const [record] = await sql`
     INSERT INTO survey_email_opens (
       id,
@@ -306,6 +320,13 @@ export async function logEmailOpen(options: {
       "ipHashLast" = ${options.ipHash || null}
     RETURNING *
   `
+
+  console.log('[logEmailOpen] UPSERT successful:', {
+    recordId: record?.id,
+    sendId: record?.sendId,
+    openCount: record?.openCount,
+    isNewRecord: record?.openCount === 1,
+  })
 
   return record
 }
