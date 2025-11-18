@@ -243,3 +243,69 @@ export async function isSurveyCompleted(jti: string): Promise<boolean> {
   const response = await getSurveyResponse(jti)
   return response?.completedAt != null
 }
+
+/**
+ * Log email open event (idempotent via sendId)
+ * Used by tracking pixel endpoint
+ */
+export async function logEmailOpen(options: {
+  jti: string
+  leadId: string
+  runId?: string
+  version?: string
+  batchId?: string
+  emailType?: string
+  campaign?: string
+  sendId?: string
+  userAgent?: string
+  ipHash?: string
+}) {
+  const sql = getSql() as any
+  const jtiHash = hashJti(options.jti)
+  const now = new Date()
+
+  // UPSERT using sendId as conflict target
+  // On first open: create record with openCount = 1
+  // On subsequent opens: increment openCount and update metadata
+  const [record] = await sql`
+    INSERT INTO survey_email_opens (
+      id,
+      "jtiHash",
+      "leadId",
+      "runId",
+      version,
+      "batchId",
+      "emailType",
+      campaign,
+      "sendId",
+      "firstOpenedAt",
+      "lastOpenedAt",
+      "openCount",
+      "userAgentLast",
+      "ipHashLast"
+    ) VALUES (
+      gen_random_uuid(),
+      ${jtiHash},
+      ${options.leadId},
+      ${options.runId || null},
+      ${options.version || 'v1'},
+      ${options.batchId || null},
+      ${options.emailType || null},
+      ${options.campaign || null},
+      ${options.sendId || null},
+      ${now},
+      ${now},
+      1,
+      ${options.userAgent || null},
+      ${options.ipHash || null}
+    )
+    ON CONFLICT ("sendId") DO UPDATE SET
+      "lastOpenedAt" = ${now},
+      "openCount" = survey_email_opens."openCount" + 1,
+      "userAgentLast" = ${options.userAgent || null},
+      "ipHashLast" = ${options.ipHash || null}
+    RETURNING *
+  `
+
+  return record
+}

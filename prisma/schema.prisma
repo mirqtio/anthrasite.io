@@ -163,3 +163,23 @@ model SurveyResponse {
   @@index([createdAt])
   @@map("survey_responses")
 }
+
+model SurveyEmailOpen {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  jtiHash         String
+  leadId          String
+  runId           String?
+  version         String?
+  batchId         String?
+  emailType       String?
+  campaign        String?
+  sendId          String?  @unique
+  firstOpenedAt   DateTime @default(now())
+  lastOpenedAt    DateTime @updatedAt
+  openCount       Int      @default(1)
+  userAgentLast   String?
+  ipHashLast      String?
+
+  @@index([jtiHash])
+  @@map("survey_email_opens")
+}

@@ -43,3 +43,15 @@ export async function validateSurveyToken(
 export function hashJti(jti: string): string {
   return crypto.createHash('sha256').update(jti).digest('hex')
 }
+
+/**
+ * Generate SHA256 hash of IP address for privacy-safe storage
+ * Uses a server-side salt to prevent rainbow table attacks
+ */
+export function hashIp(ip: string): string {
+  const salt = process.env.IP_HASH_SALT || 'default-salt-change-me'
+  return crypto
+    .createHash('sha256')
+    .update(ip + salt)
+    .digest('hex')
+}
