@@ -280,53 +280,68 @@ export async function logEmailOpen(options: {
   // UPSERT using sendId as conflict target
   // On first open: create record with openCount = 1
   // On subsequent opens: increment openCount and update metadata
-  console.log('[logEmailOpen] Executing UPSERT query...')
-  const [record] = await sql`
-    INSERT INTO survey_email_opens (
-      id,
-      "jtiHash",
-      "leadId",
-      "runId",
-      version,
-      "batchId",
-      "emailType",
-      campaign,
-      "sendId",
-      "firstOpenedAt",
-      "lastOpenedAt",
-      "openCount",
-      "userAgentLast",
-      "ipHashLast"
-    ) VALUES (
-      ${randomUUID()},
-      ${jtiHash},
-      ${options.leadId},
-      ${options.runId || null},
-      ${options.version || 'v1'},
-      ${options.batchId || null},
-      ${options.emailType || null},
-      ${options.campaign || null},
-      ${options.sendId || null},
-      ${now},
-      ${now},
-      1,
-      ${options.userAgent || null},
-      ${options.ipHash || null}
-    )
-    ON CONFLICT ("sendId") DO UPDATE SET
-      "lastOpenedAt" = ${now},
-      "openCount" = survey_email_opens."openCount" + 1,
-      "userAgentLast" = ${options.userAgent || null},
-      "ipHashLast" = ${options.ipHash || null}
-    RETURNING *
-  `
+  console.log(
+    '[logEmailOpen] About to execute UPSERT with sendId:',
+    options.sendId
+  )
+  console.log('[logEmailOpen] SQL connection type:', typeof sql)
 
-  console.log('[logEmailOpen] UPSERT successful:', {
-    recordId: record?.id,
-    sendId: record?.sendId,
-    openCount: record?.openCount,
-    isNewRecord: record?.openCount === 1,
-  })
+  try {
+    const [record] = await sql`
+      INSERT INTO survey_email_opens (
+        id,
+        "jtiHash",
+        "leadId",
+        "runId",
+        version,
+        "batchId",
+        "emailType",
+        campaign,
+        "sendId",
+        "firstOpenedAt",
+        "lastOpenedAt",
+        "openCount",
+        "userAgentLast",
+        "ipHashLast"
+      ) VALUES (
+        ${randomUUID()},
+        ${jtiHash},
+        ${options.leadId},
+        ${options.runId || null},
+        ${options.version || 'v1'},
+        ${options.batchId || null},
+        ${options.emailType || null},
+        ${options.campaign || null},
+        ${options.sendId || null},
+        ${now},
+        ${now},
+        1,
+        ${options.userAgent || null},
+        ${options.ipHash || null}
+      )
+      ON CONFLICT ("sendId") DO UPDATE SET
+        "lastOpenedAt" = ${now},
+        "openCount" = survey_email_opens."openCount" + 1,
+        "userAgentLast" = ${options.userAgent || null},
+        "ipHashLast" = ${options.ipHash || null}
+      RETURNING *
+    `
 
-  return record
+    console.log('[logEmailOpen] UPSERT successful:', {
+      recordId: record?.id,
+      sendId: record?.sendId,
+      openCount: record?.openCount,
+      isNewRecord: record?.openCount === 1,
+    })
+
+    return record
+  } catch (sqlError) {
+    console.error('[logEmailOpen] SQL ERROR:', {
+      error: sqlError instanceof Error ? sqlError.message : String(sqlError),
+      stack: sqlError instanceof Error ? sqlError.stack : undefined,
+      sendId: options.sendId,
+      jtiHash: jtiHash.substring(0, 16) + '...',
+    })
+    throw sqlError
+  }
 }
