@@ -298,7 +298,7 @@ export async function logEmailOpen(options: {
       "userAgentLast",
       "ipHashLast"
     ) VALUES (
-      gen_random_uuid(),
+      ${randomUUID()},
       ${jtiHash},
       ${options.leadId},
       ${options.runId || null},
