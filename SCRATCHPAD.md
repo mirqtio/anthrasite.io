@@ -41,6 +41,33 @@
 
 ✅ **Deployed:** Commit `b3bd208` - "fix(pixel): match actual database schema with snake_case columns"
 
+### Fix #3: Report Lookup Fallback
+
+🐛 **Bug:** Report viewer returned `report_not_found` error for lead 3093
+
+**Root Cause:** Report lookup was too strict - required exact run_id match
+
+**Problem Details:**
+
+- Test email token had run_id: `lead_3093_batch_20251115_204230_c617c0f4` (Nov 15)
+- Pre-generated report had run_id: `lead_3093_batch_20251112_183425_5d8646dd` (Nov 12)
+- Query only checked for exact match, no fallback
+- Empty string pdf_s3_key (`""`) wasn't filtered out (only checked `IS NOT NULL`)
+
+**Fix:** Implemented fallback strategy in `lookupReportS3Key()`:
+
+1. **Try exact match first** - If run_id provided, attempt exact match
+2. **Fall back to most recent** - If no match, get most recent report for the lead
+3. **Filter empty strings** - Check `pdf_s3_key != ''` in addition to `IS NOT NULL`
+
+**Benefits:**
+
+- Reports work mid-survey (after "before" but before "after" completion)
+- Test emails with new run_ids can access old pre-generated reports
+- More resilient to run_id mismatches in test/development scenarios
+
+✅ **Deployed:** Commit `a073e01` - "fix(report): add fallback to most recent report when run_id doesn't match"
+
 ---
 
 ## Implementation Summary
@@ -49,7 +76,8 @@
 
 - Initial: commit 4421c04
 - Bug fix #1: commit faf782f
-- Schema fix #2: commit b3bd208 (FINAL)
+- Schema fix #2: commit b3bd208
+- Report fix #3: commit a073e01 (FINAL)
 
 1. ✅ **Environment variables configured:**
 
