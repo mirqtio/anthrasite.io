@@ -14,12 +14,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const supabase = createClient()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
+
+    // Create client lazily to avoid SSG issues
+    const supabase = createClient()
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
