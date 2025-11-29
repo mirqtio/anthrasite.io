@@ -40,6 +40,9 @@ jobs:
       ADMIN_API_KEY: test-admin-key-ci
       NEXT_PUBLIC_FF_PURCHASE_ENABLED: 'true'
       UTM_SECRET_KEY: ${{ secrets.UTM_SECRET_KEY || 'development-secret-key-replace-in-production' }}
+      # Supabase - required for /login page build (uses placeholder for CI)
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key-for-ci-build' }}
       CURRENTS_PROJECT_ID: ${{ secrets.CURRENTS_PROJECT_ID }}
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
       CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
