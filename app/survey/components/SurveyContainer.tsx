@@ -14,7 +14,7 @@ import ThankYou from './ThankYou'
 import ProgressBar from './ProgressBar'
 
 interface SurveyData {
-  leadId: string
+  leadId?: string
   runId?: string
   version: string
   batchId?: string
@@ -219,6 +219,7 @@ export default function SurveyContainer({ token }: { token: string }) {
         {state.step === 'report' && (
           <ReportAccess
             token={token}
+            isPublic={!state.surveyData?.leadId}
             reportAccessed={state.reportAccessed}
             onReportClick={handleReportAccess}
             onContinue={handleReportContinue}

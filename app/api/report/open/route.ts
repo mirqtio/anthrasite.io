@@ -61,7 +61,8 @@ export async function GET(request: NextRequest) {
     })
 
     // Verify required fields
-    if (!payload.leadId || !payload.jti) {
+    // For public surveys, leadId is optional
+    if (!payload.jti) {
       console.error('[Report Open] Token missing required fields', payload)
       return NextResponse.json(
         { error: 'invalid_token', message: 'Token missing required fields' },
@@ -69,14 +70,23 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    console.log(
-      '[Report Open] Looking up report S3 key for leadId:',
-      payload.leadId,
-      'runId:',
-      payload.runId
-    )
-    // Look up report S3 key from Supabase database
-    const reportS3Key = await lookupReportS3Key(payload.leadId, payload.runId)
+    let reportS3Key: string | null = null
+
+    if (payload.leadId) {
+      console.log(
+        '[Report Open] Looking up report S3 key for leadId:',
+        payload.leadId,
+        'runId:',
+        payload.runId
+      )
+      // Look up report S3 key from Supabase database
+      reportS3Key = await lookupReportS3Key(payload.leadId, payload.runId)
+    } else {
+      console.log('[Report Open] Public token detected, using demo report')
+      // Use configured demo report or fallback
+      reportS3Key = process.env.DEMO_REPORT_S3_KEY || 'demo/report.pdf'
+    }
+
     if (!reportS3Key) {
       console.error(
         '[Report Open] Report S3 key not found for leadId:',

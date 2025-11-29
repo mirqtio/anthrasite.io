@@ -8,42 +8,23 @@
 
 **LeadShop**: LeadShop is the backend system that powers Anthrasite. Details can be found in the [LeadShop SYSTEM.md](../LeadShop-v3-clean/SYSTEM.md).
 
-## 1. Purpose & Core Principles
+## System Topology (Cloud/Hybrid Target)
 
-This document defines the authoritative architecture of the **Anthrasite.io Payment Site**. It captures both design intent and operational invariants to ensure the system remains reliable, secure, and maintainable.
+**Core Architecture:**
 
-- **Separation of Concerns**: The public-facing website (`anthrasite.io` on Vercel) is fully decoupled from the internal report generation engine (`LeadShop` on a local Mac mini). They communicate via a durable, managed queue.
-- **Idempotency**: All critical operations, especially payment processing and workflow kickoff, are designed to be idempotent to prevent duplicate processing from events like webhook retries.
-- **Progressive Enhancement**: The system is built with MVP components (Playwright for PDFs, Gmail for email) that can be swapped for more robust, scalable solutions (DocRaptor, Postmark) as business needs evolve.
-- **Note on G1 Cleanup**: This system underwent a significant codebase cleanup (G1) in October 2025. Many legacy components were moved to a tracked `_archive` directory.
+1.  **Data Ingestion:** Data Axle -> Mac Mini (LeadShop) -> **Supabase (Cloud)**.
+2.  **Data Processing:** Temporal Cloud (Orchestration) -> Local Workers (Mac Mini) -> **Supabase (Data) & S3 (Artifacts)**.
+3.  **Marketing:** Mac Mini (LeadShop) -> **Supabase (Content)** -> GMass (Delivery).
+4.  **Commerce (Vercel):** User clicks Email Link -> Next.js Landing Page -> Stripe Purchase.
+5.  **Orchestration (Phase D):** Stripe Webhook -> Triggers **Phase D** in Temporal Cloud.
+6.  **Fulfillment:** Temporal Worker -> Generates PDF -> S3 -> Email.
 
-## 2. System Topology & Data Flow
+**Data Source of Truth:**
 
-The system is split into two primary operational environments, `anthrasite.io` (Vercel) and `LeadShop` (Mac Mini), bridged by a managed queue.
-
-```mermaid
-graph TD
-    subgraph Vercel [Public Site: anthrasite.io]
-        A[1. Customer clicks UTM link in email] --> B{Purchase Page};
-        B -- 2. Fills out Payment Element --> C(Stripe API);
-        C -- 3. payment_intent.succeeded --> D{Stripe Webhook};
-        D -- 4. Verified & Deduplicated --> E(PostgreSQL);
-        D --> F(Enqueue Job);
-    end
-
-    subgraph Queue [Managed Queue]
-        F --> G[payment_completed job];
-    end
-
-    subgraph MacMini [Internal Worker: LeadShop]
-        G -- 5. Worker consumes job --> H{Temporal Kickoff};
-        H -- 6. ReportGenerationWorkflow --> I(Playwright PDF Gen);
-        I -- 7. PDF generated --> J(Store in S3);
-        J -- 8. Stored --> K(Send via Gmail SMTP);
-    end
-
-    K -- 9. Email with PDF attachment --> L[Customer Inbox];
-```
+- **Customer/Lead Data:** Supabase (`leads`, `purchases` tables).
+- **Execution State:** Temporal Cloud (Workflows).
+- **Logs/Debug:** Temporal History.
+- **Reports:** S3.
 
 ## 3. Core Technology Stack
 
@@ -86,6 +67,25 @@ Anthrasite.io inherits the _Producer–Validator_ and _Failure Contract_ convent
 - `/lib`: Shared libraries for services like database access and Stripe.
 - `/prisma`: Database schema and migration files.
 - `/_archive`: A tracked directory containing all non-essential files from before the G1 cleanup.
+
+## 6. Cross-Project Temporal Contract (LeadShop Integration)
+
+Anthrasite.io acts as an additional Temporal client for LeadShop’s workflows, primarily for Phase D (Premium Report Generation) triggered from internal ops portals.
+
+- **Shared Workflow IDs (Phase D):**
+  - All callers (LeadShop FastAPI, Anthrasite, CLI tools) MUST use the workflow ID format `premium-report-{run_id}` when starting `PremiumReportGenerationWorkflow`.
+  - This guarantees idempotent starts and consistent observability in Temporal.
+- **Run Eligibility for Phase D:**
+  - Anthrasite must only start Phase D for runs where the shared Postgres `runs` table has a non-null `reasoning_memo_s3_key` for the `(lead_id, run_id)` pair.
+  - The selection rule should mirror LeadShop’s behavior: pick the most recent run (by `COALESCE(started_at, created_at)`) that has a memo.
+- **Execution State Source of Truth:**
+  - Phase status fields (`phase_a_status`, `phase_b_status`, `phase_c_status`, `phase_d_status`) on `runs` are updated by LeadShop activities (e.g. `update_run_phase_status`).
+  - Anthrasite MUST NOT maintain its own parallel phase-status state; it should read status from the shared database or Temporal queries only.
+- **Temporal Client Placement & Secrets:**
+  - The Temporal TS client used by Anthrasite lives in `lib/temporal/client.ts` and is **server-only**; it must never be imported into client components or Edge runtimes.
+  - It reuses the same credential set as the LeadShop worker/CLI. These secrets remain LeadShop-grade and are only consumed from server environment variables.
+- **Change Management:**
+  - Any change to workflow IDs, task queues, or Phase D eligibility logic MUST be reflected in both this section and the corresponding contract section in `LeadShop-v3-clean/SYSTEM.md`.
 
 ---
 

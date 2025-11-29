@@ -2,13 +2,15 @@ import { z } from 'zod'
 
 // JWT Payload
 export interface SurveyTokenPayload {
-  leadId: string
+  leadId?: string
   runId?: string
   jti: string
   aud: string
   scope: string
   version?: string
   batchId?: string
+  source?: string
+  respondentId?: string
   iat: number
   exp: number
 }

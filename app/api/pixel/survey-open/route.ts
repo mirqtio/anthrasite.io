@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
 
       await logEmailOpen({
         jti: payload.jti,
-        leadId: payload.leadId,
+        leadId: payload.leadId || '',
         sendId,
         emailType: emailType || undefined,
         campaign: campaign || undefined,

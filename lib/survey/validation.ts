@@ -25,7 +25,8 @@ export async function validateSurveyToken(
     })
 
     // Validate required fields
-    if (!payload.leadId || !payload.jti || payload.scope !== 'feedback') {
+    // leadId is optional for public surveys
+    if (!payload.jti || payload.scope !== 'feedback') {
       console.error('Token missing required fields or invalid scope')
       return null
     }

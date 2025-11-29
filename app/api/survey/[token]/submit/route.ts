@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { validateSurveyToken } from '@/lib/survey/validation'
-import {
-  saveSurveyResponse,
-  completeSurveyResponse,
-} from '@/lib/survey/storage'
+import { saveSurveyResponse } from '@/lib/survey/storage'
 import { beforeAnswersSchema, type AfterAnswers } from '@/lib/survey/types'
 import { z } from 'zod'
 
@@ -56,12 +53,12 @@ export async function POST(
       validatedData.beforeAnswers &&
       validatedData.afterAnswers
     ) {
-      const response = await completeSurveyResponse(
-        payload.jti,
-        validatedData.beforeAnswers,
-        validatedData.afterAnswers as AfterAnswers,
-        validatedData.metrics
-      )
+      const response = await saveSurveyResponse({
+        jti: payload.jti,
+        beforeAnswers: validatedData.beforeAnswers,
+        afterAnswers: validatedData.afterAnswers as AfterAnswers,
+        metrics: validatedData.metrics,
+      })
 
       // Update leadId from token if not set
       if (!response.leadId || response.leadId === '') {
@@ -70,7 +67,7 @@ export async function POST(
         await sql`
           UPDATE survey_responses
           SET
-            "leadId" = ${payload.leadId},
+            "leadId" = ${payload.leadId || null},
             "runId" = ${payload.runId || null},
             version = ${payload.version || 'v1'},
             "batchId" = ${payload.batchId || null},

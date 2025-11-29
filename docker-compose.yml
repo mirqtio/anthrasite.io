@@ -1,34 +1,33 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
+  anthrasite:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+    container_name: anthrasite
+    restart: unless-stopped
     ports:
-      - '5432:5432'
+      - '3000:3000'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: anthrasite
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - NODE_ENV=production
+      # Supabase Auth & DB
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      # Backend Connection
+      - NEXT_PUBLIC_API_URL=http://leadshop-api:8000
+      # Database
+      - DATABASE_URL=${DATABASE_URL}
+      - DIRECT_URL=${DIRECT_URL}
+    networks:
+      - leadshop-network
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres_data:
-  redis_data:
+networks:
+  leadshop-network:
+    external: true
+    name: leadshop-v3-clean_leadshop-network

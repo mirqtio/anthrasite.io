@@ -140,11 +140,18 @@ model PrivacyRequest {
 // Survey responses
 model SurveyResponse {
   id                String    @id @default(cuid())
-  leadId            String
+  leadId            String?
   runId             String?
   jtiHash           String    @unique // SHA256 hash of JWT jti for idempotency
   version           String    @default("v1")
   batchId           String?
+  
+  // Public survey fields
+  respondentId      String?   // External ID (e.g. from UserInterviews)
+  source            String?   // Origin (e.g. "wynter", "linkedin")
+  respondentEmail   String?   // Optional capture
+  questionSetVersion String?  @default("v1")
+  ref               String?   // Referral/funnel tracking
 
   // Response data
   beforeAnswers     Json?
@@ -160,6 +167,7 @@ model SurveyResponse {
   updatedAt         DateTime  @updatedAt
 
   @@index([leadId, completedAt])
+  @@index([respondentEmail])
   @@index([createdAt])
   @@map("survey_responses")
 }

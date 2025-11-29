@@ -4,6 +4,7 @@ const { withSentryConfig } = require('@sentry/nextjs')
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  output: 'standalone',
   // Sentry error page optimization
   excludeDefaultMomentLocales: true,
   // Enable source maps to debug E2E crashes

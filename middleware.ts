@@ -6,11 +6,14 @@ import { withABTesting } from './middleware/02b-ab-testing'
 import { withAccessControl } from './middleware/03-access-control'
 import { withPrivacyGPC } from './middleware/04-privacy-gpc'
 
+import { withAdminAuth } from './middleware/03b-admin-auth'
+
 export default chain([
   withSession,
   withSecurity,
   withABTesting,
   withAccessControl,
+  withAdminAuth,
   withPrivacyGPC,
 ])
 

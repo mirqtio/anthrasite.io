@@ -2,11 +2,13 @@
 
 export default function ReportAccess({
   token,
+  isPublic,
   reportAccessed,
   onReportClick,
   onContinue,
 }: {
   token: string
+  isPublic?: boolean
   reportAccessed: boolean
   onReportClick: () => void
   onContinue: () => void
@@ -43,6 +45,15 @@ export default function ReportAccess({
           Thanks for answering those questions. Now it's time to see your
           personalized audit.
         </p>
+
+        {isPublic && (
+          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-md p-4 max-w-lg mx-auto">
+            <p className="text-blue-800 font-medium">
+              ℹ️ Since this is a test participant assessment, we’re showing a
+              sample report.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-8">
