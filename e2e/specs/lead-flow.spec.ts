@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test'
 
+// Skip in CI - requires auth and seeded test data
+test.skip(!!process.env.CI, 'Skipping admin tests in CI - requires auth setup')
+
 test('Lead Deletion Flow', async ({ page }) => {
   // 1. Go to a lead page (we need a valid ID, let's assume one exists or mock it)
   // Ideally we should create a lead first, but for now let's try to use an existing one or just check the UI on a known lead if possible.

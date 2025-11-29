@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test'
 
+// Skip in CI - requires auth and seeded test data
+test.skip(!!process.env.CI, 'Skipping admin tests in CI - requires auth setup')
+
 test.use({ viewport: { width: 1920, height: 1080 } })
 
 test('Capture Modal Screenshots', async ({ page }) => {

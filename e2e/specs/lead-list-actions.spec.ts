@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test'
 
+// Skip in CI - requires auth and seeded test data
+test.skip(!!process.env.CI, 'Skipping admin tests in CI - requires auth setup')
+
 test('Lead List Delete Flow', async ({ page }) => {
   // 1. Go to leads page
   await page.goto('/admin/leads')
