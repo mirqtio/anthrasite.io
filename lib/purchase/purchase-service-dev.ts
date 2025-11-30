@@ -171,7 +171,8 @@ export async function fetchBusinessByUTMDev(
  */
 export async function createCheckoutSessionDev(
   businessId: string,
-  utm: string
+  utm: string,
+  leadId?: string
 ): Promise<CheckoutSession | null> {
   // Simulate async behavior
   await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -186,7 +187,7 @@ export async function createCheckoutSessionDev(
 
   return {
     id: sessionId,
-    url: `/test-purchase/checkout-simulator?session=${sessionId}&business=${businessId}`,
+    url: `/test-purchase/checkout-simulator?session=${sessionId}&business=${businessId}${leadId ? `&leadId=${leadId}` : ''}`,
     amountCents: 9900, // $99.00
   }
 }

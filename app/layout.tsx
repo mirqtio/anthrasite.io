@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Inter } from 'next/font/google'
 import { MonitoringProvider } from '@/components/MonitoringProvider'
 import { SiteModeProvider } from '@/lib/context/SiteModeContext'
@@ -11,6 +12,7 @@ import {
   AnalyticsNoScriptWrapper,
 } from '@/app/_components/Analytics/AnalyticsWrapper'
 import ReadyGate from '@/app/_components/ReadyGate'
+import { AuthListener } from '@/components/auth/AuthListener'
 import './globals.css'
 
 const inter = Inter({
@@ -57,6 +59,9 @@ export default function RootLayout({
                   <AnalyticsWrapper />
                   <AnalyticsNoScriptWrapper />
                   <ReadyGate />
+                  <Suspense fallback={null}>
+                    <AuthListener />
+                  </Suspense>
                 </HelpWidgetProvider>
               </SiteModeProvider>
             </ConsentProvider>

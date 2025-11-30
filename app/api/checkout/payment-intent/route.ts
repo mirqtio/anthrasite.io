@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
     const cfg = PRICE_TIERS[tier]
     const businessId = body?.businessId
     const utm = body?.utm
+    const leadId = body?.leadId
 
     if (!businessId) {
       return NextResponse.json({ error: 'Missing businessId' }, { status: 400 })
@@ -100,6 +101,7 @@ export async function POST(request: NextRequest) {
             tier,
             tierName: cfg.name,
             sessionId: sid,
+            leadId,
           },
         },
       })
@@ -121,6 +123,7 @@ export async function POST(request: NextRequest) {
           purchaseId: purchase.id,
           businessId,
           domain: body?.domain,
+          leadId,
         },
       },
       {

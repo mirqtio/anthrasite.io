@@ -25,6 +25,7 @@ interface PurchasePageProps {
     utm?: string
     preview?: string // Optional param to show interstitial page
     tier?: string // Tier parameter for pricing
+    leadId?: string // Lead ID for fulfillment
   }
 }
 
@@ -32,10 +33,12 @@ async function PurchaseContent({
   utm,
   preview,
   tier,
+  leadId,
 }: {
   utm: string
   preview?: string
   tier: string
+  leadId?: string
 }) {
   // Fetch business data
   const purchaseData = await fetchBusinessByUTM(utm)
@@ -61,7 +64,7 @@ async function PurchaseContent({
         flow_type: 'redirect',
       })
 
-      const session = await createCheckoutSession(business.id, utm)
+      const session = await createCheckoutSession(business.id, utm, leadId)
 
       if (session) {
         // Track successful session creation
@@ -97,7 +100,7 @@ async function PurchaseContent({
         flow_type: 'redirect',
       })
 
-      const session = await createCheckoutSession(business.id, utm)
+      const session = await createCheckoutSession(business.id, utm, leadId)
 
       if (session) {
         // Track successful session creation
@@ -149,6 +152,7 @@ async function PurchaseContent({
               businessName={business.name}
               utm={utm}
               tier={tier}
+              leadId={leadId}
             />
           </div>
         </section>
@@ -211,6 +215,7 @@ export default async function PurchasePage({
   const utm = searchParams.utm
   const preview = searchParams.preview
   const tier = searchParams.tier ?? 'basic' // Default to basic tier
+  const leadId = searchParams.leadId
 
   // In mock mode, use a fake UTM token if not provided
   // SECURITY: Only allow in non-production environments
@@ -229,7 +234,12 @@ export default async function PurchasePage({
       data-testid="purchase-root"
     >
       <Suspense fallback={<PurchasePageSkeleton />}>
-        <PurchaseContent utm={effectiveUtm} preview={preview} tier={tier} />
+        <PurchaseContent
+          utm={effectiveUtm}
+          preview={preview}
+          tier={tier}
+          leadId={leadId}
+        />
       </Suspense>
     </main>
   )

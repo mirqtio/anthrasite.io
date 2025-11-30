@@ -8,7 +8,10 @@ import { withPrivacyGPC } from './middleware/04-privacy-gpc'
 
 import { withAdminAuth } from './middleware/03b-admin-auth'
 
+import { withAuthRedirect } from './middleware/00-auth-redirect'
+
 export default chain([
+  withAuthRedirect,
   withSession,
   withSecurity,
   withABTesting,

@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Loader2 } from 'lucide-react'
 
 import { RobustCenteredLayout } from '@/components/ui/RobustCenteredLayout'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -68,9 +69,17 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-white/60 mb-1.5">
-              Password
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-medium text-white/60">
+                Password
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Forgot Password?
+              </Link>
+            </div>
             <input
               type="password"
               value={password}

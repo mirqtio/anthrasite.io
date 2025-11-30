@@ -15,6 +15,7 @@ interface PaymentElementWrapperProps {
   businessName: string
   utm: string
   tier: string
+  leadId?: string
 }
 
 export function PaymentElementWrapper({
@@ -22,6 +23,7 @@ export function PaymentElementWrapper({
   businessName,
   utm,
   tier,
+  leadId,
 }: PaymentElementWrapperProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -34,7 +36,7 @@ export function PaymentElementWrapper({
         const response = await fetch('/api/checkout/payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ businessId, utm, tier }),
+          body: JSON.stringify({ businessId, utm, tier, leadId }),
         })
 
         if (!response.ok) {
@@ -55,7 +57,7 @@ export function PaymentElementWrapper({
     }
 
     createPaymentIntent()
-  }, [businessId, utm, tier])
+  }, [businessId, utm, tier, leadId])
 
   if (isLoading) {
     return (

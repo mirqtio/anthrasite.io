@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { prisma } from '@/lib/db'
 import { trackEvent } from '@/lib/analytics/analytics-server'
 import { sendPurchaseConfirmationEmail } from '@/lib/email'
+import { getTemporalClient } from '@/lib/temporal/client'
 
 // Force dynamic rendering - prevents build-time execution
 export const dynamic = 'force-dynamic'
@@ -41,7 +42,16 @@ export async function POST(request: NextRequest) {
     const signature = request.headers.get('stripe-signature')!
 
     // Construct and verify the webhook event
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+    if (
+      process.env.USE_MOCK_PURCHASE === 'true' &&
+      request.headers.get('x-mock-signature') === 'skip'
+    ) {
+      // Bypass signature verification for mock mode
+      const json = JSON.parse(body)
+      event = json as Stripe.Event
+    } else {
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+    }
   } catch (error) {
     console.error('Webhook signature verification failed:', error)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
@@ -117,6 +127,50 @@ export async function POST(request: NextRequest) {
         // Send confirmation email (awaited for reliability in Vercel Node runtime)
         await sendPurchaseConfirmationEmail(purchase, { eventId: event.id })
 
+        // Trigger Post-Purchase Workflow (Report Generation & Delivery)
+        const leadId = session.metadata?.leadId
+        if (leadId) {
+          try {
+            const client = await getTemporalClient()
+            const runId = `purchase_${session.id}` // Unique run ID for this fulfillment
+
+            await client.workflow.start('PostPurchaseWorkflow', {
+              taskQueue: 'premium-reports',
+              workflowId: `post-purchase-${leadId}-${session.id}`,
+              args: [
+                {
+                  lead_id: parseInt(leadId, 10),
+                  run_id: runId,
+                  customer_email: customerEmail,
+                },
+              ],
+            })
+            console.log(
+              `[Webhook] Started PostPurchaseWorkflow for lead ${leadId}, runId=${runId}`
+            )
+
+            await trackEvent('workflow_started', {
+              workflow: 'PostPurchaseWorkflow',
+              leadId,
+              runId,
+            })
+          } catch (err) {
+            console.error(
+              '[Webhook] Failed to start PostPurchaseWorkflow:',
+              err
+            )
+            await trackEvent('workflow_start_failed', {
+              error: err instanceof Error ? err.message : 'Unknown',
+              leadId,
+              purchaseId: purchase.id,
+            })
+          }
+        } else {
+          console.warn(
+            '[Webhook] No leadId in session metadata, skipping workflow trigger'
+          )
+        }
+
         break
       }
 
@@ -124,29 +178,30 @@ export async function POST(request: NextRequest) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
 
         // Extract metadata
-        const purchaseUid = paymentIntent.metadata?.purchaseUid
+        const purchaseId = paymentIntent.metadata?.purchaseId
         const businessId = paymentIntent.metadata?.businessId
         const domain = paymentIntent.metadata?.domain
+        const leadId = paymentIntent.metadata?.leadId
 
-        if (!purchaseUid) {
-          console.error('Missing purchaseUid in PaymentIntent metadata')
+        if (!purchaseId) {
+          console.error('Missing purchaseId in PaymentIntent metadata')
           break
         }
 
         // Find existing Purchase record (created when PaymentIntent was generated)
         const existingPurchase = await prisma.purchase.findUnique({
-          where: { id: purchaseUid },
+          where: { id: purchaseId },
           include: { business: true },
         })
 
         if (!existingPurchase) {
-          console.error(`Purchase not found for purchaseUid: ${purchaseUid}`)
+          console.error(`Purchase not found for purchaseId: ${purchaseId}`)
           break
         }
 
         // Update purchase to completed status
         const purchase = await prisma.purchase.update({
-          where: { id: purchaseUid },
+          where: { id: purchaseId },
           data: {
             status: 'completed',
           },
@@ -166,6 +221,50 @@ export async function POST(request: NextRequest) {
 
         // Send confirmation email (D3 implementation with idempotency)
         await sendPurchaseConfirmationEmail(purchase, { eventId: event.id })
+
+        // Trigger Post-Purchase Workflow (Report Generation & Delivery)
+        if (leadId) {
+          try {
+            const client = await getTemporalClient()
+            const runId = `purchase_pi_${paymentIntent.id}` // Unique run ID for this fulfillment
+
+            await client.workflow.start('PostPurchaseWorkflow', {
+              taskQueue: 'premium-reports',
+              workflowId: `post-purchase-${leadId}-${paymentIntent.id}`,
+              args: [
+                {
+                  lead_id: parseInt(leadId, 10),
+                  run_id: runId,
+                  customer_email:
+                    purchase.customerEmail || purchase.business.email || null,
+                },
+              ],
+            })
+            console.log(
+              `[Webhook] Started PostPurchaseWorkflow for lead ${leadId}, runId=${runId}`
+            )
+
+            await trackEvent('workflow_started', {
+              workflow: 'PostPurchaseWorkflow',
+              leadId,
+              runId,
+            })
+          } catch (err) {
+            console.error(
+              '[Webhook] Failed to start PostPurchaseWorkflow:',
+              err
+            )
+            await trackEvent('workflow_start_failed', {
+              error: err instanceof Error ? err.message : 'Unknown',
+              leadId,
+              purchaseId: purchase.id,
+            })
+          }
+        } else {
+          console.warn(
+            '[Webhook] No leadId in PaymentIntent metadata, skipping workflow trigger'
+          )
+        }
 
         break
       }

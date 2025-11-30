@@ -13,6 +13,7 @@ export interface CreateCheckoutSessionParams {
   utmToken: string
   customerEmail?: string
   baseUrl: string
+  leadId?: string
 }
 
 /**
@@ -23,6 +24,7 @@ export async function createCheckoutSession({
   utmToken,
   customerEmail,
   baseUrl,
+  leadId,
 }: CreateCheckoutSessionParams): Promise<Stripe.Checkout.Session> {
   try {
     const urls = getStripeUrls(baseUrl)
@@ -49,6 +51,7 @@ export async function createCheckoutSession({
       metadata: {
         businessId,
         utmToken,
+        ...(leadId && { leadId }),
       },
       // Additional options for better UX
       allow_promotion_codes: true,

@@ -88,7 +88,8 @@ export async function fetchBusinessByUTM(
  */
 export async function createCheckoutSession(
   businessId: string,
-  utm: string
+  utm: string,
+  leadId?: string
 ): Promise<CheckoutSession | null> {
   // Use mock session in development mode
   if (isDevelopmentMode()) {
@@ -123,6 +124,7 @@ export async function createCheckoutSession(
       utmToken: utm,
       customerEmail: business.email || undefined,
       baseUrl,
+      leadId,
     })
 
     // Track abandoned cart

@@ -20,7 +20,7 @@ function getStripe() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { utm, businessId } = body
+    const { utm, businessId, leadId } = body
 
     // Validate required fields
     if (!utm || !businessId) {
@@ -77,12 +77,14 @@ export async function POST(request: NextRequest) {
         businessId: business.id,
         utm,
         domain: business.domain,
+        ...(leadId && { leadId }),
       },
       payment_intent_data: {
         metadata: {
           businessId: business.id,
           utm,
           domain: business.domain,
+          ...(leadId && { leadId }),
         },
       },
     })
