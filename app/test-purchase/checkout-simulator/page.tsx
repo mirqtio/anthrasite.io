@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function CheckoutSimulatorPage() {
+function CheckoutSimulatorContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const session = searchParams.get('session')
@@ -86,5 +86,13 @@ export default function CheckoutSimulatorPage() {
         </button>
       </div>
     </div>
+  )
+}
+
+export default function CheckoutSimulatorPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutSimulatorContent />
+    </Suspense>
   )
 }
