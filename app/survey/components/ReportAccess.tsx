@@ -15,9 +15,9 @@ export default function ReportAccess({
 }) {
   function handleReportClick() {
     onReportClick()
-    // Open report via redirect shim
-    const reportUrl = `/api/report/open?sid=${encodeURIComponent(token)}`
-    window.open(reportUrl, '_blank', 'noopener,noreferrer')
+    // Download report via redirect shim (download=1 forces Content-Disposition: attachment)
+    const reportUrl = `/api/report/open?sid=${encodeURIComponent(token)}&download=1`
+    window.location.href = reportUrl
   }
 
   return (
@@ -61,17 +61,10 @@ export default function ReportAccess({
           📊 Access Your Report
         </h3>
         <p className="text-blue-800 mb-4">
-          Click the button below to open your report in a new tab. Take your
-          time reviewing it, then return to this page to answer a few quick
-          questions about your experience.
+          Click the button below to download your report. Take your time
+          reviewing it, then return to answer a few quick questions about your
+          experience.
         </p>
-
-        <div className="bg-yellow-50 border border-yellow-300 rounded-md p-3 mb-4">
-          <p className="text-sm text-yellow-800 font-medium">
-            ⚠️ Important: Please download and save a copy of your report for
-            your records. This link will expire after you complete this survey.
-          </p>
-        </div>
 
         <button
           onClick={handleReportClick}
@@ -84,12 +77,12 @@ export default function ReportAccess({
             (e.currentTarget.style.backgroundColor = '#0066ff')
           }
         >
-          🔗 Open My Report
+          ⬇️ Download My Report
         </button>
 
         {reportAccessed && (
           <p className="text-sm text-blue-600 mt-3 text-center">
-            ✓ Report opened in new tab
+            ✓ Report download started
           </p>
         )}
       </div>
@@ -115,7 +108,7 @@ export default function ReportAccess({
         >
           {reportAccessed
             ? 'Continue to Final Questions →'
-            : 'Open report first to continue'}
+            : 'Download report first to continue'}
         </button>
 
         {!reportAccessed && (
@@ -123,7 +116,7 @@ export default function ReportAccess({
             onClick={onContinue}
             className="text-sm text-gray-500 hover:text-gray-700 underline"
           >
-            Continue without opening (not recommended)
+            Continue without downloading (not recommended)
           </button>
         )}
       </div>

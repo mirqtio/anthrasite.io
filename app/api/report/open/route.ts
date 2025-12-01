@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     console.log('[Report Open] Starting request')
     const { searchParams } = new URL(request.url)
     const sid = searchParams.get('sid')
+    const forceDownload = searchParams.get('download') === '1'
 
     if (!sid) {
       console.error('[Report Open] Missing sid parameter')
@@ -104,9 +105,16 @@ export async function GET(request: NextRequest) {
     }
 
     console.log('[Report Open] Found report S3 key:', reportS3Key)
-    console.log('[Report Open] Generating pre-signed URL')
+    console.log(
+      '[Report Open] Generating pre-signed URL, forceDownload:',
+      forceDownload
+    )
     // Generate pre-signed URL (15 minutes)
-    const presignedUrl = await generateReportPresignedUrl(reportS3Key, 900)
+    const presignedUrl = await generateReportPresignedUrl(
+      reportS3Key,
+      900,
+      forceDownload
+    )
 
     console.log('[Report Open] Pre-signed URL generated, logging access')
     // Log report access (idempotent, but don't fail if this fails)
