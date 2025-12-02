@@ -9,9 +9,6 @@ export interface SaveSurveyOptions {
   runId?: string
   version?: string
   batchId?: string
-  source?: string
-  respondentId?: string
-  ref?: string
   beforeAnswers?: BeforeAnswers
   afterAnswers?: AfterAnswers
   metrics?: SurveyMetrics
@@ -43,9 +40,6 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
     runId: options.runId || null,
     version: options.version || 'v1',
     batchId: options.batchId || null,
-    source: options.source || null,
-    respondentId: options.respondentId || null,
-    ref: options.ref || null,
     updatedAt: now,
   }
 
@@ -86,9 +80,6 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
         "runId",
         version,
         "batchId",
-        source,
-        "respondentId",
-        ref,
         "beforeAnswers",
         "afterAnswers",
         metrics,
@@ -104,9 +95,6 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
         ${data.runId},
         ${data.version},
         ${data.batchId},
-        ${data.source},
-        ${data.respondentId},
-        ${data.ref},
         ${data.beforeAnswers || null},
         ${data.afterAnswers || null},
         ${data.metrics || null},
@@ -121,9 +109,6 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
         "runId" = COALESCE(EXCLUDED."runId", survey_responses."runId"),
         version = COALESCE(EXCLUDED.version, survey_responses.version),
         "batchId" = COALESCE(EXCLUDED."batchId", survey_responses."batchId"),
-        source = COALESCE(EXCLUDED.source, survey_responses.source),
-        "respondentId" = COALESCE(EXCLUDED."respondentId", survey_responses."respondentId"),
-        ref = COALESCE(EXCLUDED.ref, survey_responses.ref),
         "beforeAnswers" = COALESCE(EXCLUDED."beforeAnswers", survey_responses."beforeAnswers"),
         "afterAnswers" = COALESCE(EXCLUDED."afterAnswers", survey_responses."afterAnswers"),
         metrics = COALESCE(EXCLUDED.metrics, survey_responses.metrics),
