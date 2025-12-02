@@ -121,7 +121,20 @@ export async function POST(
       )
     }
 
-    console.error('Survey POST error:', error)
+    // Enhanced error logging for debugging
+    const errorDetails = {
+      message: error instanceof Error ? error.message : String(error),
+      name: error instanceof Error ? error.name : 'Unknown',
+      stack:
+        error instanceof Error
+          ? error.stack?.split('\n').slice(0, 5).join('\n')
+          : undefined,
+      code: (error as any)?.code,
+      detail: (error as any)?.detail,
+      constraint: (error as any)?.constraint,
+    }
+    console.error('Survey POST error:', JSON.stringify(errorDetails, null, 2))
+
     return NextResponse.json(
       { success: false, error: 'server_error' },
       { status: 500 }

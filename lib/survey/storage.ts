@@ -23,6 +23,17 @@ export interface SaveSurveyOptions {
  * Uses UPSERT pattern on jtiHash for idempotency
  */
 export async function saveSurveyResponse(options: SaveSurveyOptions) {
+  console.log('[saveSurveyResponse] Starting with options:', {
+    jti: options.jti?.substring(0, 8) + '...',
+    leadId: options.leadId,
+    runId: options.runId,
+    version: options.version,
+    batchId: options.batchId,
+    hasBeforeAnswers: !!options.beforeAnswers,
+    hasAfterAnswers: !!options.afterAnswers,
+    hasMetrics: !!options.metrics,
+  })
+
   const sql = getSql() as any
   const jtiHash = hashJti(options.jti)
   const now = new Date()
@@ -61,63 +72,81 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
   }
 
   // UPSERT using postgres.js
-  const [response] = await sql`
-    INSERT INTO survey_responses (
-      id,
-      "jtiHash",
-      "leadId",
-      "runId",
-      version,
-      "batchId",
-      source,
-      "respondentId",
-      ref,
-      "beforeAnswers",
-      "afterAnswers",
-      metrics,
-      "reportAccessedAt",
-      "beforeCompletedAt",
-      "afterCompletedAt",
-      "createdAt",
-      "updatedAt"
-    ) VALUES (
-      ${randomUUID()},
-      ${jtiHash},
-      null,
-      ${data.runId},
-      ${data.version},
-      ${data.batchId},
-      ${data.source},
-      ${data.respondentId},
-      ${data.ref},
-      ${data.beforeAnswers || null},
-      ${data.afterAnswers || null},
-      ${data.metrics || null},
-      ${data.reportAccessedAt || null},
-      ${data.beforeCompletedAt || null},
-      ${data.afterCompletedAt || null},
-      ${now},
-      ${now}
-    )
-    ON CONFLICT ("jtiHash") DO UPDATE SET
-      "leadId" = COALESCE(EXCLUDED."leadId", survey_responses."leadId"),
-      "runId" = COALESCE(EXCLUDED."runId", survey_responses."runId"),
-      version = COALESCE(EXCLUDED.version, survey_responses.version),
-      "batchId" = COALESCE(EXCLUDED."batchId", survey_responses."batchId"),
-      source = COALESCE(EXCLUDED.source, survey_responses.source),
-      "respondentId" = COALESCE(EXCLUDED."respondentId", survey_responses."respondentId"),
-      ref = COALESCE(EXCLUDED.ref, survey_responses.ref),
-      "beforeAnswers" = COALESCE(EXCLUDED."beforeAnswers", survey_responses."beforeAnswers"),
-      "afterAnswers" = COALESCE(EXCLUDED."afterAnswers", survey_responses."afterAnswers"),
-      metrics = COALESCE(EXCLUDED.metrics, survey_responses.metrics),
-      "reportAccessedAt" = COALESCE(EXCLUDED."reportAccessedAt", survey_responses."reportAccessedAt"),
-      "beforeCompletedAt" = COALESCE(EXCLUDED."beforeCompletedAt", survey_responses."beforeCompletedAt"),
-      "afterCompletedAt" = COALESCE(EXCLUDED."afterCompletedAt", survey_responses."afterCompletedAt"),
-      "updatedAt" = EXCLUDED."updatedAt"
-    RETURNING *
-  `
+  console.log(
+    '[saveSurveyResponse] Executing UPSERT with jtiHash:',
+    jtiHash.substring(0, 16) + '...'
+  )
 
-  return response
+  try {
+    const [response] = await sql`
+      INSERT INTO survey_responses (
+        id,
+        "jtiHash",
+        "leadId",
+        "runId",
+        version,
+        "batchId",
+        source,
+        "respondentId",
+        ref,
+        "beforeAnswers",
+        "afterAnswers",
+        metrics,
+        "reportAccessedAt",
+        "beforeCompletedAt",
+        "afterCompletedAt",
+        "createdAt",
+        "updatedAt"
+      ) VALUES (
+        ${randomUUID()},
+        ${jtiHash},
+        null,
+        ${data.runId},
+        ${data.version},
+        ${data.batchId},
+        ${data.source},
+        ${data.respondentId},
+        ${data.ref},
+        ${data.beforeAnswers || null},
+        ${data.afterAnswers || null},
+        ${data.metrics || null},
+        ${data.reportAccessedAt || null},
+        ${data.beforeCompletedAt || null},
+        ${data.afterCompletedAt || null},
+        ${now},
+        ${now}
+      )
+      ON CONFLICT ("jtiHash") DO UPDATE SET
+        "leadId" = COALESCE(EXCLUDED."leadId", survey_responses."leadId"),
+        "runId" = COALESCE(EXCLUDED."runId", survey_responses."runId"),
+        version = COALESCE(EXCLUDED.version, survey_responses.version),
+        "batchId" = COALESCE(EXCLUDED."batchId", survey_responses."batchId"),
+        source = COALESCE(EXCLUDED.source, survey_responses.source),
+        "respondentId" = COALESCE(EXCLUDED."respondentId", survey_responses."respondentId"),
+        ref = COALESCE(EXCLUDED.ref, survey_responses.ref),
+        "beforeAnswers" = COALESCE(EXCLUDED."beforeAnswers", survey_responses."beforeAnswers"),
+        "afterAnswers" = COALESCE(EXCLUDED."afterAnswers", survey_responses."afterAnswers"),
+        metrics = COALESCE(EXCLUDED.metrics, survey_responses.metrics),
+        "reportAccessedAt" = COALESCE(EXCLUDED."reportAccessedAt", survey_responses."reportAccessedAt"),
+        "beforeCompletedAt" = COALESCE(EXCLUDED."beforeCompletedAt", survey_responses."beforeCompletedAt"),
+        "afterCompletedAt" = COALESCE(EXCLUDED."afterCompletedAt", survey_responses."afterCompletedAt"),
+        "updatedAt" = EXCLUDED."updatedAt"
+      RETURNING *
+    `
+
+    console.log('[saveSurveyResponse] UPSERT successful, id:', response?.id)
+    return response
+  } catch (dbError) {
+    console.error('[saveSurveyResponse] Database error:', {
+      message: dbError instanceof Error ? dbError.message : String(dbError),
+      code: (dbError as any)?.code,
+      detail: (dbError as any)?.detail,
+      constraint: (dbError as any)?.constraint,
+      table: (dbError as any)?.table,
+      column: (dbError as any)?.column,
+    })
+    throw dbError
+  }
 }
 
 // ... (completeSurveyResponse remains mostly same but leadId handling might need check, skipping for now as it uses empty string in original code)
