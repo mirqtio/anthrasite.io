@@ -121,22 +121,25 @@ export async function POST(
       )
     }
 
-    // Enhanced error logging for debugging
+    // Capture error details for debugging
     const errorDetails = {
       message: error instanceof Error ? error.message : String(error),
       name: error instanceof Error ? error.name : 'Unknown',
-      stack:
-        error instanceof Error
-          ? error.stack?.split('\n').slice(0, 5).join('\n')
-          : undefined,
       code: (error as any)?.code,
       detail: (error as any)?.detail,
       constraint: (error as any)?.constraint,
+      table: (error as any)?.table,
+      column: (error as any)?.column,
     }
     console.error('Survey POST error:', JSON.stringify(errorDetails, null, 2))
 
+    // Return error details in response for debugging (no sensitive data exposed)
     return NextResponse.json(
-      { success: false, error: 'server_error' },
+      {
+        success: false,
+        error: 'server_error',
+        debug: errorDetails,
+      },
       { status: 500 }
     )
   }
