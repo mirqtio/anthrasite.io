@@ -91,7 +91,7 @@ export async function saveSurveyResponse(options: SaveSurveyOptions) {
       ) VALUES (
         ${randomUUID()},
         ${jtiHash},
-        null,
+        ${data.leadId},
         ${data.runId},
         ${data.version},
         ${data.batchId},
