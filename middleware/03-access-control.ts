@@ -90,10 +90,17 @@ export const withAccessControl: MiddlewareFactory = (next) => {
       }
     }
 
-    // --- 4) Protected routes: require UTM or valid prior cookies
+    // --- 4) Protected routes: require UTM/SID or valid prior cookies
     if (!isProtected) return next(req, evt, response)
 
     const siteMode = req.cookies.get('site_mode')?.value
+
+    // New JWT pattern uses 'sid' param - let those through for page-level validation
+    const sid = searchParams.get('sid')
+    if (sid) {
+      // JWT validation happens in the page component, just let it through
+      return next(req, evt, response)
+    }
 
     if (!utm) {
       if (siteMode === 'purchase') return next(req, evt, response)
