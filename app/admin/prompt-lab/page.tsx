@@ -435,9 +435,9 @@ export default function PromptLabPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Top Bar */}
-      <div className="flex-none overflow-x-auto border-b bg-white">
+    <div className="flex flex-col h-full">
+      {/* Top Bar - Sticky action bar */}
+      <div className="flex-shrink-0 overflow-x-auto border-b bg-white sticky top-0 z-10">
         <div className="flex items-center gap-4 min-w-max px-4 py-3">
           {/* Lead ID */}
           <div className="flex items-center gap-2">
@@ -534,10 +534,10 @@ export default function PromptLabPage() {
       </div>
 
       {/* Main Content: Lanes */}
-      <div className="flex-1 overflow-x-auto p-4 flex gap-4">
+      <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden p-4 flex gap-4">
         {/* Context Viewer (Always Visible & Editable) */}
-        <div className="w-80 flex-shrink-0 bg-white border rounded-lg shadow-sm flex flex-col">
-          <div className="p-3 border-b bg-gray-50 font-medium text-sm flex justify-between items-center">
+        <div className="w-80 flex-shrink-0 bg-white border rounded-lg shadow-sm flex flex-col h-full">
+          <div className="flex-shrink-0 p-3 border-b bg-gray-50 font-medium text-sm flex justify-between items-center">
             <span>Context Data (JSON)</span>
             <button
               onClick={() => setContextJson('')}
@@ -546,7 +546,7 @@ export default function PromptLabPage() {
               Clear
             </button>
           </div>
-          <div className="flex-1 p-0">
+          <div className="flex-1 overflow-hidden">
             <textarea
               value={contextJson}
               onChange={(e) => setContextJson(e.target.value)}
@@ -560,10 +560,10 @@ export default function PromptLabPage() {
         {lanes.map((lane) => (
           <div
             key={lane.id}
-            className="w-[500px] flex-shrink-0 bg-white border rounded-lg shadow-sm flex flex-col"
+            className="w-[500px] flex-shrink-0 bg-white border rounded-lg shadow-sm flex flex-col h-full overflow-hidden"
           >
             {/* Lane Header */}
-            <div className="p-3 border-b bg-gray-50 flex justify-between items-center pr-14">
+            <div className="flex-shrink-0 p-3 border-b bg-gray-50 flex justify-between items-center pr-14">
               <div className="flex items-center gap-2">
                 <select
                   value={lane.model}
@@ -655,7 +655,7 @@ export default function PromptLabPage() {
             </div>
 
             {/* Prompt Editor */}
-            <div className="flex-1 p-3 flex flex-col gap-2 overflow-auto border-b">
+            <div className="flex-1 p-3 flex flex-col gap-2 overflow-y-auto border-b min-h-0">
               <div>
                 <label className="text-xs font-medium text-gray-500 uppercase">
                   System Prompt
@@ -683,7 +683,7 @@ export default function PromptLabPage() {
             </div>
 
             {/* Actions & Results */}
-            <div className="p-3 bg-gray-50">
+            <div className="flex-shrink-0 p-3 bg-gray-50 max-h-64 overflow-y-auto">
               {/* Individual Run Button Removed per User Request */}
 
               {lane.result && (
@@ -754,7 +754,7 @@ export default function PromptLabPage() {
         {/* Add Lane Button */}
         <button
           onClick={addLane}
-          className="w-12 flex-shrink-0 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 transition-colors"
+          className="w-12 h-full flex-shrink-0 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 transition-colors"
         >
           +
         </button>
