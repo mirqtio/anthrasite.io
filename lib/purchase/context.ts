@@ -1,6 +1,10 @@
 import getSql from '@/lib/db'
 import type { PurchaseContext, HeroIssue } from './types'
 
+// LeadShop API base URL - backend runs on Hetzner
+const LEADSHOP_API_URL =
+  process.env.LEADSHOP_API_URL || 'http://5.161.19.136:8000'
+
 /**
  * Parse currency string to number
  * Handles formats like "19,800" or "$19,800" -> 19800
@@ -10,6 +14,40 @@ function parseCurrency(value: string | number | null | undefined): number {
   if (typeof value === 'number') return value
   // Remove $ and commas, parse as int
   return parseInt(value.replace(/[$,]/g, ''), 10) || 0
+}
+
+/**
+ * Fetch presigned screenshot URL from LeadShop API.
+ * The LeadShop API handles S3 presigning so we don't need AWS credentials here.
+ */
+async function fetchHomepageScreenshotUrl(
+  leadId: number
+): Promise<string | null> {
+  try {
+    const response = await fetch(
+      `${LEADSHOP_API_URL}/api/v1/mockups/${leadId}/desktop`,
+      {
+        next: { revalidate: 300 }, // Cache for 5 minutes (presigned URLs valid for 1 hour)
+      }
+    )
+
+    if (!response.ok) {
+      console.log('[fetchHomepageScreenshotUrl] LeadShop API returned', {
+        leadId,
+        status: response.status,
+      })
+      return null
+    }
+
+    const data = await response.json()
+    return data.screenshot_url || null
+  } catch (error) {
+    console.error('[fetchHomepageScreenshotUrl] LeadShop API call failed', {
+      leadId,
+      error,
+    })
+    return null
+  }
 }
 
 /**
@@ -110,9 +148,12 @@ export async function lookupPurchaseContext(
       }))
     }
 
+    const homepageScreenshotUrl = await fetchHomepageScreenshotUrl(leadIdInt)
+
     const context: PurchaseContext = {
       businessName: row.business_name || '',
       domainUrl: row.domain_url || '',
+      homepageScreenshotUrl,
       impactMonthlyLow: parseCurrency(row.impact_monthly_low),
       impactMonthlyHigh: parseCurrency(row.impact_monthly_high),
       issues,

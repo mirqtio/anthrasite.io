@@ -164,6 +164,16 @@ export async function POST(request: NextRequest) {
               leadId,
               purchaseId: purchase.id,
             })
+            // DEBUG: Return error to caller
+            return NextResponse.json(
+              {
+                received: true,
+                workflow_error:
+                  err instanceof Error ? err.message : 'Unknown error',
+                stack: err instanceof Error ? err.stack : undefined,
+              },
+              { status: 500 }
+            )
           }
         } else {
           console.warn(
@@ -351,6 +361,13 @@ export async function POST(request: NextRequest) {
       error: error instanceof Error ? error.message : 'Unknown error',
     })
 
-    return NextResponse.json({ received: true })
+    return NextResponse.json(
+      {
+        received: true,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+      },
+      { status: 500 }
+    )
   }
 }

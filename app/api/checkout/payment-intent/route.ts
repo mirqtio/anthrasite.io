@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { PRICE_TIERS, type TierKey } from '@/lib/stripe/config'
 import { isPaymentElementEnabled } from '@/lib/feature-flags'
-import { headers } from 'next/headers'
 import { prisma } from '@/lib/db'
 
 // Force dynamic rendering - prevents build-time execution
@@ -70,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Idempotency: use anon session from middleware
-    const sid = headers().get('x-anon-session') ?? 'no-sid'
+    const sid = request.headers.get('x-anon-session') ?? 'no-sid'
     const idemKey = `purchase:${tier}:${sid}`
 
     // Step 1: Create Purchase record with pending status

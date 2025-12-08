@@ -28,6 +28,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             >
               Pipeline
             </Link>
+            <Link
+              href="/admin/prompt-lab"
+              className="hover:text-white transition-colors"
+            >
+              Prompt Lab
+            </Link>
           </nav>
         </div>
 

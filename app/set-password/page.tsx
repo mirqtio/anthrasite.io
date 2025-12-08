@@ -33,14 +33,19 @@ function SetPasswordContent() {
       }
 
       // 2. If no session, check for code or token in URL
+      // 2. If no session, check for code or token in URL
       const code = searchParams.get('code')
-      const token = searchParams.get('token') || searchParams.get('token_hash')
+      const token = searchParams.get('token')
+      const tokenHash = searchParams.get('token_hash')
       const type = (searchParams.get('type') as any) || 'invite'
 
-      if (token) {
+      if (token || tokenHash) {
         // Option B: Direct link with token (Robust)
         const email = searchParams.get('email')
-        if (!email && type === 'invite') {
+
+        // Email is required for 'token' (PKCE) but not always for 'token_hash'
+        // However, for invite/recovery, it's safer to have it.
+        if (!email && type === 'invite' && !tokenHash) {
           setError(
             'Invalid invite link: missing email address. Please ask admin to fix the email template.'
           )
@@ -49,11 +54,15 @@ function SetPasswordContent() {
         }
 
         try {
-          const { error } = await supabase.auth.verifyOtp({
-            token,
-            type,
-            email: email ?? undefined,
-          } as any)
+          const verifyParams: any = { type }
+          if (tokenHash) {
+            verifyParams.token_hash = tokenHash
+          } else {
+            verifyParams.token = token
+            verifyParams.email = email ?? undefined
+          }
+
+          const { error } = await supabase.auth.verifyOtp(verifyParams)
           if (error) {
             setError(error.message)
           }

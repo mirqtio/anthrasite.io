@@ -19,6 +19,8 @@ services:
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      # Survey / purchase JWT secret (local test only; do not reuse in prod)
+      - SURVEY_SECRET_KEY=local-survey-secret-change-me
       # Backend Connection
       - NEXT_PUBLIC_API_URL=http://leadshop-api:8000
       # Database

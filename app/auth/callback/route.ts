@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const next = searchParams.get('next') ?? '/admin'
 
   if (code) {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_ANON_KEY!,

@@ -27,6 +27,7 @@ export interface HeroIssue {
 export interface PurchaseContext {
   businessName: string
   domainUrl: string
+  homepageScreenshotUrl?: string | null
   impactMonthlyLow: number // In whole dollars
   impactMonthlyHigh: number // In whole dollars
   issues: HeroIssue[]
