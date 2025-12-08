@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 // Types matching API
 interface ContextResponse {
@@ -973,10 +974,16 @@ export default function PromptLabPage() {
         </div>
       )}
 
-      {/* Diff Panel Modal (ANT-537) */}
-      {showDiffPanel && baselineLaneId && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-[90vw] max-w-6xl max-h-[90vh] flex flex-col">
+      {/* Diff Panel Modal (ANT-537) - Using Portal per ADR-P14 */}
+      {showDiffPanel &&
+        baselineLaneId &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+            <div
+              className="bg-white rounded-lg shadow-xl max-h-[90vh] flex flex-col"
+              style={{ width: '90vw', maxWidth: '1200px', minWidth: '400px' }}
+            >
             {/* Modal Header */}
             <div className="flex-shrink-0 p-4 border-b flex justify-between items-center">
               <h3 className="text-lg font-semibold text-gray-900">
@@ -1176,18 +1183,19 @@ export default function PromptLabPage() {
               })()}
             </div>
 
-            {/* Modal Footer */}
-            <div className="flex-shrink-0 p-4 border-t flex justify-end">
-              <button
-                onClick={() => setShowDiffPanel(false)}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-              >
-                Close
-              </button>
+              {/* Modal Footer */}
+              <div className="flex-shrink-0 p-4 border-t flex justify-end">
+                <button
+                  onClick={() => setShowDiffPanel(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                >
+                  Close
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   )
 }
