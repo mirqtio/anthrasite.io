@@ -52,6 +52,19 @@ interface Scenario {
   created_at: string
 }
 
+// Diff types for ANT-537
+type SegmentMap = Record<string, { text: string; character_count: number }>
+
+interface SegmentDiffRow {
+  path: string
+  baselineText: string | null
+  candidateText: string | null
+  baselineChars: number | null
+  candidateChars: number | null
+  charDelta: number | null
+  status: 'same' | 'modified' | 'added' | 'removed' | 'unstructured'
+}
+
 const DEFAULT_SYSTEM_PROMPT = 'You are an expert web analyst.'
 const DEFAULT_USER_PROMPT = 'Analyze this context: {{INPUT_DATA}}'
 
@@ -92,6 +105,11 @@ export default function PromptLabPage() {
   const [showScenarioSaveDialog, setShowScenarioSaveDialog] = useState(false)
   const [scenarioName, setScenarioName] = useState('')
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('')
+
+  // Diff State (ANT-537)
+  const [baselineLaneId, setBaselineLaneId] = useState<string>('')
+  const [showDiffPanel, setShowDiffPanel] = useState(false)
+  const [expandedDiffPath, setExpandedDiffPath] = useState<string | null>(null)
 
   // Fetch prompts & scenarios on mount
   useEffect(() => {
@@ -358,14 +376,108 @@ export default function PromptLabPage() {
     }
   }
 
+  // Diff helpers (ANT-537)
+  const getLaneSegments = (lane: TestLaneConfig): SegmentMap | null => {
+    const output = lane.result?.output || ''
+    return extractNarrativeSegments(output)
+  }
+
+  const diffSegments = (
+    baselineSegments: SegmentMap | null,
+    candidateSegments: SegmentMap | null
+  ): SegmentDiffRow[] => {
+    // Both unstructured
+    if (!baselineSegments && !candidateSegments) {
+      return [
+        {
+          path: '(entire output)',
+          baselineText: null,
+          candidateText: null,
+          baselineChars: null,
+          candidateChars: null,
+          charDelta: null,
+          status: 'unstructured',
+        },
+      ]
+    }
+
+    const B = baselineSegments || {}
+    const C = candidateSegments || {}
+    const allPaths = new Set([...Object.keys(B), ...Object.keys(C)])
+    const rows: SegmentDiffRow[] = []
+
+    for (const path of Array.from(allPaths).sort()) {
+      const bSeg = B[path]
+      const cSeg = C[path]
+
+      if (bSeg && cSeg) {
+        // Both exist
+        const isSame = bSeg.text === cSeg.text
+        rows.push({
+          path,
+          baselineText: bSeg.text,
+          candidateText: cSeg.text,
+          baselineChars: bSeg.character_count,
+          candidateChars: cSeg.character_count,
+          charDelta: cSeg.character_count - bSeg.character_count,
+          status: isSame ? 'same' : 'modified',
+        })
+      } else if (bSeg && !cSeg) {
+        // Only in baseline (removed)
+        rows.push({
+          path,
+          baselineText: bSeg.text,
+          candidateText: null,
+          baselineChars: bSeg.character_count,
+          candidateChars: null,
+          charDelta: -bSeg.character_count,
+          status: 'removed',
+        })
+      } else if (!bSeg && cSeg) {
+        // Only in candidate (added)
+        rows.push({
+          path,
+          baselineText: null,
+          candidateText: cSeg.text,
+          baselineChars: null,
+          candidateChars: cSeg.character_count,
+          charDelta: cSeg.character_count,
+          status: 'added',
+        })
+      }
+    }
+
+    return rows
+  }
+
+  const buildAllDiffs = (
+    baseId: string,
+    allLanes: TestLaneConfig[]
+  ): Record<string, SegmentDiffRow[]> => {
+    const baseline = allLanes.find((l) => l.id === baseId)
+    if (!baseline || !baseline.result) return {}
+
+    const baselineSegments = getLaneSegments(baseline)
+    const result: Record<string, SegmentDiffRow[]> = {}
+
+    for (const lane of allLanes) {
+      if (lane.id === baseId || !lane.result) continue
+      const candidateSegments = getLaneSegments(lane)
+      result[lane.id] = diffSegments(baselineSegments, candidateSegments)
+    }
+
+    return result
+  }
+
   const copyAllResults = () => {
-    const payload = lanes.map((lane, index) => {
+    const lanesPayload = lanes.map((lane, index) => {
       const result = lane.result
       const promptName = lane.promptName || 'Custom Prompt'
 
       if (!result) {
         return {
           index: index + 1,
+          lane_id: lane.id,
           model: lane.model,
           prompt: promptName,
           narrative: null,
@@ -381,6 +493,7 @@ export default function PromptLabPage() {
 
       return {
         index: index + 1,
+        lane_id: lane.id,
         model: lane.model,
         prompt: promptName,
         narrative: narrative || null,
@@ -390,6 +503,13 @@ export default function PromptLabPage() {
         segments,
       }
     })
+
+    // Extended payload with baseline and diffs (ANT-537)
+    const payload = {
+      baseline_lane_id: baselineLaneId || null,
+      lanes: lanesPayload,
+      diffs: baselineLaneId ? buildAllDiffs(baselineLaneId, lanes) : null,
+    }
 
     navigator.clipboard.writeText(JSON.stringify(payload, null, 2))
   }
@@ -496,6 +616,40 @@ export default function PromptLabPage() {
             className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 disabled:opacity-50"
           >
             Run All Tests
+          </button>
+
+          <div className="h-6 w-px bg-gray-300 mx-2" />
+
+          {/* Baseline Selection (ANT-537) */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">
+              Baseline:
+            </label>
+            <select
+              value={baselineLaneId}
+              onChange={(e) => setBaselineLaneId(e.target.value)}
+              className="border rounded px-2 py-1 text-sm text-gray-900 bg-white"
+            >
+              <option value="">Select baseline...</option>
+              {lanes.map((lane, idx) => (
+                <option key={lane.id} value={lane.id}>
+                  {lane.promptName || `Lane ${idx + 1}`}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Show Diffs Button (ANT-537) */}
+          <button
+            onClick={() => setShowDiffPanel((prev) => !prev)}
+            disabled={
+              !baselineLaneId ||
+              lanes.filter((l) => l.id !== baselineLaneId && l.result)
+                .length === 0
+            }
+            className="bg-gray-100 text-gray-700 px-4 py-1 rounded hover:bg-gray-200 disabled:opacity-50 border border-gray-300"
+          >
+            {showDiffPanel ? 'Hide Diffs' : 'Show Diffs'}
           </button>
 
           {/* Right-side controls: scenario + copy */}
@@ -814,6 +968,222 @@ export default function PromptLabPage() {
                   Save
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Diff Panel Modal (ANT-537) */}
+      {showDiffPanel && baselineLaneId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-[90vw] max-w-6xl max-h-[90vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex-shrink-0 p-4 border-b flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Segment Diffs vs Baseline
+              </h3>
+              <button
+                onClick={() => setShowDiffPanel(false)}
+                className="text-gray-400 hover:text-gray-600 p-1"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {(() => {
+                const baselineLane = lanes.find((l) => l.id === baselineLaneId)
+                const candidateLanes = lanes.filter(
+                  (l) => l.id !== baselineLaneId && l.result
+                )
+                const allDiffs = buildAllDiffs(baselineLaneId, lanes)
+
+                if (!baselineLane?.result) {
+                  return (
+                    <div className="text-gray-500 text-center py-8">
+                      Baseline lane has no results. Run tests first.
+                    </div>
+                  )
+                }
+
+                if (candidateLanes.length === 0) {
+                  return (
+                    <div className="text-gray-500 text-center py-8">
+                      No candidate lanes with results to compare.
+                    </div>
+                  )
+                }
+
+                return candidateLanes.map((candidate) => {
+                  const diffRows = allDiffs[candidate.id] || []
+                  const baselineName =
+                    baselineLane.promptName ||
+                    `Lane ${lanes.findIndex((l) => l.id === baselineLaneId) + 1}`
+                  const candidateName =
+                    candidate.promptName ||
+                    `Lane ${lanes.findIndex((l) => l.id === candidate.id) + 1}`
+
+                  // Check for unstructured warning
+                  const baselineSegments = getLaneSegments(baselineLane)
+                  const candidateSegments = getLaneSegments(candidate)
+                  const hasUnstructuredWarning =
+                    !baselineSegments || !candidateSegments
+
+                  return (
+                    <div key={candidate.id} className="border rounded-lg">
+                      {/* Comparison Header */}
+                      <div className="bg-gray-50 px-4 py-3 border-b">
+                        <h4 className="font-medium text-gray-900">
+                          {candidateName}{' '}
+                          <span className="text-gray-500 font-normal">vs</span>{' '}
+                          {baselineName}
+                        </h4>
+                        {hasUnstructuredWarning && (
+                          <p className="text-sm text-amber-600 mt-1">
+                            ⚠ One or both outputs are non-JSON; segment-level
+                            diff unavailable.
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Diff Table */}
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead className="bg-gray-50 text-left">
+                            <tr>
+                              <th className="px-4 py-2 font-medium text-gray-600">
+                                Segment
+                              </th>
+                              <th className="px-4 py-2 font-medium text-gray-600">
+                                Baseline
+                              </th>
+                              <th className="px-4 py-2 font-medium text-gray-600">
+                                Candidate
+                              </th>
+                              <th className="px-4 py-2 font-medium text-gray-600 text-right">
+                                Δ chars
+                              </th>
+                              <th className="px-4 py-2 font-medium text-gray-600">
+                                Status
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y">
+                            {diffRows.map((row) => {
+                              const isExpanded =
+                                expandedDiffPath ===
+                                `${candidate.id}:${row.path}`
+                              const statusColors: Record<string, string> = {
+                                same: 'bg-gray-100 text-gray-600',
+                                modified: 'bg-blue-100 text-blue-700',
+                                added: 'bg-green-100 text-green-700',
+                                removed: 'bg-red-100 text-red-700',
+                                unstructured: 'bg-amber-100 text-amber-700',
+                              }
+
+                              return (
+                                <React.Fragment key={row.path}>
+                                  <tr
+                                    className="hover:bg-gray-50 cursor-pointer"
+                                    onClick={() =>
+                                      setExpandedDiffPath(
+                                        isExpanded
+                                          ? null
+                                          : `${candidate.id}:${row.path}`
+                                      )
+                                    }
+                                  >
+                                    <td className="px-4 py-2 font-mono text-xs text-gray-900">
+                                      {row.path}
+                                    </td>
+                                    <td className="px-4 py-2 text-gray-600 max-w-[200px] truncate">
+                                      {row.baselineText
+                                        ? `"${row.baselineText.slice(0, 50)}${row.baselineText.length > 50 ? '...' : ''}"`
+                                        : '—'}
+                                    </td>
+                                    <td className="px-4 py-2 text-gray-600 max-w-[200px] truncate">
+                                      {row.candidateText
+                                        ? `"${row.candidateText.slice(0, 50)}${row.candidateText.length > 50 ? '...' : ''}"`
+                                        : '—'}
+                                    </td>
+                                    <td className="px-4 py-2 text-right font-mono text-xs">
+                                      {row.charDelta !== null
+                                        ? row.charDelta > 0
+                                          ? `+${row.charDelta}`
+                                          : row.charDelta
+                                        : '—'}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                      <span
+                                        className={`px-2 py-0.5 rounded text-xs font-medium ${statusColors[row.status]}`}
+                                      >
+                                        {row.status}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                  {isExpanded && (
+                                    <tr>
+                                      <td
+                                        colSpan={5}
+                                        className="px-4 py-3 bg-gray-50"
+                                      >
+                                        <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+                                          <div>
+                                            <div className="font-semibold text-gray-700 mb-1">
+                                              Baseline ({row.baselineChars ?? 0}{' '}
+                                              chars)
+                                            </div>
+                                            <div className="bg-white border rounded p-2 whitespace-pre-wrap text-gray-900 max-h-48 overflow-y-auto">
+                                              {row.baselineText || '[missing]'}
+                                            </div>
+                                          </div>
+                                          <div>
+                                            <div className="font-semibold text-gray-700 mb-1">
+                                              Candidate (
+                                              {row.candidateChars ?? 0} chars)
+                                            </div>
+                                            <div className="bg-white border rounded p-2 whitespace-pre-wrap text-gray-900 max-h-48 overflow-y-auto">
+                                              {row.candidateText || '[missing]'}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  )}
+                                </React.Fragment>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )
+                })
+              })()}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex-shrink-0 p-4 border-t flex justify-end">
+              <button
+                onClick={() => setShowDiffPanel(false)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
