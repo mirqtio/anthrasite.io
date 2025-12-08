@@ -111,7 +111,7 @@ export default function PromptLabPage() {
 
   const fetchModels = async () => {
     try {
-      const response = await fetch('http://localhost:8000/prompt-lab/models')
+      const response = await fetch('/api/prompt-lab/models')
       if (response.ok) {
         const data = await response.json()
         setAvailableModels(data)
@@ -124,7 +124,7 @@ export default function PromptLabPage() {
 
   const fetchPrompts = async () => {
     try {
-      const res = await fetch('http://localhost:8000/prompt-lab/prompts')
+      const res = await fetch('/api/prompt-lab/prompts')
       if (res.ok) {
         const data = await res.json()
         setSavedPrompts(data)
@@ -137,7 +137,7 @@ export default function PromptLabPage() {
   const fetchRuns = async () => {
     console.log('Fetching runs for lead:', leadId)
     try {
-      const res = await fetch(`http://localhost:8000/prompt-lab/runs/${leadId}`)
+      const res = await fetch(`/api/prompt-lab/runs/${leadId}`)
       console.log('Fetch response status:', res.status)
       if (res.ok) {
         const data = await res.json()
@@ -159,9 +159,7 @@ export default function PromptLabPage() {
     setIsLoadingContext(true)
     setContextError(null)
     try {
-      const res = await fetch(
-        `http://localhost:8000/prompt-lab/context/${leadId}/${runId}`
-      )
+      const res = await fetch(`/api/prompt-lab/context/${leadId}/${runId}`)
       if (!res.ok) throw new Error('Failed to load context')
       const data = await res.json()
       setContext(data)
@@ -175,7 +173,7 @@ export default function PromptLabPage() {
 
   const fetchScenarios = async () => {
     try {
-      const response = await fetch('http://localhost:8000/prompt-lab/scenarios')
+      const response = await fetch('/api/prompt-lab/scenarios')
       if (response.ok) {
         const data = await response.json()
         setScenarios(data)
@@ -203,14 +201,11 @@ export default function PromptLabPage() {
     }
 
     try {
-      const response = await fetch(
-        'http://localhost:8000/prompt-lab/scenarios',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(scenarioData),
-        }
-      )
+      const response = await fetch('/api/prompt-lab/scenarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(scenarioData),
+      })
 
       if (response.ok) {
         setShowScenarioSaveDialog(false)
@@ -268,7 +263,7 @@ export default function PromptLabPage() {
     updateLane(laneId, { isLoading: true, result: undefined })
 
     try {
-      const res = await fetch('http://localhost:8000/prompt-lab/test', {
+      const res = await fetch('/api/prompt-lab/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -419,7 +414,7 @@ export default function PromptLabPage() {
   const handleSavePrompt = async () => {
     if (!promptToSave) return
     try {
-      const res = await fetch('http://localhost:8000/prompt-lab/prompts', {
+      const res = await fetch('/api/prompt-lab/prompts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
