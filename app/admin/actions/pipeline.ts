@@ -66,7 +66,7 @@ export async function triggerBatchPhaseD(
       // 3. Idempotent Workflow Start
       const workflowId = `premium-report-${row.run_id}`
 
-      await client.workflow.start('PremiumReportGenerationWorkflow', {
+      await client.workflow.start('PhaseDReportWorkflow', {
         workflowId,
         taskQueue: 'assessment-pipeline',
         workflowIdReusePolicy: 'REJECT_DUPLICATE', // Critical: Prevent double-start
@@ -134,7 +134,7 @@ export async function repairLead(
 
   const workflowId = `premium-report-${row.run_id}-repair-${Date.now()}` // Unique ID for repair to allow re-run
 
-  await client.workflow.start('PremiumReportGenerationWorkflow', {
+  await client.workflow.start('PhaseDReportWorkflow', {
     workflowId,
     taskQueue: 'assessment-pipeline',
     args: [
