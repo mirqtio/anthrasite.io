@@ -48,6 +48,8 @@ export async function ingestManualLead(data: ManualLeadInput) {
   }
 
   // 3. Insert Lead
+  // Note: baseline_monthly_revenue is stored in CENTS (matches Data Axle ingestion)
+  // UI input is dollars, so we multiply by 100 here
   const [inserted] = await sql`
     INSERT INTO leads (
       url, 
@@ -67,7 +69,7 @@ export async function ingestManualLead(data: ManualLeadInput) {
       ${url || domain}, 
       ${domain}, 
       ${company}, 
-      ${baseline_monthly_revenue || 0}, 
+      ${baseline_monthly_revenue ? baseline_monthly_revenue * 100 : 0},
       ${employee_size || null},
       ${naics_code || null},
       ${address || null},
