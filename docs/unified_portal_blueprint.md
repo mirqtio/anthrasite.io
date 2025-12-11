@@ -155,7 +155,7 @@
       ```
   3.  **Idempotent Workflow Start (Temporal Contract):**
       ```typescript
-      await client.start('PremiumReportGenerationWorkflow', {
+      await client.start('PhaseDReportWorkflow', {
         workflowId: `premium-report-${row.run_id}`,
         workflowIdReusePolicy: 'REJECT_DUPLICATE', // Critical: prevent double-start
         args: [

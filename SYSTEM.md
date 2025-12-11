@@ -73,7 +73,7 @@ Anthrasite.io inherits the _Producer–Validator_ and _Failure Contract_ convent
 Anthrasite.io acts as an additional Temporal client for LeadShop’s workflows, primarily for Phase D (Premium Report Generation) triggered from internal ops portals.
 
 - **Shared Workflow IDs (Phase D):**
-  - All callers (LeadShop FastAPI, Anthrasite, CLI tools) MUST use the workflow ID format `premium-report-{run_id}` when starting `PremiumReportGenerationWorkflow`.
+  - All callers (LeadShop FastAPI, Anthrasite, CLI tools) MUST use the workflow ID format `premium-report-{run_id}` when starting `PhaseDReportWorkflow`.
   - This guarantees idempotent starts and consistent observability in Temporal.
 - **Run Eligibility for Phase D:**
   - Anthrasite must only start Phase D for runs where the shared Postgres `runs` table has a non-null `reasoning_memo_s3_key` for the `(lead_id, run_id)` pair.
