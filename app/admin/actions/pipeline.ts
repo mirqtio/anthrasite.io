@@ -69,7 +69,7 @@ export async function triggerBatchPhaseD(
       await client.workflow.start('PhaseDReportWorkflow', {
         workflowId,
         taskQueue: 'assessment-pipeline',
-        workflowIdReusePolicy: 'REJECT_DUPLICATE', // Critical: Prevent double-start
+        workflowIdReusePolicy: 'ALLOW_DUPLICATE_FAILED_ONLY', // Allow retry after failure/termination, prevent double-start of running
         args: [
           {
             run_id: row.run_id,
