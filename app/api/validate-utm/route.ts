@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { validateUTMToken } from '@/lib/utm/crypto'
-import { getUTMToken, markTokenUsed } from '@/lib/utm/storage'
+// DB imports removed for stateless mock mode
+// import { getUTMToken, markTokenUsed } from '@/lib/utm/storage'
 import { withRateLimit } from '@/lib/utm/rate-limit'
 import { withMonitoring } from '@/lib/monitoring/api-middleware'
 import { sendAlert, AlertType, trackEvent } from '@/lib/monitoring'
-import { prisma } from '@/lib/db'
+// import { prisma } from '@/lib/db'
 
 export interface ValidateUTMResponse {
   valid: boolean
@@ -81,76 +82,30 @@ async function validateUTMHandler(req: NextRequest): Promise<NextResponse> {
     }
 
     // Check if token has been used (one-time use enforcement)
-    const storedToken = await getUTMToken(payload.nonce)
+    // DB checks removed as part of WIP artifact cleanup
+    // const storedToken = await getUTMToken(payload.nonce)
 
-    if (!storedToken) {
-      trackEvent('utm.validation.token_not_found', {
-        nonce: payload.nonce,
-      })
-      return NextResponse.json<ValidateUTMResponse>(
-        { valid: false, error: 'Invalid UTM token' },
-        { status: 400 }
-      )
-    }
-
-    if (storedToken.usedAt) {
-      trackEvent('utm.validation.token_already_used', {
-        nonce: payload.nonce,
-        usedAt: storedToken.usedAt,
-      })
-      return NextResponse.json<ValidateUTMResponse>(
-        { valid: false, error: 'This link has already been used' },
-        { status: 400 }
-      )
-    }
-
-    // Mark token as used
-    const marked = await markTokenUsed(payload.nonce)
-    if (!marked) {
-      // Race condition - token was just used by another request
-      trackEvent('utm.validation.race_condition', {
-        nonce: payload.nonce,
-      })
-      return NextResponse.json<ValidateUTMResponse>(
-        { valid: false, error: 'This link has already been used' },
-        { status: 400 }
-      )
-    }
-
-    // Fetch business data
-    const business = await prisma.business.findUnique({
-      where: { id: payload.businessId },
-      select: {
-        id: true,
-        name: true,
-        domain: true,
-        reportData: true,
-      },
-    })
-
-    if (!business) {
-      sendAlert(AlertType.UTM_VALIDATION_FAILED, {
-        reason: 'business_not_found',
-        businessId: payload.businessId,
-      })
-      return NextResponse.json<ValidateUTMResponse>(
-        { valid: false, error: 'Business not found' },
-        { status: 404 }
-      )
+    // Mock response for valid tokens (Stateless Mode)
+    // Since 'Business' and 'UtmToken' models are WIP and removed from schema,
+    // we return static data to allow the frontend to render for dev/preview.
+    const mockReportData = {
+      score: 72,
+      issues: 8,
+      estimatedValue: 12450,
+      price: 39900,
     }
 
     // Track successful validation
     trackEvent('utm.validation.success', {
-      businessId: business.id,
-      domain: business.domain,
+      businessId: payload.businessId,
+      stateless: true,
     })
 
-    // Return business data for purchase page
     return NextResponse.json<ValidateUTMResponse>({
       valid: true,
-      businessId: business.id,
-      businessName: business.name,
-      reportData: business.reportData,
+      businessId: payload.businessId,
+      businessName: 'Demo Business Inc', // Placeholder
+      reportData: mockReportData,
     })
   } catch (error) {
     sendAlert(AlertType.UTM_VALIDATION_FAILED, {

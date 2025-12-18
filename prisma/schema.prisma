@@ -43,20 +43,8 @@ model sales {
 }
 
 // Missing models required by legacy API routes and seed script
-model Business {
-  id          String   @id @default(cuid())
-  domain      String
-  name        String
-  email       String?
-  reportData  Json
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  utmTokens      UtmToken[]
-  purchases      Purchase[]
-  abandonedCarts AbandonedCart[]
-}
-
+// Missing models removed as they are WIP artifacts not in DB
+// Waitlist Model (Live Feature)
 model WaitlistEntry {
   id          Int      @id @default(autoincrement())
   domain      String
@@ -64,68 +52,4 @@ model WaitlistEntry {
   ipLocation  Json?
   variantData Json?
   createdAt   DateTime @default(now())
-}
-
-model UtmToken {
-  id         Int      @id @default(autoincrement())
-  nonce      String   @unique
-  token      String   @unique
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id])
-  expiresAt  DateTime
-  used       Boolean  @default(false)
-  usedAt     DateTime?
-  createdAt  DateTime @default(now())
-}
-
-model Purchase {
-  id                    String   @id @default(cuid())
-  businessId            String
-  business              Business @relation(fields: [businessId], references: [id])
-  stripeSessionId       String   @unique
-  stripePaymentIntentId String?  @unique
-  amount                Int
-  status                String
-  currency              String?
-  customerEmail         String?
-  metadata              Json?
-  utmToken              String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-}
-
-model AbandonedCart {
-  id                String    @id @default(cuid())
-  stripeSessionId   String    @unique
-  businessId        String
-  business          Business  @relation(fields: [businessId], references: [id])
-  customerEmail     String?
-  amount            Int
-  currency          String
-  recoveryToken     String    @unique
-  recoveryEmailSent Boolean   @default(false)
-  emailSentAt       DateTime?
-  recovered         Boolean   @default(false)
-  recoveredAt       DateTime?
-  sessionExpiresAt  DateTime
-  utmToken          String?
-  createdAt         DateTime  @default(now())
-}
-
-model PrivacyRequest {
-  id          String   @id @default(cuid())
-  trackingId  String   @default(cuid())
-  email       String
-  requestType String
-  dueDate     DateTime
-  status      String   @default("pending")
-  createdAt   DateTime @default(now())
-}
-
-model AnalyticsEvent {
-  id         Int      @id @default(autoincrement())
-  eventName  String
-  properties Json
-  sessionId  String?
-  createdAt  DateTime @default(now())
 }

@@ -11,7 +11,7 @@ import {
   FileText,
   BarChart3,
 } from 'lucide-react'
-import { ReportPreviewData } from '@/lib/purchase/purchase-service'
+import { ReportPreviewData } from '@/lib/purchase/types'
 
 interface ReportPreviewProps {
   preview: ReportPreviewData

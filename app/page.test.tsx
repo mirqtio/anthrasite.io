@@ -1,24 +1,14 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import HomePage from './page'
-import { useSiteMode } from '@/lib/context/SiteModeContext'
 
-// Mock the SiteModeContext
-jest.mock('@/lib/context/SiteModeContext', () => ({
-  useSiteMode: jest.fn(),
+// Mock next/headers
+const mockCookiesStore = {
+  get: jest.fn(),
+}
+jest.mock('next/headers', () => ({
+  cookies: jest.fn(() => Promise.resolve(mockCookiesStore)),
 }))
-
-// Mock next/dynamic to load components synchronously in tests
-jest.mock('next/dynamic', () => (func: () => any) => {
-  const Component = (props: any) => {
-    const [Comp, setComp] = React.useState<any>(null)
-    React.useEffect(() => {
-      func().then((mod: any) => setComp(() => mod))
-    }, [])
-    return Comp ? <Comp {...props} /> : null
-  }
-  return Component
-})
 
 // Mock the homepage components
 jest.mock('@/components/homepage/OrganicHomepage', () => ({
@@ -34,89 +24,62 @@ jest.mock('@/components/homepage/PurchaseHomepage', () => ({
 }))
 
 describe('HomePage', () => {
-  const mockUseSiteMode = useSiteMode as jest.MockedFunction<typeof useSiteMode>
-
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('shows loading state when isLoading is true', () => {
-    mockUseSiteMode.mockReturnValue({
-      mode: 'organic',
-      businessId: null,
-      isLoading: true,
-    })
+  it('renders OrganicHomepage by default', async () => {
+    mockCookiesStore.get.mockReturnValue(undefined) // No cookie
+    const searchParams = Promise.resolve({}) // No params
 
-    render(<HomePage />)
+    const jsx = await HomePage({ searchParams })
+    render(jsx)
 
-    // Check for loading state - now it's just an animated square
-    const loadingContainer = screen.getByRole('main')
-    expect(loadingContainer).toHaveClass(
-      'min-h-screen',
-      'bg-carbon',
-      'flex',
-      'items-center',
-      'justify-center'
-    )
-
-    // Check for the animated square
-    const animatedSquare = loadingContainer.querySelector('.bg-white')
-    expect(animatedSquare).toBeInTheDocument()
-    expect(animatedSquare).toHaveClass('w-8', 'h-8', 'animate-pulse')
-
-    // Ensure no homepage components are rendered
-    expect(screen.queryByTestId('organic-homepage')).not.toBeInTheDocument()
+    expect(screen.getByTestId('organic-homepage')).toBeInTheDocument()
     expect(screen.queryByTestId('purchase-homepage')).not.toBeInTheDocument()
   })
 
-  it('renders OrganicHomepage when mode is organic', async () => {
-    mockUseSiteMode.mockReturnValue({
-      mode: 'organic',
-      businessId: null,
-      isLoading: false,
-    })
+  it('renders PurchaseHomepage when utm param is present', async () => {
+    mockCookiesStore.get.mockReturnValue(undefined)
+    const searchParams = Promise.resolve({ utm: 'test-token' })
 
-    render(<HomePage />)
+    const jsx = await HomePage({ searchParams })
+    render(jsx)
 
-    // Wait for dynamic import to resolve
-    await waitFor(() => {
-      const organicHomepage = screen.getByTestId('organic-homepage')
-      expect(organicHomepage).toBeInTheDocument()
-    })
-
-    // Ensure PurchaseHomepage is not rendered
-    expect(screen.queryByTestId('purchase-homepage')).not.toBeInTheDocument()
-  })
-
-  it('renders PurchaseHomepage when mode is purchase', async () => {
-    mockUseSiteMode.mockReturnValue({
-      mode: 'purchase',
-      businessId: 'test-business-123',
-      isLoading: false,
-    })
-
-    render(<HomePage />)
-
-    // Wait for dynamic import to resolve
-    await waitFor(() => {
-      const purchaseHomepage = screen.getByTestId('purchase-homepage')
-      expect(purchaseHomepage).toBeInTheDocument()
-    })
-
-    // Ensure OrganicHomepage is not rendered
+    expect(screen.getByTestId('purchase-homepage')).toBeInTheDocument()
     expect(screen.queryByTestId('organic-homepage')).not.toBeInTheDocument()
   })
 
-  it('properly uses the SiteModeContext hook', () => {
-    mockUseSiteMode.mockReturnValue({
-      mode: 'organic',
-      businessId: null,
-      isLoading: false,
-    })
+  it('renders PurchaseHomepage when site_mode cookie is purchase', async () => {
+    mockCookiesStore.get.mockReturnValue({ value: 'purchase' })
+    const searchParams = Promise.resolve({})
 
-    render(<HomePage />)
+    const jsx = await HomePage({ searchParams })
+    render(jsx)
 
-    // Verify that useSiteMode was called
-    expect(mockUseSiteMode).toHaveBeenCalled()
+    expect(screen.getByTestId('purchase-homepage')).toBeInTheDocument()
+    expect(screen.queryByTestId('organic-homepage')).not.toBeInTheDocument()
+  })
+
+  it('renders OrganicHomepage when site_mode cookie is organic', async () => {
+    mockCookiesStore.get.mockReturnValue({ value: 'organic' })
+    const searchParams = Promise.resolve({})
+
+    const jsx = await HomePage({ searchParams })
+    render(jsx)
+
+    expect(screen.getByTestId('organic-homepage')).toBeInTheDocument()
+    expect(screen.queryByTestId('purchase-homepage')).not.toBeInTheDocument()
+  })
+
+  // Edge case: UTM overrides organic cookie
+  it('renders PurchaseHomepage when utm present even if cookie is organic', async () => {
+    mockCookiesStore.get.mockReturnValue({ value: 'organic' })
+    const searchParams = Promise.resolve({ utm: 'override' })
+
+    const jsx = await HomePage({ searchParams })
+    render(jsx)
+
+    expect(screen.getByTestId('purchase-homepage')).toBeInTheDocument()
   })
 })
