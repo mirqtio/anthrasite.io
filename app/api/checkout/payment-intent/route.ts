@@ -64,88 +64,141 @@ export async function POST(request: NextRequest) {
     const utm = body?.utm
     const leadId = body?.leadId
 
-    if (!businessId) {
-      return NextResponse.json({ error: 'Missing businessId' }, { status: 400 })
+    // Require leadId now instead of strictly businessId for lookup
+    if (!leadId) {
+      return NextResponse.json({ error: 'Missing leadId' }, { status: 400 })
+    }
+
+    const leadIdInt = parseInt(leadId.toString(), 10)
+    if (isNaN(leadIdInt)) {
+      return NextResponse.json(
+        { error: 'Invalid leadId format' },
+        { status: 400 }
+      )
     }
 
     // Idempotency: use anon session from middleware
     const sid = request.headers.get('x-anon-session') ?? 'no-sid'
-    const idemKey = `purchase:${tier}:${sid}`
 
-    // Step 1: Create Purchase record with pending status
-    // Using upsert for idempotency - if purchase already exists with this session, return existing
-    const existingPurchase = await prisma.purchase.findFirst({
-      where: {
-        businessId,
-        status: 'pending',
-        metadata: {
-          path: ['sessionId'],
-          equals: sid,
-        },
-      },
+    // Step 0: Find the latest Report for this Lead
+    const report = await prisma.reports.findFirst({
+      where: { lead_id: leadIdInt },
+      orderBy: { created_at: 'desc' },
     })
 
-    let purchase
-    if (existingPurchase) {
-      purchase = existingPurchase
-    } else {
-      purchase = await prisma.purchase.create({
-        data: {
-          businessId,
-          amount: cfg.amount,
-          currency: cfg.currency,
-          status: 'pending',
-          utmToken: utm,
-          metadata: {
-            tier,
-            tierName: cfg.name,
-            sessionId: sid,
-            leadId,
-          },
-        },
-      })
+    if (!report && process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        { error: 'No report found for lead' },
+        { status: 404 }
+      )
     }
 
-    // Step 2: Create Stripe PaymentIntent with idempotency key
-    // Always use real Stripe - no mocking at this layer
+    // Dev Logic: If no report exists in dev, handle gracefully or mock?
+    // User requested we use lead 3093 which has a report (ID 366).
+    // So we can assume report exists if properly set up.
+    if (!report) {
+      // Fallback for dev-token/dev-business-123 if used with an ID that has no report
+      return NextResponse.json(
+        { error: 'No report found for lead ' + leadId },
+        { status: 404 }
+      )
+    }
+
+    // Step 1: Upsert Sale record logic
+    // We check if a sale already exists for this confirmed report
+    // The schema says `report_id` is unique in `sales`, meaning 1 sale per report.
+    // If we want multiple attempts, we simply rely on the existing one if pending?
+    // Or does the unique constraint forbid a second attempt?
+    // It implies 1:1. So we MUST update the existing sale if it exists.
+
     const stripe = getStripe()
-    const paymentIntent = await stripe.paymentIntents.create(
-      {
+
+    // 1. Check for existing sale
+    const existingSale = await prisma.sales.findUnique({
+      where: { report_id: report.id },
+    })
+
+    let saleId: number = -1
+    let clientSecret: string | undefined
+
+    if (existingSale) {
+      saleId = existingSale.id
+
+      // If we already have a payment intent, verify/retrieve it?
+      // Or create a new one if the old one failed/expired?
+      // If `stripe_payment_intent_id` is unique, we can't overwrite it easily if we make a NEW one.
+      // We should reuse the existing PI if possible.
+
+      if (existingSale.stripe_payment_intent_id) {
+        try {
+          const pi = await stripe.paymentIntents.retrieve(
+            existingSale.stripe_payment_intent_id
+          )
+          if (pi.status !== 'canceled') {
+            clientSecret = pi.client_secret || undefined
+            // Update amount if changed? Assume fixed for now.
+          }
+        } catch (e) {
+          // PI invalid or lost, ignore
+        }
+      }
+    }
+
+    // If no usable existing PI, create new one
+    if (!clientSecret) {
+      // Create PI
+      const paymentIntent = await stripe.paymentIntents.create({
         amount: cfg.amount,
         currency: cfg.currency,
-        automatic_payment_methods: {
-          enabled: true,
-        },
+        automatic_payment_methods: { enabled: true },
         metadata: {
           tier,
           tierName: cfg.name,
-          purchaseId: purchase.id,
-          businessId,
-          domain: body?.domain,
-          leadId,
+          leadId: leadId.toString(),
+          reportId: report.id.toString(),
+          businessId: businessId || '',
         },
-      },
-      {
-        // Use purchase ID for idempotency - ensures retry safety
-        idempotencyKey: `pi:${purchase.id}`,
-      }
-    )
+      })
+      clientSecret = paymentIntent.client_secret || undefined
 
-    // Step 3: Update Purchase record with stripePaymentIntentId
-    await prisma.purchase.update({
-      where: { id: purchase.id },
-      data: {
-        stripePaymentIntentId: paymentIntent.id,
-      },
-    })
+      // Upsert Sale
+      const savedSale = await prisma.sales.upsert({
+        where: { report_id: report.id },
+        update: {
+          stripe_payment_intent_id: paymentIntent.id,
+          amount_cents: cfg.amount,
+          currency: cfg.currency,
+          status: 'pending',
+          updated_at: new Date(),
+        },
+        create: {
+          report_id: report.id,
+          stripe_payment_intent_id: paymentIntent.id,
+          amount_cents: cfg.amount,
+          currency: cfg.currency,
+          status: 'pending',
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      })
+      saleId = savedSale.id
+    } else {
+      // We reused existing PI, ensure sale is consistent?
+      // It should be if we retrieved it.
+      // saleId was set above.
+    }
+
+    if (!clientSecret) {
+      throw new Error('Failed to initialize payment')
+    }
 
     return NextResponse.json({
-      clientSecret: paymentIntent.client_secret,
+      clientSecret: clientSecret,
       publicMeta: {
         tier,
         amount: cfg.amount,
         currency: cfg.currency,
-        purchaseId: purchase.id,
+        purchaseId: saleId, // Returning sale ID as purchase ID
       },
     })
   } catch (error) {

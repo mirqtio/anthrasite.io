@@ -1,6 +1,7 @@
 // components/legal/LegalPageLayout.tsx
 'use client'
 
+import Link from 'next/link'
 import React, { useState } from 'react'
 import { Logo } from '@/components/Logo'
 
@@ -18,7 +19,7 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
       <nav className="nav-fixed">
         <div className="max-w-[1200px] mx-auto px-5 md:px-10 py-4 md:py-5 flex items-center justify-between">
           <div className="logo-container">
-            <a href="/" className="flex flex-col">
+            <Link href="/" className="flex flex-col">
               <Logo size="medium" className="logo-mobile" />
               <div className="tagline text-[10px] md:text-[13px] font-light opacity-70 mt-1 flex justify-between">
                 <span>V</span>
@@ -41,21 +42,21 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
                 <span>E</span>
                 <span>D</span>
               </div>
-            </a>
+            </Link>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <a
+            <Link
               href="/about"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
               About Us
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#faq"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
               FAQ
-            </a>
+            </Link>
           </div>
           <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -76,20 +77,20 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
         {showMobileMenu && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-carbon border-t border-smoke">
             <div className="flex flex-col py-4">
-              <a
+              <Link
                 href="/about"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
                 About Us
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/#faq"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
                 FAQ
-              </a>
+              </Link>
             </div>
           </div>
         )}
@@ -110,9 +111,9 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
       {/* Footer */}
       <footer className="py-[60px] px-10 border-t border-white/5 text-center">
         <div className="footer-links">
-          <a href="/legal/privacy">Privacy Policy</a>
-          <a href="/legal/terms">Terms of Service</a>
-          <a href="/legal/do-not-sell">Do Not Sell or Share</a>
+          <Link href="/legal/privacy">Privacy Policy</Link>
+          <Link href="/legal/terms">Terms of Service</Link>
+          <Link href="/legal/do-not-sell">Do Not Sell or Share</Link>
           <a href="mailto:hello@anthrasite.io">Contact</a>
         </div>
         <p className="text-tiny opacity-30">

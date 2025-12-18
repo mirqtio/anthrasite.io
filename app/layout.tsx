@@ -27,6 +27,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Anthrasite - Website Audit Tool',
   description: 'Automated website audits that uncover untapped potential',
+  metadataBase: new URL('https://anthrasite.io'),
+  alternates: {
+    canonical: '/',
+  },
 }
 
 export default function RootLayout({

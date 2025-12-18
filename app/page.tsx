@@ -1,60 +1,27 @@
-'use client'
-
-import dynamicImport from 'next/dynamic'
-import { useSiteMode } from '@/lib/context/SiteModeContext'
-
-// Lazy load homepages with code splitting
-// This prevents loading PurchaseHomepage bundle for organic traffic
-const OrganicHomepage = dynamicImport(
-  () =>
-    import('@/components/homepage/OrganicHomepage').then(
-      (mod) => mod.OrganicHomepage
-    ),
-  {
-    loading: () => (
-      <main className="min-h-screen bg-carbon flex items-center justify-center">
-        <div className="animate-fade-in">
-          <div className="w-8 h-8 bg-white animate-pulse" />
-        </div>
-      </main>
-    ),
-  }
-)
-
-const PurchaseHomepage = dynamicImport(
-  () =>
-    import('@/components/homepage/PurchaseHomepage').then(
-      (mod) => mod.PurchaseHomepage
-    ),
-  {
-    loading: () => (
-      <main className="min-h-screen bg-carbon flex items-center justify-center">
-        <div className="animate-fade-in">
-          <div className="w-8 h-8 bg-white animate-pulse" />
-        </div>
-      </main>
-    ),
-    ssr: true, // Keep SSR for SEO
-  }
-)
+import { cookies } from 'next/headers'
+import { OrganicHomepage } from '@/components/homepage/OrganicHomepage'
+import { PurchaseHomepage } from '@/components/homepage/PurchaseHomepage'
 
 export const dynamic = 'force-dynamic'
 
-export default function HomePage() {
-  const { mode, isLoading } = useSiteMode()
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const cookieStore = await cookies()
+  const modeCookie = cookieStore.get('site_mode')?.value
+  const sp = await searchParams
+  const utmParam = sp?.utm
 
-  // Show loading state while mode is being detected
-  if (isLoading) {
-    return (
-      <main className="min-h-screen bg-carbon flex items-center justify-center">
-        <div className="animate-fade-in">
-          <div className="w-8 h-8 bg-white animate-pulse" />
-        </div>
-      </main>
-    )
+  let mode = 'organic'
+
+  if (utmParam) {
+    mode = 'purchase'
+  } else if (modeCookie === 'purchase') {
+    mode = 'purchase'
   }
 
-  // Render appropriate homepage based on site mode
   if (mode === 'organic') {
     return <OrganicHomepage />
   } else {

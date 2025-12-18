@@ -10,179 +10,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Core business entities
-model Business {
-  id         String   @id @default(uuid())
-  domain     String   @unique
-  name       String
-  email      String?
-  reportData Json?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  
-  utmTokens      UtmToken[]
-  purchases      Purchase[]
-  abandonedCarts AbandonedCart[]
-  
-  @@map("businesses")
+// Manually defined based on Supabase introspection
+
+model leads {
+  id        Int      @id @default(autoincrement())
+  company   String
+  domain    String?
+  email     String?
+  reports   reports[]
 }
 
-// Waitlist entries
-model WaitlistEntry {
-  id           String   @id @default(uuid())
-  domain       String
-  email        String
-  ipLocation   Json?    @map("ip_location")
-  variantData  Json?    @map("variant_data")
-  position     Int      @default(autoincrement())
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
-
-  @@index([domain])
-  @@index([createdAt])
-  @@map("waitlist")
+model reports {
+  id          Int      @id @default(autoincrement())
+  lead_id     Int
+  lead        leads    @relation(fields: [lead_id], references: [id])
+  created_at  DateTime @default(now())
+  sales       sales[]
 }
 
-// UTM tracking
-model UtmToken {
-  nonce      String    @id
-  token      String    @unique
-  businessId String
-  business   Business  @relation(fields: [businessId], references: [id])
-  used       Boolean   @default(false)
-  usedAt     DateTime?
-  createdAt  DateTime  @default(now())
-  expiresAt  DateTime
-  
-  @@index([token])
-  @@index([expiresAt])
-  @@map("utm_tokens")
-}
-
-// Purchase records
-model Purchase {
-  id                    String    @id @default(uuid())
-  businessId            String
-  business              Business  @relation(fields: [businessId], references: [id])
-  stripeSessionId       String?   @unique
-  stripePaymentIntentId String?   @unique
-  utmToken              String?
-  amount                Int       // Amount in cents
-  currency              String    @default("usd")
-  customerEmail         String?
-  status                String    // pending, completed, failed
-  metadata              Json?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  
-  @@index([stripeSessionId])
-  @@index([stripePaymentIntentId])
-  @@index([status])
-  @@map("purchases")
-}
-
-// Analytics events
-model AnalyticsEvent {
-  id         String   @id @default(uuid())
-  eventName  String
-  properties Json
-  sessionId  String?
-  createdAt  DateTime @default(now())
-  
-  @@index([eventName, sessionId])
-  @@index([createdAt])
-  @@map("analytics_events")
-}
-
-// Abandoned cart tracking
-model AbandonedCart {
-  id                String    @id @default(uuid())
-  stripeSessionId   String    @unique
-  businessId        String
-  business          Business  @relation(fields: [businessId], references: [id])
-  utmToken          String?
-  customerEmail     String?
-  amount            Int       // Amount in cents
-  currency          String    @default("usd")
-  recoveryToken     String?   @unique
-  recoveryEmailSent Boolean   @default(false)
-  emailSentAt       DateTime?
-  recovered         Boolean   @default(false)
-  recoveredAt       DateTime?
-  sessionExpiresAt  DateTime
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  
-  @@index([stripeSessionId])
-  @@index([recoveryToken])
-  @@index([emailSentAt])
-  @@index([sessionExpiresAt])
-  @@index([createdAt])
-  @@map("abandoned_carts")
-}
-
-// Privacy requests (DSAR)
-model PrivacyRequest {
-  id          String   @id @default(uuid())
-  email       String
-  requestType String   // e.g., access, deletion, correction, do_not_sell_share, appeal
-  status      String   @default("pending") // e.g., pending, in_progress, completed, denied
-  trackingId  String   @unique @default(uuid())
-  createdAt   DateTime @default(now())
-  dueDate     DateTime
-  resolvedAt  DateTime?
-  notes       String?
-
-  @@index([email, status])
-  @@map("privacy_requests")
-}
-
-// Survey responses
-model SurveyResponse {
-  id                String    @id @default(cuid())
-  leadId            String?
-  runId             String?
-  jtiHash           String    @unique // SHA256 hash of JWT jti for idempotency
-  version           String    @default("v1")
-  batchId           String?
-  
-  // Public survey fields
-  respondentId      String?   // External ID (e.g. from UserInterviews)
-  source            String?   // Origin (e.g. "wynter", "linkedin")
-  respondentEmail   String?   // Optional capture
-  questionSetVersion String?  @default("v1")
-  ref               String?   // Referral/funnel tracking
-
-  // Response data
-  beforeAnswers     Json?
-  afterAnswers      Json?
-  metrics           Json?     // timing: time_before_ms, time_after_ms, time_to_report_click
-
-  // Timestamps
-  reportAccessedAt  DateTime?
-  beforeCompletedAt DateTime?
-  afterCompletedAt  DateTime?
-  completedAt       DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  @@index([leadId, completedAt])
-  @@index([respondentEmail])
-  @@index([createdAt])
-  @@map("survey_responses")
-}
-
-model SurveyEmailOpen {
-  id         BigInt   @id @default(autoincrement())
-  sendId     BigInt   @unique @map("send_id")
-  jti        String
-  leadId     Int      @map("lead_id")
-  openedAt   DateTime @default(now()) @map("opened_at")
-  ipHash     String?  @map("ip_hash")
-  userAgent  String?  @map("user_agent")
-  emailType  String?  @map("email_type")
-  campaign   String?
-  createdAt  DateTime @default(now()) @map("created_at")
-
-  @@map("survey_email_opens")
+model sales {
+  id                       Int      @id @default(autoincrement())
+  report_id                Int      @unique // Constraint: sales_report_id_key
+  report                   reports  @relation(fields: [report_id], references: [id])
+  stripe_payment_intent_id String   @unique // Constraint: sales_stripe_payment_intent_id_key
+  amount_cents             Int
+  currency                 String
+  status                   String
+  customer_email           String?
+  metadata                 Json?
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
 }
