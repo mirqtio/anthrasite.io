@@ -32,6 +32,112 @@ section[aria-label="Secure payment"] .__PrivateStripeElement {
 }
 
 @theme {
+  /* ========== DESIGN SYSTEM TOKENS (Anthrasite) ========== */
+
+  /* Background Colors */
+  --color-bg-canvas: #0A0A0A;
+  --color-bg-surface: #141414;
+  --color-bg-surface-elevated: #1A1A1A;
+  --color-bg-subtle: rgba(255, 255, 255, 0.03);
+
+  /* Text Colors */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --color-text-muted: rgba(255, 255, 255, 0.5);
+  --color-text-tertiary: rgba(255, 255, 255, 0.4);
+
+  /* Border Colors */
+  --color-border-default: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.2);
+
+  /* Interactive Colors */
+  --color-interactive-cta-default: #0066FF;
+  --color-interactive-cta-hover: #0052CC;
+  --color-interactive-cta-active: #004099;
+  --color-interactive-cta-disabled: rgba(0, 102, 255, 0.5);
+  --color-interactive-cta-text: #FFFFFF;
+  --color-interactive-secondary-default: #3B82F6;
+
+  /* Status Colors */
+  --color-status-success: #22C55E;
+  --color-status-success-subtle: rgba(34, 197, 94, 0.15);
+  --color-status-warning: #F59E0B;
+  --color-status-warning-subtle: rgba(245, 158, 11, 0.15);
+  --color-status-error: #EF4444;
+  --color-status-error-subtle: rgba(239, 68, 68, 0.15);
+
+  /* Focus Ring */
+  --color-focus-ring: #0066FF;
+  --color-focus-ring-offset: #0A0A0A;
+
+  /* Skeleton Colors */
+  --color-skeleton-base: rgba(255, 255, 255, 0.05);
+  --color-skeleton-shimmer: rgba(255, 255, 255, 0.1);
+
+  /* Section Spacing */
+  --spacing-section-xs: 2rem;
+  --spacing-section-sm: 3rem;
+  --spacing-section-md: 4rem;
+  --spacing-section-lg: 6rem;
+
+  /* Component Spacing */
+  --spacing-component-xs: 0.25rem;
+  --spacing-component-sm: 0.5rem;
+  --spacing-component-md: 0.75rem;
+  --spacing-component-lg: 1rem;
+  --spacing-component-xl: 1.5rem;
+
+  /* Gap Spacing */
+  --spacing-gap-xs: 0.25rem;
+  --spacing-gap-sm: 0.5rem;
+  --spacing-gap-md: 1rem;
+  --spacing-gap-lg: 1.5rem;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --shadow-cta: 0 4px 14px rgba(0, 102, 255, 0.4);
+  --shadow-cta-hover: 0 6px 20px rgba(0, 102, 255, 0.5);
+
+  /* Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+
+  /* Easings */
+  --easing-ease-out: ease-out;
+
+  /* Z-index */
+  --z-sticky: 1100;
+
+  /* ========== END DESIGN SYSTEM TOKENS ========== */
+
   /* Carbon color system */
   --color-carbon: #0a0a0a;
   --color-pure-black: #000000;
@@ -221,6 +327,111 @@ section[aria-label="Secure payment"] .__PrivateStripeElement {
   /* Force dark mode */
   :root {
     color-scheme: dark;
+
+    /* Landing Page Design System Tokens (CSS Custom Properties) */
+    /* These mirror @theme values but are accessible via var() */
+
+    /* Background Colors */
+    --color-bg-canvas: #0A0A0A;
+    --color-bg-surface: #141414;
+    --color-bg-surface-elevated: #1A1A1A;
+    --color-bg-subtle: rgba(255, 255, 255, 0.03);
+
+    /* Text Colors */
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: rgba(255, 255, 255, 0.7);
+    --color-text-muted: rgba(255, 255, 255, 0.5);
+    --color-text-tertiary: rgba(255, 255, 255, 0.4);
+
+    /* Border Colors */
+    --color-border-default: rgba(255, 255, 255, 0.1);
+    --color-border-strong: rgba(255, 255, 255, 0.2);
+
+    /* Interactive Colors */
+    --color-interactive-cta-default: #0066FF;
+    --color-interactive-cta-hover: #0052CC;
+    --color-interactive-cta-active: #004099;
+    --color-interactive-cta-disabled: rgba(0, 102, 255, 0.5);
+    --color-interactive-cta-text: #FFFFFF;
+    --color-interactive-secondary-default: #3B82F6;
+
+    /* Status Colors */
+    --color-status-success: #22C55E;
+    --color-status-success-subtle: rgba(34, 197, 94, 0.15);
+    --color-status-warning: #F59E0B;
+    --color-status-warning-subtle: rgba(245, 158, 11, 0.15);
+    --color-status-error: #EF4444;
+    --color-status-error-subtle: rgba(239, 68, 68, 0.15);
+
+    /* Focus Ring */
+    --color-focus-ring: #0066FF;
+    --color-focus-ring-offset: #0A0A0A;
+
+    /* Skeleton Colors */
+    --color-skeleton-base: rgba(255, 255, 255, 0.05);
+    --color-skeleton-shimmer: rgba(255, 255, 255, 0.1);
+
+    /* Section Spacing */
+    --spacing-section-xs: 2rem;
+    --spacing-section-sm: 3rem;
+    --spacing-section-md: 4rem;
+    --spacing-section-lg: 6rem;
+
+    /* Component Spacing */
+    --spacing-component-xs: 0.25rem;
+    --spacing-component-sm: 0.5rem;
+    --spacing-component-md: 0.75rem;
+    --spacing-component-lg: 1rem;
+    --spacing-component-xl: 1.5rem;
+
+    /* Gap Spacing */
+    --spacing-gap-xs: 0.25rem;
+    --spacing-gap-sm: 0.5rem;
+    --spacing-gap-md: 1rem;
+    --spacing-gap-lg: 1.5rem;
+
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+
+    /* Font Weights */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Line Heights */
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+    --shadow-cta: 0 4px 14px rgba(0, 102, 255, 0.4);
+    --shadow-cta-hover: 0 6px 20px rgba(0, 102, 255, 0.5);
+
+    /* Durations */
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+
+    /* Easings */
+    --easing-ease-out: ease-out;
+
+    /* Z-index */
+    --z-sticky: 1100;
   }
 
   * {
@@ -260,6 +471,84 @@ section[aria-label="Secure payment"] .__PrivateStripeElement {
 }
 
 @layer utilities {
+  /* ========== ADR-P14: Global Anti-Pinch Fix ========== */
+  /* Prevents "pinched" layouts where content collapses to one word per line.
+     Root cause: Tailwind utility classes resolve relative to constrained ancestors.
+     Fix: Explicit min-width on all content containers. */
+
+  /* Landing page specific - applies to all sections */
+  .landing-container {
+    width: 90vw;
+    max-width: 760px;
+    min-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Generic content containers - use on any page */
+  .content-container {
+    width: 90vw;
+    min-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .content-container--narrow {
+    max-width: 640px;
+  }
+
+  .content-container--medium {
+    max-width: 760px;
+  }
+
+  .content-container--wide {
+    max-width: 1024px;
+  }
+
+  /* Card/section containers that shouldn't collapse */
+  .card-container {
+    min-width: 280px;
+    width: 100%;
+  }
+
+  /* Ensure children of flex/grid don't collapse */
+  .no-collapse {
+    min-width: 0;
+    flex-shrink: 0;
+  }
+
+  .no-collapse-content {
+    min-width: 200px;
+  }
+
+  /* CRITICAL: Prevent text pinching in flex containers */
+  /* When flex items-center is used, children shrink to content width */
+  /* This forces text elements to take full width within their flex parent */
+  .landing-container p,
+  .landing-container span,
+  .landing-container h1,
+  .landing-container h2,
+  .landing-container h3,
+  .landing-container li {
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  /* Fix for flex column + items-center causing text collapse */
+  .landing-container .flex.flex-col.items-center > p,
+  .landing-container .flex.flex-col.items-center > span {
+    width: 100%;
+    max-width: 32rem; /* max-w-lg equivalent */
+  }
+
+  /* Ensure card content doesn't collapse */
+  .card-container p,
+  .card-container span {
+    max-width: 100%;
+  }
+
+  /* ========== END ADR-P14 Fix ========== */
+
   /* Fixed navigation */
   .nav-fixed {
     position: fixed;

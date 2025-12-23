@@ -32,7 +32,7 @@ export function CTASection({
 
       {/* CTA Card */}
       <div
-        className="relative p-[var(--spacing-component-xl)] bg-[var(--color-bg-surface-elevated)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] border border-[var(--color-border-default)] overflow-hidden"
+        className="card-container relative p-[var(--spacing-component-xl)] bg-[var(--color-bg-surface-elevated)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] border border-[var(--color-border-default)] overflow-hidden"
         style={{
           // Left border gradient accent
           borderLeft: "4px solid transparent",
@@ -60,7 +60,7 @@ export function CTASection({
           <hr className="border-0 h-px bg-[var(--color-border-default)] w-full" />
 
           {/* Summary List */}
-          <ul className="space-y-[var(--spacing-gap-xs)] text-[length:var(--font-size-base)] text-[var(--color-text-secondary)]">
+          <ul className="w-full space-y-[var(--spacing-gap-xs)] text-[length:var(--font-size-base)] text-[var(--color-text-secondary)]">
             <li className="flex items-start gap-[var(--spacing-gap-xs)]">
               <span className="text-[var(--color-text-primary)]">•</span>
               <span>
@@ -117,18 +117,21 @@ export function CTASection({
       </div>
 
       {/* Guarantee Section */}
-      <div className="p-[var(--spacing-component-lg)] bg-[var(--color-bg-subtle)] rounded-[var(--radius-lg)]">
+      <div className="card-container p-[var(--spacing-component-lg)] bg-[var(--color-bg-subtle)] rounded-[var(--radius-lg)]">
         <div className="flex flex-col items-center gap-[var(--spacing-gap-sm)] text-center">
           <div className="flex items-center gap-[var(--spacing-gap-xs)]">
             <Shield
-              className="w-5 h-5 text-[var(--color-status-success)]"
+              className="w-5 h-5 text-[var(--color-status-success)] flex-shrink-0"
               aria-hidden="true"
             />
             <span className="text-[var(--color-text-primary)] text-[length:var(--font-size-base)] font-[var(--font-weight-semibold)] uppercase tracking-wider">
               The report pays for itself, or it&apos;s free
             </span>
           </div>
-          <p className="text-[var(--color-text-secondary)] text-[length:var(--font-size-base)] max-w-lg">
+          <p
+            className="text-[var(--color-text-secondary)] text-[length:var(--font-size-base)]"
+            style={{ width: '100%', maxWidth: '32rem' }}
+          >
             If you address the issues we identify and don&apos;t see enough
             improvement to cover the cost of the report within 90 days,
             we&apos;ll refund you in full. Just reply to your delivery email.

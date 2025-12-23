@@ -30,8 +30,15 @@ export function LeadControlPanel({
     setLoadingAction('GENERATE')
     setError(null)
     try {
-      await triggerBatchPhaseD([lead.id], `single-run-${Date.now()}`)
-      alert('Report generation started.')
+      const results = await triggerBatchPhaseD([lead.id], `single-run-${Date.now()}`)
+      const result = results[0]
+      if (result.status === 'triggered') {
+        alert(`Report generation started. Run ID: ${result.runId}`)
+      } else if (result.status === 'skipped') {
+        setError(`Skipped: ${result.reason}. Try running a new Assessment first.`)
+      } else if (result.status === 'error') {
+        setError(`Error: ${result.reason}`)
+      }
     } catch (err: any) {
       setError(`Failed: ${err.message}`)
     } finally {

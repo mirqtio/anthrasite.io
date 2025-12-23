@@ -44,8 +44,44 @@ For the modal container itself, we will use **inline styles** for critical dimen
   - `maxWidth: 28rem`: Caps the width on desktop (approx `max-w-md`).
   - `minWidth: 300px`: Prevents the "pinched" layout failure mode entirely.
 
+## Global Utility Classes
+
+To avoid repeating this pattern, we've added utility classes in `globals.css`:
+
+```css
+/* Page-level containers */
+.landing-container {
+  width: 90vw;
+  max-width: 760px;
+  min-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-container {
+  width: 90vw;
+  min-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.content-container--narrow { max-width: 640px; }
+.content-container--medium { max-width: 760px; }
+.content-container--wide { max-width: 1024px; }
+
+/* Card-level containers */
+.card-container {
+  min-width: 280px;
+  width: 100%;
+}
+```
+
+**Usage:**
+- Use `.landing-container` for landing page main content
+- Use `.content-container` + size modifier for other pages
+- Use `.card-container` on any card/panel that might collapse
+
 ## Consequences
 
-- **Pros**: Modals are guaranteed to look correct regardless of where they are embedded in the component tree. We eliminate a whole class of "it works on my machine" layout bugs.
+- **Pros**: Modals and containers are guaranteed to look correct regardless of where they are embedded in the component tree. We eliminate a whole class of "it works on my machine" layout bugs.
 - **Cons**: Slightly more verbose code. Inline styles bypass the design system tokens (though we stick to values that map to our grid).
-- **Compliance**: Future modals should follow this pattern if they face similar layout constraints.
+- **Compliance**: Future modals and page containers should use the utility classes or follow this pattern if they face similar layout constraints.

@@ -50,7 +50,7 @@ export function HookSection({
       </h2>
 
       {/* Issue Brief Card */}
-      <div className="p-[var(--spacing-component-lg)] bg-[var(--color-bg-surface)] border border-[var(--color-border-default)] rounded-[var(--radius-lg)]">
+      <div className="card-container p-[var(--spacing-component-lg)] bg-[var(--color-bg-surface)] border border-[var(--color-border-default)] rounded-[var(--radius-lg)]">
         <div className="flex flex-col gap-[var(--spacing-gap-sm)]">
           {/* Title + Effort Badge Row */}
           <div className="flex flex-wrap items-start gap-[var(--spacing-gap-sm)]">

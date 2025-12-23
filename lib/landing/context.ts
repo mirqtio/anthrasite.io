@@ -50,8 +50,9 @@ export async function lookupLandingContext(
     },
 
     // Screenshots (from LeadShop API)
-    desktopScreenshotUrl: "https://placehold.co/1440x900",
-    mobileScreenshotUrl: "https://placehold.co/375x812",
+    // Using picsum.photos for reliable placeholder images with proper dimensions
+    desktopScreenshotUrl: "https://picsum.photos/1440/900",
+    mobileScreenshotUrl: "https://picsum.photos/375/812",
 
     // Purchase info
     price: 199,

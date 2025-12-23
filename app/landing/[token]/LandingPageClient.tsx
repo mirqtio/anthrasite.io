@@ -81,7 +81,8 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-canvas)]">
-      <div className="max-w-[760px] mx-auto px-[var(--spacing-section-md)] py-[var(--spacing-section-lg)]">
+      {/* ADR-P14: landing-container class prevents pinched layouts globally */}
+      <div className="landing-container px-[var(--spacing-section-md)] py-[var(--spacing-section-lg)]">
         <div className="space-y-[var(--spacing-section-lg)]">
           {/* Section 1: Hero */}
           <section aria-labelledby="hero-heading">
