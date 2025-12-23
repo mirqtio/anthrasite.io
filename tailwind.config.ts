@@ -60,6 +60,7 @@ const config: Config = {
         'scale-in': 'scaleIn 0.3s ease-out',
         'check-draw': 'checkDraw 0.6s ease-out',
         'hover-scale': 'hoverScale 0.2s ease-out',
+        shimmer: 'shimmer 1.5s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -81,6 +82,10 @@ const config: Config = {
         hoverScale: {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.1)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
       },
       transitionDuration: {

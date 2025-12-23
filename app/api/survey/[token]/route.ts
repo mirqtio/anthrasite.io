@@ -10,10 +10,11 @@ import { isSurveyCompleted } from '@/lib/survey/storage'
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
-    const { token } = params
+    // Next.js 15: params is now a Promise
+    const { token } = await params
 
     // Validate JWT token
     const payload = await validateSurveyToken(token)

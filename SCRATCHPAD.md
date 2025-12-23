@@ -1,136 +1,5 @@
 # SCRATCHPAD
 
-## Survey 500 Error Fix - RESOLVED (2025-12-02)
-
-### Problem
-
-Survey submissions were returning 500 errors on POST `/api/survey/[token]/submit`
-
-### Root Cause
-
-Two issues in `lib/survey/storage.ts`:
-
-1. **Non-existent columns**: The INSERT statement referenced columns (`source`, `respondentId`, `ref`) that existed in Prisma schema but were never migrated to the database.
-
-2. **Hardcoded null for leadId**: Line 94 had `null,` hardcoded instead of `${data.leadId}`, causing NOT NULL constraint violation.
-
-### Fixes Applied
-
-1. Removed non-existent columns from INSERT statement (commit: `fix(survey): remove non-existent columns from storage INSERT`)
-2. Changed `null,` to `${data.leadId},` (commit: `fix(survey): use actual leadId instead of hardcoded null`)
-
-### Verification
-
-- Tested on production: `https://www.anthrasite.io/survey?token=...`
-- POST `/api/survey/.../submit` returns 200 with `{"success":true,"submissionId":"...","completed":false,"message":"Progress saved"}`
-- Survey advances from Step 1 to Step 2 correctly
-
-### Status: COMPLETE
-
----
-
-## Prompt Lab API Proxy Implementation - IN PROGRESS (2025-12-08)
-
-### Problem
-
-The Prompt Lab page (`/admin/prompt-lab`) loads in production but functionality doesn't work (model chooser, saving prompts, running tests, etc.).
-
-**Root Cause:** The frontend was making API calls directly to `http://localhost:8000/prompt-lab/...` which only works during local development. In production on Vercel, `localhost` refers to the Vercel server, not the LeadShop backend.
-
-### Solution Implemented
-
-Created Next.js API routes that proxy requests from the frontend to the LeadShop backend.
-
-**Architecture:**
-
-```
-User's Browser
-     ↓
-https://www.anthrasite.io/api/prompt-lab/*  (Next.js on Vercel)
-     ↓
-LEADSHOP_API_URL/prompt-lab/*  (LeadShop FastAPI on Hetzner VPS)
-```
-
-### Files Created
-
-1. **Environment Config** (`.env.example`):
-
-   - Added `LEADSHOP_API_URL` - URL where LeadShop FastAPI is accessible
-
-2. **Shared Proxy Library** (`lib/prompt-lab/proxy.ts`):
-
-   - `verifyAdminSession()` - validates Supabase session for authenticated admin
-   - `proxyToLeadShop()` - forwards requests to LeadShop backend
-   - Supports dev bypass via `ADMIN_AUTH_BYPASS=true`
-
-3. **API Proxy Routes**:
-
-   - `app/api/prompt-lab/models/route.ts` - GET models list
-   - `app/api/prompt-lab/prompts/route.ts` - GET/POST prompts
-   - `app/api/prompt-lab/runs/[leadId]/route.ts` - GET runs for a lead
-   - `app/api/prompt-lab/context/[leadId]/[runId]/route.ts` - GET context data
-   - `app/api/prompt-lab/test/route.ts` - POST test execution
-   - `app/api/prompt-lab/scenarios/route.ts` - GET/POST scenarios
-
-4. **Frontend Updated** (`app/admin/prompt-lab/page.tsx`):
-   - All `http://localhost:8000/prompt-lab/...` URLs changed to `/api/prompt-lab/...`
-
-### Remaining Steps
-
-1. ~~**Determine LeadShop API URL**~~: `http://5.161.19.136:8000` (Hetzner Floating IP)
-
-2. **Set Vercel Environment Variable**: Add `LEADSHOP_API_URL=http://5.161.19.136:8000` to Vercel project settings
-
-3. **Deploy & Test**: Push changes, verify prompt-lab works in production
-
-### Deployment
-
-- **Commit**: `70a7ad3` - pushed to main
-- **Vercel env var**: `LEADSHOP_API_URL=http://5.161.19.136:8000` (set by user)
-- **GitHub Actions**: Security scan passed, E2E tests running
-
-### Status: COMPLETE
-
-**Issue discovered & resolved:** The Anthrasite proxy was working correctly, but LeadShop on Hetzner needed redeployment. User redeployed LeadShop and the API proxy now works.
-
----
-
-## Prompt Lab UI Fixes (2025-12-08)
-
-### Problems Reported
-
-1. Action bar with buttons disappeared when pasting custom JSON context
-2. App didn't resize to fit browser window - was constrained inside admin layout's max-width container with black sidebars/footer
-
-### Fixes Applied
-
-**1. Layout restructuring** (`app/admin/prompt-lab/layout.tsx`):
-
-- Changed from calc-based height to fixed positioning
-- Layout now uses `fixed top-16 left-0 right-0 bottom-0` to fill entire viewport below nav bar
-- Breaks out of admin layout's container constraints (max-w-[1600px], padding)
-- Full-bleed design - no black sidebars or footer
-
-**2. Page layout fixes** (`app/admin/prompt-lab/page.tsx`):
-
-- Changed outer container from `h-screen` to `h-full`
-- Made action bar sticky with `sticky top-0 z-10`
-- Added `flex-shrink-0` to headers to prevent collapse
-- Added `min-h-0` to flex containers for proper overflow handling
-- Context panel and lanes now use `h-full` to fill available space
-- Proper overflow scrolling within each panel
-
-### Verification
-
-- Tested locally at http://localhost:3333/admin/prompt-lab?bypass=true
-- Action bar stays visible when pasting large JSON
-- Layout fills entire viewport below nav bar
-- Panels resize properly with browser window
-
-### Status: COMPLETE - Ready for deployment
-
----
-
 ## FE–BE Contract Audit: Purchase Page V2 (2025-12-17)
 
 ### Task 1: End-to-End Data Provenance (Authenticated Path)
@@ -328,3 +197,1356 @@ The FE-BE contract is **largely sound** with proper:
 **One actionable gap identified:** `businessId` is expected by `PaymentElementWrapper` but never populated from the database. The fallback to `leadId.toString()` works but creates a semantic mismatch that could cause issues in payment reconciliation.
 
 ### Status: COMPLETE
+
+---
+
+## Landing Page v9 - Comprehensive Design Specification (2025-12-23)
+
+### Document Purpose
+
+This specification provides complete design guidance for implementing the Anthrasite Landing Page (Copy v9). A developer can implement this page without further design input.
+
+**Reference Documents:**
+- Copy Spec: `anthrasite-landing-page-copy-v9.md`
+- Design System: `/design-system/src/polymet/data/anthrasite-tokens.ts`
+
+---
+
+## DESIGN PHILOSOPHY
+
+### No Fallbacks Policy
+**All fields are required.** No lead reaches this page without complete data. Fallbacks mask bugs—they don't prevent them. If data is missing, the page should error visibly so we fix the pipeline, not hide the problem.
+
+---
+
+## GLOBAL SETTINGS
+
+### Page Configuration
+
+```
+Theme: Dark (Anthrasite brand default)
+Background: var(--color-bg-canvas) → #0A0A0A
+Max Content Width: 768px (prose-optimized)
+Font Family: Inter (var(--font-family-primary))
+Language: en-US
+Direction: ltr
+```
+
+### Logo Treatment
+
+**Asset:** Anthrasite wordmark (SVG)
+**File:** `/public/anthrasite-logo.svg`
+
+| Breakpoint | Width | Height | Position |
+|------------|-------|--------|----------|
+| Desktop | 120px | auto | Left-aligned |
+| Tablet | 110px | auto | Left-aligned |
+| Mobile | 100px | auto | Left-aligned |
+
+**Link behavior:** Not clickable (no navigation on this page—1:1 attention ratio)
+
+```css
+.logo {
+  width: 120px;
+  height: auto;
+}
+
+@media (max-width: 1023px) {
+  .logo { width: 110px; }
+}
+
+@media (max-width: 767px) {
+  .logo { width: 100px; }
+}
+```
+
+### Divider Lines
+
+Used between major sections (header/hero, hook sections, CTA/guarantee).
+
+```css
+.divider {
+  height: 1px;
+  background: var(--color-border-default);  /* rgba(255,255,255,0.1) */
+  border: none;
+  margin: var(--spacing-8) 0;  /* 32px */
+}
+
+@media (max-width: 767px) {
+  .divider {
+    margin: var(--spacing-6) 0;  /* 24px */
+  }
+}
+```
+
+### Breakpoint Definitions
+
+| Name    | Range          | Grid Columns | Container Padding |
+|---------|----------------|--------------|-------------------|
+| Mobile  | 0–767px        | 1            | 16px (--spacing-4) |
+| Tablet  | 768–1023px     | 1            | 24px (--spacing-6) |
+| Desktop | 1024px+        | 1            | 32px (--spacing-8) |
+
+**Note:** This is a single-column landing page. No multi-column grid needed.
+
+### Container System
+
+```css
+.page-container {
+  max-width: 768px;
+  margin: 0 auto;
+  padding-inline: var(--spacing-4);  /* 16px mobile */
+}
+
+@media (min-width: 768px) {
+  .page-container { padding-inline: var(--spacing-6); }
+}
+
+@media (min-width: 1024px) {
+  .page-container { padding-inline: var(--spacing-8); }
+}
+```
+
+---
+
+## SECTION 1: HERO
+
+### Purpose
+Prove we looked. Show company name, screenshots, score, and issue count.
+
+### Layout Specification
+
+**Desktop (1024px+)**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  [Logo: 120px wide]         Measured with industry-standard     │
+│                             tools and benchmarks                │
+│                                                                 │
+│  ───────────────────────────────────────────────────────────    │
+│                                                                 │
+│  ┌──────────────────────────────┐   ┌─────────────────┐         │
+│  │                              │   │                 │         │
+│  │    Desktop Screenshot        │   │ Mobile          │         │
+│  │    (480px × auto)            │   │ Screenshot      │         │
+│  │                              │   │ (200px × auto)  │         │
+│  │                              │   │                 │         │
+│  └──────────────────────────────┘   └─────────────────┘         │
+│               ↑ flex, gap-24px, align-end ↑                     │
+│                                                                 │
+│                      {{company}}                                │
+│                                                                 │
+│                 Score: {{overall_score}}/100                    │
+│            Find, Trust, Understand, and Contact.                │
+│                                                                 │
+│         We found {{issue_count}} issues to address.             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Tablet (768–1023px)**
+- Same as desktop but screenshots scale proportionally
+- Desktop screenshot: 400px max-width
+- Mobile screenshot: 160px max-width
+
+**Mobile (0–767px)**
+```
+┌───────────────────────────────────────┐
+│  [Logo: 100px]                        │
+│  Measured with industry-standard      │
+│  tools and benchmarks                 │
+│                                       │
+│  ─────────────────────────────────    │
+│                                       │
+│  ┌─────────────────────────────────┐  │
+│  │   Desktop Screenshot             │  │
+│  │   (100% width, max 360px)        │  │
+│  └─────────────────────────────────┘  │
+│                                       │
+│         ┌─────────────────┐           │
+│         │ Mobile Screenshot│          │
+│         │ (50% width)      │          │
+│         └─────────────────┘           │
+│                                       │
+│           {{company}}                 │
+│                                       │
+│       Score: {{overall_score}}/100    │
+│  Find, Trust, Understand, and Contact.│
+│                                       │
+│   We found {{issue_count}} issues...  │
+│                                       │
+└───────────────────────────────────────┘
+```
+
+### Typography
+
+| Element | Token | Desktop | Mobile | Weight | Color |
+|---------|-------|---------|--------|--------|-------|
+| Trust badge (top-right) | --font-size-sm | 14px | 12px | 400 | --color-text-secondary |
+| Company name (headline) | --font-size-5xl | 40px | 32px | 700 | --color-text-primary |
+| Score display | --font-size-4xl | 32px | 28px | 600 | --color-text-link (#0066FF) |
+| Score context | --font-size-base | 16px | 14px | 400 | --color-text-secondary |
+| Issue count | --font-size-lg | 18px | 16px | 500 | --color-text-primary |
+
+### Spacing
+
+| Element | Value (Desktop) | Value (Mobile) | Token |
+|---------|-----------------|----------------|-------|
+| Section top padding | 96px | 64px | --spacing-section-lg / --spacing-section-md |
+| Section bottom padding | 64px | 48px | --spacing-section-md / --spacing-section-sm |
+| Logo to trust badge | 16px | 12px | --spacing-4 / --spacing-3 |
+| Divider margin | 32px top/bottom | 24px | --spacing-8 / --spacing-6 |
+| Screenshots container gap | 24px | 16px | --spacing-6 / --spacing-4 |
+| Screenshots to headline | 48px | 32px | --spacing-12 / --spacing-8 |
+| Headline to score | 16px | 12px | --spacing-4 / --spacing-3 |
+| Score to context | 8px | 8px | --spacing-2 |
+| Context to issue count | 24px | 16px | --spacing-6 / --spacing-4 |
+
+### Screenshot Treatment
+
+```css
+.screenshot-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;  /* Bottom-aligned */
+  gap: var(--spacing-6);
+}
+
+.screenshot-frame {
+  border-radius: var(--radius-lg);  /* 12px */
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-default);
+  overflow: hidden;
+  background: var(--color-bg-surface);  /* Fallback while loading */
+}
+
+.screenshot-desktop {
+  width: 480px;
+  max-width: 65%;
+}
+
+.screenshot-mobile {
+  width: 200px;
+  max-width: 28%;
+}
+
+/* Mobile breakpoint */
+@media (max-width: 767px) {
+  .screenshot-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .screenshot-desktop {
+    width: 100%;
+    max-width: 360px;
+  }
+  .screenshot-mobile {
+    width: 50%;
+    max-width: 180px;
+  }
+}
+```
+
+**Screenshot Aspect Ratios (CLS Prevention):**
+
+Explicit aspect-ratio prevents layout shift before images load:
+
+```css
+.screenshot-desktop {
+  aspect-ratio: 16 / 10;
+}
+
+.screenshot-mobile {
+  aspect-ratio: 9 / 19;
+}
+```
+
+**Note:** These ratios match LeadShop mockup output. Images fill the container maintaining their natural aspect.
+
+### Component States
+
+**Screenshots:**
+- **Loading (skeleton):** Shown during initial page load
+  - Background: var(--color-skeleton-base)
+  - Shimmer: var(--color-skeleton-shimmer)
+  - Animation: 1.5s linear infinite
+  - Maintains aspect-ratio container to prevent CLS
+- **Loaded:** Image fades in (opacity 0 → 1, 200ms ease-out)
+- **Error:** Per no-fallbacks policy, screenshot URLs are required. If an image fails to load after URL is provided, log error to monitoring. Do not show a placeholder—this indicates a pipeline issue that needs fixing.
+
+---
+
+## SECTION 2: THE HOOK
+
+### Purpose
+Echo email issue, show ONE metric with benchmark, introduce dollar range.
+
+### Layout Specification
+
+**Desktop/Tablet**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  {{email_issue_brief}}                                          │
+│  (max-width: 600px, centered)                                   │
+│                                                                 │
+│     ┌─────────────────────────────────────────────────────┐     │
+│     │  {{anchor_metric_label}}: {{anchor_metric_value}}   │     │
+│     │  Benchmark: {{anchor_metric_benchmark}}             │     │
+│     └─────────────────────────────────────────────────────┘     │
+│                                                                 │
+│  ───────────────────────────────────────────────────────────    │
+│                                                                 │
+│  Based on US Census data, your industry, location, and other    │
+│  factors, we estimate these issues are costing you              │
+│  {{total_impact_low}} – {{total_impact_high}} per month         │
+│  in lost revenue.                                               │
+│                                                                 │
+│  The full report shows all {{issue_count}} issues, prioritized  │
+│  by impact, with estimated difficulty to address each. Ready    │
+│  for you or the person who manages your website to tackle.      │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Typography
+
+| Element | Token | Size | Weight | Color |
+|---------|-------|------|--------|-------|
+| Issue brief | --font-size-xl | 20px/18px | 400 | --color-text-primary |
+| Metric label | --font-size-base | 16px | 500 | --color-text-secondary |
+| Metric value | --font-size-3xl | 28px/24px | 700 | --color-status-error-text (#FF3B30) |
+| Benchmark label | --font-size-sm | 14px | 400 | --color-text-secondary |
+| Benchmark value | --font-size-base | 16px | 500 | --color-status-success-text (#22C55E) |
+| Dollar range | --font-size-2xl | 24px/20px | 700 | --color-text-link (#0066FF) |
+| Body text | --font-size-lg | 18px/16px | 400 | --color-text-secondary |
+
+### Metric Display Box
+
+```css
+.metric-box {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+```
+
+### Spacing
+
+| Element | Value | Token |
+|---------|-------|-------|
+| Section padding | 64px top/bottom | --spacing-section-md |
+| Issue brief to metric box | 32px | --spacing-8 |
+| Metric box internal padding | 24px | --spacing-6 |
+| Metric value to benchmark | 16px | --spacing-4 |
+| Metric box to divider | 32px | --spacing-8 |
+| Divider to dollar paragraph | 32px | --spacing-8 |
+| Paragraph spacing | 24px | --spacing-6 |
+
+---
+
+## SECTION 3: WHAT YOU GET
+
+### Layout Specification
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    What's in your report                        │
+│                                                                 │
+│  A detailed analysis of {{company}}, organized by what matters  │
+│  most to your bottom line.                                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  ● {{issue_count}} issues identified                    │    │
+│  │    Each one explained in plain language—what's wrong    │    │
+│  │    and why it matters.                                  │    │
+│  │                                                         │    │
+│  │  ● Prioritized by business impact                       │    │
+│  │    Not just a list of problems. We've ordered them...   │    │
+│  │                                                         │    │
+│  │  ● Difficulty ratings                                   │    │
+│  │    Each issue marked Easy, Moderate, or Hard...         │    │
+│  │                                                         │    │
+│  │  ● The underlying measurements                          │    │
+│  │    The specific metrics behind each issue...            │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  PDF, delivered to your inbox in minutes.                       │
+│                                                                 │
+│  ───────────────────────────────────────────────────────────    │
+│                                                                 │
+│  Most audits give you scores. This report tells you what        │
+│  those scores mean for your business—and which problems         │
+│  to tackle first.                                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Typography
+
+| Element | Size | Weight | Color |
+|---------|------|--------|-------|
+| Section header | 32px/28px | 700 | --color-text-primary |
+| Intro paragraph | 18px/16px | 400 | --color-text-secondary |
+| Value list titles | 18px | 600 | --color-text-primary |
+| Value list descriptions | 16px | 400 | --color-text-secondary |
+| Format line | 16px | 500 | --color-text-secondary |
+| Differentiator | 18px | 500 | --color-text-primary |
+
+### Value List Styling
+
+```css
+.value-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);  /* 24px */
+}
+
+.value-item {
+  display: flex;
+  gap: var(--spacing-3);  /* 12px */
+}
+
+.value-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-interactive-cta-default);
+  flex-shrink: 0;
+  margin-top: 8px;  /* Align with first line of text */
+}
+
+.value-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);  /* 8px */
+}
+```
+
+---
+
+## SECTION 4: WHY TRUST US
+
+### Layout
+
+Simple centered text block, no special styling.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  We analyzed your site using a combination of industry-leading  │
+│  assessment tools, business and government standards, and our   │
+│  own proprietary visual analysis.                               │
+│                                                                 │
+│  We check 40+ factors across search visibility, mobile          │
+│  experience, security configuration, accessibility compliance,  │
+│  local presence, and conversion friction.                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Typography
+
+| Element | Size | Weight | Color |
+|---------|------|--------|-------|
+| Body text | 18px/16px | 400 | --color-text-secondary |
+| "40+ factors" | 18px/16px | 600 | --color-text-primary |
+
+### Spacing
+- Section padding: 48px top/bottom (--spacing-section-sm)
+- Paragraph spacing: 24px (--spacing-6)
+
+---
+
+## SECTION 5: CTA + GUARANTEE
+
+### Layout Specification
+
+**Desktop**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │                                                           │  │
+│  │              Your report for {{company}}                  │  │
+│  │                                                           │  │
+│  │                         $299                              │  │
+│  │                                                           │  │
+│  │  ─────────────────────────────────────────────────────    │  │
+│  │                                                           │  │
+│  │  • {{issue_count}} issues identified and prioritized      │  │
+│  │  • {{total_impact_low}} – {{total_impact_high}}/mo est.   │  │
+│  │  • Difficulty rating for each issue                       │  │
+│  │  • Delivered in minutes                                   │  │
+│  │                                                           │  │
+│  │              ┌─────────────────────────┐                  │  │
+│  │              │    Get Your Report      │                  │  │
+│  │              └─────────────────────────┘                  │  │
+│  │                                                           │  │
+│  │    You'll check out with Stripe. No forms to fill out.    │  │
+│  │                                                           │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                                                 │
+│  ───────────────────────────────────────────────────────────    │
+│                                                                 │
+│  THE REPORT PAYS FOR ITSELF, OR IT'S FREE                       │
+│                                                                 │
+│  If you address the issues we identify and don't see enough     │
+│  improvement to cover the cost of the report within 90 days,    │
+│  we'll refund you in full. Just reply to your delivery email.   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### CTA Card Styling
+
+```css
+.cta-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);  /* 16px */
+  padding: var(--spacing-8);  /* 32px */
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Add subtle gradient border effect */
+.cta-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--color-interactive-cta-default) 0%,
+    transparent 50%
+  );
+  z-index: -1;
+  opacity: 0.3;
+}
+```
+
+### Primary CTA Button
+
+```css
+.cta-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+
+  padding: var(--spacing-4) var(--spacing-8);  /* 16px 32px */
+  min-width: 240px;
+
+  background: var(--color-interactive-cta-default);
+  color: var(--color-interactive-cta-text);
+
+  font-size: var(--font-size-lg);  /* 18px */
+  font-weight: var(--font-weight-semibold);
+
+  border: none;
+  border-radius: var(--radius-lg);  /* 12px */
+  box-shadow: var(--shadow-cta);
+
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--easing-ease-out);
+}
+
+.cta-primary:hover {
+  background: var(--color-interactive-cta-hover);
+  box-shadow: var(--shadow-cta-hover);
+  transform: translateY(-1px);
+}
+
+.cta-primary:active {
+  background: var(--color-interactive-cta-active);
+  transform: translateY(0);
+}
+
+.cta-primary:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--shadow-cta),
+    0 0 0 2px var(--color-focus-ring-offset),
+    0 0 0 4px var(--color-focus-ring);
+}
+
+.cta-primary:disabled {
+  background: var(--color-interactive-cta-disabled);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+```
+
+### Button States
+
+| State | Background | Shadow | Transform |
+|-------|------------|--------|-----------|
+| Default | #0066FF | shadow-cta | none |
+| Hover | #0052CC | shadow-cta-hover | translateY(-1px) |
+| Active | #0047B3 | shadow-cta | translateY(0) |
+| Focus | #0066FF | shadow-cta + focus ring | none |
+| Disabled | rgba(0,102,255,0.3) | none | none |
+| Loading | #0066FF | shadow-cta | none |
+
+### Loading State
+
+```css
+.cta-primary.loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.cta-primary.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-interactive-cta-text);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+```
+
+### Typography
+
+| Element | Size | Weight | Color |
+|---------|------|--------|-------|
+| Card headline | 24px/20px | 600 | --color-text-primary |
+| Price | 48px/40px | 700 | --color-text-primary |
+| Bullet points | 16px | 400 | --color-text-secondary |
+| Button text | 18px | 600 | --color-interactive-cta-text |
+| Stripe note | 14px | 400 | --color-text-muted |
+| Guarantee headline | 20px/18px | 700 | --color-text-primary |
+| Guarantee body | 16px | 400 | --color-text-secondary |
+
+### Guarantee Section
+
+**DESIGN DEVIATION:** Adding a subtle background to differentiate the guarantee from other content.
+
+```css
+.guarantee-section {
+  background: var(--color-bg-subtle);  /* rgba(255,255,255,0.03) */
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  margin-top: var(--spacing-8);
+}
+```
+
+---
+
+## SECTION 6: FAQ
+
+### Layout
+
+Accordion pattern with expand/collapse behavior.
+
+**Default State:** First item ("Who is Anthrasite?") is OPEN by default. This answers the primary trust question immediately.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │  Who is Anthrasite?                                   [+] │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │  Is this legitimate?                                  [+] │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │  How accurate is the revenue estimate?                [+] │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│  ... (more items)                                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Expanded State
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│  Who is Anthrasite?                                       [-] │
+├───────────────────────────────────────────────────────────────┤
+│  We analyze small business websites using a combination of    │
+│  industry-leading tools, established standards, and our own   │
+│  visual assessment. Then we translate the results into a      │
+│  prioritized list of what's actually affecting your business. │
+└───────────────────────────────────────────────────────────────┘
+```
+
+### Accordion Styling
+
+```css
+.faq-item {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-3);
+  overflow: hidden;
+  transition: border-color var(--duration-fast);
+}
+
+.faq-item:hover {
+  border-color: var(--color-border-strong);
+}
+
+.faq-trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.faq-trigger:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-focus-ring);
+}
+
+.faq-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-muted);
+  transition: transform var(--duration-normal) var(--easing-ease-out);
+}
+
+.faq-item[data-state="open"] .faq-icon {
+  transform: rotate(180deg);
+}
+
+/* Content wrapper for grid animation */
+.faq-content-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-normal) var(--easing-ease-out);
+}
+
+.faq-item[data-state="open"] .faq-content-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.faq-content {
+  overflow: hidden;
+  padding: 0 var(--spacing-4);
+}
+
+.faq-content > div {
+  padding-bottom: var(--spacing-4);
+}
+```
+
+### Typography
+
+| Element | Size | Weight | Color |
+|---------|------|--------|-------|
+| Question | 18px/16px | 500 | --color-text-primary |
+| Answer | 16px | 400 | --color-text-secondary |
+
+---
+
+## SECTION 7: MOBILE STICKY CTA
+
+### Purpose
+Persistent CTA for mobile users who scroll past the main CTA.
+
+### Layout
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  🔒  Get Your Report — $299                                 →   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Behavior
+
+| Property | Value |
+|----------|-------|
+| Visibility | Mobile only (max-width: 767px) |
+| Trigger | Appears when hero leaves viewport (scroll > ~600px) |
+| Position | Fixed bottom, full width |
+| Entry animation | Slide up from bottom, 300ms ease-out |
+| Exit animation | Slide down, 200ms ease-in |
+| Hide condition | When main CTA card is in viewport |
+| Z-index | var(--z-sticky) (1100) |
+
+### Styling
+
+```css
+.sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+
+  padding: var(--spacing-4);
+  padding-bottom: calc(var(--spacing-4) + env(safe-area-inset-bottom));
+
+  background: var(--color-bg-elevated);
+  border-top: 1px solid var(--color-border-default);
+  box-shadow: var(--shadow-lg);
+
+  transform: translateY(100%);
+  transition: transform var(--duration-slow) var(--easing-ease-out);
+}
+
+.sticky-cta.visible {
+  transform: translateY(0);
+}
+
+.sticky-cta-button {
+  flex: 1;
+  max-width: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+
+  padding: var(--spacing-3) var(--spacing-6);
+
+  background: var(--color-interactive-cta-default);
+  color: var(--color-interactive-cta-text);
+
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+
+  border: none;
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+}
+
+.sticky-cta-lock-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.sticky-cta-arrow {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+```
+
+---
+
+## DATA STATES
+
+### Required Data Contract
+
+**All data is required.** Per company policy, no fallbacks. If any field is missing, render an error state—do not silently degrade.
+
+| Field | Type | Required |
+|-------|------|----------|
+| company | string | ✓ |
+| overall_score | number (0-100) | ✓ |
+| issue_count | number | ✓ |
+| email_issue_brief | string | ✓ |
+| anchor_metric_label | string | ✓ |
+| anchor_metric_value | string | ✓ |
+| anchor_metric_benchmark | string | ✓ |
+| total_impact_low | string (formatted) | ✓ |
+| total_impact_high | string (formatted) | ✓ |
+| desktop_screenshot_url | string (URL) | ✓ |
+| mobile_screenshot_url | string (URL) | ✓ |
+
+### Initial Page Load (Skeleton State)
+
+Before data arrives, show skeleton placeholders with shimmer:
+
+| Element | Skeleton Dimensions |
+|---------|---------------------|
+| Screenshots | Aspect-ratio containers (16/10, 9/19) with shimmer |
+| Company name | 200px × 48px |
+| Score | 80px × 36px |
+| Issue count | 160px × 24px |
+| Metric value | 120px × 32px |
+| Dollar range | 180px × 28px |
+
+**Skeleton Animation:**
+```css
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton-base) 25%,
+    var(--color-skeleton-shimmer) 50%,
+    var(--color-skeleton-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: var(--radius-sm);
+}
+```
+
+### Display Rules (Not Fallbacks)
+
+**Company Name Length:**
+| Length | Treatment |
+|--------|-----------|
+| 1-20 characters | Normal display |
+| 21-30 characters | Font scales to --font-size-4xl |
+| 31+ characters | Truncate with ellipsis at 30 chars |
+
+**Score Color by Value:**
+| Score | Color |
+|-------|-------|
+| 0-30 | --color-status-error-text (#FF3B30) |
+| 31-60 | --color-status-warning-text (#FFC107) |
+| 61-100 | --color-text-link (#0066FF) |
+
+**Issue Count Grammar:**
+| Count | Copy |
+|-------|------|
+| 1 | "We found 1 issue to address." |
+| 2+ | "We found {{count}} issues to address." |
+
+**Dollar Range:**
+- Always displayed as provided
+- Ensure no line break within range (use `white-space: nowrap` on the value)
+
+---
+
+## ACCESSIBILITY REQUIREMENTS
+
+### Color Contrast (WCAG AA)
+
+| Element | Foreground | Background | Ratio | Status |
+|---------|------------|------------|-------|--------|
+| Body text | #9CA3AF | #0A0A0A | 7.2:1 | ✅ Pass |
+| Primary text | #FFFFFF | #0A0A0A | 21:1 | ✅ Pass |
+| CTA button text | #FFFFFF | #0066FF | 4.6:1 | ✅ Pass |
+| Link text | #0066FF | #0A0A0A | 5.3:1 | ✅ Pass |
+| Muted text | #6B7280 | #0A0A0A | 4.6:1 | ⚠️ Large text only |
+
+### Focus States
+
+All interactive elements must have visible focus indicators:
+
+```css
+:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-focus-ring-offset),
+    0 0 0 4px var(--color-focus-ring);
+}
+```
+
+### Keyboard Navigation
+
+| Element | Key | Action |
+|---------|-----|--------|
+| CTA Button | Enter/Space | Activate |
+| FAQ Accordion | Enter/Space | Toggle open/close |
+| FAQ Accordion | Arrow Down | Focus next item |
+| FAQ Accordion | Arrow Up | Focus previous item |
+| Sticky CTA | Enter/Space | Activate |
+
+### Screen Reader Considerations
+
+**Alt Text:**
+- Desktop screenshot: "Screenshot of {{company}} website on desktop"
+- Mobile screenshot: "Screenshot of {{company}} website on mobile"
+
+**ARIA Labels:**
+- Score: `aria-label="Score: {{score}} out of 100"`
+- Dollar range: `aria-label="Estimated monthly impact: {{low}} to {{high}} dollars"`
+- Lock icon in sticky CTA: `aria-hidden="true"` (decorative)
+
+**Landmarks:**
+```html
+<header role="banner"><!-- Logo + trust badge --></header>
+<main role="main">
+  <section aria-labelledby="hero-heading"><!-- Hero --></section>
+  <section aria-labelledby="hook-heading"><!-- Hook --></section>
+  <section aria-labelledby="value-heading"><!-- What You Get --></section>
+  <section aria-labelledby="trust-heading"><!-- Why Trust Us --></section>
+  <section aria-labelledby="cta-heading"><!-- CTA + Guarantee --></section>
+  <section aria-labelledby="faq-heading"><!-- FAQ --></section>
+</main>
+```
+
+### Reduced Motion
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .sticky-cta {
+    transform: none;
+    opacity: 0;
+  }
+
+  .sticky-cta.visible {
+    opacity: 1;
+  }
+}
+```
+
+---
+
+## INTERACTIONS & MOTION
+
+### Scroll Behavior
+
+```css
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+```
+
+### Transition Defaults
+
+| Property | Duration | Easing |
+|----------|----------|--------|
+| Color/Background | 150ms | ease-out |
+| Transform | 200ms | ease-out |
+| Opacity | 200ms | ease-out |
+| Box-shadow | 150ms | ease-out |
+
+### Page Load Sequence
+
+1. **Critical (immediate):**
+   - Page background
+   - Header with logo
+   - Hero text content (company name, score, issue count)
+
+2. **Above-fold priority (within 100ms):**
+   - Screenshot containers (with loading skeletons)
+
+3. **Lazy load (when in viewport):**
+   - Screenshots (with fade-in on load)
+   - FAQ section (collapse all by default)
+
+**Image Load Animation:**
+```css
+.screenshot-image {
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--easing-ease-out);
+}
+
+.screenshot-image.loaded {
+  opacity: 1;
+}
+```
+
+---
+
+## CHECKOUT FLOW
+
+### CTA Click Behavior
+
+1. User clicks "Get Your Report"
+2. Button enters loading state (spinner replaces text)
+3. Redirect to Stripe Checkout (hosted)
+4. Email pre-filled from lead data
+5. On success → redirect to /purchase/success
+
+### Success Page (`/purchase/success`)
+
+**URL:** `/purchase/success?session_id={stripe_session_id}`
+
+**Layout:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  [Logo: 120px]                                                  │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│                          ┌─────┐                                │
+│                          │  ✓  │                                │
+│                          └─────┘                                │
+│                                                                 │
+│                 Thank you for your purchase!                    │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  Your report for {{company}} is being generated and will be     │
+│  delivered to {{email}} within the next few minutes.            │
+│                                                                 │
+│  Check your inbox (and spam folder, just in case).              │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  Questions? Reply to your delivery email.                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Success Icon:**
+```css
+.success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-status-success-bg);  /* rgba(34,197,94,0.1) */
+  border: 2px solid var(--color-status-success-text);  /* #22C55E */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-8);
+}
+
+.success-icon svg {
+  width: 32px;
+  height: 32px;
+  color: var(--color-status-success-text);
+}
+```
+
+**Typography:**
+| Element | Size | Weight | Color |
+|---------|------|--------|-------|
+| Headline | 32px/28px | 700 | --color-text-primary |
+| Body (delivery info) | 18px/16px | 400 | --color-text-secondary |
+| Body (spam note) | 16px | 400 | --color-text-muted |
+| Help text | 16px | 400 | --color-text-secondary |
+
+**Spacing:**
+- Page padding: same as landing page (--spacing-section-lg top)
+- Icon to headline: 32px (--spacing-8)
+- Headline to divider: 24px (--spacing-6)
+- Divider to body: 24px (--spacing-6)
+- Paragraph spacing: 16px (--spacing-4)
+- Body to final divider: 32px (--spacing-8)
+- Final divider to help text: 24px (--spacing-6)
+
+**Accessibility:**
+- Focus on page load: none (informational page)
+- aria-live="polite" on success message container
+
+### Error States
+
+| Scenario | User Experience |
+|----------|-----------------|
+| Payment fails | Stripe shows error on checkout page, user can retry |
+| User cancels | Returns to landing page, button returns to default state |
+| Network error during checkout init | Toast notification (see below) |
+
+### Toast Notification Component
+
+For transient errors (network failures, API errors before Stripe redirect).
+
+**Layout:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ⚠  Connection error. Please try again.                    ✕   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Styling:**
+```css
+.toast {
+  position: fixed;
+  bottom: var(--spacing-6);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);  /* 1200 */
+
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+
+  padding: var(--spacing-3) var(--spacing-4);
+  max-width: 400px;
+
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-status-error-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.toast-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-status-error-text);
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.toast-dismiss {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.toast-dismiss:hover {
+  color: var(--color-text-primary);
+}
+```
+
+**Behavior:**
+| Property | Value |
+|----------|-------|
+| Entry animation | Slide up + fade in, 200ms ease-out |
+| Auto-dismiss | 5 seconds |
+| Exit animation | Fade out, 150ms ease-in |
+| Dismissible | Yes (click X or tap anywhere on toast) |
+| Stacking | One toast at a time (new replaces old) |
+
+**Accessibility:**
+- `role="alert"` for screen reader announcement
+- `aria-live="assertive"` for immediate announcement
+- Dismiss button: `aria-label="Dismiss notification"`
+
+---
+
+## PERFORMANCE CONSIDERATIONS
+
+### Target Metrics
+
+| Metric | Target |
+|--------|--------|
+| LCP (Largest Contentful Paint) | < 2.5s |
+| FID (First Input Delay) | < 100ms |
+| CLS (Cumulative Layout Shift) | < 0.1 |
+
+### Image Optimization
+
+- Format: WebP with JPEG fallback
+- Desktop screenshot: max 1200px width, quality 80
+- Mobile screenshot: max 600px width, quality 80
+- Lazy loading for all images below fold
+
+### Font Loading
+
+```css
+@font-face {
+  font-family: 'Inter';
+  font-display: swap;
+  src: url('/fonts/inter-var.woff2') format('woff2');
+}
+```
+
+### Critical CSS
+
+Inline styles for above-fold content:
+- Page background
+- Header/logo
+- Hero section typography
+- Screenshot containers (dimensions only)
+
+---
+
+## DESIGN SYSTEM DEVIATIONS
+
+The following deviations from the standard design system tokens are noted:
+
+| Element | Design System | This Spec | Reason |
+|---------|---------------|-----------|--------|
+| Guarantee section bg | None | var(--color-bg-subtle) | Visual differentiation needed |
+| Score color by value | Single color | Conditional coloring | UX improvement for score context |
+| CTA card border | Standard | Gradient accent | Increased visual hierarchy for conversion |
+
+---
+
+## IMPLEMENTATION CHECKLIST
+
+### Global
+- [ ] CSS variables from design system tokens
+- [ ] Container and breakpoint utilities
+- [ ] Divider component
+- [ ] Skeleton/shimmer animation utility
+
+### Components
+- [ ] Logo (SVG, responsive sizes, not clickable)
+- [ ] Hero section with screenshots (aspect-ratio containers)
+- [ ] Metric display box
+- [ ] Value list (bullet + title + description)
+- [ ] CTA card with gradient border accent
+- [ ] Primary CTA button (all states: default, hover, active, focus, loading, disabled)
+- [ ] Guarantee section (subtle background)
+- [ ] FAQ accordion (grid-template-rows animation, first item open)
+- [ ] Mobile sticky CTA (scroll detection, viewport visibility)
+- [ ] Toast notification component
+- [ ] Success page with icon
+
+### Data & State
+- [ ] Required data contract validation (error if missing fields)
+- [ ] Initial skeleton state during data load
+- [ ] Company name length handling (scale/truncate)
+- [ ] Score color by value
+- [ ] Issue count singular/plural grammar
+
+### Checkout
+- [ ] CTA → loading state → Stripe redirect
+- [ ] Success page layout and styling
+- [ ] Cancel return handling
+
+### Accessibility
+- [ ] Focus states on all interactive elements
+- [ ] ARIA labels (score, dollar range, decorative icons)
+- [ ] Keyboard navigation (FAQ arrows)
+- [ ] Reduced motion support
+- [ ] Semantic landmarks
+
+### Performance
+- [ ] Screenshot aspect-ratio containers (CLS prevention)
+- [ ] Image lazy loading
+- [ ] Font preload with swap
+- [ ] Critical CSS inline
+
+---
+
+## CODEBASE NOTES
+
+### Existing `utm` Prop Naming Issue
+
+The existing `PaymentElementWrapper` component has a prop named `utm` that actually receives the raw JWT token (`sid`), not UTM attribution data. This is a naming mismatch.
+
+**Recommendation for future refactor:**
+- Rename `utm` → `purchaseToken` or `sid`
+- If actual UTM attribution is needed, add separate props: `utm_source`, `utm_campaign`, etc.
+
+This is an existing codebase issue, not introduced by this spec.
+
+---
+
+### Status: READY FOR IMPLEMENTATION

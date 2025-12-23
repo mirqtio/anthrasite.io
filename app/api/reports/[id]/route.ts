@@ -6,9 +6,11 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const leadId = parseInt(params.id)
+  // Next.js 15: params is now a Promise
+  const { id } = await params
+  const leadId = parseInt(id)
 
   if (isNaN(leadId)) {
     return NextResponse.json({ error: 'Invalid Lead ID' }, { status: 400 })

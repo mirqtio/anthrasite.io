@@ -29,10 +29,11 @@ const submitSchema = z.object({
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
-    const { token } = params
+    // Next.js 15: params is now a Promise
+    const { token } = await params
 
     // Validate JWT token
     const payload = await validateSurveyToken(token)
