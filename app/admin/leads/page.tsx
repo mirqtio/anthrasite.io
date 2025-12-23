@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic' // Always fresh data
 export default async function LeadsPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     q?: string
     sort?: string
     order?: string
@@ -19,19 +19,21 @@ export default async function LeadsPage({
     state?: string
     zip?: string
     naics?: string
-  }
+  }>
 }) {
+  // Next.js 15: searchParams is now a Promise
+  const params = await searchParams
   const sql = getSql()
-  const query = searchParams.q || ''
-  const sort = searchParams.sort || 'created_at'
-  const order = searchParams.order === 'asc' ? 'ASC' : 'DESC'
-  const limit = parseInt(searchParams.limit || '50')
+  const query = params.q || ''
+  const sort = params.sort || 'created_at'
+  const order = params.order === 'asc' ? 'ASC' : 'DESC'
+  const limit = parseInt(params.limit || '50')
 
-  const statusFilter = searchParams.status ?? null
-  const cityFilter = searchParams.city ?? null
-  const stateFilter = searchParams.state ?? null
-  const zipFilter = searchParams.zip ?? null
-  const naicsFilter = searchParams.naics ?? null
+  const statusFilter = params.status ?? null
+  const cityFilter = params.city ?? null
+  const stateFilter = params.state ?? null
+  const zipFilter = params.zip ?? null
+  const naicsFilter = params.naics ?? null
 
   // Whitelist sort columns to prevent SQL injection
   const validSorts: Record<string, any> = {
@@ -100,7 +102,7 @@ export default async function LeadsPage({
       <MasterList
         leads={leads}
         currentSort={sort}
-        currentOrder={searchParams.order === 'asc' ? 'asc' : 'desc'}
+        currentOrder={params.order === 'asc' ? 'asc' : 'desc'}
         currentLimit={limit}
       />
     </div>
