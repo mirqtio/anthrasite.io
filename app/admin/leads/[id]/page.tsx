@@ -9,13 +9,15 @@ export const dynamic = 'force-dynamic'
 export default async function LeadDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
+  // Next.js 15: params is now a Promise
+  const { id } = await params
   const sql = getSql()
-  const leadId = parseInt(params.id)
+  const leadId = parseInt(id)
 
   if (isNaN(leadId)) {
-    return <div className="text-white p-8">Invalid Lead ID: {params.id}</div>
+    return <div className="text-white p-8">Invalid Lead ID: {id}</div>
   }
 
   try {
