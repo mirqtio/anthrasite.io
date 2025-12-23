@@ -39,6 +39,7 @@
     "scripts/**/*",
     "CI_logs/**/*",
     "_archive/**/*",
+    "design-system/**/*",
     "playwright*.config*.ts",
     "*.js",
     "*.mjs"
