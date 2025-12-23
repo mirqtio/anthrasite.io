@@ -37,19 +37,19 @@ export async function triggerBatchPhaseD(
   const results: BatchOperationResult[] = []
   const batchId = randomUUID() // Generate a unique batch ID for this operation
 
-  // 2. Resolve Eligible Runs (Most recent run with a memo)
-  // We do this in a loop for simplicity, but could be bulk query if performance needed.
+  // 2. Resolve Eligible Runs - v2 profiles don't need memos, get most recent run with pre-purchase data
   for (const leadId of leadIds) {
     try {
       const [row] = await sql`
         SELECT r.id_str AS run_id,
                r.reasoning_memo_s3_key,
+               r.report_config_profile,
                COALESCE(l.company, '') AS business_name,
                COALESCE(r.started_at, r.created_at) AS t
         FROM runs r
         JOIN leads l ON l.id = r.lead_id
-        WHERE r.lead_id = ${leadId} 
-          AND r.reasoning_memo_s3_key IS NOT NULL
+        WHERE r.lead_id = ${leadId}
+          AND r.phase_a_status = 'completed'
         ORDER BY t DESC
         LIMIT 1
       `
@@ -58,26 +58,27 @@ export async function triggerBatchPhaseD(
         results.push({
           leadId,
           status: 'skipped',
-          reason: 'No run with memo found',
+          reason: 'No completed Phase A run found',
         })
         continue
       }
 
-      // 3. Idempotent Workflow Start
-      const workflowId = `premium-report-${row.run_id}`
+      // 3. Workflow Start - use timestamp to allow re-running
+      const timestamp = Date.now()
+      const workflowId = `premium-report-${row.run_id}-${timestamp}`
 
       await client.workflow.start('PhaseDReportWorkflow', {
         workflowId,
         taskQueue: 'assessment-pipeline',
-        workflowIdReusePolicy: 'ALLOW_DUPLICATE_FAILED_ONLY', // Allow retry after failure/termination, prevent double-start of running
         args: [
           {
             run_id: row.run_id,
             lead_id: leadId,
             batch_id: batchId,
             business_name: row.business_name,
-            memo_s3_key: row.reasoning_memo_s3_key,
-            skip_synthesis: false, // Full run
+            memo_s3_key: row.reasoning_memo_s3_key || '',
+            skip_synthesis: false,
+            report_config_profile: row.report_config_profile || null,
           },
         ],
       })
