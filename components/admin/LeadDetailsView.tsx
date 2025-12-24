@@ -51,7 +51,10 @@ export function LeadDetailsView({
       company: lead.company || '',
       domain: lead.domain || '',
       url: lead.url || '',
-      baseline_monthly_revenue: lead.baseline_monthly_revenue || 0,
+      // Convert cents to dollars for display (stored in cents, user enters dollars)
+      baseline_monthly_revenue: lead.baseline_monthly_revenue
+        ? lead.baseline_monthly_revenue / 100
+        : 0,
       employee_size: lead.employee_size,
       naics_code: lead.naics_code || '',
       address: lead.address || '',
@@ -211,7 +214,7 @@ export function LeadDetailsView({
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-white/5 border border-white/10 rounded">
                 <div className="text-xs text-white/40 uppercase tracking-wider mb-1">
-                  Revenue <span className="text-red-500">*</span>
+                  Revenue ($) <span className="text-red-500">*</span>
                 </div>
                 {isEditing ? (
                   <>

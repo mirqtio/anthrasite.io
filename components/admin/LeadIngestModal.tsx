@@ -116,7 +116,8 @@ export function LeadIngestModal({
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wider text-white/50 mb-1">
-                  Est. Monthly Revenue <span className="text-red-500">*</span>
+                  Est. Monthly Revenue ($){' '}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -124,7 +125,7 @@ export function LeadIngestModal({
                     valueAsNumber: true,
                   })}
                   className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                  placeholder="50000"
+                  placeholder="50000 (e.g. $50,000/month)"
                 />
                 {errors.baseline_monthly_revenue && (
                   <span className="text-red-500 text-xs">

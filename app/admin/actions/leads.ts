@@ -29,13 +29,15 @@ export async function updateLeadDetails(leadId: number, data: LeadFormData) {
   } = result.data
 
   // 2. Update Lead
+  // Note: baseline_monthly_revenue is stored in CENTS (matches Data Axle ingestion)
+  // UI input is dollars, so we multiply by 100 here
   await sql`
-    UPDATE leads 
-    SET 
+    UPDATE leads
+    SET
       company = ${company},
       domain = ${domain},
       url = ${url || null},
-      baseline_monthly_revenue = ${baseline_monthly_revenue},
+      baseline_monthly_revenue = ${baseline_monthly_revenue ? baseline_monthly_revenue * 100 : 0},
       employee_size = ${employee_size || null},
       naics_code = ${naics_code || null},
       address = ${address || null},
