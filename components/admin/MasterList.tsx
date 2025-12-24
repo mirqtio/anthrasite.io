@@ -348,7 +348,7 @@ export function MasterList({
                 {visibleColumns.revenue && (
                   <td className="p-4 text-right font-mono text-white/70">
                     {lead.baseline_monthly_revenue
-                      ? `$${(lead.baseline_monthly_revenue / 1000).toFixed(0)}k`
+                      ? `$${(lead.baseline_monthly_revenue / 100 / 1000).toFixed(1)}k`
                       : '-'}
                   </td>
                 )}

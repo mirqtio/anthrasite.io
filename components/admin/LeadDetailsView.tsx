@@ -231,7 +231,7 @@ export function LeadDetailsView({
                 ) : (
                   <div className="text-xl font-mono text-white">
                     {lead.baseline_monthly_revenue
-                      ? `$${(lead.baseline_monthly_revenue / 1000).toFixed(0)}k`
+                      ? `$${(lead.baseline_monthly_revenue / 100 / 1000).toFixed(1)}k`
                       : '-'}
                   </div>
                 )}
