@@ -1,18 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { SignJWT } from 'jose'
+import { v4 as uuidv4 } from 'uuid'
 import { validateSurveyToken } from '@/lib/survey/validation'
 import { generateReportPresignedUrl, validateS3Config } from '@/lib/survey/s3'
 import { logReportAccess } from '@/lib/survey/storage'
 import { lookupReportS3Key } from '@/lib/survey/reports'
 
 /**
+ * Generate a renewed report token with fresh expiration
+ * Used for automatic token renewal on report access
+ */
+async function generateRenewedReportToken(
+  leadId: string,
+  runId: string,
+  iss?: string
+): Promise<string> {
+  const secret = new TextEncoder().encode(process.env.SURVEY_SECRET_KEY!)
+  const jti = uuidv4()
+
+  // 90-day expiration (matches LeadShop)
+  const exp = Math.floor(Date.now() / 1000) + 90 * 24 * 60 * 60
+
+  const token = await new SignJWT({
+    leadId,
+    runId,
+    jti,
+    scope: 'report:download',
+    iss: iss || 'leadshop',
+    version: 'v1',
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime(exp)
+    .setAudience('report')
+    .sign(secret)
+
+  return token
+}
+
+/**
  * GET /api/report/open?sid=<JWT>
  *
  * Redirect shim for secure report access:
- * 1. Validates JWT token
+ * 1. Validates JWT token (survey or report audience)
  * 2. Looks up report S3 key from database (Supabase)
- * 3. Generates pre-signed S3 URL on-demand (15 min expiry)
- * 4. Logs report access to database
- * 5. Redirects to pre-signed URL
+ * 3. For report tokens: renews token with fresh expiration (rolling 90-day access)
+ * 4. Generates pre-signed S3 URL on-demand (15 min expiry)
+ * 5. Logs report access to database
+ * 6. Redirects to pre-signed URL
  */
 export async function GET(request: NextRequest) {
   try {
@@ -20,6 +55,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const sid = searchParams.get('sid')
     const forceDownload = searchParams.get('download') === '1'
+    const alreadyRenewed = searchParams.get('renewed') === '1'
 
     if (!sid) {
       console.error('[Report Open] Missing sid parameter')
@@ -59,6 +95,8 @@ export async function GET(request: NextRequest) {
       leadId: payload.leadId,
       runId: payload.runId,
       jti: payload.jti,
+      aud: payload.aud,
+      scope: payload.scope,
     })
 
     // Verify required fields
@@ -69,6 +107,43 @@ export async function GET(request: NextRequest) {
         { error: 'invalid_token', message: 'Token missing required fields' },
         { status: 400 }
       )
+    }
+
+    // Token renewal for report tokens (rolling 90-day access)
+    // Only renew if not already renewed in this request chain (prevents infinite loops)
+    const isReportToken = payload.aud === 'report'
+    if (isReportToken && !alreadyRenewed && payload.leadId && payload.runId) {
+      console.log('[Report Open] Renewing report token for rolling access')
+      try {
+        const renewedToken = await generateRenewedReportToken(
+          payload.leadId,
+          payload.runId,
+          payload.iss
+        )
+
+        // Build renewal redirect URL
+        const renewalUrl = new URL(request.url)
+        renewalUrl.searchParams.set('sid', renewedToken)
+        renewalUrl.searchParams.set('renewed', '1')
+        // Preserve download param
+        if (forceDownload) {
+          renewalUrl.searchParams.set('download', '1')
+        }
+
+        console.log('[Report Open] Redirecting with renewed token')
+        const response = NextResponse.redirect(renewalUrl.toString(), 302)
+        response.headers.set(
+          'Cache-Control',
+          'no-store, no-cache, must-revalidate'
+        )
+        return response
+      } catch (renewError) {
+        console.error(
+          '[Report Open] Token renewal failed (continuing with original):',
+          renewError instanceof Error ? renewError.message : String(renewError)
+        )
+        // Continue with original token if renewal fails
+      }
     }
 
     let reportS3Key: string | null = null

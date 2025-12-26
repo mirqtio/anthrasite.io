@@ -1,10 +1,15 @@
-import { jwtVerify, importJWK } from 'jose'
+import { jwtVerify } from 'jose'
 import type { SurveyTokenPayload } from './types'
+import { VALID_AUDIENCES, VALID_SCOPES } from './types'
 import crypto from 'crypto'
 
 /**
- * Validate survey JWT token
+ * Validate survey or report JWT token
  * Checks signature, expiration, audience, scope, and required fields
+ *
+ * Accepts:
+ * - Survey tokens: aud='survey', scope='feedback'
+ * - Report tokens: aud='report', scope='report:download'
  */
 export async function validateSurveyToken(
   token: string
@@ -18,16 +23,34 @@ export async function validateSurveyToken(
     // Create symmetric key from secret
     const secret = new TextEncoder().encode(process.env.SURVEY_SECRET_KEY)
 
-    // Verify JWT
+    // Verify JWT - accept multiple audiences
     const { payload } = await jwtVerify(token, secret, {
       algorithms: ['HS256'],
-      audience: 'survey',
+      audience: VALID_AUDIENCES as unknown as string[],
     })
 
     // Validate required fields
     // leadId is optional for public surveys
-    if (!payload.jti || payload.scope !== 'feedback') {
-      console.error('Token missing required fields or invalid scope')
+    if (!payload.jti) {
+      console.error('Token missing required jti field')
+      return null
+    }
+
+    // Validate scope matches audience
+    const scope = payload.scope as string
+    if (!VALID_SCOPES.includes(scope as (typeof VALID_SCOPES)[number])) {
+      console.error('Invalid scope:', scope)
+      return null
+    }
+
+    // Enforce scope/audience consistency
+    const aud = payload.aud as string
+    if (aud === 'survey' && scope !== 'feedback') {
+      console.error('Survey tokens must have scope=feedback')
+      return null
+    }
+    if (aud === 'report' && scope !== 'report:download') {
+      console.error('Report tokens must have scope=report:download')
       return null
     }
 

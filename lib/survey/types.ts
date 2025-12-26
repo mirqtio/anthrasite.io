@@ -7,6 +7,7 @@ export interface SurveyTokenPayload {
   jti: string
   aud: string
   scope: string
+  iss?: string // Issuer (e.g., 'leadshop' for report tokens)
   version?: string
   batchId?: string
   source?: string
@@ -14,6 +15,14 @@ export interface SurveyTokenPayload {
   iat: number
   exp: number
 }
+
+// Valid token audiences
+export const VALID_AUDIENCES = ['survey', 'report'] as const
+export type TokenAudience = (typeof VALID_AUDIENCES)[number]
+
+// Valid token scopes
+export const VALID_SCOPES = ['feedback', 'report:download'] as const
+export type TokenScope = (typeof VALID_SCOPES)[number]
 
 // Question Types
 export type QuestionType =
