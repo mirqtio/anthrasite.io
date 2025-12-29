@@ -337,7 +337,7 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
                 </div>
-                <h4 className="text-[20px] md:text-[24px] font-medium mb-3">
+                <h4 className="text-[18px] md:text-[20px] font-medium mb-3">
                   Load Performance
                 </h4>
                 <p className="text-[18px] md:text-[20px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
@@ -350,7 +350,7 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#DC2626' }}>
                   47%
                 </div>
-                <h4 className="text-[20px] md:text-[24px] font-medium mb-3">
+                <h4 className="text-[18px] md:text-[20px] font-medium mb-3">
                   Mobile Experience
                 </h4>
                 <p className="text-[18px] md:text-[20px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
@@ -363,7 +363,7 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#22C55E' }}>
                   $$
                 </div>
-                <h4 className="text-[20px] md:text-[24px] font-medium mb-3">
+                <h4 className="text-[18px] md:text-[20px] font-medium mb-3">
                   Revenue Impact
                 </h4>
                 <p className="text-[18px] md:text-[20px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">

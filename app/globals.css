@@ -469,8 +469,8 @@
 
 @layer utilities {
   .text-header {
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 32px;
+    font-weight: 600;
     letter-spacing: 0.02em;
     opacity: 0.5;
     margin-bottom: 60px;
@@ -485,7 +485,7 @@
 
   @media (max-width: 768px) {
     .text-header {
-      font-size: 20px;
+      font-size: 28px;
       margin-bottom: 40px;
     }
 
