@@ -15,11 +15,11 @@ interface HookSectionProps {
 function getEffortClasses(effort: EffortLevel): string {
   switch (effort) {
     case 'EASY':
-      return 'bg-status-success-bg text-status-success-text'
+      return 'bg-[#22C55E]/15 text-[#22C55E]'
     case 'MODERATE':
-      return 'bg-status-warning-bg text-status-warning-text'
+      return 'bg-[#F59E0B]/15 text-[#F59E0B]'
     case 'COMPLEX':
-      return 'bg-status-error-bg text-status-error-text'
+      return 'bg-[#DC2626]/15 text-[#DC2626]'
   }
 }
 
@@ -29,29 +29,29 @@ export function HookSection({
   impactHigh,
 }: HookSectionProps) {
   return (
-    <div className="space-y-gap-lg">
+    <div className="space-y-6">
       {/* Visually hidden heading for accessibility */}
       <h2 id="hook-heading" className="sr-only">
         Key Finding
       </h2>
 
       {/* Issue Brief Card */}
-      <div className="card-container p-component-lg bg-bg-surface border border-border-default rounded-lg">
-        <div className="flex flex-col gap-gap-sm">
+      <div className="p-4 bg-[#141414] border border-white/10 rounded-lg">
+        <div className="flex flex-col gap-2">
           {/* Title + Effort Badge Row */}
-          <div className="flex flex-wrap items-start gap-gap-sm">
-            <h3 className="text-text-primary text-lg font-semibold leading-tight flex-1 min-w-0">
+          <div className="flex flex-wrap items-start gap-2">
+            <h3 className="text-white text-lg font-semibold leading-tight flex-1 min-w-0">
               {hookOpportunity.title}
             </h3>
             <span
-              className={`px-component-sm py-1 text-xs font-semibold rounded-sm uppercase tracking-wider whitespace-nowrap ${getEffortClasses(hookOpportunity.effort)}`}
+              className={`px-2 py-1 text-xs font-semibold rounded-sm uppercase tracking-wider whitespace-nowrap ${getEffortClasses(hookOpportunity.effort)}`}
             >
               {hookOpportunity.effort}
             </span>
           </div>
 
           {/* Description */}
-          <p className="text-text-secondary text-base leading-relaxed">
+          <p className="text-white/70 text-base leading-relaxed">
             {hookOpportunity.description}
           </p>
         </div>
@@ -59,23 +59,23 @@ export function HookSection({
 
       {/* Metric Box */}
       <div className="flex justify-center">
-        <div className="px-component-xl py-component-lg bg-bg-elevated border border-border-default rounded-md shadow-sm">
-          <div className="flex flex-col items-center gap-gap-xs">
+        <div className="px-6 py-4 bg-[#1A1A1A] border border-white/10 rounded-md shadow-sm">
+          <div className="flex flex-col items-center gap-1">
             {/* Metric Label */}
-            <span className="text-text-muted text-sm uppercase tracking-wider">
+            <span className="text-white/50 text-sm uppercase tracking-wider">
               {hookOpportunity.anchorMetric.label}
             </span>
 
             {/* Value → Target */}
-            <div className="flex items-center gap-gap-sm">
-              <span className="text-text-primary text-2xl font-bold">
+            <div className="flex items-center gap-2">
+              <span className="text-white text-2xl font-bold">
                 {hookOpportunity.anchorMetric.value}
               </span>
               <ArrowRight
-                className="w-5 h-5 text-text-muted"
+                className="w-5 h-5 text-white/50"
                 aria-hidden="true"
               />
-              <span className="text-status-success-text text-2xl font-bold">
+              <span className="text-[#22C55E] text-2xl font-bold">
                 {hookOpportunity.anchorMetric.target}
               </span>
             </div>
@@ -84,16 +84,16 @@ export function HookSection({
       </div>
 
       {/* Divider */}
-      <hr className="border-0 h-px bg-border-default w-2/3 mx-auto" />
+      <hr className="border-0 h-px bg-white/10 w-2/3 mx-auto" />
 
       {/* Dollar Range */}
       <div className="text-center">
         <p
-          className="text-text-secondary text-lg"
+          className="text-white/70 text-lg"
           aria-label={`Estimated monthly impact: ${impactLow} to ${impactHigh} dollars`}
         >
           We estimate you&apos;re leaving{' '}
-          <span className="text-text-primary font-semibold">
+          <span className="text-white font-semibold">
             ~{impactLow} – {impactHigh}
           </span>{' '}
           on the table every month.

@@ -36,36 +36,36 @@ export function ValueSection({ company, issueCount }: ValueSectionProps) {
   ]
 
   return (
-    <div className="space-y-gap-lg">
+    <div className="space-y-6">
       {/* Section Header */}
-      <div className="text-center space-y-gap-sm">
+      <div className="text-center space-y-2">
         <h2
           id="value-heading"
-          className="text-text-primary text-2xl sm:text-3xl font-bold leading-tight"
+          className="text-white text-2xl sm:text-3xl font-bold leading-tight"
         >
           What&apos;s in your report
         </h2>
-        <p className="text-text-secondary text-base sm:text-lg max-w-xl mx-auto">
+        <p className="text-white/70 text-base sm:text-lg max-w-xl mx-auto">
           A detailed analysis of {company}, organized by what matters most to
           your bottom line.
         </p>
       </div>
 
       {/* Value List */}
-      <div className="space-y-gap-md">
+      <div className="space-y-4">
         {valueItems.map((item, index) => (
-          <div key={index} className="flex gap-gap-sm">
+          <div key={index} className="flex gap-2">
             {/* Bullet */}
             <div
-              className="w-2 h-2 rounded-full bg-interactive-cta flex-shrink-0 mt-2"
+              className="w-2 h-2 rounded-full bg-[#0066FF] flex-shrink-0 mt-2"
               aria-hidden="true"
             />
             {/* Content */}
             <div>
-              <span className="text-text-primary text-base font-semibold">
+              <span className="text-white text-base font-semibold">
                 {item.title}
               </span>
-              <span className="text-text-secondary text-base">
+              <span className="text-white/70 text-base">
                 {' '}
                 {item.description}
               </span>
@@ -75,15 +75,15 @@ export function ValueSection({ company, issueCount }: ValueSectionProps) {
       </div>
 
       {/* Format Line */}
-      <p className="text-center text-text-secondary text-base font-medium">
+      <p className="text-center text-white/70 text-base font-medium">
         PDF, delivered to your inbox in minutes.
       </p>
 
       {/* Divider */}
-      <hr className="border-0 h-px bg-border-default w-2/3 mx-auto" />
+      <hr className="border-0 h-px bg-white/10 w-2/3 mx-auto" />
 
       {/* Differentiator */}
-      <p className="text-center text-text-primary text-lg font-medium max-w-lg mx-auto">
+      <p className="text-center text-white text-lg font-medium max-w-lg mx-auto">
         Most audits give you scores. This report tells you what those scores
         mean for your business—and which problems to tackle first.
       </p>

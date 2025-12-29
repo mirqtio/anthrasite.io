@@ -80,8 +80,8 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
   }, [context.businessId, context.leadId, token, isCheckoutLoading])
 
   return (
-    <div className="min-h-screen bg-bg-canvas">
-      {/* ADR-P14: landing-container class prevents pinched layouts globally */}
+    <div className="min-h-screen bg-[#0A0A0A]">
+      {/* landing-container class prevents pinched layouts */}
       <div className="landing-container">
         <div className="space-y-8">
           {/* Section 1: Hero */}
@@ -113,12 +113,12 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
           {/* Section 4: Why Trust Us - Simple text, inline here */}
           <section
             aria-labelledby="trust-heading"
-            className="py-section-sm text-center"
+            className="py-12 text-center"
           >
             <h2 id="trust-heading" className="sr-only">
               Why Trust Us
             </h2>
-            <p className="text-text-secondary text-base leading-relaxed max-w-xl mx-auto">
+            <p className="text-white/70 text-base leading-relaxed max-w-xl mx-auto">
               We&apos;ve helped hundreds of small businesses understand
               what&apos;s holding back their website. Our reports translate
               technical metrics into business impact—so you know exactly where

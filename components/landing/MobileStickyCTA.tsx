@@ -49,20 +49,19 @@ export function MobileStickyCTA({
         isVisible ? 'translate-y-0' : 'translate-y-full'
       }`}
       style={{
-        // Blur backdrop
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
       }}
       role="complementary"
       aria-label="Quick checkout"
     >
-      <div className="bg-bg-surface/95 border-t border-border-default px-component-md py-component-sm safe-area-inset-bottom">
+      <div className="bg-[#141414]/95 border-t border-white/10 px-3 py-2 safe-area-inset-bottom">
         <button
           onClick={onCheckout}
           disabled={isLoading}
-          className="w-full flex items-center justify-between gap-gap-sm px-component-lg py-component-md bg-interactive-cta hover:bg-interactive-cta-hover active:bg-interactive-cta-active disabled:bg-interactive-cta-disabled text-interactive-cta-text rounded-md shadow-cta transition-colors duration-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 disabled:cursor-not-allowed"
         >
-          <div className="flex items-center gap-gap-xs">
+          <div className="flex items-center gap-1">
             <Lock className="w-4 h-4" aria-hidden="true" />
             <span className="text-base font-semibold">
               Get Your Report — ${price}

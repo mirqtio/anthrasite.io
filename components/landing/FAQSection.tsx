@@ -23,21 +23,21 @@ function FAQAccordionItem({
 }: FAQAccordionItemProps) {
   return (
     <div
-      className="border border-border-default rounded-md overflow-hidden transition-colors duration-fast hover:border-border-strong"
+      className="border border-white/10 rounded-md overflow-hidden transition-colors duration-150 hover:border-white/20"
       data-state={isOpen ? 'open' : 'closed'}
     >
       <button
         onClick={onToggle}
-        className="flex justify-between items-center w-full p-component-md bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring"
+        className="flex justify-between items-center w-full p-3 bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0066FF]"
         aria-expanded={isOpen}
         aria-controls={`faq-content-${index}`}
         id={`faq-trigger-${index}`}
       >
-        <span className="text-text-primary text-base sm:text-lg font-medium pr-gap-sm">
+        <span className="text-white text-base sm:text-lg font-medium pr-2">
           {item.question}
         </span>
         <ChevronDown
-          className={`w-5 h-5 flex-shrink-0 text-text-muted transition-transform duration-normal ${
+          className={`w-5 h-5 flex-shrink-0 text-white/50 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
           aria-hidden="true"
@@ -49,14 +49,14 @@ function FAQAccordionItem({
         id={`faq-content-${index}`}
         role="region"
         aria-labelledby={`faq-trigger-${index}`}
-        className="grid transition-[grid-template-rows] duration-normal ease-ease-out"
+        className="grid transition-[grid-template-rows] duration-200 ease-out"
         style={{
           gridTemplateRows: isOpen ? '1fr' : '0fr',
         }}
       >
         <div className="overflow-hidden">
-          <div className="px-component-md pb-component-md">
-            <p className="text-text-secondary text-base leading-relaxed">
+          <div className="px-3 pb-3">
+            <p className="text-white/70 text-base leading-relaxed">
               {item.answer}
             </p>
           </div>
@@ -75,17 +75,17 @@ export function FAQSection({ items }: FAQSectionProps) {
   }
 
   return (
-    <div className="space-y-gap-md">
+    <div className="space-y-4">
       {/* Section Header */}
       <h2
         id="faq-heading"
-        className="text-text-primary text-xl sm:text-2xl font-bold text-center"
+        className="text-white text-xl sm:text-2xl font-bold text-center"
       >
         Questions?
       </h2>
 
       {/* Accordion Items */}
-      <div className="space-y-gap-sm">
+      <div className="space-y-2">
         {items.map((item, index) => (
           <FAQAccordionItem
             key={index}
