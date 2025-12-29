@@ -273,10 +273,10 @@ export function OrganicHomepage() {
             <h1 className="text-[64px] md:text-[80px] leading-[0.9] font-thin mb-8">
               Your website has untapped potential
             </h1>
-            <p className="text-[18px] md:text-[20px] font-medium opacity-70 mb-8 md:mb-0 max-w-[900px] mx-auto tracking-[0.02em]">
+            <h2 className="text-[20px] md:text-[24px] font-medium opacity-70 mb-8 md:mb-0 max-w-[900px] mx-auto tracking-[0.02em]">
               We analyze hundreds of data points to show you what to fix and
               what it's worth.
-            </p>
+            </h2>
 
             {/* CTA Button with Pulsing Rings */}
             <div
@@ -330,17 +330,17 @@ export function OrganicHomepage() {
         {/* Assessment Section */}
         <section id="assessment" className="section examples-section">
           <div className="max-w-[1200px] mx-auto">
-            <h2 className="text-header text-center">What This Looks Like</h2>
+            <h3 className="text-header text-center">What This Looks Like</h3>
 
             <div className="assessment-grid">
               <div className="text-center reveal-card" data-delay="0">
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
                 </div>
-                <h3 className="text-[20px] md:text-[24px] font-medium mb-3">
+                <h4 className="text-[20px] md:text-[24px] font-medium mb-3">
                   Load Performance
-                </h3>
-                <p className="text-[16px] md:text-[18px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
+                </h4>
+                <p className="text-[18px] md:text-[20px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
                   How fast your site loads on real devices, and what it's
                   costing you in lost customers.
                 </p>
@@ -350,10 +350,10 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#DC2626' }}>
                   47%
                 </div>
-                <h3 className="text-[20px] md:text-[24px] font-medium mb-3">
+                <h4 className="text-[20px] md:text-[24px] font-medium mb-3">
                   Mobile Experience
-                </h3>
-                <p className="text-[16px] md:text-[18px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
+                </h4>
+                <p className="text-[18px] md:text-[20px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
                   Where mobile visitors fail to convert, with specific
                   breakpoints identified.
                 </p>
@@ -363,10 +363,10 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#22C55E' }}>
                   $$
                 </div>
-                <h3 className="text-[20px] md:text-[24px] font-medium mb-3">
+                <h4 className="text-[20px] md:text-[24px] font-medium mb-3">
                   Revenue Impact
-                </h3>
-                <p className="text-[16px] md:text-[18px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
+                </h4>
+                <p className="text-[18px] md:text-[20px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
                   Estimated monthly revenue loss from technical issues,
                   calculated for your specific market.
                 </p>
@@ -386,7 +386,7 @@ export function OrganicHomepage() {
         {/* FAQ Section */}
         <section id="faq" className="section">
           <div className="container-tight">
-            <h2 className="text-header text-center">Questions</h2>
+            <h3 className="text-header text-center">Questions</h3>
 
             <div className="space-y-0">
               {[
@@ -493,7 +493,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
               <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">
                 Join the Waitlist
               </h3>
-              <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
+              <p className="text-[18px] md:text-[20px] opacity-70 mb-8">
                 We're currently assessing targeted SMB websites. Provide your
                 information below and we'll review your site and contact you as
                 soon as we launch.
@@ -572,7 +572,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
                 <h3 className="text-[32px] md:text-[32px] text-[24px] mb-6">
                   You're on the list!
                 </h3>
-                <p className="text-[17px] md:text-[17px] text-[15px] opacity-70 mb-8">
+                <p className="text-[18px] md:text-[20px] opacity-70 mb-8">
                   We'll analyze {domain} and send your report to {email} as soon
                   as we launch.
                 </p>
