@@ -273,14 +273,14 @@ export function OrganicHomepage() {
             <h1 className="text-[64px] md:text-[80px] leading-[0.9] font-thin mb-8">
               Your website has untapped potential
             </h1>
-            <p className="text-[17px] opacity-70 mb-0 max-w-[900px] mx-auto">
+            <p className="text-[17px] opacity-70 mb-8 md:mb-0 max-w-[900px] mx-auto">
               We analyze hundreds of data points to show you what to fix and
               what it's worth.
             </p>
 
             {/* CTA Button with Pulsing Rings */}
             <div
-              className="relative w-full md:inline-block -mt-[200px] md:-mt-[80px]"
+              className="relative w-full md:inline-block mt-0 md:-mt-[80px]"
               data-testid="hero-home"
             >
               <div className="pressure-visual">
