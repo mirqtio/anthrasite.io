@@ -169,7 +169,7 @@ export default function SurveyContainer({ token }: { token: string }) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: '#0a0a0a' }}
+        style={{ backgroundColor: '#232323' }}
       >
         <div className="text-white">Loading survey...</div>
       </div>
@@ -180,7 +180,7 @@ export default function SurveyContainer({ token }: { token: string }) {
     return (
       <div
         className="min-h-screen flex items-center justify-center px-4"
-        style={{ backgroundColor: '#0a0a0a' }}
+        style={{ backgroundColor: '#232323' }}
       >
         <div
           className="w-full bg-white rounded-lg shadow-lg p-8 text-center"
@@ -201,7 +201,7 @@ export default function SurveyContainer({ token }: { token: string }) {
   return (
     <div
       className="min-h-screen py-8 sm:py-12 px-4"
-      style={{ backgroundColor: '#0a0a0a' }}
+      style={{ backgroundColor: '#232323' }}
     >
       <div className="mx-auto" style={{ maxWidth: '768px' }}>
         {(state.step === 'before' ||

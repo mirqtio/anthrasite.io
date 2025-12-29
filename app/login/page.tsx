@@ -50,7 +50,7 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold text-white mb-2">
             Anthrasite Admin
           </h1>
-          <p className="text-white/40 text-sm">Sign in to access the portal</p>
+          <p className="text-white/50 text-sm">Sign in to access the portal</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">

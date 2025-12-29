@@ -468,7 +468,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
               </a>
               <a href="mailto:hello@anthrasite.io">Contact</a>
             </div>
-            <p className="text-[14px] opacity-30 mt-[20px]">
+            <p className="text-[14px] opacity-50 mt-[20px]">
               © {new Date().getFullYear()} Anthrasite. All rights reserved.
             </p>
           </div>

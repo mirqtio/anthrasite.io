@@ -4,7 +4,7 @@ import React from 'react'
 
 export function CleanDraftFocusPitch() {
   return (
-    <section className="py-24 bg-[#0A0A0A] border-t border-white/5">
+    <section className="py-24 bg-[#232323] border-t border-white/5">
       <div
         className="container mx-auto px-6 text-center"
         style={{ width: '100%', minWidth: '300px', maxWidth: '48rem' }}
@@ -25,7 +25,7 @@ export function CleanDraftFocusPitch() {
 
 export function CleanDraftUseIt() {
   return (
-    <section className="py-24 bg-[#0A0A0A] border-t border-white/5">
+    <section className="py-24 bg-[#232323] border-t border-white/5">
       <div
         className="container mx-auto px-6 text-center"
         style={{ width: '100%', minWidth: '300px', maxWidth: '56rem' }}
@@ -42,7 +42,7 @@ export function CleanDraftUseIt() {
 
 export function CleanDraftMethodology() {
   return (
-    <section className="py-24 bg-[#0A0A0A] border-t border-white/5">
+    <section className="py-24 bg-[#232323] border-t border-white/5">
       <div
         className="container mx-auto px-6 text-center"
         style={{ width: '100%', minWidth: '300px', maxWidth: '48rem' }}
@@ -71,7 +71,7 @@ export function CleanDraftFinalCTA({ price = 199 }: { price?: number }) {
   }
 
   return (
-    <section className="py-32 bg-[#0A0A0A]" id="checkout-target-anchor">
+    <section className="py-32 bg-[#232323]" id="checkout-target-anchor">
       <div
         className="container mx-auto px-6 text-center"
         style={{ width: '100%', minWidth: '300px' }}

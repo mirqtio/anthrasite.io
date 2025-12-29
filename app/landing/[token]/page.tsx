@@ -1,17 +1,20 @@
-import { Suspense } from "react";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { validatePurchaseToken, lookupLandingContext } from "@/lib/landing/context";
-import type { LandingContext } from "@/lib/landing/types";
-import { LandingPageClient } from "./LandingPageClient";
-import { LandingPageSkeleton } from "./loading";
+import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import {
+  validatePurchaseToken,
+  lookupLandingContext,
+} from '@/lib/landing/context'
+import type { LandingContext } from '@/lib/landing/types'
+import { LandingPageClient } from './LandingPageClient'
+import { LandingPageSkeleton } from './loading'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 interface LandingPageProps {
   params: Promise<{
-    token: string;
-  }>;
+    token: string
+  }>
 }
 
 /**
@@ -19,10 +22,10 @@ interface LandingPageProps {
  */
 function TokenError({ message }: { message: string }) {
   return (
-    <main className="min-h-screen bg-[#0A0A0A] text-white flex items-center justify-center font-sans">
+    <main className="min-h-screen bg-[#232323] text-white flex items-center justify-center font-sans">
       <div
-        className="mx-auto p-8 text-center bg-[#0A0A0A]"
-        style={{ width: "90vw", maxWidth: "28rem", minWidth: "300px" }}
+        className="mx-auto p-8 text-center bg-[#232323]"
+        style={{ width: '90vw', maxWidth: '28rem', minWidth: '300px' }}
       >
         <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/20 flex items-center justify-center">
           <svg
@@ -52,44 +55,44 @@ function TokenError({ message }: { message: string }) {
         </Link>
       </div>
     </main>
-  );
+  )
 }
 
 async function LandingContent({
   token,
   context,
 }: {
-  token: string;
-  context: LandingContext;
+  token: string
+  context: LandingContext
 }) {
-  return <LandingPageClient context={context} token={token} />;
+  return <LandingPageClient context={context} token={token} />
 }
 
 export default async function LandingPage(props: LandingPageProps) {
-  const params = await props.params;
-  const token = params.token;
+  const params = await props.params
+  const token = params.token
 
   if (!token) {
-    redirect("/");
+    redirect('/')
   }
 
-  const payload = await validatePurchaseToken(token);
+  const payload = await validatePurchaseToken(token)
 
   if (!payload) {
-    return <TokenError message="This link has expired or is invalid" />;
+    return <TokenError message="This link has expired or is invalid" />
   }
 
-  const context = await lookupLandingContext(payload.leadId, payload.runId);
+  const context = await lookupLandingContext(payload.leadId, payload.runId)
 
   if (!context) {
-    return <TokenError message="Report not found for this link" />;
+    return <TokenError message="Report not found for this link" />
   }
 
   return (
-    <main className="bg-[#0A0A0A] text-white" data-testid="landing-root">
+    <main className="bg-[#232323] text-white" data-testid="landing-root">
       <Suspense fallback={<LandingPageSkeleton />}>
         <LandingContent token={token} context={context} />
       </Suspense>
     </main>
-  );
+  )
 }

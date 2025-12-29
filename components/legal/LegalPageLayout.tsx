@@ -129,7 +129,7 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
           <Link href="/legal/do-not-sell">Do Not Sell or Share</Link>
           <a href="mailto:hello@anthrasite.io">Contact</a>
         </div>
-        <p className="text-tiny opacity-30">
+        <p className="text-tiny opacity-50">
           © {new Date().getFullYear()} Anthrasite. All rights reserved.
         </p>
       </footer>

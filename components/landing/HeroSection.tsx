@@ -23,7 +23,7 @@ export function HeroSection({
   const [imageError, setImageError] = useState(false)
 
   return (
-    <section className="relative bg-[#0A0A0A]" aria-labelledby="hero-heading">
+    <section className="relative bg-[#232323]" aria-labelledby="hero-heading">
       {/* Header - Logo + Tagline */}
       <header className="w-full px-6 pt-6 pb-4">
         <div className="flex flex-col">

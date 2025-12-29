@@ -93,7 +93,7 @@ export function PaymentElementWrapper({
           theme: 'night',
           variables: {
             colorPrimary: '#DDFB4C',
-            colorBackground: '#0A0A0A',
+            colorBackground: '#232323',
             colorText: '#FFFFFF',
             colorDanger: '#ef4444',
             fontFamily: 'system-ui, sans-serif',

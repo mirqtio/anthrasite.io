@@ -5,10 +5,10 @@ import type { Config } from 'tailwindcss'
  *
  * Core colors are defined in globals.css as CSS variables.
  * Use them directly: bg-[var(--bg)], text-[var(--primary)]
- * Or use hex values: bg-[#0A0A0A], text-[#0066FF]
+ * Or use hex values: bg-[#232323], text-[#0066FF]
  *
  * Color Reference:
- * - Background: #0A0A0A (--bg)
+ * - Background: #232323 (--bg)
  * - Surface: #141414 (--surface)
  * - Primary/CTA: #0066FF (--primary)
  * - Primary hover: #0052CC (--primary-hover)

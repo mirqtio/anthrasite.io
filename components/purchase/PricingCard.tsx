@@ -161,7 +161,7 @@ export function PricingCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-12 text-[17px] opacity-40"
+          className="text-center mt-12 text-[17px] opacity-50"
         >
           Secure payment · Instant delivery · 30-day guarantee
         </motion.p>

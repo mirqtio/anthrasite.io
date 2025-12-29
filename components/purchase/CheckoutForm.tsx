@@ -83,7 +83,7 @@ export function CheckoutForm({ businessName }: CheckoutFormProps) {
         )}
       </button>
 
-      <p className="text-center text-sm opacity-40">
+      <p className="text-center text-sm opacity-50">
         Secure payment · Report delivered by email · 14-day value guarantee
       </p>
     </form>

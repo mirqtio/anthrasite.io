@@ -32,7 +32,7 @@ export function CleanDraftHero({
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20">
       {/* Background with premium subtle glow */}
-      <div className="absolute inset-0 bg-[#0A0A0A]">
+      <div className="absolute inset-0 bg-[#232323]">
         {/* Subtle accent glow top-right */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full opacity-50" />
       </div>

@@ -5,9 +5,9 @@ import { SignOutButton } from '@/components/admin/SignOutButton'
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-[#232323] text-white font-sans selection:bg-blue-500/30">
       {/* Top Nav */}
-      <header className="fixed top-0 left-0 right-0 h-16 border-b border-white/10 bg-[#0A0A0A]/80 backdrop-blur-md z-50 flex items-center justify-between px-6">
+      <header className="fixed top-0 left-0 right-0 h-16 border-b border-white/10 bg-[#232323]/80 backdrop-blur-md z-50 flex items-center justify-between px-6">
         <div className="flex items-center gap-8">
           <Link
             href="/admin/leads"

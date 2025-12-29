@@ -1,6 +1,6 @@
 export const colors = {
   anthracite: {
-    black: '#0A0A0A',
+    black: '#232323',
     white: '#FFFFFF',
     blue: '#0066FF',
     gray: {

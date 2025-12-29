@@ -80,7 +80,7 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
   }, [context.businessId, context.leadId, token, isCheckoutLoading])
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-[#232323]">
       {/* landing-container class prevents pinched layouts */}
       <div className="landing-container">
         <div className="space-y-8">

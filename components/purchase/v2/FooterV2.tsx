@@ -5,7 +5,7 @@ import React from 'react'
 export function FooterV2() {
   return (
     <footer className="bg-anthracite-black border-t border-white/10 py-8 px-6">
-      <div className="flex flex-col md:flex-row md:justify-center items-center gap-2 md:gap-0 text-[12px] text-white/30">
+      <div className="flex flex-col md:flex-row md:justify-center items-center gap-2 md:gap-0 text-[12px] text-white/50">
         {/* Mobile: 2 lines. Desktop: 1 line. */}
         <div className="md:after:content-['·'] md:after:mx-2">
           © 2025 Anthrasite

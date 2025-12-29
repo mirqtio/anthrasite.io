@@ -19,10 +19,10 @@ export const CSS_VARIABLES = `
   /* ========== COLOR TOKENS ========== */
   
   /* Background */
-  --color-bg-canvas: #0A0A0A;
+  --color-bg-canvas: #232323;
   --color-bg-surface: #141414;
   --color-bg-elevated: #1A1A1A;
-  --color-bg-overlay: rgba(10, 10, 10, 0.85);
+  --color-bg-overlay: rgba(35, 35, 35, 0.85);
   --color-bg-scrim: rgba(0, 0, 0, 0.6);
   --color-bg-subtle: rgba(255, 255, 255, 0.03);
   --color-bg-hover: rgba(255, 255, 255, 0.05);
@@ -32,7 +32,7 @@ export const CSS_VARIABLES = `
   --color-text-secondary: #9CA3AF;
   --color-text-muted: #6B7280;
   --color-text-disabled: #4B5563;
-  --color-text-inverse: #0A0A0A;
+  --color-text-inverse: #232323;
   --color-text-link: #0066FF;
   --color-text-link-hover: #0052CC;
   
@@ -103,7 +103,7 @@ export const CSS_VARIABLES = `
   
   /* Focus Ring */
   --color-focus-ring: #0066FF;
-  --color-focus-ring-offset: #0A0A0A;
+  --color-focus-ring-offset: #232323;
   
   /* Skeleton/Loading */
   --color-skeleton-base: rgba(255, 255, 255, 0.05);
@@ -244,7 +244,7 @@ export const CSS_VARIABLES = `
   --color-bg-hover: rgba(0, 0, 0, 0.05);
   
   /* Text */
-  --color-text-primary: #0A0A0A;
+  --color-text-primary: #232323;
   --color-text-secondary: #4B5563;
   --color-text-muted: #6B7280;
   --color-text-disabled: #9CA3AF;
@@ -263,7 +263,7 @@ export const CSS_VARIABLES = `
   --color-interactive-secondary-hover: rgba(0, 0, 0, 0.1);
   --color-interactive-secondary-active: rgba(0, 0, 0, 0.15);
   --color-interactive-secondary-disabled: rgba(0, 0, 0, 0.03);
-  --color-interactive-secondary-text: #0A0A0A;
+  --color-interactive-secondary-text: #232323;
   
   /* Interactive - Tertiary/Ghost Button */
   --color-interactive-tertiary-hover: rgba(0, 0, 0, 0.05);
@@ -291,7 +291,7 @@ export const CSS_VARIABLES = `
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 }
-`;
+`
 
 // ============================================================================
 // TAILWIND CONFIG MAPPING
@@ -302,221 +302,221 @@ export const TAILWIND_CONFIG_EXTENSION = {
     extend: {
       colors: {
         // Background
-        "bg-canvas": "var(--color-bg-canvas)",
-        "bg-surface": "var(--color-bg-surface)",
-        "bg-elevated": "var(--color-bg-elevated)",
-        "bg-overlay": "var(--color-bg-overlay)",
-        "bg-scrim": "var(--color-bg-scrim)",
-        "bg-subtle": "var(--color-bg-subtle)",
-        "bg-hover": "var(--color-bg-hover)",
+        'bg-canvas': 'var(--color-bg-canvas)',
+        'bg-surface': 'var(--color-bg-surface)',
+        'bg-elevated': 'var(--color-bg-elevated)',
+        'bg-overlay': 'var(--color-bg-overlay)',
+        'bg-scrim': 'var(--color-bg-scrim)',
+        'bg-subtle': 'var(--color-bg-subtle)',
+        'bg-hover': 'var(--color-bg-hover)',
 
         // Text
-        "text-primary": "var(--color-text-primary)",
-        "text-secondary": "var(--color-text-secondary)",
-        "text-muted": "var(--color-text-muted)",
-        "text-disabled": "var(--color-text-disabled)",
-        "text-inverse": "var(--color-text-inverse)",
-        "text-link": "var(--color-text-link)",
-        "text-link-hover": "var(--color-text-link-hover)",
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        'text-muted': 'var(--color-text-muted)',
+        'text-disabled': 'var(--color-text-disabled)',
+        'text-inverse': 'var(--color-text-inverse)',
+        'text-link': 'var(--color-text-link)',
+        'text-link-hover': 'var(--color-text-link-hover)',
 
         // Border
-        "border-default": "var(--color-border-default)",
-        "border-subtle": "var(--color-border-subtle)",
-        "border-strong": "var(--color-border-strong)",
-        "border-focus": "var(--color-border-focus)",
+        'border-default': 'var(--color-border-default)',
+        'border-subtle': 'var(--color-border-subtle)',
+        'border-strong': 'var(--color-border-strong)',
+        'border-focus': 'var(--color-border-focus)',
 
         // Interactive
-        "interactive-cta": {
-          DEFAULT: "var(--color-interactive-cta-default)",
-          hover: "var(--color-interactive-cta-hover)",
-          active: "var(--color-interactive-cta-active)",
-          disabled: "var(--color-interactive-cta-disabled)",
-          text: "var(--color-interactive-cta-text)",
+        'interactive-cta': {
+          DEFAULT: 'var(--color-interactive-cta-default)',
+          hover: 'var(--color-interactive-cta-hover)',
+          active: 'var(--color-interactive-cta-active)',
+          disabled: 'var(--color-interactive-cta-disabled)',
+          text: 'var(--color-interactive-cta-text)',
         },
-        "interactive-secondary": {
-          DEFAULT: "var(--color-interactive-secondary-default)",
-          hover: "var(--color-interactive-secondary-hover)",
-          active: "var(--color-interactive-secondary-active)",
-          disabled: "var(--color-interactive-secondary-disabled)",
-          text: "var(--color-interactive-secondary-text)",
+        'interactive-secondary': {
+          DEFAULT: 'var(--color-interactive-secondary-default)',
+          hover: 'var(--color-interactive-secondary-hover)',
+          active: 'var(--color-interactive-secondary-active)',
+          disabled: 'var(--color-interactive-secondary-disabled)',
+          text: 'var(--color-interactive-secondary-text)',
         },
-        "interactive-tertiary": {
-          DEFAULT: "var(--color-interactive-tertiary-default)",
-          hover: "var(--color-interactive-tertiary-hover)",
-          active: "var(--color-interactive-tertiary-active)",
-          disabled: "var(--color-interactive-tertiary-disabled)",
-          text: "var(--color-interactive-tertiary-text)",
+        'interactive-tertiary': {
+          DEFAULT: 'var(--color-interactive-tertiary-default)',
+          hover: 'var(--color-interactive-tertiary-hover)',
+          active: 'var(--color-interactive-tertiary-active)',
+          disabled: 'var(--color-interactive-tertiary-disabled)',
+          text: 'var(--color-interactive-tertiary-text)',
         },
-        "interactive-destructive": {
-          DEFAULT: "var(--color-interactive-destructive-default)",
-          hover: "var(--color-interactive-destructive-hover)",
-          active: "var(--color-interactive-destructive-active)",
-          disabled: "var(--color-interactive-destructive-disabled)",
-          text: "var(--color-interactive-destructive-text)",
+        'interactive-destructive': {
+          DEFAULT: 'var(--color-interactive-destructive-default)',
+          hover: 'var(--color-interactive-destructive-hover)',
+          active: 'var(--color-interactive-destructive-active)',
+          disabled: 'var(--color-interactive-destructive-disabled)',
+          text: 'var(--color-interactive-destructive-text)',
         },
-        "interactive-input": {
-          DEFAULT: "var(--color-interactive-input-default)",
-          hover: "var(--color-interactive-input-hover)",
-          focus: "var(--color-interactive-input-focus)",
-          disabled: "var(--color-interactive-input-disabled)",
-          error: "var(--color-interactive-input-error)",
+        'interactive-input': {
+          DEFAULT: 'var(--color-interactive-input-default)',
+          hover: 'var(--color-interactive-input-hover)',
+          focus: 'var(--color-interactive-input-focus)',
+          disabled: 'var(--color-interactive-input-disabled)',
+          error: 'var(--color-interactive-input-error)',
         },
 
         // Status
-        "status-success": {
-          trim: "var(--color-status-success-trim)",
-          text: "var(--color-status-success-text)",
-          bg: "var(--color-status-success-bg)",
-          border: "var(--color-status-success-border)",
+        'status-success': {
+          trim: 'var(--color-status-success-trim)',
+          text: 'var(--color-status-success-text)',
+          bg: 'var(--color-status-success-bg)',
+          border: 'var(--color-status-success-border)',
         },
-        "status-warning": {
-          trim: "var(--color-status-warning-trim)",
-          text: "var(--color-status-warning-text)",
-          bg: "var(--color-status-warning-bg)",
-          border: "var(--color-status-warning-border)",
+        'status-warning': {
+          trim: 'var(--color-status-warning-trim)',
+          text: 'var(--color-status-warning-text)',
+          bg: 'var(--color-status-warning-bg)',
+          border: 'var(--color-status-warning-border)',
         },
-        "status-error": {
-          trim: "var(--color-status-error-trim)",
-          text: "var(--color-status-error-text)",
-          bg: "var(--color-status-error-bg)",
-          border: "var(--color-status-error-border)",
+        'status-error': {
+          trim: 'var(--color-status-error-trim)',
+          text: 'var(--color-status-error-text)',
+          bg: 'var(--color-status-error-bg)',
+          border: 'var(--color-status-error-border)',
         },
-        "status-info": {
-          trim: "var(--color-status-info-trim)",
-          text: "var(--color-status-info-text)",
-          bg: "var(--color-status-info-bg)",
-          border: "var(--color-status-info-border)",
+        'status-info': {
+          trim: 'var(--color-status-info-trim)',
+          text: 'var(--color-status-info-text)',
+          bg: 'var(--color-status-info-bg)',
+          border: 'var(--color-status-info-border)',
         },
 
         // Focus
-        "focus-ring": "var(--color-focus-ring)",
-        "focus-ring-offset": "var(--color-focus-ring-offset)",
+        'focus-ring': 'var(--color-focus-ring)',
+        'focus-ring-offset': 'var(--color-focus-ring-offset)',
 
         // Skeleton
-        "skeleton-base": "var(--color-skeleton-base)",
-        "skeleton-shimmer": "var(--color-skeleton-shimmer)",
+        'skeleton-base': 'var(--color-skeleton-base)',
+        'skeleton-shimmer': 'var(--color-skeleton-shimmer)',
       },
 
       fontFamily: {
-        primary: "var(--font-family-primary)",
-        mono: "var(--font-family-mono)",
+        primary: 'var(--font-family-primary)',
+        mono: 'var(--font-family-mono)',
       },
 
       fontSize: {
-        xs: "var(--font-size-xs)",
-        sm: "var(--font-size-sm)",
-        base: "var(--font-size-base)",
-        lg: "var(--font-size-lg)",
-        xl: "var(--font-size-xl)",
-        "2xl": "var(--font-size-2xl)",
-        "3xl": "var(--font-size-3xl)",
-        "4xl": "var(--font-size-4xl)",
-        "5xl": "var(--font-size-5xl)",
-        "6xl": "var(--font-size-6xl)",
+        xs: 'var(--font-size-xs)',
+        sm: 'var(--font-size-sm)',
+        base: 'var(--font-size-base)',
+        lg: 'var(--font-size-lg)',
+        xl: 'var(--font-size-xl)',
+        '2xl': 'var(--font-size-2xl)',
+        '3xl': 'var(--font-size-3xl)',
+        '4xl': 'var(--font-size-4xl)',
+        '5xl': 'var(--font-size-5xl)',
+        '6xl': 'var(--font-size-6xl)',
       },
 
       fontWeight: {
-        light: "var(--font-weight-light)",
-        regular: "var(--font-weight-regular)",
-        medium: "var(--font-weight-medium)",
-        semibold: "var(--font-weight-semibold)",
-        bold: "var(--font-weight-bold)",
+        light: 'var(--font-weight-light)',
+        regular: 'var(--font-weight-regular)',
+        medium: 'var(--font-weight-medium)',
+        semibold: 'var(--font-weight-semibold)',
+        bold: 'var(--font-weight-bold)',
       },
 
       lineHeight: {
-        tight: "var(--leading-tight)",
-        snug: "var(--leading-snug)",
-        normal: "var(--leading-normal)",
-        relaxed: "var(--leading-relaxed)",
-        loose: "var(--leading-loose)",
+        tight: 'var(--leading-tight)',
+        snug: 'var(--leading-snug)',
+        normal: 'var(--leading-normal)',
+        relaxed: 'var(--leading-relaxed)',
+        loose: 'var(--leading-loose)',
       },
 
       letterSpacing: {
-        tight: "var(--tracking-tight)",
-        normal: "var(--tracking-normal)",
-        wide: "var(--tracking-wide)",
+        tight: 'var(--tracking-tight)',
+        normal: 'var(--tracking-normal)',
+        wide: 'var(--tracking-wide)',
       },
 
       spacing: {
-        0: "var(--spacing-0)",
-        1: "var(--spacing-1)",
-        2: "var(--spacing-2)",
-        3: "var(--spacing-3)",
-        4: "var(--spacing-4)",
-        5: "var(--spacing-5)",
-        6: "var(--spacing-6)",
-        8: "var(--spacing-8)",
-        10: "var(--spacing-10)",
-        12: "var(--spacing-12)",
-        16: "var(--spacing-16)",
-        20: "var(--spacing-20)",
-        24: "var(--spacing-24)",
-        32: "var(--spacing-32)",
-        "section-xs": "var(--spacing-section-xs)",
-        "section-sm": "var(--spacing-section-sm)",
-        "section-md": "var(--spacing-section-md)",
-        "section-lg": "var(--spacing-section-lg)",
-        "component-xs": "var(--spacing-component-xs)",
-        "component-sm": "var(--spacing-component-sm)",
-        "component-md": "var(--spacing-component-md)",
-        "component-lg": "var(--spacing-component-lg)",
-        "component-xl": "var(--spacing-component-xl)",
-        "gap-xs": "var(--spacing-gap-xs)",
-        "gap-sm": "var(--spacing-gap-sm)",
-        "gap-md": "var(--spacing-gap-md)",
-        "gap-lg": "var(--spacing-gap-lg)",
-        "gap-xl": "var(--spacing-gap-xl)",
-        "gap-2xl": "var(--spacing-gap-2xl)",
+        0: 'var(--spacing-0)',
+        1: 'var(--spacing-1)',
+        2: 'var(--spacing-2)',
+        3: 'var(--spacing-3)',
+        4: 'var(--spacing-4)',
+        5: 'var(--spacing-5)',
+        6: 'var(--spacing-6)',
+        8: 'var(--spacing-8)',
+        10: 'var(--spacing-10)',
+        12: 'var(--spacing-12)',
+        16: 'var(--spacing-16)',
+        20: 'var(--spacing-20)',
+        24: 'var(--spacing-24)',
+        32: 'var(--spacing-32)',
+        'section-xs': 'var(--spacing-section-xs)',
+        'section-sm': 'var(--spacing-section-sm)',
+        'section-md': 'var(--spacing-section-md)',
+        'section-lg': 'var(--spacing-section-lg)',
+        'component-xs': 'var(--spacing-component-xs)',
+        'component-sm': 'var(--spacing-component-sm)',
+        'component-md': 'var(--spacing-component-md)',
+        'component-lg': 'var(--spacing-component-lg)',
+        'component-xl': 'var(--spacing-component-xl)',
+        'gap-xs': 'var(--spacing-gap-xs)',
+        'gap-sm': 'var(--spacing-gap-sm)',
+        'gap-md': 'var(--spacing-gap-md)',
+        'gap-lg': 'var(--spacing-gap-lg)',
+        'gap-xl': 'var(--spacing-gap-xl)',
+        'gap-2xl': 'var(--spacing-gap-2xl)',
       },
 
       borderRadius: {
-        none: "var(--radius-none)",
-        sm: "var(--radius-sm)",
-        md: "var(--radius-md)",
-        lg: "var(--radius-lg)",
-        xl: "var(--radius-xl)",
-        "2xl": "var(--radius-2xl)",
-        full: "var(--radius-full)",
+        none: 'var(--radius-none)',
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
+        '2xl': 'var(--radius-2xl)',
+        full: 'var(--radius-full)',
       },
 
       boxShadow: {
-        sm: "var(--shadow-sm)",
-        md: "var(--shadow-md)",
-        lg: "var(--shadow-lg)",
-        xl: "var(--shadow-xl)",
-        "2xl": "var(--shadow-2xl)",
-        inner: "var(--shadow-inner)",
-        cta: "var(--shadow-cta)",
-        "cta-hover": "var(--shadow-cta-hover)",
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+        xl: 'var(--shadow-xl)',
+        '2xl': 'var(--shadow-2xl)',
+        inner: 'var(--shadow-inner)',
+        cta: 'var(--shadow-cta)',
+        'cta-hover': 'var(--shadow-cta-hover)',
       },
 
       transitionDuration: {
-        instant: "var(--duration-instant)",
-        fast: "var(--duration-fast)",
-        normal: "var(--duration-normal)",
-        slow: "var(--duration-slow)",
-        slower: "var(--duration-slower)",
+        instant: 'var(--duration-instant)',
+        fast: 'var(--duration-fast)',
+        normal: 'var(--duration-normal)',
+        slow: 'var(--duration-slow)',
+        slower: 'var(--duration-slower)',
       },
 
       transitionTimingFunction: {
-        linear: "var(--easing-linear)",
-        "ease-in": "var(--easing-ease-in)",
-        "ease-out": "var(--easing-ease-out)",
-        "ease-in-out": "var(--easing-ease-in-out)",
-        spring: "var(--easing-spring)",
+        linear: 'var(--easing-linear)',
+        'ease-in': 'var(--easing-ease-in)',
+        'ease-out': 'var(--easing-ease-out)',
+        'ease-in-out': 'var(--easing-ease-in-out)',
+        spring: 'var(--easing-spring)',
       },
 
       zIndex: {
-        base: "var(--z-base)",
-        dropdown: "var(--z-dropdown)",
-        sticky: "var(--z-sticky)",
-        popover: "var(--z-popover)",
-        modal: "var(--z-modal)",
-        toast: "var(--z-toast)",
+        base: 'var(--z-base)',
+        dropdown: 'var(--z-dropdown)',
+        sticky: 'var(--z-sticky)',
+        popover: 'var(--z-popover)',
+        modal: 'var(--z-modal)',
+        toast: 'var(--z-toast)',
       },
     },
   },
-};
+}
 
 // ============================================================================
 // USAGE INSTRUCTIONS
@@ -554,4 +554,4 @@ export const USAGE_INSTRUCTIONS = `
 <div className="bg-bg-surface border border-border-default rounded-lg p-component-lg shadow-md">
   Content
 </div>
-`;
+`

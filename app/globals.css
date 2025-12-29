@@ -8,7 +8,7 @@
    Use these CSS variables OR their hex equivalents directly.
 
    Colors:
-   - Background: #0A0A0A (--bg)
+   - Background: #232323 (--bg)
    - Surface: #141414 (--surface)
    - White text: #FFFFFF
    - Muted text: rgba(255,255,255,0.6)
@@ -26,7 +26,7 @@
     color-scheme: dark;
 
     /* Core colors - use these or hex directly */
-    --bg: #0A0A0A;
+    --bg: #232323;
     --surface: #141414;
     --primary: #0066FF;
     --primary-hover: #0052CC;
@@ -192,7 +192,7 @@
     top: 0;
     width: 100%;
     z-index: 50;
-    background: rgba(10, 10, 10, 0.95);
+    background: rgba(35, 35, 35, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);

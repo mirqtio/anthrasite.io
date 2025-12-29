@@ -26,7 +26,7 @@ export function CleanDraftEvidence({
   }).format(impactMonthly)
 
   return (
-    <section className="py-24 bg-[#0A0A0A] border-t border-white/5 relative overflow-hidden">
+    <section className="py-24 bg-[#232323] border-t border-white/5 relative overflow-hidden">
       <div
         className="container mx-auto px-6"
         style={{ width: '100%', minWidth: '300px' }}

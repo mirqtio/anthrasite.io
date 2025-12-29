@@ -3,7 +3,7 @@
  * Injects CSS variables into the DOM for the Anthrasite design system
  */
 
-import { useEffect } from "react";
+import { useEffect } from 'react'
 
 const ANTHRASITE_CSS = `
 /* Anthrasite Design Tokens - Dark Default */
@@ -11,11 +11,11 @@ const ANTHRASITE_CSS = `
   /* ========== COLOR TOKENS ========== */
   
   /* Background */
-  --color-bg-canvas: #0A0A0A;
+  --color-bg-canvas: #232323;
   --color-bg-surface: #141414;
   --color-bg-elevated: #1A1A1A;
   --color-bg-surface-elevated: #1F1F1F;
-  --color-bg-overlay: rgba(10, 10, 10, 0.85);
+  --color-bg-overlay: rgba(35, 35, 35, 0.85);
   --color-bg-scrim: rgba(0, 0, 0, 0.6);
   --color-bg-subtle: rgba(255, 255, 255, 0.03);
   --color-bg-hover: rgba(255, 255, 255, 0.05);
@@ -26,7 +26,7 @@ const ANTHRASITE_CSS = `
   --color-text-tertiary: #6B7280;
   --color-text-muted: #6B7280;
   --color-text-disabled: #4B5563;
-  --color-text-inverse: #0A0A0A;
+  --color-text-inverse: #232323;
   --color-text-link: #0066FF;
   --color-text-link-hover: #0052CC;
   
@@ -97,7 +97,7 @@ const ANTHRASITE_CSS = `
   
   /* Focus Ring */
   --color-focus-ring: #0066FF;
-  --color-focus-ring-offset: #0A0A0A;
+  --color-focus-ring-offset: #232323;
   
   /* Skeleton/Loading */
   --color-skeleton-base: rgba(255, 255, 255, 0.05);
@@ -194,7 +194,7 @@ const ANTHRASITE_CSS = `
   --color-bg-surface: #F9FAFB;
   --color-bg-elevated: #FFFFFF;
   --color-bg-surface-elevated: #FFFFFF;
-  --color-text-primary: #0A0A0A;
+  --color-text-primary: #232323;
   --color-text-secondary: #4B5563;
   --color-text-tertiary: #6B7280;
   --color-text-muted: #6B7280;
@@ -206,7 +206,7 @@ const ANTHRASITE_CSS = `
   --color-interactive-secondary-default: rgba(0, 0, 0, 0.05);
   --color-interactive-secondary-hover: rgba(0, 0, 0, 0.1);
   --color-interactive-secondary-active: rgba(0, 0, 0, 0.15);
-  --color-interactive-secondary-text: #0A0A0A;
+  --color-interactive-secondary-text: #232323;
   --color-interactive-tertiary-hover: rgba(0, 0, 0, 0.05);
   --color-interactive-tertiary-active: rgba(0, 0, 0, 0.1);
   --color-interactive-tertiary-text: #4B5563;
@@ -220,36 +220,36 @@ const ANTHRASITE_CSS = `
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
-`;
+`
 
 export function AnthrasiteThemeProvider({
   children,
   ...props
 }: {
-  children: React.ReactNode;
-  [key: string]: any;
+  children: React.ReactNode
+  [key: string]: any
 }) {
   useEffect(() => {
     // Inject CSS variables into the document
-    const styleId = "anthrasite-tokens";
-    let styleElement = document.getElementById(styleId) as HTMLStyleElement;
+    const styleId = 'anthrasite-tokens'
+    let styleElement = document.getElementById(styleId) as HTMLStyleElement
 
     if (!styleElement) {
-      styleElement = document.createElement("style");
-      styleElement.id = styleId;
-      document.head.appendChild(styleElement);
+      styleElement = document.createElement('style')
+      styleElement.id = styleId
+      document.head.appendChild(styleElement)
     }
 
-    styleElement.textContent = ANTHRASITE_CSS;
+    styleElement.textContent = ANTHRASITE_CSS
 
     return () => {
       // Cleanup on unmount
-      const element = document.getElementById(styleId);
+      const element = document.getElementById(styleId)
       if (element) {
-        element.remove();
+        element.remove()
       }
-    };
-  }, []);
+    }
+  }, [])
 
-  return <div {...props}>{children}</div>;
+  return <div {...props}>{children}</div>
 }

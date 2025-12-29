@@ -23,9 +23,9 @@ interface PurchasePageProps {
  */
 function TokenError({ message }: { message: string }) {
   return (
-    <main className="min-h-screen bg-[#0A0A0A] text-white flex items-center justify-center font-sans">
+    <main className="min-h-screen bg-[#232323] text-white flex items-center justify-center font-sans">
       <div
-        className="mx-auto p-8 text-center bg-[#0A0A0A]"
+        className="mx-auto p-8 text-center bg-[#232323]"
         style={{ width: '90vw', maxWidth: '28rem', minWidth: '300px' }}
       >
         <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/20 flex items-center justify-center">
@@ -93,7 +93,7 @@ async function PurchaseContent({
 
 function PurchasePageSkeleton() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] py-20 px-6">
+    <div className="min-h-screen bg-[#232323] py-20 px-6">
       <div className="max-w-4xl mx-auto space-y-12">
         <div className="h-12 w-3/4 mx-auto bg-white/10 animate-pulse rounded" />
         <div className="h-96 w-full rounded-2xl bg-white/10 animate-pulse" />
@@ -126,7 +126,7 @@ export default async function PurchasePage(props: PurchasePageProps) {
   }
 
   return (
-    <main className="bg-[#0A0A0A] text-white" data-testid="purchase-root">
+    <main className="bg-[#232323] text-white" data-testid="purchase-root">
       <Suspense fallback={<PurchasePageSkeleton />}>
         <PurchaseContent token={token} context={context} />
       </Suspense>
