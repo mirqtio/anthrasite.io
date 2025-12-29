@@ -273,7 +273,7 @@ export function OrganicHomepage() {
             <h1 className="text-[64px] md:text-[80px] leading-[0.9] font-thin mb-8">
               Your website has untapped potential
             </h1>
-            <h2 className="text-[20px] md:text-[24px] font-medium opacity-70 mb-8 md:mb-0 max-w-[900px] mx-auto tracking-[0.02em]">
+            <h2 className="text-[28px] md:text-[32px] font-medium opacity-70 mb-8 md:mb-0 max-w-[900px] mx-auto tracking-[0.02em]">
               We analyze hundreds of data points to show you what to fix and
               what it's worth.
             </h2>

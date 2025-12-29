@@ -469,7 +469,7 @@
 
 @layer utilities {
   .text-header {
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 600;
     letter-spacing: 0.02em;
     opacity: 0.5;
@@ -485,7 +485,7 @@
 
   @media (max-width: 768px) {
     .text-header {
-      font-size: 28px;
+      font-size: 22px;
       margin-bottom: 40px;
     }
 
@@ -505,7 +505,9 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 60px;
     max-width: 1000px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 16px;
   }
 
   @media (max-width: 768px) {
