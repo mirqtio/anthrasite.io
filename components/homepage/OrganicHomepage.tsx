@@ -218,8 +218,9 @@ export function OrganicHomepage() {
 
           {/* Mobile Hamburger */}
           <button
+            type="button"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="md:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5"
+            className="md:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5 relative z-50"
             aria-label="Toggle menu"
           >
             <span
@@ -236,7 +237,7 @@ export function OrganicHomepage() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-[#141414] border-t border-white/10">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[#232323] border-t border-white/5 z-50">
             <div className="flex flex-col py-4">
               <a
                 href="#assessment"
@@ -272,7 +273,7 @@ export function OrganicHomepage() {
             <h1 className="text-[64px] md:text-[80px] leading-[0.9] font-thin mb-8">
               Your website has untapped potential
             </h1>
-            <p className="text-header opacity-70 mb-0 max-w-[900px] mx-auto">
+            <p className="text-[17px] opacity-70 mb-0 max-w-[900px] mx-auto">
               We analyze hundreds of data points to show you what to fix and
               what it's worth.
             </p>
@@ -457,7 +458,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
         </section>
 
         {/* Footer */}
-        <footer className="py-[60px] border-t border-smoke">
+        <footer className="py-[60px] border-t border-white/5">
           <div className="container-narrow text-center">
             {/* Logo removed from footer */}
             <div className="footer-links mt-[30px]">
