@@ -196,18 +196,18 @@ export function OrganicHomepage() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => scrollToSection('assessment')}
-              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
+            <a
+              href="#assessment"
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
               Method
-            </button>
-            <button
-              onClick={() => scrollToSection('faq')}
-              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer"
+            </a>
+            <a
+              href="#faq"
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
               FAQ
-            </button>
+            </a>
             <a
               href="/about"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
@@ -236,20 +236,22 @@ export function OrganicHomepage() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-carbon border-t border-smoke">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[#141414] border-t border-white/10">
             <div className="flex flex-col py-4">
-              <button
-                onClick={() => scrollToSection('assessment')}
-                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity text-left"
+              <a
+                href="#assessment"
+                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+                onClick={() => setShowMobileMenu(false)}
               >
                 Method
-              </button>
-              <button
-                onClick={() => scrollToSection('faq')}
-                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity text-left"
+              </a>
+              <a
+                href="#faq"
+                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+                onClick={() => setShowMobileMenu(false)}
               >
                 FAQ
-              </button>
+              </a>
               <a
                 href="/about"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"

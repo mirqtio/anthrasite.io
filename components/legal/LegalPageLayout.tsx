@@ -46,16 +46,22 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              href="/about"
+              href="/#assessment"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
-              About Us
+              Method
             </Link>
             <Link
               href="/#faq"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
               FAQ
+            </Link>
+            <Link
+              href="/about"
+              className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+            >
+              About Us
             </Link>
           </div>
           <button
@@ -75,14 +81,14 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
           </button>
         </div>
         {showMobileMenu && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-carbon border-t border-smoke">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[#141414] border-t border-white/10">
             <div className="flex flex-col py-4">
               <Link
-                href="/about"
+                href="/#assessment"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
-                About Us
+                Method
               </Link>
               <Link
                 href="/#faq"
@@ -90,6 +96,13 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
                 onClick={() => setShowMobileMenu(false)}
               >
                 FAQ
+              </Link>
+              <Link
+                href="/about"
+                className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                About Us
               </Link>
             </div>
           </div>
