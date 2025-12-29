@@ -63,7 +63,7 @@ export function MobileStickyCTA({
         >
           <div className="flex items-center gap-1">
             <Lock className="w-4 h-4" aria-hidden="true" />
-            <span className="text-base font-semibold">
+            <span className="text-[18px] font-semibold tracking-[0.02em]">
               Get Your Report — ${price}
             </span>
           </div>

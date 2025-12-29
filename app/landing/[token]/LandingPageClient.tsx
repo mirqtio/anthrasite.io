@@ -7,6 +7,7 @@ import { HookSection } from '@/components/landing/HookSection'
 import { ValueSection } from '@/components/landing/ValueSection'
 import { CTASection } from '@/components/landing/CTASection'
 import { FAQSection } from '@/components/landing/FAQSection'
+import { LandingFooter } from '@/components/landing/LandingFooter'
 import { MobileStickyCTA } from '@/components/landing/MobileStickyCTA'
 
 interface LandingPageClientProps {
@@ -83,7 +84,7 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
     <div className="min-h-screen bg-[#232323]">
       {/* landing-container class prevents pinched layouts */}
       <div className="landing-container">
-        <div className="space-y-8">
+        <div className="space-y-20">
           {/* Section 1: Hero */}
           <HeroSection
             company={context.company}
@@ -147,7 +148,10 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
         </div>
       </div>
 
-      {/* Section 7: Mobile Sticky CTA */}
+      {/* Footer */}
+      <LandingFooter />
+
+      {/* Mobile Sticky CTA */}
       <MobileStickyCTA
         price={context.price}
         isLoading={isCheckoutLoading}

@@ -23,21 +23,21 @@ function FAQAccordionItem({
 }: FAQAccordionItemProps) {
   return (
     <div
-      className="border border-white/10 rounded-md overflow-hidden transition-colors duration-150 hover:border-white/20"
+      className="border border-white/10 rounded-xl overflow-hidden transition-colors duration-150 hover:border-white/20"
       data-state={isOpen ? 'open' : 'closed'}
     >
       <button
         onClick={onToggle}
-        className="flex justify-between items-center w-full p-3 bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0066FF]"
+        className="flex justify-between items-center w-full p-4 md:p-5 bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0066FF]"
         aria-expanded={isOpen}
         aria-controls={`faq-content-${index}`}
         id={`faq-trigger-${index}`}
       >
-        <span className="text-white text-base sm:text-lg font-medium pr-2">
+        <span className="text-white text-[18px] md:text-[20px] font-semibold pr-2 tracking-[0.02em]">
           {item.question}
         </span>
         <ChevronDown
-          className={`w-5 h-5 flex-shrink-0 text-white/50 transition-transform duration-200 ${
+          className={`w-5 h-5 flex-shrink-0 text-white/40 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
           aria-hidden="true"
@@ -55,8 +55,8 @@ function FAQAccordionItem({
         }}
       >
         <div className="overflow-hidden">
-          <div className="px-3 pb-3">
-            <p className="text-white/70 text-base leading-relaxed">
+          <div className="px-4 pb-4">
+            <p className="text-white/60 text-[18px] md:text-[20px] leading-[1.6] tracking-[0.02em]">
               {item.answer}
             </p>
           </div>
@@ -75,17 +75,17 @@ export function FAQSection({ items }: FAQSectionProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-10">
       {/* Section Header */}
       <h2
         id="faq-heading"
-        className="text-white text-xl sm:text-2xl font-bold text-center"
+        className="text-white text-[28px] md:text-[32px] font-semibold text-center tracking-[0.02em]"
       >
         Questions?
       </h2>
 
       {/* Accordion Items */}
-      <div className="space-y-2">
+      <div className="space-y-6">
         {items.map((item, index) => (
           <FAQAccordionItem
             key={index}
