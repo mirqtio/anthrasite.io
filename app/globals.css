@@ -580,12 +580,14 @@
   }
 
   .pressure-visual {
-    width: 120vw;
-    height: 120vw;
-    max-width: 500px;
-    max-height: 500px;
-    margin-left: -10vw;
-    margin-right: -10vw;
+    width: 90vw;
+    height: 90vw;
+    max-width: 400px;
+    max-height: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    left: -20px;
   }
 
   .section {

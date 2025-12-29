@@ -280,7 +280,7 @@ export function OrganicHomepage() {
 
             {/* CTA Button with Pulsing Rings */}
             <div
-              className="relative inline-block -mt-[200px] md:-mt-[80px]"
+              className="relative w-full md:inline-block -mt-[200px] md:-mt-[80px]"
               data-testid="hero-home"
             >
               <div className="pressure-visual">
