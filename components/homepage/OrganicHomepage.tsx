@@ -273,7 +273,7 @@ export function OrganicHomepage() {
             <h1 className="text-[64px] md:text-[80px] leading-[0.9] font-thin mb-8">
               Your website has untapped potential
             </h1>
-            <p className="text-[17px] opacity-70 mb-8 md:mb-0 max-w-[900px] mx-auto">
+            <p className="text-[18px] md:text-[20px] font-medium opacity-70 mb-8 md:mb-0 max-w-[900px] mx-auto tracking-[0.02em]">
               We analyze hundreds of data points to show you what to fix and
               what it's worth.
             </p>
@@ -337,10 +337,10 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#FFC107' }}>
                   4.8s
                 </div>
-                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">
+                <h3 className="text-[20px] md:text-[24px] font-medium mb-3">
                   Load Performance
                 </h3>
-                <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
+                <p className="text-[16px] md:text-[18px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
                   How fast your site loads on real devices, and what it's
                   costing you in lost customers.
                 </p>
@@ -350,10 +350,10 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#DC2626' }}>
                   47%
                 </div>
-                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">
+                <h3 className="text-[20px] md:text-[24px] font-medium mb-3">
                   Mobile Experience
                 </h3>
-                <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
+                <p className="text-[16px] md:text-[18px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
                   Where mobile visitors fail to convert, with specific
                   breakpoints identified.
                 </p>
@@ -363,10 +363,10 @@ export function OrganicHomepage() {
                 <div className="text-number" style={{ color: '#22C55E' }}>
                   $$
                 </div>
-                <h3 className="text-[24px] md:text-[24px] text-[20px] mb-3">
+                <h3 className="text-[20px] md:text-[24px] font-medium mb-3">
                   Revenue Impact
                 </h3>
-                <p className="text-[17px] md:text-[17px] text-[15px] opacity-60 leading-[1.6]">
+                <p className="text-[16px] md:text-[18px] font-medium opacity-60 leading-[1.6] tracking-[0.02em]">
                   Estimated monthly revenue loss from technical issues,
                   calculated for your specific market.
                 </p>
@@ -374,7 +374,7 @@ export function OrganicHomepage() {
             </div>
 
             <p
-              className="text-center text-[24px] md:text-[24px] text-[20px] font-normal opacity-70 reveal-tagline"
+              className="text-center text-[20px] md:text-[24px] font-medium opacity-70 tracking-[0.02em] reveal-tagline"
               data-delay="450"
             >
               No fluff. No 50-page reports. Just what's broken and what it's

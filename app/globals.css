@@ -243,7 +243,7 @@
     color: #FFFFFF;
     padding: 20px 60px;
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 600;
     text-decoration: none;
     border: none;
     cursor: pointer;
@@ -469,7 +469,8 @@
 
 @layer utilities {
   .text-header {
-    font-size: 17px;
+    font-size: 24px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     opacity: 0.5;
@@ -485,7 +486,7 @@
 
   @media (max-width: 768px) {
     .text-header {
-      font-size: 14px;
+      font-size: 20px;
       margin-bottom: 40px;
     }
 
