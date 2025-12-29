@@ -6,6 +6,14 @@ export * from './types'
 export async function validatePurchaseToken(
   token: string
 ): Promise<{ leadId: string; runId?: string } | null> {
+  // Dev tokens for testing specific leads
+  if (token === 'test-token' || token === '3102') {
+    return { leadId: '3102' }
+  }
+  // Numeric tokens treated as direct lead IDs for dev testing
+  if (/^\d+$/.test(token)) {
+    return { leadId: token }
+  }
   // Mock validation returning payload
   return { leadId: '12345', runId: 'run-abc' }
 }

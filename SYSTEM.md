@@ -1,8 +1,8 @@
-# SYSTEM.md (v1.4)
+# SYSTEM.md (v1.5)
 
 **Project**: Anthrasite.io
-**Last Updated**: 2025-10-14
-**Change Summary**: Documented middleware refactor (ADR-P11) and CI/CD v2 pipeline (ADR-P12).
+**Last Updated**: 2025-12-25
+**Change Summary**: Updated Cross-Project Temporal Contract for journey_v2 profile support.
 **Owner**: Anthrasite Platform Team
 **Status**: Canonical Architecture Document (Ground Truth)
 
@@ -70,22 +70,55 @@ Anthrasite.io inherits the _Producer–Validator_ and _Failure Contract_ convent
 
 ## 6. Cross-Project Temporal Contract (LeadShop Integration)
 
-Anthrasite.io acts as an additional Temporal client for LeadShop’s workflows, primarily for Phase D (Premium Report Generation) triggered from internal ops portals.
+Anthrasite.io acts as an additional Temporal client for LeadShop's workflows, primarily for Phase D (Premium Report Generation) triggered by Stripe webhooks or internal ops portals.
+
+### 6.1 Report Configuration Profiles
+
+LeadShop supports two report configuration profiles that affect Phase D behavior:
+
+| Profile      | Description                        | Phase D Approach                                   | Eligibility                             |
+| ------------ | ---------------------------------- | -------------------------------------------------- | --------------------------------------- |
+| `issue_v1`   | Memo-based reports                 | Loads reasoning memo + LLM segment composers       | Requires `reasoning_memo_s3_key`        |
+| `journey_v2` | **Default.** Journey-based reports | Phase B journey context + LLM synthesis (Opus 4.5) | Requires `phase_a_status = 'completed'` |
+
+The profile is stored in `runs.report_config_profile` and defaults to `journey_v2`.
+
+### 6.2 Workflow Contract
 
 - **Shared Workflow IDs (Phase D):**
-  - All callers (LeadShop FastAPI, Anthrasite, CLI tools) MUST use the workflow ID format `premium-report-{run_id}` when starting `PhaseDReportWorkflow`.
+
+  - All callers (LeadShop FastAPI, Anthrasite, CLI tools) MUST use the workflow ID format `premium-report-{run_id}-{timestamp}` when starting `PhaseDReportWorkflow`.
+  - The timestamp suffix allows re-runs for the same run_id if needed.
   - This guarantees idempotent starts and consistent observability in Temporal.
-- **Run Eligibility for Phase D:**
-  - Anthrasite must only start Phase D for runs where the shared Postgres `runs` table has a non-null `reasoning_memo_s3_key` for the `(lead_id, run_id)` pair.
-  - The selection rule should mirror LeadShop’s behavior: pick the most recent run (by `COALESCE(started_at, created_at)`) that has a memo.
+
+- **Run Eligibility for Phase D (Profile-Aware):**
+
+  - **`issue_v1` profiles:** Anthrasite must only start Phase D for runs where `reasoning_memo_s3_key` is non-null.
+  - **`journey_v2` profiles:** Anthrasite must only start Phase D for runs where `phase_a_status = 'completed'` (no memo required).
+  - The selection rule should mirror LeadShop's behavior: pick the most recent run (by `COALESCE(started_at, created_at)`) that meets the eligibility criteria for its profile.
+
+- **Profile Passthrough:**
+
+  - Anthrasite MUST pass `report_config_profile` from the run record to the `PhaseDReportWorkflow` input.
+  - This determines which execution path Phase D takes (memo-based vs journey-based).
+
+- **Task Queue:**
+  - Production post-purchase flows use the `premium-reports` queue.
+
+### 6.3 State Management
+
 - **Execution State Source of Truth:**
+
   - Phase status fields (`phase_a_status`, `phase_b_status`, `phase_c_status`, `phase_d_status`) on `runs` are updated by LeadShop activities (e.g. `update_run_phase_status`).
   - Anthrasite MUST NOT maintain its own parallel phase-status state; it should read status from the shared database or Temporal queries only.
+
 - **Temporal Client Placement & Secrets:**
   - The Temporal TS client used by Anthrasite lives in `lib/temporal/client.ts` and is **server-only**; it must never be imported into client components or Edge runtimes.
   - It reuses the same credential set as the LeadShop worker/CLI. These secrets remain LeadShop-grade and are only consumed from server environment variables.
-- **Change Management:**
-  - Any change to workflow IDs, task queues, or Phase D eligibility logic MUST be reflected in both this section and the corresponding contract section in `LeadShop-v3-clean/SYSTEM.md`.
+
+### 6.4 Change Management
+
+- Any change to workflow IDs, task queues, profiles, or Phase D eligibility logic MUST be reflected in both this section and the corresponding contract section in `LeadShop-v3-clean/SYSTEM.md`.
 
 ---
 

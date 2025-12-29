@@ -3,68 +3,70 @@
  * Data contract for the /landing/[token] page
  */
 
-export type EffortLevel = "EASY" | "MODERATE" | "COMPLEX";
+export type EffortLevel = 'EASY' | 'MODERATE' | 'COMPLEX'
 
 export interface AnchorMetric {
   /** Human-readable metric label (e.g., "Profile Completeness") */
-  label: string;
+  label: string
   /** Current metric value (e.g., "40%") */
-  value: string;
+  value: string
   /** Target threshold (e.g., "85%") */
-  target: string;
+  target: string
 }
 
 export interface HookOpportunity {
   /** Opportunity title from catalog */
-  title: string;
+  title: string
   /** Effort level badge */
-  effort: EffortLevel;
+  effort: EffortLevel
   /** Description text (from Phase C or catalog concept) */
-  description: string;
+  description: string
+  /** Plain English pain statement for hero section (e.g., "Your pages take too long to load—most visitors won't wait.") */
+  painStatement: string
   /** Primary metric with value/target for display */
-  anchorMetric: AnchorMetric;
+  anchorMetric: AnchorMetric
 }
 
 export interface LandingContext {
   // Company info
   /** Business/company name */
-  company: string;
+  company: string
   /** Domain URL */
-  domainUrl: string;
+  domainUrl: string
 
   // Score & impact
   /** Overall assessment score (0-100) */
-  score: number;
+  score: number
   /** Number of identified issues/opportunities */
-  issueCount: number;
+  issueCount: number
   /** Lower bound of impact range (formatted, e.g., "$41,700") */
-  impactLow: string;
+  impactLow: string
   /** Upper bound of impact range (formatted, e.g., "$62,500") */
-  impactHigh: string;
+  impactHigh: string
 
   // Hook opportunity (from cold email selection)
   /** The primary opportunity highlighted in cold email */
-  hookOpportunity: HookOpportunity;
+  hookOpportunity: HookOpportunity
 
   // Screenshots
   /** Desktop homepage screenshot URL */
-  desktopScreenshotUrl: string;
+  desktopScreenshotUrl: string
   /** Mobile homepage screenshot URL */
-  mobileScreenshotUrl: string;
+  mobileScreenshotUrl: string
 
   // Purchase
   /** Report price in dollars */
-  price: number;
+  price: number
   /** Lead identifier */
-  leadId: string;
+  leadId: string
   /** Business identifier */
-  businessId: string;
+  businessId: string
 }
 
 /**
  * FAQ item structure for landing page
  */
 export interface FAQItem {
-  question: string;
-  answer: string;
+  question: string
+  answer: string
 }

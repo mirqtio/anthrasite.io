@@ -1,159 +1,112 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Logo } from "@/components/Logo";
-import { Shield } from "lucide-react";
+import { useState } from 'react'
+import { Logo } from '@/components/Logo'
+import type { HookOpportunity } from '@/lib/landing/types'
 
 interface HeroSectionProps {
-  company: string;
-  domainUrl: string;
-  score: number;
-  issueCount: number;
-  desktopScreenshotUrl: string;
-  mobileScreenshotUrl: string;
-}
-
-/**
- * Get score color based on value
- * Good: 80+ (green), Moderate: 60-79 (amber), Poor: <60 (red)
- */
-function getScoreColor(score: number): string {
-  if (score >= 80) return "var(--color-status-success)";
-  if (score >= 60) return "var(--color-status-warning)";
-  return "var(--color-status-error)";
-}
-
-/**
- * Get score interpretation text
- */
-function getScoreInterpretation(score: number): string {
-  if (score >= 80) return "Strong foundation";
-  if (score >= 60) return "Room for improvement";
-  return "Needs attention";
+  company: string
+  issueCount: number
+  impactHigh: string
+  hookOpportunity: HookOpportunity
+  desktopScreenshotUrl: string
 }
 
 export function HeroSection({
   company,
-  domainUrl,
-  score,
   issueCount,
+  impactHigh,
+  hookOpportunity,
   desktopScreenshotUrl,
-  mobileScreenshotUrl,
 }: HeroSectionProps) {
-  const [desktopLoaded, setDesktopLoaded] = useState(false);
-  const [mobileLoaded, setMobileLoaded] = useState(false);
-  const [desktopError, setDesktopError] = useState(false);
-  const [mobileError, setMobileError] = useState(false);
-
-  // Pluralize "issue" correctly
-  const issueText = issueCount === 1 ? "issue" : "issues";
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   return (
-    <div className="flex flex-col items-center gap-[var(--spacing-gap-lg)]">
-      {/* Logo - not clickable per spec */}
-      <Logo size="medium" darkMode />
+    <section className="relative bg-bg-canvas" aria-labelledby="hero-heading">
+      {/* Header - Logo + Tagline */}
+      <header className="w-full px-6 pt-6 pb-4">
+        <div className="flex flex-col">
+          <Logo size="medium" darkMode />
+          <div className="tagline text-[10px] md:text-[13px] font-light text-text-secondary mt-1 flex justify-between max-w-[140px]">
+            <span>V</span>
+            <span>A</span>
+            <span>L</span>
+            <span>U</span>
+            <span>E</span>
+            <span>,</span>
+            <span>&nbsp;</span>
+            <span>C</span>
+            <span>R</span>
+            <span>Y</span>
+            <span>S</span>
+            <span>T</span>
+            <span>A</span>
+            <span>L</span>
+            <span>L</span>
+            <span>I</span>
+            <span>Z</span>
+            <span>E</span>
+            <span>D</span>
+          </div>
+        </div>
+      </header>
 
-      {/* Trust Badge */}
-      <div className="inline-flex items-center gap-[var(--spacing-gap-xs)] px-[var(--spacing-component-md)] py-[var(--spacing-component-sm)] bg-[var(--color-bg-surface)] border border-[var(--color-border-default)] rounded-full">
-        <Shield
-          className="w-4 h-4 text-[var(--color-status-success)]"
-          aria-hidden="true"
-        />
-        <span className="text-[length:var(--font-size-sm)] font-[var(--font-weight-medium)] text-[var(--color-text-secondary)]">
-          Secure Analysis
-        </span>
-      </div>
-
-      {/* Screenshot Display */}
-      <div className="w-full flex gap-[var(--spacing-gap-md)] justify-center items-end">
-        {/* Desktop Screenshot */}
-        <div
-          className="flex-1 max-w-[460px] rounded-[var(--radius-lg)] border border-[var(--color-border-default)] shadow-[var(--shadow-lg)] overflow-hidden bg-[var(--color-bg-surface)]"
-          style={{ aspectRatio: "16 / 10" }}
+      {/* Main Content Area */}
+      <div className="px-6 pb-8 space-y-6">
+        {/* Headline */}
+        <h1
+          id="hero-heading"
+          className="text-text-primary text-3xl md:text-4xl lg:text-5xl font-light leading-tight"
         >
-          {!desktopError && (
+          Is your website working for you?
+        </h1>
+
+        {/* Desktop Screenshot - Full width, inline */}
+        {!imageError && (
+          <div className="w-full rounded-lg overflow-hidden shadow-lg">
             <img
               src={desktopScreenshotUrl}
-              alt={`Screenshot of ${company} website on desktop`}
-              className={`w-full h-full object-cover transition-opacity duration-200 ${
-                desktopLoaded ? "opacity-100" : "opacity-0"
+              alt={`Screenshot of ${company} website`}
+              className={`w-full h-auto transition-opacity duration-500 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
               }`}
-              onLoad={() => setDesktopLoaded(true)}
-              onError={() => {
-                console.error(
-                  `[HeroSection] Desktop screenshot failed to load: ${desktopScreenshotUrl}`
-                );
-                setDesktopError(true);
-              }}
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
             />
-          )}
+          </div>
+        )}
+
+        {/* Offer + Trust */}
+        <p className="text-text-secondary text-base md:text-lg leading-relaxed">
+          We analyzed{' '}
+          <span className="text-text-primary font-medium">{company}</span> and
+          found{' '}
+          <span className="text-text-primary font-medium">
+            {issueCount} issues
+          </span>{' '}
+          using the same tools Google uses.
+        </p>
+
+        {/* Hook - Pain Statement */}
+        <div className="space-y-1">
+          <p className="text-text-muted text-sm uppercase tracking-wider">
+            Most impactful:
+          </p>
+          <p className="text-text-primary text-lg md:text-xl font-medium leading-snug">
+            {hookOpportunity.painStatement}
+          </p>
         </div>
 
-        {/* Mobile Screenshot */}
-        <div
-          className="w-[100px] sm:w-[120px] rounded-[var(--radius-lg)] border border-[var(--color-border-default)] shadow-[var(--shadow-lg)] overflow-hidden bg-[var(--color-bg-surface)]"
-          style={{ aspectRatio: "9 / 19" }}
-        >
-          {!mobileError && (
-            <img
-              src={mobileScreenshotUrl}
-              alt={`Screenshot of ${company} website on mobile`}
-              className={`w-full h-full object-cover transition-opacity duration-200 ${
-                mobileLoaded ? "opacity-100" : "opacity-0"
-              }`}
-              onLoad={() => setMobileLoaded(true)}
-              onError={() => {
-                console.error(
-                  `[HeroSection] Mobile screenshot failed to load: ${mobileScreenshotUrl}`
-                );
-                setMobileError(true);
-              }}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Company Name */}
-      <h1
-        id="hero-heading"
-        className="text-[var(--color-text-primary)] text-[length:var(--font-size-3xl)] sm:text-[length:var(--font-size-4xl)] font-[var(--font-weight-bold)] text-center leading-[var(--leading-tight)] max-w-full"
-        style={{
-          // Scale down if name is very long
-          fontSize:
-            company.length > 20
-              ? "clamp(1.5rem, 4vw, var(--font-size-3xl))"
-              : undefined,
-        }}
-      >
-        {company}
-      </h1>
-
-      {/* Score Display */}
-      <div className="flex flex-col items-center gap-[var(--spacing-gap-xs)]">
-        <div className="flex items-baseline gap-[var(--spacing-gap-xs)]">
-          <span
-            className="text-[length:var(--font-size-4xl)] font-[var(--font-weight-bold)]"
-            style={{ color: getScoreColor(score) }}
-            aria-label={`Score: ${score} out of 100`}
-          >
-            {score}
+        {/* Impact */}
+        <p className="text-text-secondary text-base md:text-lg">
+          This could be costing you up to{' '}
+          <span className="text-text-primary font-semibold">
+            {impactHigh}/month
           </span>
-          <span className="text-[var(--color-text-muted)] text-[length:var(--font-size-lg)]">
-            /100
-          </span>
-        </div>
-        <span className="text-[var(--color-text-secondary)] text-[length:var(--font-size-sm)]">
-          {getScoreInterpretation(score)}
-        </span>
+          .
+        </p>
       </div>
-
-      {/* Issue Count */}
-      <p className="text-[var(--color-text-secondary)] text-[length:var(--font-size-base)]">
-        <span className="font-[var(--font-weight-semibold)] text-[var(--color-text-primary)]">
-          {issueCount}
-        </span>{" "}
-        {issueText} identified
-      </p>
-    </div>
-  );
+    </section>
+  )
 }

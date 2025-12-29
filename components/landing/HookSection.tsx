@@ -1,37 +1,25 @@
-"use client";
+'use client'
 
-import { ArrowRight } from "lucide-react";
-import type { HookOpportunity, EffortLevel } from "@/lib/landing/types";
+import { ArrowRight } from 'lucide-react'
+import type { HookOpportunity, EffortLevel } from '@/lib/landing/types'
 
 interface HookSectionProps {
-  hookOpportunity: HookOpportunity;
-  impactLow: string;
-  impactHigh: string;
+  hookOpportunity: HookOpportunity
+  impactLow: string
+  impactHigh: string
 }
 
 /**
- * Get effort badge color based on level
+ * Get effort badge styling based on level
  */
-function getEffortColor(effort: EffortLevel): {
-  bg: string;
-  text: string;
-} {
+function getEffortClasses(effort: EffortLevel): string {
   switch (effort) {
-    case "EASY":
-      return {
-        bg: "var(--color-status-success-subtle)",
-        text: "var(--color-status-success)",
-      };
-    case "MODERATE":
-      return {
-        bg: "var(--color-status-warning-subtle)",
-        text: "var(--color-status-warning)",
-      };
-    case "COMPLEX":
-      return {
-        bg: "var(--color-status-error-subtle)",
-        text: "var(--color-status-error)",
-      };
+    case 'EASY':
+      return 'bg-status-success-bg text-status-success-text'
+    case 'MODERATE':
+      return 'bg-status-warning-bg text-status-warning-text'
+    case 'COMPLEX':
+      return 'bg-status-error-bg text-status-error-text'
   }
 }
 
@@ -40,36 +28,30 @@ export function HookSection({
   impactLow,
   impactHigh,
 }: HookSectionProps) {
-  const effortColors = getEffortColor(hookOpportunity.effort);
-
   return (
-    <div className="space-y-[var(--spacing-gap-lg)]">
+    <div className="space-y-gap-lg">
       {/* Visually hidden heading for accessibility */}
       <h2 id="hook-heading" className="sr-only">
         Key Finding
       </h2>
 
       {/* Issue Brief Card */}
-      <div className="card-container p-[var(--spacing-component-lg)] bg-[var(--color-bg-surface)] border border-[var(--color-border-default)] rounded-[var(--radius-lg)]">
-        <div className="flex flex-col gap-[var(--spacing-gap-sm)]">
+      <div className="card-container p-component-lg bg-bg-surface border border-border-default rounded-lg">
+        <div className="flex flex-col gap-gap-sm">
           {/* Title + Effort Badge Row */}
-          <div className="flex flex-wrap items-start gap-[var(--spacing-gap-sm)]">
-            <h3 className="text-[var(--color-text-primary)] text-[length:var(--font-size-lg)] font-[var(--font-weight-semibold)] leading-[var(--leading-tight)] flex-1 min-w-0">
+          <div className="flex flex-wrap items-start gap-gap-sm">
+            <h3 className="text-text-primary text-lg font-semibold leading-tight flex-1 min-w-0">
               {hookOpportunity.title}
             </h3>
             <span
-              className="px-[var(--spacing-component-sm)] py-[var(--spacing-component-xs)] text-[length:var(--font-size-xs)] font-[var(--font-weight-semibold)] rounded-[var(--radius-sm)] uppercase tracking-wider whitespace-nowrap"
-              style={{
-                backgroundColor: effortColors.bg,
-                color: effortColors.text,
-              }}
+              className={`px-component-sm py-1 text-xs font-semibold rounded-sm uppercase tracking-wider whitespace-nowrap ${getEffortClasses(hookOpportunity.effort)}`}
             >
               {hookOpportunity.effort}
             </span>
           </div>
 
           {/* Description */}
-          <p className="text-[var(--color-text-secondary)] text-[length:var(--font-size-base)] leading-[var(--leading-relaxed)]">
+          <p className="text-text-secondary text-base leading-relaxed">
             {hookOpportunity.description}
           </p>
         </div>
@@ -77,23 +59,23 @@ export function HookSection({
 
       {/* Metric Box */}
       <div className="flex justify-center">
-        <div className="px-[var(--spacing-component-xl)] py-[var(--spacing-component-lg)] bg-[var(--color-bg-surface-elevated)] border border-[var(--color-border-default)] rounded-[var(--radius-md)] shadow-[var(--shadow-sm)]">
-          <div className="flex flex-col items-center gap-[var(--spacing-gap-xs)]">
+        <div className="px-component-xl py-component-lg bg-bg-elevated border border-border-default rounded-md shadow-sm">
+          <div className="flex flex-col items-center gap-gap-xs">
             {/* Metric Label */}
-            <span className="text-[var(--color-text-muted)] text-[length:var(--font-size-sm)] uppercase tracking-wider">
+            <span className="text-text-muted text-sm uppercase tracking-wider">
               {hookOpportunity.anchorMetric.label}
             </span>
 
             {/* Value → Target */}
-            <div className="flex items-center gap-[var(--spacing-gap-sm)]">
-              <span className="text-[var(--color-text-primary)] text-[length:var(--font-size-2xl)] font-[var(--font-weight-bold)]">
+            <div className="flex items-center gap-gap-sm">
+              <span className="text-text-primary text-2xl font-bold">
                 {hookOpportunity.anchorMetric.value}
               </span>
               <ArrowRight
-                className="w-5 h-5 text-[var(--color-text-muted)]"
+                className="w-5 h-5 text-text-muted"
                 aria-hidden="true"
               />
-              <span className="text-[var(--color-status-success)] text-[length:var(--font-size-2xl)] font-[var(--font-weight-bold)]">
+              <span className="text-status-success-text text-2xl font-bold">
                 {hookOpportunity.anchorMetric.target}
               </span>
             </div>
@@ -102,21 +84,21 @@ export function HookSection({
       </div>
 
       {/* Divider */}
-      <hr className="border-0 h-px bg-[var(--color-border-default)] w-2/3 mx-auto" />
+      <hr className="border-0 h-px bg-border-default w-2/3 mx-auto" />
 
       {/* Dollar Range */}
       <div className="text-center">
         <p
-          className="text-[var(--color-text-secondary)] text-[length:var(--font-size-lg)]"
+          className="text-text-secondary text-lg"
           aria-label={`Estimated monthly impact: ${impactLow} to ${impactHigh} dollars`}
         >
-          We estimate you&apos;re leaving{" "}
-          <span className="text-[var(--color-text-primary)] font-[var(--font-weight-semibold)]">
+          We estimate you&apos;re leaving{' '}
+          <span className="text-text-primary font-semibold">
             ~{impactLow} – {impactHigh}
-          </span>{" "}
+          </span>{' '}
           on the table every month.
         </p>
       </div>
     </div>
-  );
+  )
 }
