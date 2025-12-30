@@ -23,17 +23,17 @@ function FAQAccordionItem({
 }: FAQAccordionItemProps) {
   return (
     <div
-      className="border border-white/10 rounded-xl overflow-hidden transition-colors duration-150 hover:border-white/20"
+      className="border border-white/10 rounded-2xl overflow-hidden transition-colors duration-150 hover:border-white/20"
       data-state={isOpen ? 'open' : 'closed'}
     >
       <button
         onClick={onToggle}
-        className="flex justify-between items-center w-full p-4 md:p-5 bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0066FF]"
+        className="flex justify-between items-center w-full p-5 min-[800px]:p-6 bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0066FF]"
         aria-expanded={isOpen}
         aria-controls={`faq-content-${index}`}
         id={`faq-trigger-${index}`}
       >
-        <span className="text-white text-[18px] md:text-[20px] font-semibold pr-2 tracking-[0.02em]">
+        <span className="text-white text-[18px] min-[800px]:text-[20px] font-semibold pr-2 tracking-[0.02em]">
           {item.question}
         </span>
         <ChevronDown
@@ -55,8 +55,8 @@ function FAQAccordionItem({
         }}
       >
         <div className="overflow-hidden">
-          <div className="px-4 pb-4">
-            <p className="text-white/60 text-[18px] md:text-[20px] leading-[1.6] tracking-[0.02em]">
+          <div className="px-5 pb-5">
+            <p className="text-white/60 text-[18px] min-[800px]:text-[20px] leading-[1.6] tracking-[0.02em]">
               {item.answer}
             </p>
           </div>
@@ -75,17 +75,17 @@ export function FAQSection({ items }: FAQSectionProps) {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       {/* Section Header */}
       <h2
         id="faq-heading"
-        className="text-white text-[28px] md:text-[32px] font-semibold text-center tracking-[0.02em]"
+        className="text-white text-[28px] min-[800px]:text-[32px] font-semibold text-center tracking-[0.02em]"
       >
         Questions?
       </h2>
 
       {/* Accordion Items */}
-      <div className="space-y-6">
+      <div className="space-y-8">
         {items.map((item, index) => (
           <FAQAccordionItem
             key={index}

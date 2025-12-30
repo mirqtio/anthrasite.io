@@ -8,6 +8,7 @@ import getSql from '@/lib/db'
 import type { LandingContext, EffortLevel } from './types'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { CATALOG_HOOKS } from './catalog-hooks'
 
 export { validatePurchaseToken }
 
@@ -119,6 +120,36 @@ export async function lookupLandingContext(
     // Get the hook opportunity (first hero issue or first opportunity)
     const hookIssue = heroIssues[0] || opportunityDetails[0] || null
 
+    // Look up top friction point ID from Phase B context for catalog hook
+    // Check all buckets and find highest weighted_impact
+    const phaseBResult = await sql`
+      WITH parsed AS (
+        SELECT (context #>> '{}')::jsonb as ctx
+        FROM phaseb_journey_context
+        WHERE lead_id = ${leadIdInt}
+        ORDER BY created_at DESC
+        LIMIT 1
+      ),
+      all_fps AS (
+        SELECT fp->>'id' as id, (fp->>'weighted_impact')::float as weight
+        FROM parsed, jsonb_array_elements(ctx->'find'->'friction_points') fp
+        UNION ALL
+        SELECT fp->>'id', (fp->>'weighted_impact')::float
+        FROM parsed, jsonb_array_elements(ctx->'trust'->'friction_points') fp
+        UNION ALL
+        SELECT fp->>'id', (fp->>'weighted_impact')::float
+        FROM parsed, jsonb_array_elements(ctx->'contact'->'friction_points') fp
+        UNION ALL
+        SELECT fp->>'id', (fp->>'weighted_impact')::float
+        FROM parsed, jsonb_array_elements(ctx->'understand'->'friction_points') fp
+      )
+      SELECT id as top_fp_id FROM all_fps ORDER BY weight DESC LIMIT 1
+    `
+    const topFrictionPointId = phaseBResult[0]?.top_fp_id || null
+    const catalogHookText = topFrictionPointId
+      ? CATALOG_HOOKS[topFrictionPointId] || null
+      : null
+
     // Fetch screenshot URLs from assessment_results table
     const desktopScreenshot = await sql`
       SELECT value_text
@@ -166,7 +197,10 @@ export async function lookupLandingContext(
             title: hookIssue.title || 'Website Issue Identified',
             effort: (hookIssue.effort || 'MODERATE') as EffortLevel,
             description:
-              hookIssue.description || hookIssue.why_it_matters || '',
+              catalogHookText ||
+              hookIssue.description ||
+              hookIssue.why_it_matters ||
+              '',
             painStatement:
               hookIssue.pain_statement ||
               hookIssue.title ||

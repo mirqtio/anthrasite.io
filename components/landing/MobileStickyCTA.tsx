@@ -45,7 +45,7 @@ export function MobileStickyCTA({
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-[1100] md:hidden transition-transform duration-300 ${
+      className={`fixed bottom-0 left-0 right-0 z-[1100] min-[800px]:hidden transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : 'translate-y-full'
       }`}
       style={{
@@ -59,20 +59,17 @@ export function MobileStickyCTA({
         <button
           onClick={onCheckout}
           disabled={isLoading}
-          className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 disabled:cursor-not-allowed"
         >
-          <div className="flex items-center gap-1">
-            <Lock className="w-4 h-4" aria-hidden="true" />
-            <span className="text-[18px] font-semibold tracking-[0.02em]">
-              Get Your Report — ${price}
-            </span>
-          </div>
-
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
-            <ArrowRight className="w-5 h-5" />
+            <Lock className="w-4 h-4" aria-hidden="true" />
           )}
+          <span className="text-[18px] font-semibold tracking-[0.02em]">
+            Get Your Report — ${price}
+          </span>
+          {!isLoading && <ArrowRight className="w-5 h-5" />}
         </button>
       </div>
     </div>

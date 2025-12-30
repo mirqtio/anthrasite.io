@@ -10,11 +10,11 @@ export function LandingNav() {
   return (
     <>
       <nav className="nav-fixed">
-        <div className="max-w-[1200px] mx-auto px-5 md:px-10 py-4 md:py-5 flex items-center justify-between">
+        <div className="max-w-[1200px] mx-auto px-5 min-[800px]:px-10 py-4 min-[800px]:py-5 flex items-center justify-between">
           <div className="logo-container">
             <Link href="/" className="flex flex-col w-fit">
               <Logo size="medium" darkMode />
-              <div className="tagline text-[10px] md:text-[13px] font-light opacity-70 mt-1 flex justify-between">
+              <div className="tagline text-[10px] min-[800px]:text-[13px] font-light opacity-70 mt-1 flex justify-between">
                 <span>V</span>
                 <span>A</span>
                 <span>L</span>
@@ -39,7 +39,7 @@ export function LandingNav() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden min-[800px]:flex items-center space-x-8">
             <Link
               href="/#assessment"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
@@ -64,7 +64,7 @@ export function LandingNav() {
           <button
             type="button"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="md:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5 relative z-50"
+            className="min-[800px]:hidden flex flex-col justify-center items-center w-10 h-10 space-y-1.5 relative z-50"
             aria-label="Toggle menu"
             aria-expanded={showMobileMenu}
           >
@@ -89,7 +89,7 @@ export function LandingNav() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-[#232323] z-40 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 bg-[#232323] z-40 transition-opacity duration-300 min-[800px]:hidden ${
           showMobileMenu
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'

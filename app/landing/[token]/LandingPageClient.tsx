@@ -84,7 +84,7 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
     <div className="min-h-screen bg-[#232323]">
       {/* landing-container class prevents pinched layouts */}
       <div className="landing-container">
-        <div className="space-y-20">
+        <div className="space-y-24">
           {/* Section 1: Hero */}
           <HeroSection
             company={context.company}
@@ -92,6 +92,9 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
             impactHigh={context.impactHigh}
             hookOpportunity={context.hookOpportunity}
             desktopScreenshotUrl={context.desktopScreenshotUrl}
+            price={context.price}
+            isLoading={isCheckoutLoading}
+            onCheckout={handleCheckout}
           />
 
           {/* Section 2: The Hook */}
@@ -114,7 +117,7 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
           {/* Section 4: Why Trust Us - Simple text, inline here */}
           <section
             aria-labelledby="trust-heading"
-            className="py-12 text-center"
+            className="py-16 text-center"
           >
             <h2 id="trust-heading" className="sr-only">
               Why Trust Us
