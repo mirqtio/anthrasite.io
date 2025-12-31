@@ -1,6 +1,6 @@
 /**
  * Context for the post-purchase confirmation page.
- * Retrieved from Stripe session metadata + lead data.
+ * Retrieved from Stripe session metadata + landing page context.
  */
 export interface ConfirmationContext {
   /** Stripe checkout session ID */
@@ -26,6 +26,15 @@ export interface ConfirmationContext {
 
   /** Purchase price in dollars */
   price: number
+
+  /** Number of issues identified (from LP context) */
+  issueCount: number
+
+  /** Lower bound of impact range, formatted (e.g., "$41,700") */
+  impactLow: string
+
+  /** Upper bound of impact range, formatted (e.g., "$62,500") */
+  impactHigh: string
 }
 
 /**

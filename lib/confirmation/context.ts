@@ -1,6 +1,6 @@
 /**
  * Confirmation Page Context Functions
- * Handles Stripe session retrieval and lead data lookup for /purchase/success
+ * Handles Stripe session retrieval and leverages LP context for lead data
  */
 
 import {
@@ -10,12 +10,13 @@ import {
 } from '@/lib/stripe/checkout'
 import { extractUtmToken } from '@/lib/stripe/utils'
 import { validatePurchaseToken } from '@/lib/purchase'
-import getSql from '@/lib/db'
+import { lookupLandingContext } from '@/lib/landing/context'
 import type { ConfirmationContext } from './types'
 
 /**
  * Looks up confirmation page context from Stripe session ID.
- * Retrieves session metadata, validates JWT token, and fetches lead data.
+ * Retrieves session metadata, validates JWT token, and fetches lead data
+ * by reusing the landing page context lookup.
  *
  * @param sessionId - Stripe checkout session ID
  * @returns ConfirmationContext or null if validation fails
@@ -68,28 +69,8 @@ export async function lookupConfirmationContext(
     // 6. Get price from session (in cents, convert to dollars)
     const price = session.amount_total ? session.amount_total / 100 : 199
 
-    // 7. Lookup lead data (optional - graceful fallback)
-    let company: string | null = null
-    let domain: string | null = null
-
-    try {
-      const leadIdInt = parseInt(leadId, 10)
-      if (!isNaN(leadIdInt)) {
-        const sql = getSql()
-        const leadRows = await sql`
-          SELECT company, domain
-          FROM leads
-          WHERE id = ${leadIdInt}
-        `
-        if (leadRows.length > 0) {
-          company = leadRows[0].company || null
-          domain = leadRows[0].domain || null
-        }
-      }
-    } catch (dbError) {
-      // Log but don't fail - lead data is optional
-      console.error('Failed to lookup lead data:', dbError)
-    }
+    // 7. Reuse landing page context for lead/run data (company, domain, issues, impact)
+    const landingContext = await lookupLandingContext(leadId, runId)
 
     // 8. Build and return context
     return {
@@ -97,10 +78,13 @@ export async function lookupConfirmationContext(
       orderRef: sessionId.slice(-8),
       leadId,
       runId,
-      company,
-      domain,
+      company: landingContext?.company ?? null,
+      domain: landingContext?.domainUrl ?? null,
       purchaseEmail,
       price,
+      issueCount: landingContext?.issueCount ?? 0,
+      impactLow: landingContext?.impactLow ?? '$0',
+      impactHigh: landingContext?.impactHigh ?? '$0',
     }
   } catch (error) {
     console.error('Error looking up confirmation context:', error)

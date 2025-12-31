@@ -52,7 +52,7 @@ export function CTASection({
               <ul className="flex flex-col gap-4 text-[18px] min-[800px]:text-[20px] text-white/60 tracking-[0.02em]">
                 <li className="flex items-start gap-3">
                   <span className="text-white">•</span>
-                  <span>{issueCount} issues identified and prioritized</span>
+                  <span>{issueCount} prioritized issues</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-white">•</span>
@@ -66,7 +66,7 @@ export function CTASection({
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-white">•</span>
-                  <span>Detailed metrics</span>
+                  <span>Metrics with an explanation of why they matter</span>
                 </li>
               </ul>
             </div>
