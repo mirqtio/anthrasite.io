@@ -3,7 +3,6 @@
 import { useState, useCallback } from 'react'
 import type { LandingContext, FAQItem } from '@/lib/landing/types'
 import { HeroSection } from '@/components/landing/HeroSection'
-import { HookSection } from '@/components/landing/HookSection'
 import { ValueSection } from '@/components/landing/ValueSection'
 import { CTASection } from '@/components/landing/CTASection'
 import { FAQSection } from '@/components/landing/FAQSection'
@@ -84,10 +83,12 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
     <div className="min-h-screen bg-[#232323]">
       {/* landing-container class prevents pinched layouts */}
       <div className="landing-container">
-        <div className="space-y-24">
+        {/* Single gap control - children must have NO external margins/padding */}
+        <div className="flex flex-col gap-20 min-[800px]:gap-24">
           {/* Section 1: Hero */}
           <HeroSection
             company={context.company}
+            score={context.score}
             issueCount={context.issueCount}
             impactHigh={context.impactHigh}
             hookOpportunity={context.hookOpportunity}
@@ -97,40 +98,90 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
             onCheckout={handleCheckout}
           />
 
-          {/* Section 2: The Hook */}
-          <section aria-labelledby="hook-heading">
-            <HookSection
-              hookOpportunity={context.hookOpportunity}
-              impactLow={context.impactLow}
-              impactHigh={context.impactHigh}
-            />
-          </section>
+          {/* Bento layout: Header full width, then Value (2/3) + Card (1/3), then Dollar full width */}
+          <div className="flex flex-col gap-24">
+            {/* Section Header - full width */}
+            <section aria-labelledby="value-heading" className="text-center">
+              <div className="flex flex-col gap-8">
+                <h2
+                  id="value-heading"
+                  className="text-white text-[28px] min-[800px]:text-[32px] font-semibold leading-tight tracking-[0.02em]"
+                >
+                  What&apos;s in your report
+                </h2>
+                <p className="text-white/60 text-[18px] min-[800px]:text-[20px] max-w-xl mx-auto leading-[1.6] tracking-[0.02em]">
+                  A detailed analysis of {context.company}, organized by what
+                  matters most to your bottom line.
+                </p>
+              </div>
+            </section>
 
-          {/* Section 3: What You Get */}
-          <section aria-labelledby="value-heading">
-            <ValueSection
-              company={context.company}
-              issueCount={context.issueCount}
-            />
-          </section>
+            {/* Row: Value list (2/3 left) + Card (1/3 right) on desktop */}
+            <div className="flex flex-col gap-24 min-[800px]:grid min-[800px]:grid-cols-[2fr_1fr] min-[800px]:gap-12 min-[800px]:items-start">
+              {/* Value bullet list (2/3 left) */}
+              <ValueSection
+                company={context.company}
+                issueCount={context.issueCount}
+                hideHeader
+              />
 
-          {/* Section 4: Why Trust Us - Simple text, inline here */}
-          <section
-            aria-labelledby="trust-heading"
-            className="py-16 text-center"
-          >
-            <h2 id="trust-heading" className="sr-only">
-              Why Trust Us
-            </h2>
-            <p className="text-white/70 text-base leading-relaxed max-w-xl mx-auto">
-              We&apos;ve helped hundreds of small businesses understand
-              what&apos;s holding back their website. Our reports translate
-              technical metrics into business impact—so you know exactly where
-              to focus.
+              {/* Issue Brief Card (1/3 right) - matches guarantee card style */}
+              <div className="p-8 min-[800px]:p-10 bg-white/5 rounded-2xl">
+                <h2
+                  id="hook-heading"
+                  className="text-white/60 text-[20px] font-semibold tracking-[0.02em] pb-4 mb-4 border-b border-white/10"
+                >
+                  Your site&apos;s biggest issue
+                </h2>
+                <p className="text-white/60 text-[20px] leading-[1.6] tracking-[0.02em]">
+                  {(() => {
+                    const desc = context.hookOpportunity.description
+                    const match = desc.match(/is that\s+(.*)$/i)
+                    if (match && match[1]) {
+                      // Capitalize first letter of extracted text
+                      return (
+                        match[1].charAt(0).toUpperCase() + match[1].slice(1)
+                      )
+                    }
+                    return desc
+                  })()}
+                </p>
+              </div>
+            </div>
+
+            {/* Dollar Range (full width) */}
+            <p
+              className="text-center text-white/60 text-[20px] min-[800px]:text-[24px] tracking-[0.02em]"
+              aria-label={`Estimated monthly impact: ${context.impactLow} to ${context.impactHigh} dollars`}
+            >
+              We estimate you&apos;re leaving{' '}
+              <span className="text-white font-semibold">
+                {context.impactLow} – {context.impactHigh}
+              </span>{' '}
+              on the table every month.
             </p>
-          </section>
 
-          {/* Section 5: CTA + Guarantee */}
+            {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
+            <div className="hidden min-[800px]:flex justify-center">
+              <button
+                onClick={handleCheckout}
+                disabled={isCheckoutLoading}
+                className="w-full sm:w-auto min-w-[280px] inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white text-[18px] min-[800px]:text-[20px] font-semibold rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] hover:shadow-[0_6px_20px_rgba(0,102,255,0.5)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#232323] disabled:cursor-not-allowed"
+              >
+                {isCheckoutLoading ? (
+                  <>
+                    <span>Redirecting...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Get Your Report – ${context.price}</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* CTA + Guarantee */}
           <section aria-labelledby="cta-heading">
             <CTASection
               company={context.company}

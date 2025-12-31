@@ -18,23 +18,23 @@ export function MobileStickyCTA({
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
-    // Find the main CTA section to observe
-    const ctaSection = document.querySelector('[aria-labelledby="cta-heading"]')
+    // Find the main CTA button to observe (not the whole section)
+    const ctaButton = document.getElementById('main-cta-button')
 
-    if (!ctaSection) return
+    if (!ctaButton) return
 
     observerRef.current = new IntersectionObserver(
       ([entry]) => {
-        // Show sticky CTA when the main CTA is NOT in viewport
+        // Show sticky CTA when the main CTA button is NOT in viewport
         setIsVisible(!entry.isIntersecting)
       },
       {
         threshold: 0,
-        rootMargin: '-100px 0px 0px 0px', // Some buffer at top
+        rootMargin: '0px', // Hide as soon as button enters viewport
       }
     )
 
-    observerRef.current.observe(ctaSection)
+    observerRef.current.observe(ctaButton)
 
     return () => {
       if (observerRef.current) {

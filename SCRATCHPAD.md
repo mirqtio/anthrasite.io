@@ -1865,3 +1865,146 @@ This is a starting point for identifying gaps and minimizing new component surfa
 | `components/landing/MobileStickyCTA`      | (none)                        | **Gap**: needs sticky CTA pattern in DS.                                                   |
 | `components/legal/LegalPageLayout`        | `Footer` (partial)            | DS footer exists, but header/nav is a **gap**.                                             |
 | `components/Button` / `Card` / `Skeleton` | (none)                        | **Gap**: DS should expose primitives or we should rewrite pages to only use DS components. |
+
+---
+
+## Landing Page v10 Implementation Notes (2025-12-30)
+
+### Overview
+
+Major refactor of the landing page (`/landing/[token]`) focusing on:
+
+1. **Layout redesign** - Bento box layouts, rationalized spacing
+2. **Token & data consistency** - JWT tokens with `runId` for consistent data across email/LP/report
+
+### Layout Changes
+
+#### Spacing Rationalization
+
+- **Before**: Nested `space-y-*` classes causing compounding (e.g., 136px instead of 96px)
+- **After**: Single `flex flex-col gap-*` pattern at each level, no nested spacing
+
+```tsx
+// Parent controls all section gaps
+<div className="flex flex-col gap-20 min-[800px]:gap-24">
+  <HeroSection /> {/* NO external margin/padding */}
+  <ValueSection /> {/* NO external margin/padding */}
+  <CTASection /> {/* NO external margin/padding */}
+</div>
+```
+
+#### Hero Section (`components/landing/HeroSection.tsx`)
+
+- Flipped layout: Screenshot (1/3 left) + H1 (2/3 right) using `grid-cols-[1fr_2fr]`
+- Added `score` prop for hero text
+- New copy: "We assessed {company}'s website using tools that top companies like Google use. Your site scores {score}/100..."
+- Desktop CTA hidden on mobile (sticky CTA handles it)
+
+#### Bento Layout in Main Content
+
+```
+┌────────────────────────────────────────────────────────┐
+│ "What's in your report" (full width header)            │
+├─────────────────────────────────┬──────────────────────┤
+│ Value bullets (2/3)             │ Issue card (1/3)     │
+├─────────────────────────────────┴──────────────────────┤
+│ "We estimate you're leaving $X-$Y on the table" (full) │
+├────────────────────────────────────────────────────────┤
+│ CTA button (centered)                                  │
+└────────────────────────────────────────────────────────┘
+```
+
+#### CTA Section (`components/landing/CTASection.tsx`)
+
+- Redesigned as bento layout:
+  - Left column: "Your report for {company}" + 4 bullets
+  - Right column: Differentiator text
+  - Full width: Guarantee card
+  - Centered: CTA button + "Checkout with Stripe • Delivered in minutes"
+
+#### ValueSection (`components/landing/ValueSection.tsx`)
+
+- Added `hideHeader` prop to render header separately in bento layout
+- Changed internal spacing from `space-y-*` to `flex flex-col gap-*`
+
+#### Removed
+
+- "Why Trust Us" section (content moved/consolidated)
+- Separate hr/divider elements (flat structure now)
+- `order-*` classes for mobile (natural order works for both)
+
+### Token & Data Consistency (ADR-P15)
+
+**Problem**: Email, LP, and report could show different data if they queried different pipeline runs.
+
+**Solution**: JWT tokens now include both `leadId` AND `runId`:
+
+```typescript
+// Token payload
+{
+  leadId: "3093",
+  runId: "lead_3093_batch_20251227_013442_191569fa",
+  aud: "landing",
+  scope: "view",
+  ...
+}
+```
+
+**Files Changed**:
+
+| File                             | Change                                              |
+| -------------------------------- | --------------------------------------------------- |
+| `lib/purchase/index.ts`          | Replaced stub with real JWT validation using `jose` |
+| `lib/landing/context.ts`         | All queries now filter by single `targetRunId`      |
+| `email_routes.py` (LeadShop)     | Added `construct_landing_url()` function            |
+| `scripts/gen_purchase_token.mjs` | Updated to generate landing + purchase tokens       |
+
+**Data Sources (all filtered by same run_id)**:
+
+| Data                          | Table                               | Run ID Column          |
+| ----------------------------- | ----------------------------------- | ---------------------- |
+| Overall score                 | `lead_scores`                       | `run_id_str`           |
+| Impact range                  | `phaseb_journey_context`            | `run_id`               |
+| Friction points / issue count | `phaseb_journey_context`            | `run_id`               |
+| Catalog hook text             | `CATALOG_HOOKS[topFrictionPointId]` | (derived from Phase B) |
+| Screenshots                   | `assessment_results`                | `run_id`               |
+
+### Mobile Sticky CTA
+
+- Now observes `#main-cta-button` instead of whole CTA section
+- Appears when hero leaves viewport
+- Hides when main CTA button is visible
+
+### Files Modified (anthrasite-clean)
+
+```
+app/landing/[token]/LandingPageClient.tsx
+app/landing/[token]/page.tsx
+components/landing/HeroSection.tsx
+components/landing/CTASection.tsx
+components/landing/ValueSection.tsx
+components/landing/MobileStickyCTA.tsx
+lib/landing/context.ts
+lib/purchase/index.ts
+scripts/gen_purchase_token.mjs
+docs/adr/ADR-P15-Landing-Page-Token-And-Run-Consistency.md (NEW)
+```
+
+### Files Modified (LeadShop-v3-clean)
+
+```
+src/leadshop/api/email_routes.py  # Added construct_landing_url()
+```
+
+### Testing Notes
+
+- Dev tokens (`/landing/3093`) still work but fall back to latest run
+- Production tokens must be generated with explicit `run_id` via `construct_landing_url()`
+- To generate test tokens: `node scripts/gen_purchase_token.mjs`
+
+### Next Steps
+
+- [ ] Update email templates to use `construct_landing_url()` instead of hardcoded URLs
+- [ ] Verify Phase B context structure for all leads (impact_range field location)
+- [ ] Consider adding `run_id` to checkout session for report generation consistency
+- [ ] Mobile viewport testing on real devices

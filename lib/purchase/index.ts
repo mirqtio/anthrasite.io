@@ -1,12 +1,25 @@
+import { jwtVerify } from 'jose'
 import { PurchaseContext, PurchaseIssue } from './types'
 
 // Re-export types for consumers importing from '@/lib/purchase'
 export * from './types'
 
+// Valid audiences for purchase/landing tokens
+const VALID_AUDIENCES = ['purchase', 'landing'] as const
+
+/**
+ * Validate purchase/landing JWT token
+ * Extracts leadId and runId from the token payload
+ *
+ * Token must contain:
+ * - leadId: Lead identifier
+ * - runId: Run identifier (for data consistency)
+ * - aud: 'purchase' or 'landing'
+ */
 export async function validatePurchaseToken(
   token: string
 ): Promise<{ leadId: string; runId?: string } | null> {
-  // Dev tokens for testing specific leads
+  // Dev tokens for testing specific leads (no runId = uses latest)
   if (token === 'test-token' || token === '3102') {
     return { leadId: '3102' }
   }
@@ -14,8 +27,40 @@ export async function validatePurchaseToken(
   if (/^\d+$/.test(token)) {
     return { leadId: token }
   }
-  // Mock validation returning payload
-  return { leadId: '12345', runId: 'run-abc' }
+
+  try {
+    // Use SURVEY_SECRET_KEY (shared secret for all JWT tokens)
+    if (!process.env.SURVEY_SECRET_KEY) {
+      console.error('SURVEY_SECRET_KEY not configured')
+      return null
+    }
+
+    const secret = new TextEncoder().encode(process.env.SURVEY_SECRET_KEY)
+
+    // Verify JWT signature and expiration
+    const { payload } = await jwtVerify(token, secret, {
+      algorithms: ['HS256'],
+      audience: VALID_AUDIENCES as unknown as string[],
+    })
+
+    // Extract leadId (required)
+    const leadId = payload.leadId as string | undefined
+    if (!leadId) {
+      console.error('Token missing required leadId field')
+      return null
+    }
+
+    // Extract runId (required for data consistency)
+    const runId = payload.runId as string | undefined
+    if (!runId) {
+      console.warn('Token missing runId - will use latest run for lead', leadId)
+    }
+
+    return { leadId, runId }
+  } catch (error) {
+    console.error('Token validation failed:', error)
+    return null
+  }
 }
 
 export async function lookupPurchaseContext(

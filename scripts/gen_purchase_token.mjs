@@ -9,10 +9,28 @@ const secretKey = match ? match[1].trim() : '';
 const secret = new TextEncoder().encode(secretKey);
 const now = Math.floor(Date.now() / 1000);
 
-const token = await new SignJWT({
+// Generate landing page token
+const landingToken = await new SignJWT({
   leadId: '3093',
-  runId: 'run_3093_20250202_031459',
-  jti: 'test-' + Date.now(),
+  runId: 'lead_3093_batch_20251227_013442_191569fa', // Use actual run_id format
+  jti: 'landing-' + Date.now(),
+  scope: 'view',
+})
+  .setProtectedHeader({ alg: 'HS256' })
+  .setIssuedAt(now)
+  .setExpirationTime(now + 30 * 24 * 3600) // 30 days
+  .setAudience('landing')
+  .sign(secret);
+
+console.log('Token expires:', new Date((now + 30 * 24 * 3600) * 1000).toISOString());
+console.log('\nLanding Page URL:');
+console.log('http://localhost:3333/landing/' + landingToken);
+
+// Generate purchase token (for checkout flow)
+const purchaseToken = await new SignJWT({
+  leadId: '3093',
+  runId: 'lead_3093_batch_20251227_013442_191569fa',
+  jti: 'purchase-' + Date.now(),
   scope: 'buy',
   tier: 'basic',
 })
@@ -22,6 +40,5 @@ const token = await new SignJWT({
   .setAudience('purchase')
   .sign(secret);
 
-console.log('Token expires:', new Date((now + 7 * 24 * 3600) * 1000).toISOString());
-console.log('URL:');
-console.log('http://localhost:3333/purchase?sid=' + token);
+console.log('\nPurchase URL:');
+console.log('http://localhost:3333/purchase?sid=' + purchaseToken);

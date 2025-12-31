@@ -9,6 +9,7 @@ import type { HookOpportunity } from '@/lib/landing/types'
 
 interface HeroSectionProps {
   company: string
+  score: number
   issueCount: number
   impactHigh: string
   hookOpportunity: HookOpportunity
@@ -20,6 +21,7 @@ interface HeroSectionProps {
 
 export function HeroSection({
   company,
+  score,
   issueCount,
   impactHigh,
   hookOpportunity,
@@ -32,9 +34,12 @@ export function HeroSection({
   const [imageError, setImageError] = useState(false)
 
   return (
-    <section className="relative bg-[#232323]" aria-labelledby="hero-heading">
-      {/* Header - Logo + Tagline */}
-      <header className="py-4 min-[800px]:py-5">
+    <section
+      className="relative bg-[#232323] flex flex-col"
+      aria-labelledby="hero-heading"
+    >
+      {/* Header - Logo + Tagline - 96px gap to hero content below */}
+      <header className="pt-4 min-[800px]:pt-5 pb-24">
         <div className="logo-container w-fit">
           <Link href="/" className="flex flex-col">
             <Logo size="medium" darkMode className="logo-mobile" />
@@ -63,19 +68,11 @@ export function HeroSection({
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <div className="py-10 min-[800px]:py-14 space-y-10 min-[800px]:space-y-24">
-        {/* Row 1: H1 + Screenshot */}
-        <div className="min-[800px]:grid min-[800px]:grid-cols-[1fr_auto] min-[800px]:gap-12 min-[800px]:items-center">
-          {/* H1 */}
-          <h1
-            id="hero-heading"
-            className="text-white text-[48px] min-[800px]:text-[64px] font-thin leading-[1.1] mb-10 min-[800px]:mb-0"
-          >
-            Is your website working for you?
-          </h1>
-
-          {/* Screenshot - Mobile Only */}
+      {/* Main Content Area - NO external padding, parent controls section spacing */}
+      <div className="flex flex-col gap-10 min-[800px]:gap-24">
+        {/* Row 1: Screenshot (1/3 left) + H1 (2/3 right) */}
+        <div className="flex flex-col gap-10 min-[800px]:grid min-[800px]:grid-cols-[1fr_2fr] min-[800px]:gap-12 min-[800px]:items-center">
+          {/* Screenshot - Mobile Only (shows first on mobile) */}
           {!imageError && (
             <div className="min-[800px]:hidden max-w-[400px] mx-auto rounded-2xl overflow-hidden shadow-lg">
               <Image
@@ -94,7 +91,7 @@ export function HeroSection({
             </div>
           )}
 
-          {/* Screenshot - Desktop Only (right 40%, centered) */}
+          {/* Screenshot - Desktop Only (1/3 left) */}
           {!imageError && (
             <div className="hidden min-[800px]:flex min-[800px]:justify-center min-[800px]:items-center">
               <div className="max-w-[400px] rounded-2xl overflow-hidden shadow-lg">
@@ -114,32 +111,46 @@ export function HeroSection({
               </div>
             </div>
           )}
+
+          {/* H1 (2/3 right on desktop, below screenshot on mobile) */}
+          <h1
+            id="hero-heading"
+            className="text-white text-[48px] min-[800px]:text-[64px] font-thin leading-[1.1]"
+          >
+            Is your website working for you?
+          </h1>
         </div>
 
         {/* Row 2: Two paragraphs side-by-side (50/50) on desktop */}
-        <div className="space-y-8 min-[800px]:space-y-0 min-[800px]:grid min-[800px]:grid-cols-2 min-[800px]:gap-12">
+        <div className="flex flex-col gap-8 min-[800px]:grid min-[800px]:grid-cols-2 min-[800px]:gap-12">
           {/* Analysis Summary */}
           <p className="text-white/60 text-[18px] min-[800px]:text-[20px] leading-[1.6] tracking-[0.02em]">
-            We analyzed{' '}
-            <span className="text-white font-medium">{company}&apos;s</span>{' '}
-            website with the same tools Google uses and found{' '}
-            <span className="text-white font-medium">{issueCount} issues</span>.
-            These could be costing you up to{' '}
+            We assessed{' '}
+            <span className="text-white font-semibold">{company}&apos;s</span>{' '}
+            website using tools that top companies like Google use. Your site
+            scores{' '}
+            <span className="text-white font-semibold">{score} / 100</span> and
+            has{' '}
+            <span className="text-white font-semibold">
+              {issueCount} priority issues
+            </span>
+            . These could be costing you up to{' '}
             <span className="text-white font-semibold">{impactHigh}/month</span>
             .
           </p>
 
           {/* CTA Copy */}
           <p className="text-white/60 text-[18px] min-[800px]:text-[20px] leading-[1.6] tracking-[0.02em]">
-            Know what to fix and what it&apos;s worth. Get the full report
-            detailing all{' '}
-            <span className="text-white font-medium">{issueCount}</span>{' '}
-            prioritized issues now. No risk money-back guarantee.
+            Learn what to fix and what it&apos;s worth. Get the full report
+            detailing all {issueCount} prioritized issues now.{' '}
+            <span className="text-white font-semibold">
+              No risk money-back guarantee.
+            </span>
           </p>
         </div>
 
-        {/* CTA Button */}
-        <div className="flex justify-center">
+        {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
+        <div className="hidden min-[800px]:flex justify-center">
           <button
             onClick={onCheckout}
             disabled={isLoading}

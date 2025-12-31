@@ -87,77 +87,105 @@ export async function lookupLandingContext(
   try {
     const sql = getSql()
 
-    // Query lead and latest report data
-    const rows = await sql`
-      SELECT
-        l.id as lead_id,
-        l.company,
-        l.domain,
-        r.id as report_id,
-        r.report_data
-      FROM leads l
-      LEFT JOIN reports r ON r.lead_id = l.id
-      WHERE l.id = ${leadIdInt}
-      ORDER BY r.created_at DESC
-      LIMIT 1
-    `
-
-    if (rows.length === 0) {
-      console.error('No lead found for id:', leadIdInt)
-      return null
-    }
-
-    const row = rows[0]
-    const reportData = row.report_data || {}
-
-    // Extract data from report_data JSON
-    const impactRangeLow = reportData.impact_range_low || '$0'
-    const impactRangeHigh = reportData.impact_range_high || '$0'
-    const overallScore = reportData.overall_score || 0
-    const heroIssues = reportData.hero_issues || []
-    const opportunityDetails = reportData.opportunity_details || []
-
-    // Get the hook opportunity (first hero issue or first opportunity)
-    const hookIssue = heroIssues[0] || opportunityDetails[0] || null
-
-    // Look up top friction point ID from Phase B context for catalog hook
-    // Check all buckets and find highest weighted_impact
-    const phaseBResult = await sql`
-      WITH parsed AS (
-        SELECT (context #>> '{}')::jsonb as ctx
-        FROM phaseb_journey_context
+    // CRITICAL: Determine the run_id to use for ALL queries
+    // If not provided, get the most recent run from lead_scores
+    let targetRunId = runId
+    if (!targetRunId) {
+      const latestRun = await sql`
+        SELECT run_id_str
+        FROM lead_scores
         WHERE lead_id = ${leadIdInt}
         ORDER BY created_at DESC
         LIMIT 1
-      ),
-      all_fps AS (
-        SELECT fp->>'id' as id, (fp->>'weighted_impact')::float as weight
-        FROM parsed, jsonb_array_elements(ctx->'find'->'friction_points') fp
-        UNION ALL
-        SELECT fp->>'id', (fp->>'weighted_impact')::float
-        FROM parsed, jsonb_array_elements(ctx->'trust'->'friction_points') fp
-        UNION ALL
-        SELECT fp->>'id', (fp->>'weighted_impact')::float
-        FROM parsed, jsonb_array_elements(ctx->'contact'->'friction_points') fp
-        UNION ALL
-        SELECT fp->>'id', (fp->>'weighted_impact')::float
-        FROM parsed, jsonb_array_elements(ctx->'understand'->'friction_points') fp
-      )
-      SELECT id as top_fp_id FROM all_fps ORDER BY weight DESC LIMIT 1
+      `
+      targetRunId = latestRun[0]?.run_id_str
+      if (!targetRunId) {
+        console.error('No run found for lead:', leadIdInt)
+        return null
+      }
+    }
+    console.log(`Using run_id: ${targetRunId} for lead ${leadIdInt}`)
+
+    // Query lead basic info
+    const leadRows = await sql`
+      SELECT id as lead_id, company, domain
+      FROM leads
+      WHERE id = ${leadIdInt}
     `
-    const topFrictionPointId = phaseBResult[0]?.top_fp_id || null
+    if (leadRows.length === 0) {
+      console.error('No lead found for id:', leadIdInt)
+      return null
+    }
+    const lead = leadRows[0]
+
+    // Get score from lead_scores for THIS run
+    const scoreResult = await sql`
+      SELECT overall_score
+      FROM lead_scores
+      WHERE lead_id = ${leadIdInt}
+      AND run_id_str = ${targetRunId}
+    `
+    const overallScore = scoreResult[0]?.overall_score
+      ? Math.round(parseFloat(scoreResult[0].overall_score))
+      : 0
+
+    // Get Phase B context for THIS run (friction points, impact ranges, issue count)
+    const phaseBResult = await sql`
+      SELECT (context #>> '{}')::jsonb as ctx
+      FROM phaseb_journey_context
+      WHERE lead_id = ${leadIdInt}
+      AND run_id = ${targetRunId}
+    `
+    const phaseBCtx = phaseBResult[0]?.ctx || {}
+
+    // Get impact range from bucket_scores TOTAL row for THIS run
+    // Budget is stored in cents; convert to dollars and round to nearest $100
+    const budgetResult = await sql`
+      SELECT budget_low_cents, budget_high_cents
+      FROM bucket_scores
+      WHERE lead_id = ${leadIdInt}
+      AND run_id = ${targetRunId}
+      AND bucket = 'TOTAL'
+      LIMIT 1
+    `
+    const budgetRow = budgetResult[0]
+    const impactLowCents = budgetRow?.budget_low_cents || 0
+    const impactHighCents = budgetRow?.budget_high_cents || 0
+    // Convert cents to dollars and round to nearest $100
+    const impactRangeLow = Math.round(impactLowCents / 100 / 100) * 100
+    const impactRangeHigh = Math.round(impactHighCents / 100 / 100) * 100
+
+    // Count total friction points across all buckets
+    const allFrictionPoints = [
+      ...(phaseBCtx.find?.friction_points || []),
+      ...(phaseBCtx.trust?.friction_points || []),
+      ...(phaseBCtx.contact?.friction_points || []),
+      ...(phaseBCtx.understand?.friction_points || []),
+    ]
+    const issueCount = allFrictionPoints.length
+
+    // Find top friction point by weighted_impact for catalog hook
+    let topFrictionPointId: string | null = null
+    let maxWeight = -1
+    for (const fp of allFrictionPoints) {
+      const weight = fp.weighted_impact || 0
+      if (weight > maxWeight) {
+        maxWeight = weight
+        topFrictionPointId = fp.id
+      }
+    }
     const catalogHookText = topFrictionPointId
       ? CATALOG_HOOKS[topFrictionPointId] || null
       : null
 
-    // Fetch screenshot URLs from assessment_results table
+    // Fetch screenshot URLs for THIS run
     const desktopScreenshot = await sql`
       SELECT value_text
       FROM assessment_results
       WHERE lead_id = ${leadIdInt}
+      AND run_id = ${targetRunId}
       AND metric_key = 's3_image_url'
       AND value_text LIKE '%/desktop/%'
-      ORDER BY measured_at DESC
       LIMIT 1
     `
     const desktopScreenshotRaw = desktopScreenshot[0]?.value_text || null
@@ -166,9 +194,9 @@ export async function lookupLandingContext(
       SELECT value_text
       FROM assessment_results
       WHERE lead_id = ${leadIdInt}
+      AND run_id = ${targetRunId}
       AND metric_key = 's3_image_url'
       AND value_text LIKE '%/mobile/%'
-      ORDER BY measured_at DESC
       LIMIT 1
     `
     const mobileScreenshotRaw = mobileScreenshot[0]?.value_text || null
@@ -179,45 +207,50 @@ export async function lookupLandingContext(
       getPresignedScreenshotUrl(mobileScreenshotRaw),
     ])
 
+    // Find the top friction point for hook opportunity
+    const topFrictionPoint = allFrictionPoints.find(
+      (fp) => fp.id === topFrictionPointId
+    )
+
     // Build the landing context
     const context: LandingContext = {
       // Company info
-      company: row.company || 'Unknown Company',
-      domainUrl: row.domain || '',
+      company: lead.company || 'Unknown Company',
+      domainUrl: lead.domain || '',
 
       // Score & impact
       score: overallScore,
-      issueCount: opportunityDetails.length || heroIssues.length || 0,
+      issueCount: issueCount || 0,
       impactLow: formatDollarAmount(impactRangeLow),
       impactHigh: formatDollarAmount(impactRangeHigh),
 
-      // Hook opportunity
-      hookOpportunity: hookIssue
+      // Hook opportunity - built from top friction point
+      hookOpportunity: topFrictionPoint
         ? {
-            title: hookIssue.title || 'Website Issue Identified',
-            effort: (hookIssue.effort || 'MODERATE') as EffortLevel,
+            title: topFrictionPoint.title || 'Website Issue Identified',
+            effort: (topFrictionPoint.effort || 'MODERATE') as EffortLevel,
             description:
               catalogHookText ||
-              hookIssue.description ||
-              hookIssue.why_it_matters ||
+              topFrictionPoint.description ||
+              topFrictionPoint.why_it_matters ||
               '',
             painStatement:
-              hookIssue.pain_statement ||
-              hookIssue.title ||
+              topFrictionPoint.pain_statement ||
+              topFrictionPoint.title ||
               'We found issues affecting your business.',
             anchorMetric: {
               label:
-                hookIssue.metric_label ||
-                hookIssue.evidence_template?.label ||
+                topFrictionPoint.metric_label ||
+                topFrictionPoint.evidence_template?.label ||
                 'Score',
               value: String(
-                hookIssue.metric_value ||
-                  hookIssue.evidence_template?.value ||
+                topFrictionPoint.metric_value ||
+                  topFrictionPoint.evidence_template?.value ||
                   '—'
               ),
               target: String(
-                hookIssue.metric_target ||
-                  hookIssue.evidence_template?.target ||
+                topFrictionPoint.metric_target ||
+                  topFrictionPoint.evidence_template?.target ||
                   '—'
               ),
             },
