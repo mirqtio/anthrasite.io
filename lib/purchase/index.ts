@@ -19,13 +19,14 @@ const VALID_AUDIENCES = ['purchase', 'landing'] as const
 export async function validatePurchaseToken(
   token: string
 ): Promise<{ leadId: string; runId?: string } | null> {
-  // Dev tokens for testing specific leads (no runId = uses latest)
-  if (token === 'test-token' || token === '3102') {
-    return { leadId: '3102' }
-  }
-  // Numeric tokens treated as direct lead IDs for dev testing
-  if (/^\d+$/.test(token)) {
-    return { leadId: token }
+  // Dev-only: Allow numeric tokens for local testing (NEVER in production)
+  if (process.env.NODE_ENV !== 'production') {
+    if (token === 'test-token' || token === '3102') {
+      return { leadId: '3102' }
+    }
+    if (/^\d+$/.test(token)) {
+      return { leadId: token }
+    }
   }
 
   try {
