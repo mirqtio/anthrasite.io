@@ -1,211 +1,138 @@
-'use client'
+import { Suspense } from 'react'
+import { lookupConfirmationContext } from '@/lib/confirmation/context'
+import { SuccessPageClient } from '@/components/confirmation'
+import { LegacySuccessPage } from '@/components/purchase/LegacySuccessPage'
+import Link from 'next/link'
 
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { CheckCircle } from 'lucide-react'
-import { Logo } from '@/components/Logo'
-import getStripe from '@/lib/stripe/client'
-import { trackEvent } from '@/lib/analytics/analytics-client'
+// Force dynamic rendering - this page needs fresh Stripe data
+export const dynamic = 'force-dynamic'
 
-export default function PurchaseSuccessPage() {
-  const searchParams = useSearchParams()
-  const sessionId = searchParams.get('session_id') // Old Checkout Session flow
-  const paymentIntentId = searchParams.get('payment_intent') // Payment Element flow
-  const purchaseId = searchParams.get('purchase') // Direct purchase ID (legacy)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+interface PageProps {
+  searchParams: Promise<{
+    session_id?: string
+    payment_intent?: string
+    purchase?: string
+  }>
+}
 
-  useEffect(() => {
-    // Handle multiple flows: payment_intent (Payment Element), session_id (Checkout), or direct purchase ID
-    if (!sessionId && !paymentIntentId && !purchaseId) {
-      setError('Missing payment information')
-      setLoading(false)
-      return
-    }
-
-    // Track successful redirect to success page
-    trackEvent('purchase_success_page_viewed', {
-      sessionId: sessionId || undefined,
-      paymentIntentId: paymentIntentId || undefined,
-      purchaseId: purchaseId || undefined,
-      flow: paymentIntentId
-        ? 'payment_element'
-        : purchaseId
-          ? 'direct'
-          : 'checkout_session',
-    })
-
-    // Verify the session/purchase
-    const verifyPurchase = async () => {
-      try {
-        if (paymentIntentId) {
-          // Payment Element flow - look up purchase by payment intent ID
-          const response = await fetch(
-            `/api/purchase/by-payment-intent/${paymentIntentId}`,
-            {
-              method: 'GET',
-            }
-          )
-
-          if (!response.ok) {
-            throw new Error('Purchase not found')
-          }
-
-          const data = await response.json()
-          if (data.status !== 'completed') {
-            throw new Error('Payment not completed yet. Please wait a moment.')
-          }
-
-          setLoading(false)
-        } else if (purchaseId) {
-          // Direct purchase ID - purchase already created and verified by webhook
-          const response = await fetch(`/api/purchase/${purchaseId}`, {
-            method: 'GET',
-          })
-
-          if (!response.ok) {
-            throw new Error('Purchase not found')
-          }
-
-          const data = await response.json()
-          if (data.status !== 'completed') {
-            throw new Error('Payment not completed')
-          }
-
-          setLoading(false)
-        } else if (sessionId) {
-          // Old Checkout Session flow - verify with Stripe
-          const stripe = await getStripe()
-          if (!stripe) {
-            throw new Error('Failed to load Stripe')
-          }
-
-          // Note: In production, you'd want to verify this server-side
-          // For now, we'll just track the success
-          setLoading(false)
-        }
-      } catch (err) {
-        console.error('Error verifying purchase:', err)
-        setError(
-          err instanceof Error ? err.message : 'Failed to verify payment'
-        )
-        setLoading(false)
-      }
-    }
-
-    verifyPurchase()
-  }, [sessionId, paymentIntentId, purchaseId])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-          <p className="mt-4 text-white/60">Verifying your purchase...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center">
-          <div className="text-red-500 mb-4">
-            <svg
-              className="w-16 h-16 mx-auto"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
-          <p className="text-white/60 mb-6">{error}</p>
-          <a
-            href="/purchase"
-            className="inline-flex items-center px-6 py-3 bg-electric-blue text-white rounded-lg font-medium hover:bg-electric-blue/90 transition-colors"
-          >
-            Try Again
-          </a>
-        </div>
-      </div>
-    )
-  }
-
+/**
+ * Error component for invalid/missing session
+ */
+function SessionError({ message }: { message: string }) {
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="flex justify-center mb-12">
-          <Logo />
+    <main className="min-h-screen bg-[#232323] text-white flex items-center justify-center font-sans">
+      <div
+        className="mx-auto p-8 text-center"
+        style={{ width: '90vw', maxWidth: '28rem', minWidth: '300px' }}
+      >
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/20 flex items-center justify-center">
+          <svg
+            className="w-8 h-8 text-red-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
         </div>
+        <h1 className="text-2xl font-light mb-4">{message}</h1>
+        <p className="text-white/60 mb-8">
+          If you believe this is an error, please contact support at{' '}
+          <a
+            href="mailto:reports@anthrasite.io"
+            className="text-[#0066FF] hover:underline"
+          >
+            reports@anthrasite.io
+          </a>
+        </p>
+        <Link
+          href="/"
+          className="inline-block px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white rounded-md transition-colors"
+        >
+          Return Home
+        </Link>
+      </div>
+    </main>
+  )
+}
 
-        {/* Success Message */}
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="mb-8">
-            <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold mb-4">Purchase Successful!</h1>
-            <p className="text-xl text-white/80">
-              Thank you for your purchase. We're already working on your
-              comprehensive website audit.
-            </p>
-          </div>
-
-          {/* What's Next */}
-          <div className="bg-card-darker border border-card-border rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">What happens next?</h2>
-            <div className="space-y-4 text-left">
-              <div className="flex items-start">
-                <span className="text-electric-blue font-bold mr-3">1.</span>
-                <div>
-                  <p className="font-medium">Confirmation Email</p>
-                  <p className="text-white/60 text-sm">
-                    Check your inbox for your purchase confirmation and receipt.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <span className="text-electric-blue font-bold mr-3">2.</span>
-                <div>
-                  <p className="font-medium">Audit Processing</p>
-                  <p className="text-white/60 text-sm">
-                    Our systems are analyzing your website. This typically takes
-                    24-48 hours.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <span className="text-electric-blue font-bold mr-3">3.</span>
-                <div>
-                  <p className="font-medium">Report Delivery</p>
-                  <p className="text-white/60 text-sm">
-                    You'll receive your comprehensive PDF report via email once
-                    complete.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Support */}
-          <div className="text-center">
-            <p className="text-white/60 mb-4">Have questions? Need help?</p>
-            <a
-              href="mailto:hello@anthrasite.io"
-              className="inline-flex items-center px-6 py-3 bg-card-darker border border-card-border rounded-lg font-medium hover:bg-card-darkest transition-colors"
-            >
-              Contact Support
-            </a>
-          </div>
-        </div>
+/**
+ * Loading fallback for Suspense
+ */
+function LoadingState() {
+  return (
+    <div className="min-h-screen bg-[#232323] text-white flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+        <p className="mt-4 text-white/60">Loading your confirmation...</p>
       </div>
     </div>
+  )
+}
+
+/**
+ * Server component that handles the confirmation content
+ */
+async function ConfirmationContent({
+  sessionId,
+  paymentIntentId,
+  purchaseId,
+}: {
+  sessionId: string | null
+  paymentIntentId: string | null
+  purchaseId: string | null
+}) {
+  // NEW: session_id flow with personalization
+  // Only use personalized flow if session_id is the only param present
+  if (sessionId && !paymentIntentId && !purchaseId) {
+    const context = await lookupConfirmationContext(sessionId)
+
+    if (context) {
+      return <SuccessPageClient context={context} />
+    }
+
+    // Context lookup failed - show error
+    // This could be: invalid session, unpaid, missing token, etc.
+    return <SessionError message="Unable to verify your purchase" />
+  }
+
+  // LEGACY: payment_intent or purchase flows (backward compatibility)
+  // Or: no params at all (error case)
+  return (
+    <LegacySuccessPage
+      sessionId={sessionId}
+      paymentIntentId={paymentIntentId}
+      purchaseId={purchaseId}
+    />
+  )
+}
+
+/**
+ * Purchase Success Page
+ *
+ * Handles multiple flows:
+ * - NEW: session_id from Stripe Checkout → personalized confirmation
+ * - LEGACY: payment_intent from Payment Element → generic confirmation
+ * - LEGACY: purchase ID → generic confirmation
+ */
+export default async function PurchaseSuccessPage({ searchParams }: PageProps) {
+  const params = await searchParams
+  const sessionId = params.session_id ?? null
+  const paymentIntentId = params.payment_intent ?? null
+  const purchaseId = params.purchase ?? null
+
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <ConfirmationContent
+        sessionId={sessionId}
+        paymentIntentId={paymentIntentId}
+        purchaseId={purchaseId}
+      />
+    </Suspense>
   )
 }

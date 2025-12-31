@@ -1,0 +1,6 @@
+export { ConfirmationHero } from './ConfirmationHero'
+export { PurchaseSummary } from './PurchaseSummary'
+export { ExpectationBlock } from './ExpectationBlock'
+export { DeliveryBlock } from './DeliveryBlock'
+export { ConfirmationFAQ } from './ConfirmationFAQ'
+export { SuccessPageClient } from './SuccessPageClient'

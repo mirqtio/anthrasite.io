@@ -102,6 +102,13 @@ export const withAccessControl: MiddlewareFactory = (next) => {
       return next(req, evt, response)
     }
 
+    // Stripe checkout success uses 'session_id' param - let those through
+    const sessionId = searchParams.get('session_id')
+    if (sessionId) {
+      // Session validation happens in the page component
+      return next(req, evt, response)
+    }
+
     if (!utm) {
       if (siteMode === 'purchase') return next(req, evt, response)
       response.cookies.set(LOOP_BREAKER, '1', {
