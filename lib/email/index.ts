@@ -1,44 +1,20 @@
-// Export email service functions
-export {
-  sendOrderConfirmation,
-  sendReportReady,
-  sendWelcomeEmail,
-  sendCartRecoveryEmail,
-  retryQueuedEmail,
-  processRetryQueue,
-  getEmailQueueStats,
-} from './email-service'
+/**
+ * Email Module
+ *
+ * Email sending is handled by LeadShop. Anthrasite only provides:
+ * - Click tracking tokens and validation
+ * - Report ready email template
+ */
 
-// Stub for purchase confirmation (to be implemented)
-export async function sendPurchaseConfirmationEmail(
-  purchase: any,
-  metadata?: { eventId?: string }
-) {
-  // TODO: Wire to actual mailer when webhook handler is implemented
-  console.log(
-    `[EMAIL STUB] Would send purchase confirmation for purchase ${purchase.id} (event: ${metadata?.eventId})`
-  )
-  return { ok: true }
-}
+// Click tracking tokens
+export { mintClickToken, validateClickToken } from './tokens'
 
-// Export email configuration
-export { emailConfig, isEmailConfigured } from './config'
+// Report ready email template
+export { buildReportReadyEmail } from './templates/reportReady'
 
-// Export email queue
-export { emailQueue } from './queue'
-
-// Export types
+// Types
 export type {
-  BaseEmailData,
-  OrderConfirmationData,
-  ReportReadyData,
-  WelcomeEmailData,
-  EmailTemplate,
-  EmailMetadata,
-  EmailStatus,
-  EmailDeliveryResult,
-  EmailQueueItem,
-  SendGridEventType,
-  SendGridWebhookEvent,
-  EmailOptions,
+  ReportReadyContext,
+  ReportReadyEmail,
+  ClickTokenPayload,
 } from './types'
