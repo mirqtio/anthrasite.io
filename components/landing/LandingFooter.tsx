@@ -19,6 +19,12 @@ export function LandingFooter() {
             Terms of Service
           </a>
           <a
+            href="/legal/refund-policy"
+            className="text-white/50 hover:text-white/80 transition-opacity leading-tight !min-h-0 !min-w-0"
+          >
+            Refund policy
+          </a>
+          <a
             href="/legal/do-not-sell"
             className="text-white/50 hover:text-white/80 transition-opacity leading-tight !min-h-0 !min-w-0"
           >

@@ -12,13 +12,22 @@ export function FooterV2() {
         </div>
         <div className="flex gap-4 md:gap-0">
           <a
-            href="#"
+            href="/legal/privacy"
             className="hover:text-white transition-colors md:after:content-['·'] md:after:mx-2"
           >
             Privacy Policy
           </a>
-          <a href="#" className="hover:text-white transition-colors">
+          <a
+            href="/legal/terms"
+            className="hover:text-white transition-colors md:after:content-['·'] md:after:mx-2"
+          >
             Terms of Service
+          </a>
+          <a
+            href="/legal/refund-policy"
+            className="hover:text-white transition-colors"
+          >
+            Refund policy
           </a>
         </div>
       </div>
