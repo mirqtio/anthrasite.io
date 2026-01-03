@@ -12,7 +12,7 @@ const now = Math.floor(Date.now() / 1000);
 // Generate landing page token
 const landingToken = await new SignJWT({
   leadId: '3093',
-  runId: 'lead_3093_batch_20251227_013442_191569fa', // Use actual run_id format
+  runId: 'lead_3093_batch_20260102_202035_09738bcc', // Use actual run_id format
   jti: 'landing-' + Date.now(),
   scope: 'view',
 })
@@ -29,7 +29,7 @@ console.log('http://localhost:3333/landing/' + landingToken);
 // Generate purchase token (for checkout flow)
 const purchaseToken = await new SignJWT({
   leadId: '3093',
-  runId: 'lead_3093_batch_20251227_013442_191569fa',
+  runId: 'lead_3093_batch_20260102_202035_09738bcc',
   jti: 'purchase-' + Date.now(),
   scope: 'buy',
   tier: 'basic',
