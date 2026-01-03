@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { PrismaClient } from '@prisma/client'
+import { randomBytes } from 'crypto'
 import {
   generateUTMToken,
   createUTMParameter,
@@ -12,7 +13,7 @@ const prisma = new PrismaClient()
 
 // Helper to create test business
 async function createTestBusiness() {
-  const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
+  const uniqueId = `${Date.now()}-${randomBytes(4).toString('hex')}`
   return await prisma.business.create({
     data: {
       domain: `test-business-${uniqueId}.com`,
@@ -139,7 +140,7 @@ test.describe('UTM validation API returns expected statuses', () => {
       const payload = {
         businessId: business.id,
         timestamp: now,
-        nonce: Math.random().toString(36).substring(2, 15),
+        nonce: randomBytes(8).toString('hex'),
         expires: now - 48 * 60 * 60 * 1000, // Expired 48 hours ago
       }
 

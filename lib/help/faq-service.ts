@@ -282,7 +282,9 @@ export class FAQService {
    * Highlight search terms in text
    */
   private highlightText(text: string, term: string): string {
-    const regex = new RegExp(`(${term})`, 'gi')
+    // Escape special regex characters to prevent ReDoS attacks
+    const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const regex = new RegExp(`(${escapedTerm})`, 'gi')
     return text.replace(regex, '<mark>$1</mark>')
   }
 

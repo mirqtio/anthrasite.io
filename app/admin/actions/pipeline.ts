@@ -300,9 +300,14 @@ export async function resendReportEmail(
 ): Promise<BatchOperationResult[]> {
   const results: BatchOperationResult[] = []
 
+  const leadshopApiUrl = process.env.LEADSHOP_API_URL
+  if (!leadshopApiUrl) {
+    throw new Error('LEADSHOP_API_URL environment variable is not configured')
+  }
+
   try {
     // Call Python Backend API
-    const response = await fetch('http://127.0.0.1:8000/api/email/send-batch', {
+    const response = await fetch(`${leadshopApiUrl}/api/email/send-batch`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
