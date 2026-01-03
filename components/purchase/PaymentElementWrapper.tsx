@@ -6,9 +6,17 @@ import { loadStripe } from '@stripe/stripe-js'
 import { CheckoutForm } from './CheckoutForm'
 import { Skeleton } from '@/components/Skeleton'
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-)
+// Initialize Stripe client lazily to avoid errors if env var is missing
+const getStripePromise = () => {
+  const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  if (!key) {
+    console.error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not configured')
+    return Promise.resolve(null)
+  }
+  return loadStripe(key)
+}
+
+const stripePromise = getStripePromise()
 
 interface PaymentElementWrapperProps {
   businessId: string
