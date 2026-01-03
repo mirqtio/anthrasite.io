@@ -3,7 +3,6 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
-import { ConfirmationFAQ } from './ConfirmationFAQ'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 import type { ConfirmationContext } from '@/lib/confirmation/types'
@@ -153,20 +152,15 @@ export function SuccessPageClient({ context }: SuccessPageClientProps) {
             </div>
           </div>
 
-          {/* Section 3: FAQ - full width, same as LP */}
-          <section aria-labelledby="faq-heading">
-            <ConfirmationFAQ />
-          </section>
-
-          {/* Section 4: Support - full width below FAQ */}
+          {/* Section 3: Support - full width */}
           <section className="text-center pb-8">
             <p className="text-white/60 text-[18px] min-[800px]:text-[20px] tracking-[0.02em] leading-[1.6]">
               Still have questions?{' '}
               <a
-                href="mailto:reports@anthrasite.io"
+                href="mailto:hello@anthrasite.io"
                 className="text-white hover:text-white/80 underline underline-offset-4"
               >
-                reports@anthrasite.io
+                hello@anthrasite.io
               </a>
             </p>
           </section>

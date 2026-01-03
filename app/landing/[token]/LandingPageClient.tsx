@@ -17,24 +17,34 @@ interface LandingPageClientProps {
 // Static FAQ content
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'Who is Anthrasite?',
+    question: 'What does Anthrasite do?',
     answer:
-      "We analyze small business websites using a combination of industry-leading tools, established standards, and our own visual assessment. Then we translate the results into a prioritized list of what's actually affecting your business.",
+      'Our goal is to help small businesses. We analyze your website using industry-standard tools and visual assessments. Then we convert the findings into a prioritized list of what affects your business.',
   },
   {
-    question: 'Is this legitimate?',
+    question: 'Do you actually look at my website?',
     answer:
-      "Yes. We're a real company that helps small businesses understand their web presence. The screenshots and analysis in this report are generated from your actual website. If you have questions, you can reply directly to the email that brought you here.",
+      'Yes! We analyzed your specific site before reaching out. The score and issues you see are real findings from your site. We only contact you after confirming that we can help.',
   },
   {
-    question: 'How accurate is the revenue estimate?',
+    question: 'How is this different from free tools?',
     answer:
-      'Our revenue estimates are based on industry benchmarks and your specific traffic patterns. While individual results vary, we use conservative assumptions and clearly show the methodology in your report. The estimate represents potential monthly impact if issues are addressed.',
+      "Free scans list metrics without context or interpretation. And they don't do a visual review. We help you understand what is actually important to your business and what the metrics mean. We focus on customer experience—how to help more people find and engage with you.",
+  },
+  {
+    question: 'Where does the "Monthly Revenue Impact" number come from?',
+    answer:
+      "We estimate your baseline revenue using industry benchmarks. Then we calculate how much friction each issue typically costs businesses like yours. The range shows uncertainty. It helps you prioritize but doesn't predict exact outcomes.",
   },
   {
     question: 'What happens after I purchase?',
     answer:
-      "You'll receive your full report via email within minutes. The report includes all identified issues, prioritized by business impact, with difficulty ratings and the underlying measurements. It's a PDF you can share with your team or developer.",
+      'We compile the data into your personalized report and send you a secure link to download it. You should get it in under five minutes.',
+  },
+  {
+    question: "What if it doesn't pay off?",
+    answer:
+      "The report pays for itself or it's free. Give it a real shot. If you don't see the value after 90 days, email us for a full refund.",
   },
 ]
 

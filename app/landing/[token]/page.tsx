@@ -45,7 +45,7 @@ function TokenError({ message }: { message: string }) {
         <h1 className="text-2xl font-light mb-4">{message}</h1>
         <p className="text-white/60 mb-8">
           If you believe this is an error, please reply to the original email or
-          contact support at reports@anthrasite.io
+          contact support at hello@anthrasite.io
         </p>
         <Link
           href="/"

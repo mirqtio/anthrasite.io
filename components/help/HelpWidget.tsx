@@ -260,10 +260,10 @@ export const HelpWidget: React.FC = () => {
                 <p className="text-sm text-white/60 text-center">
                   Need more help? Email us at{' '}
                   <a
-                    href="mailto:support@anthrasite.io"
+                    href="mailto:hello@anthrasite.io"
                     className="text-anthracite-blue hover:underline"
                   >
-                    support@anthrasite.io
+                    hello@anthrasite.io
                   </a>
                 </p>
               </motion.div>

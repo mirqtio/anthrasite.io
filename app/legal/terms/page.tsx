@@ -40,9 +40,11 @@ export default function TermsOfServicePage() {
 
       <h3 className="text-[24px] font-light mt-8 mb-4">2.5 Refunds</h3>
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        Because the audit is a custom digital good created immediately upon
-        purchase, <strong>all sales are final</strong> unless required by
-        consumer‑protection law.
+        Refunds are governed by our{' '}
+        <a href="/legal/refund-policy">
+          <strong>Refund Policy</strong>
+        </a>
+        , including our 90-day performance guarantee.
       </p>
 
       <h3 className="text-[24px] font-light mt-8 mb-4">
@@ -125,7 +127,7 @@ export default function TermsOfServicePage() {
 
       <h3 className="text-[24px] font-light mt-8 mb-4">2.15 Contact</h3>
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        Questions? Email <strong>support@anthrasite.io</strong> or write to the
+        Questions? Email <strong>hello@anthrasite.io</strong> or write to the
         address provided in our Privacy Policy.
       </p>
     </LegalPageLayout>

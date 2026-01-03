@@ -103,21 +103,23 @@ describe('OrganicHomepage', () => {
     render(<OrganicHomepage />)
 
     expect(screen.getByText(/Questions/i)).toBeInTheDocument()
-    expect(screen.getByText(/What exactly do I get\?/i)).toBeInTheDocument()
+    expect(screen.getByText(/What does Anthrasite do\?/i)).toBeInTheDocument()
     expect(
-      screen.getByText(/How is this different from free tools\?/i)
+      screen.getByText(/How do you analyze my site\?/i)
     ).toBeInTheDocument()
-    expect(screen.getByText(/How do I get my report\?/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/What exactly do I get in the full report\?/i)
+    ).toBeInTheDocument()
   })
 
   it('should handle FAQ toggle', () => {
     render(<OrganicHomepage />)
 
-    const faqButton = screen.getByText(/What exactly do I get\?/i)
+    const faqButton = screen.getByText(/What does Anthrasite do\?/i)
     fireEvent.click(faqButton)
 
     expect(
-      screen.getByText(/Synthesis. A revenue-focused/i)
+      screen.getByText(/Our goal is to help small businesses/i)
     ).toBeInTheDocument()
   })
 

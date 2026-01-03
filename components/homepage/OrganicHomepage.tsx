@@ -4,14 +4,43 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useRenderTracking } from '@/lib/monitoring/hooks'
 import { Logo } from '@/components/Logo'
 import { ScrollToTop } from '@/components/ScrollToTop'
+import { FAQSection } from '@/components/landing/FAQSection'
+import type { FAQItem } from '@/lib/landing/types'
 import {
   WaitlistFormIds,
   WaitlistA11y,
 } from '@/lib/testing/waitlistFormContract'
 
+// Static FAQ content
+const FAQ_ITEMS: FAQItem[] = [
+  {
+    question: 'What does Anthrasite do?',
+    answer:
+      'Our goal is to help small businesses. We analyze your website using industry-standard tools and visual assessments. Then we convert the findings into a prioritized list of what affects your business.',
+  },
+  {
+    question: 'How do you analyze my site?',
+    answer:
+      'We use public scanning tools to check speed, security, and mobile performance. We also do a visual review of the customer experience. No login or access required—we only look at what your visitors see.',
+  },
+  {
+    question: 'What exactly do I get in the full report?',
+    answer:
+      'A detailed analysis of your site, organized by what matters most to your bottom line. A score and estimated revenue impact. Specific issues prioritized by impact with non-technical explanations. And detailed metrics for everything we measure.',
+  },
+  {
+    question: "What if it doesn't pay off?",
+    answer:
+      "The report pays for itself or it's free. Give it a real shot. If you don't see the value after 90 days, email us for a full refund.",
+  },
+  {
+    question: 'How can I contact you?',
+    answer: 'Email us at hello@anthrasite.io.',
+  },
+]
+
 export function OrganicHomepage() {
   // useRenderTracking('OrganicHomepage')
-  const [activeFaq, setActiveFaq] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [step, setStep] = useState<'domain' | 'success'>('domain')
@@ -91,10 +120,6 @@ export function OrganicHomepage() {
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
-
-  const toggleFaq = (index: number) => {
-    setActiveFaq(activeFaq === index ? null : index)
-  }
 
   const scrollToSection = (sectionId: string) => {
     const elements = document.querySelectorAll(`#${sectionId}`)
@@ -384,76 +409,9 @@ export function OrganicHomepage() {
         </section>
 
         {/* FAQ Section */}
-        <section id="faq" className="section">
+        <section id="faq" className="section" aria-labelledby="faq-heading">
           <div className="container-tight">
-            <h3 className="text-header text-center">Questions</h3>
-
-            <div className="space-y-0">
-              {[
-                {
-                  q: 'What exactly do I get?',
-                  a: `Synthesis. A revenue-focused website audit you can act on today. We run several assessments across performance, SEO, trust, UX, mobile, and social signals, then package the results into:
-
-1. Prioritized findings. The handful of issues costing you the most money, ranked by estimated revenue impact.
-
-2. Executable plan. Developer-ready issue descriptions so you can fix each issue quickly.
-
-3. Full assessment appendix. A detailed breakdown of all checks we ran—no fluff, just the data that backs our recommendations.
-
-The deliverable is a concise report, not a 50-page data dump. Most clients recoup multiples of the report with a single high-impact fix.`,
-                },
-                {
-                  q: 'How is this different from free tools?',
-                  a: `Free scanners list every technical warning they can find—often hundreds per site—and leave you to guess which ones matter. We go several steps further:
-
-1. Business-aware scoring. We estimate the likely revenue impact of each issue using industry benchmarks, location data, and detailed studies, so you see problems ranked by dollars, not jargon.
-
-2. Actionable focus. Instead of a wall of red flags, you get a short list of high-leverage issues with clear solutions.
-
-3. Complete transparency. An appendix shows every check we ran and the data behind each estimate, so you can judge our recommendations for yourself.
-
-Think of free tools as a medical encyclopedia and our audit as the doctor who interprets the symptoms, prioritizes the treatment, and hands you a clear prescription—without pretending it's a guaranteed cure.`,
-                },
-                {
-                  q: 'How do I get my report?',
-                  a: "We're currently in early access. Join the waitlist and we'll analyze your site and send you an email as soon as we launch.",
-                },
-                {
-                  q: 'How do you calculate revenue impact?',
-                  a: `We combine four data layers to estimate the annual revenue-per-point for your ZIP × industry:
-
-1. Local revenue baseline – We start with the latest U.S. Census County & ZIP Business Patterns (2022; 2023 release scheduled June 25 2025) and BLS Quarterly Census of Employment & Wages (Q4 2024) to size typical payroll and head-count for businesses like yours.
-   census.gov
-   bls.gov
-
-2. Payroll-to-revenue bridge – Payroll is converted to revenue using Bureau of Economic Analysis small-business bridging ratios (≈ 2.2 × on average for SMBs).
-
-3. Digital uplift curves – For each of our six score categories (performance, SEO, trust, UX, mobile, social) we apply peer-reviewed elasticity models. Examples:
-
-   • 100 ms faster LCP → 2-4 % conversion lift (Chrome UX Report, 2024)
-   • First-page ranking → 30 % click rate vs < 2 % page 2 (Backlinko CTR Study, 2023)
-   • Missing trust signals → 42 % abandonment rate (Baymard Institute, 2024)
-   • Mobile responsive → 67 % traffic shift (StatCounter, US, 2024)
-   • Poor mobile UX → 3.5 × higher bounce (Think with Google, 2023)
-
-4. Industry channel mix – We adjust for your specific industry's digital reliance. A plumber gets 20 % of leads online while SaaS runs closer to 95 %.
-
-Result: revenue-per-point lets us rank every issue by its likely dollar impact on your specific business.`,
-                },
-              ].map((faq, index) => (
-                <div
-                  key={index}
-                  className={`faq-item ${activeFaq === index ? 'active' : ''}`}
-                  onClick={() => toggleFaq(index)}
-                >
-                  <div className="faq-question">
-                    {faq.q}
-                    <span className="faq-toggle">+</span>
-                  </div>
-                  <div className="faq-answer whitespace-pre-line">{faq.a}</div>
-                </div>
-              ))}
-            </div>
+            <FAQSection items={FAQ_ITEMS} />
           </div>
         </section>
 
@@ -464,6 +422,7 @@ Result: revenue-per-point lets us rank every issue by its likely dollar impact o
             <div className="footer-links mt-[30px]">
               <a href="/legal/privacy">Privacy Policy</a>
               <a href="/legal/terms">Terms of Service</a>
+              <a href="/legal/refund-policy">Refund policy</a>
               <a href="/legal/do-not-sell">
                 Do Not Sell or Share My Personal Information
               </a>

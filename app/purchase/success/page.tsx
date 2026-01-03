@@ -44,10 +44,10 @@ function SessionError({ message }: { message: string }) {
         <p className="text-white/60 mb-8">
           If you believe this is an error, please contact support at{' '}
           <a
-            href="mailto:reports@anthrasite.io"
+            href="mailto:hello@anthrasite.io"
             className="text-[#0066FF] hover:underline"
           >
-            reports@anthrasite.io
+            hello@anthrasite.io
           </a>
         </p>
         <Link

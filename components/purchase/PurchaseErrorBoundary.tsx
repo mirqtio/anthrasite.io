@@ -66,7 +66,7 @@ export class PurchaseErrorBoundary extends Component<Props, State> {
               </Button>
               <Button
                 onClick={() =>
-                  (window.location.href = 'mailto:support@anthrasite.io')
+                  (window.location.href = 'mailto:hello@anthrasite.io')
                 }
                 variant="outline"
                 className="w-full"

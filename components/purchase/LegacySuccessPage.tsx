@@ -207,7 +207,7 @@ export function LegacySuccessPage({
           <div className="text-center">
             <p className="text-white/60 mb-4">Have questions? Need help?</p>
             <a
-              href="mailto:reports@anthrasite.io"
+              href="mailto:hello@anthrasite.io"
               className="inline-flex items-center px-6 py-3 bg-[#141414] border border-white/10 rounded-lg font-medium hover:bg-white/5 transition-colors"
             >
               Contact Support

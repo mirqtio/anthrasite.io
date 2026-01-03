@@ -7,10 +7,15 @@ import { Logo } from '@/components/Logo'
 
 interface LegalPageLayoutProps {
   title: string
+  lastUpdated?: string
   children: React.ReactNode
 }
 
-export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
+export function LegalPageLayout({
+  title,
+  lastUpdated = 'October 14, 2025',
+  children,
+}: LegalPageLayoutProps) {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   return (
@@ -114,7 +119,7 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
         <div className="max-w-[800px] mx-auto prose prose-invert">
           <h1 className="text-[48px] font-light mb-8">{title}</h1>
           <p className="text-[17px] opacity-60 mb-12">
-            Last updated: October 14, 2025
+            Last updated: {lastUpdated}
           </p>
           <hr className="border-white/10 my-12" />
           {children}
@@ -126,6 +131,7 @@ export function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
         <div className="footer-links">
           <Link href="/legal/privacy">Privacy Policy</Link>
           <Link href="/legal/terms">Terms of Service</Link>
+          <Link href="/legal/refund-policy">Refund policy</Link>
           <Link href="/legal/do-not-sell">Do Not Sell or Share</Link>
           <a href="mailto:hello@anthrasite.io">Contact</a>
         </div>
