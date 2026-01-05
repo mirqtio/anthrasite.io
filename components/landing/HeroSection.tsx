@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
+import { SecureCheckout } from '@/components/landing/SecureCheckout'
 import type { HookOpportunity } from '@/lib/landing/types'
 
 interface HeroSectionProps {
@@ -150,7 +151,7 @@ export function HeroSection({
         </div>
 
         {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
-        <div className="hidden min-[800px]:flex justify-center">
+        <div className="hidden min-[800px]:flex flex-col items-center gap-2">
           <button
             onClick={onCheckout}
             disabled={isLoading}
@@ -168,6 +169,7 @@ export function HeroSection({
               </>
             )}
           </button>
+          <SecureCheckout darkMode />
         </div>
       </div>
     </section>

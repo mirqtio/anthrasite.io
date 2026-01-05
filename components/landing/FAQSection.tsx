@@ -23,7 +23,7 @@ function FAQAccordionItem({
 }: FAQAccordionItemProps) {
   return (
     <div
-      className="border border-white/10 rounded-2xl overflow-hidden transition-colors duration-150 hover:border-white/20"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/5 transition-shadow duration-150 hover:shadow-md"
       data-state={isOpen ? 'open' : 'closed'}
     >
       <button
@@ -33,11 +33,11 @@ function FAQAccordionItem({
         aria-controls={`faq-content-${index}`}
         id={`faq-trigger-${index}`}
       >
-        <span className="text-white text-[18px] min-[800px]:text-[20px] font-semibold pr-2 tracking-[0.02em]">
+        <span className="text-slate-900 text-[18px] min-[800px]:text-[20px] font-semibold pr-2 tracking-[0.02em]">
           {item.question}
         </span>
         <ChevronDown
-          className={`w-5 h-5 flex-shrink-0 text-white/40 transition-transform duration-200 ${
+          className={`w-5 h-5 flex-shrink-0 text-slate-400 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
           aria-hidden="true"
@@ -56,7 +56,7 @@ function FAQAccordionItem({
       >
         <div className="overflow-hidden">
           <div className="px-5 pb-5">
-            <p className="text-white/60 text-[18px] min-[800px]:text-[20px] leading-[1.6] tracking-[0.02em]">
+            <p className="text-slate-600 text-[18px] min-[800px]:text-[20px] leading-[1.6] tracking-[0.02em]">
               {item.answer}
             </p>
           </div>
@@ -79,7 +79,7 @@ export function FAQSection({ items }: FAQSectionProps) {
       {/* Section Header */}
       <h2
         id="faq-heading"
-        className="text-white text-[28px] min-[800px]:text-[32px] font-semibold text-center tracking-[0.02em]"
+        className="text-slate-900 text-[28px] min-[800px]:text-[32px] font-semibold text-center tracking-[0.02em]"
       >
         Questions?
       </h2>

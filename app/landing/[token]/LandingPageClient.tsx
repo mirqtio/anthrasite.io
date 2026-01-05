@@ -8,6 +8,8 @@ import { CTASection } from '@/components/landing/CTASection'
 import { FAQSection } from '@/components/landing/FAQSection'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { MobileStickyCTA } from '@/components/landing/MobileStickyCTA'
+import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
+import { SecureCheckout } from '@/components/landing/SecureCheckout'
 
 interface LandingPageClientProps {
   context: LandingContext
@@ -90,130 +92,141 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
   }, [context.businessId, context.leadId, token, isCheckoutLoading])
 
   return (
-    <div className="min-h-screen bg-[#232323]">
-      {/* landing-container class prevents pinched layouts */}
-      <div className="landing-container">
-        {/* Single gap control - children must have NO external margins/padding */}
-        <div className="flex flex-col gap-20 min-[800px]:gap-24">
-          {/* Section 1: Hero */}
-          <HeroSection
-            company={context.company}
-            score={context.score}
-            issueCount={context.issueCount}
-            impactHigh={context.impactHigh}
-            hookOpportunity={context.hookOpportunity}
-            desktopScreenshotUrl={context.desktopScreenshotUrl}
-            price={context.price}
-            isLoading={isCheckoutLoading}
-            onCheckout={handleCheckout}
-          />
-
-          {/* Bento layout: Header full width, then Value (2/3) + Card (1/3), then Dollar full width */}
-          <div className="flex flex-col gap-24">
-            {/* Section Header - full width */}
-            <section aria-labelledby="value-heading" className="text-center">
-              <div className="flex flex-col gap-8">
-                <h2
-                  id="value-heading"
-                  className="text-white text-[28px] min-[800px]:text-[32px] font-semibold leading-tight tracking-[0.02em]"
-                >
-                  What&apos;s in your report
-                </h2>
-                <p className="text-white/60 text-[18px] min-[800px]:text-[20px] max-w-xl mx-auto leading-[1.6] tracking-[0.02em]">
-                  A detailed analysis of {context.company}, organized by what
-                  matters most to your bottom line.
-                </p>
-              </div>
-            </section>
-
-            {/* Row: Value list (2/3 left) + Card (1/3 right) on desktop */}
-            <div className="flex flex-col gap-24 min-[800px]:grid min-[800px]:grid-cols-[2fr_1fr] min-[800px]:gap-12 min-[800px]:items-start">
-              {/* Value bullet list (2/3 left) */}
-              <ValueSection
-                company={context.company}
-                issueCount={context.issueCount}
-                hideHeader
-              />
-
-              {/* Issue Brief Card (1/3 right) - matches guarantee card style */}
-              <div className="p-8 min-[800px]:p-10 bg-white/5 rounded-2xl">
-                <h2
-                  id="hook-heading"
-                  className="text-white/60 text-[20px] font-semibold tracking-[0.02em] pb-4 mb-4 border-b border-white/10"
-                >
-                  Your site&apos;s biggest issue
-                </h2>
-                <p className="text-white/60 text-[20px] leading-[1.6] tracking-[0.02em]">
-                  {(() => {
-                    const desc = context.hookOpportunity.description
-                    const match = desc.match(/is that\s+(.*)$/i)
-                    if (match && match[1]) {
-                      // Capitalize first letter of extracted text
-                      return (
-                        match[1].charAt(0).toUpperCase() + match[1].slice(1)
-                      )
-                    }
-                    return desc
-                  })()}
-                </p>
-              </div>
-            </div>
-
-            {/* Dollar Range (full width) */}
-            <p
-              className="text-center text-white/60 text-[20px] min-[800px]:text-[24px] tracking-[0.02em]"
-              aria-label={`Estimated monthly impact: ${context.impactLow} to ${context.impactHigh} dollars`}
-            >
-              We estimate you&apos;re leaving{' '}
-              <span className="text-white font-semibold">
-                {context.impactLow} – {context.impactHigh}
-              </span>{' '}
-              on the table every month.
-            </p>
-
-            {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
-            <div className="hidden min-[800px]:flex justify-center">
-              <button
-                onClick={handleCheckout}
-                disabled={isCheckoutLoading}
-                className="w-full sm:w-auto min-w-[280px] inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white text-[18px] min-[800px]:text-[20px] font-semibold rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] hover:shadow-[0_6px_20px_rgba(0,102,255,0.5)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#232323] disabled:cursor-not-allowed"
-              >
-                {isCheckoutLoading ? (
-                  <>
-                    <span>Redirecting...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Get Your Report – ${context.price}</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* CTA + Guarantee */}
-          <section aria-labelledby="cta-heading">
-            <CTASection
+    <div className="min-h-screen">
+      {/* Hero Section - Dark background */}
+      <div className="bg-[#232323]">
+        <div className="landing-container">
+          <div className="flex flex-col gap-20 min-[800px]:gap-24 pb-20 min-[800px]:pb-24">
+            <HeroSection
               company={context.company}
+              score={context.score}
               issueCount={context.issueCount}
-              impactLow={context.impactLow}
               impactHigh={context.impactHigh}
+              hookOpportunity={context.hookOpportunity}
+              desktopScreenshotUrl={context.desktopScreenshotUrl}
               price={context.price}
               isLoading={isCheckoutLoading}
               onCheckout={handleCheckout}
-              error={checkoutError}
             />
-          </section>
-
-          {/* Section 6: FAQ */}
-          <section aria-labelledby="faq-heading">
-            <FAQSection items={FAQ_ITEMS} />
-          </section>
+          </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <LandingFooter />
+      {/* Rest of page - Light background */}
+      <div className="bg-[#F8F9FA]">
+        <div className="landing-container">
+          <div className="flex flex-col gap-20 min-[800px]:gap-24 py-20 min-[800px]:py-24">
+            {/* Bento layout: Header full width, then Value (2/3) + Card (1/3), then Dollar full width */}
+            <div className="flex flex-col gap-24">
+              {/* Section Header - full width */}
+              <section aria-labelledby="value-heading" className="text-center">
+                <div className="flex flex-col gap-8">
+                  <h2
+                    id="value-heading"
+                    className="text-slate-900 text-[28px] min-[800px]:text-[32px] font-semibold leading-tight tracking-[0.02em]"
+                  >
+                    What&apos;s in your report
+                  </h2>
+                  <p className="text-slate-600 text-[18px] min-[800px]:text-[20px] max-w-xl mx-auto leading-[1.6] tracking-[0.02em]">
+                    A detailed analysis of {context.company}, organized by what
+                    matters most to your bottom line.
+                  </p>
+                </div>
+              </section>
+
+              {/* Row: Value list (2/3 left) + Card (1/3 right) on desktop */}
+              <div className="flex flex-col gap-24 min-[800px]:grid min-[800px]:grid-cols-[2fr_1fr] min-[800px]:gap-12 min-[800px]:items-start">
+                {/* Value bullet list (2/3 left) */}
+                <ValueSection
+                  company={context.company}
+                  issueCount={context.issueCount}
+                  hideHeader
+                />
+
+                {/* Issue Brief Card (1/3 right) */}
+                <div className="p-8 min-[800px]:p-10 bg-white rounded-2xl shadow-sm ring-1 ring-black/5">
+                  <h2
+                    id="hook-heading"
+                    className="text-slate-900 text-[20px] font-semibold tracking-[0.02em] pb-4 mb-4 border-b border-slate-200"
+                  >
+                    Your site&apos;s biggest issue
+                  </h2>
+                  <p className="text-slate-600 text-[20px] leading-[1.6] tracking-[0.02em]">
+                    {(() => {
+                      const desc = context.hookOpportunity.description
+                      const match = desc.match(/is that\s+(.*)$/i)
+                      if (match && match[1]) {
+                        // Capitalize first letter of extracted text
+                        return (
+                          match[1].charAt(0).toUpperCase() + match[1].slice(1)
+                        )
+                      }
+                      return desc
+                    })()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Dollar Range (full width) */}
+              <p
+                className="text-center text-slate-600 text-[20px] min-[800px]:text-[24px] tracking-[0.02em]"
+                aria-label={`Estimated monthly impact: ${context.impactLow} to ${context.impactHigh} dollars`}
+              >
+                We estimate you&apos;re leaving{' '}
+                <span className="text-slate-900 font-semibold">
+                  {context.impactLow} – {context.impactHigh}
+                </span>{' '}
+                on the table every month.
+              </p>
+
+              {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
+              <div className="hidden min-[800px]:flex flex-col items-center gap-2">
+                <button
+                  onClick={handleCheckout}
+                  disabled={isCheckoutLoading}
+                  className="w-full sm:w-auto min-w-[280px] inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white text-[18px] min-[800px]:text-[20px] font-semibold rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] hover:shadow-[0_6px_20px_rgba(0,102,255,0.5)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F9FA] disabled:cursor-not-allowed"
+                >
+                  {isCheckoutLoading ? (
+                    <>
+                      <span>Redirecting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Get Your Report – ${context.price}</span>
+                    </>
+                  )}
+                </button>
+                <SecureCheckout />
+              </div>
+            </div>
+
+            {/* Testimonials - Social Proof */}
+            <TestimonialsSection />
+
+            {/* CTA + Guarantee */}
+            <section aria-labelledby="cta-heading">
+              <CTASection
+                company={context.company}
+                issueCount={context.issueCount}
+                impactLow={context.impactLow}
+                impactHigh={context.impactHigh}
+                price={context.price}
+                isLoading={isCheckoutLoading}
+                onCheckout={handleCheckout}
+                error={checkoutError}
+              />
+            </section>
+
+            {/* Section 6: FAQ */}
+            <section aria-labelledby="faq-heading">
+              <FAQSection items={FAQ_ITEMS} />
+            </section>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <LandingFooter />
+      </div>
 
       {/* Mobile Sticky CTA */}
       <MobileStickyCTA

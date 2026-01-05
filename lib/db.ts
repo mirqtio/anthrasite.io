@@ -70,17 +70,19 @@ export function getSql() {
     }
   }
 
+  const sslConfig = isLocalDB ? false : { rejectUnauthorized: false }
+
   console.log('[db] Creating postgres.js client with:', {
     max: 5,
     prepare: false,
-    ssl: isLocalDB ? false : { rejectUnauthorized: false },
+    ssl: sslConfig,
   })
 
   try {
     const sql = postgres(effectiveConnStr, {
       max: 5, // Keep pool small on Vercel
       prepare: false, // Required for PgBouncer - no prepared statements
-      ssl: isLocalDB ? false : { rejectUnauthorized: false }, // Allow self-signed chain in serverless
+      ssl: sslConfig, // Allow Supabase pooler's certificate chain
     })
 
     console.log('[db] postgres.js client created successfully')
