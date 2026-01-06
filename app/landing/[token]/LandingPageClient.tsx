@@ -36,7 +36,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     question: 'Where does the "Monthly Revenue Impact" number come from?',
     answer:
-      "We estimate your baseline revenue using industry benchmarks. Then we calculate how much friction each issue typically costs businesses like yours. The range shows uncertainty. It helps you prioritize but doesn't predict exact outcomes.",
+      "We estimate your baseline revenue using industry benchmarks. Then we calculate how much friction each issue typically costs for businesses like yours. The range shows uncertainty. It helps you prioritize but doesn't predict exact outcomes.",
   },
   {
     question: 'What happens after I purchase?',
@@ -166,6 +166,11 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
                   </p>
                 </div>
               </div>
+
+              {/* Format Line - full width centered */}
+              <p className="text-center text-slate-600 text-[18px] min-[800px]:text-[20px] font-medium tracking-[0.02em]">
+                PDF, delivered to your inbox in minutes.
+              </p>
 
               {/* Dollar Range (full width) */}
               <p

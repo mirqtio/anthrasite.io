@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google'
 import { MonitoringProvider } from '@/components/MonitoringProvider'
 import { SiteModeProvider } from '@/lib/context/SiteModeContext'
 import { ConsentProvider } from '@/lib/context/ConsentContext'
-import { ConsentManager } from '@/components/consent'
 import { HelpWidgetProvider } from '@/components/help'
 import { ConditionalHelpWidget } from '@/components/help/ConditionalHelpWidget'
 import {
@@ -58,7 +57,6 @@ export default function RootLayout({
               <SiteModeProvider>
                 <HelpWidgetProvider>
                   {children}
-                  <ConsentManager />
                   <ConditionalHelpWidget />
                   <AnalyticsWrapper />
                   <AnalyticsNoScriptWrapper />

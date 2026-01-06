@@ -80,11 +80,6 @@ export function ValueSection({
           </div>
         ))}
       </div>
-
-      {/* Format Line */}
-      <p className="text-center text-slate-600 text-[18px] min-[800px]:text-[20px] font-medium tracking-[0.02em]">
-        PDF, delivered to your inbox in minutes.
-      </p>
     </div>
   )
 }
