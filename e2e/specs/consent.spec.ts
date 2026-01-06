@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('Cookie consent basic behavior', () => {
+// SKIPPED: Cookie consent banner was removed from the application
+test.describe.skip('Cookie consent basic behavior', () => {
   test('First visit shows banner; accepting hides it', async ({
     page,
     context,
