@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     const session = event.data.object as Stripe.Checkout.Session
 
     try {
-      await handleCheckoutCompleted(session)
+      await handleCheckoutCompleted(session, event.id)
       return NextResponse.json({ received: true })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
@@ -63,7 +63,8 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleCheckoutCompleted(
-  session: Stripe.Checkout.Session
+  session: Stripe.Checkout.Session,
+  eventId: string
 ): Promise<void> {
   const leadId = session.metadata?.leadId
   const customerEmail =
@@ -144,23 +145,38 @@ async function handleCheckoutCompleted(
   console.log('[Stripe Webhook] Sales row upserted successfully')
 
   // 3. Trigger PostPurchaseWorkflow via Temporal
+  // Use event ID in workflow ID for idempotency - same event = same workflow
   const temporalClient = await getTemporalClient()
-  const workflowId = `post-purchase-${report.run_id}-${Date.now()}`
+  const workflowId = `post-purchase-${eventId}`
 
-  const handle = await temporalClient.workflow.start('PostPurchaseWorkflow', {
-    workflowId,
-    taskQueue: 'premium-reports',
-    args: [
-      {
-        lead_id: parseInt(leadId, 10),
-        run_id: report.run_id,
-        customer_email: customerEmail,
-      },
-    ],
-  })
+  try {
+    const handle = await temporalClient.workflow.start('PostPurchaseWorkflow', {
+      workflowId,
+      taskQueue: 'premium-reports',
+      args: [
+        {
+          lead_id: parseInt(leadId, 10),
+          run_id: report.run_id,
+          customer_email: customerEmail,
+        },
+      ],
+    })
 
-  console.log('[Stripe Webhook] Started PostPurchaseWorkflow:', {
-    workflowId: handle.workflowId,
-    runId: handle.firstExecutionRunId,
-  })
+    console.log('[Stripe Webhook] Started PostPurchaseWorkflow:', {
+      workflowId: handle.workflowId,
+      runId: handle.firstExecutionRunId,
+    })
+  } catch (err) {
+    // Check if workflow already exists (idempotency - this is expected on retries)
+    if (
+      err instanceof Error &&
+      err.message.includes('Workflow execution already started')
+    ) {
+      console.log(
+        `[Stripe Webhook] Workflow ${workflowId} already exists (idempotent retry)`
+      )
+      return // Success - already processed
+    }
+    throw err // Re-throw other errors
+  }
 }
