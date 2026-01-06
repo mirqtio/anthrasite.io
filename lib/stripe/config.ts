@@ -1,5 +1,6 @@
 import Stripe from 'stripe'
 
+// Cache bust: 2026-01-06 force rebuild for live keys
 // Lazy initialization of Stripe to avoid build-time issues
 let stripeInstance: Stripe | null = null
 
