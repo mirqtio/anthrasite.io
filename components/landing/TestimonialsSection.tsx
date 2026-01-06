@@ -3,21 +3,15 @@
 const TESTIMONIALS = [
   {
     quote:
-      "Finally, an SEO audit that speaks English, not 'Developer.' I stopped guessing what was broken and actually understood why my site was struggling.",
-    name: 'Alex',
-    titleCompany: 'Owner, Midtown Coffee',
+      "We thought we'd nailed it—professional photos, premium look, clear calls to action. Then I saw how few people were actually finding us in local searches. That one insight changed our whole priority list.",
+    name: 'Chelsea',
+    titleCompany: 'Partner, Invest in Yakima',
   },
   {
     quote:
-      'Other free tools gave me a 50-page panic attack. Anthrasite gave me a focused list of 6 things to fix. It made a massive project feel manageable.',
-    name: 'Sarah',
-    titleCompany: 'Founder, Brightpath Design',
-  },
-  {
-    quote:
-      'I thought my website was fine until I saw the breakdown. Seeing exactly where local customers were getting stuck was the wake-up call I needed.',
-    name: 'Marcus',
-    titleCompany: 'Partner, Invest In Yakima',
+      "I was bracing for a laundry list of expensive fixes. Instead, I got two things I could do this week—and suddenly all the branding work we'd already done would actually get seen. That's the kind of clarity you can act on.",
+    name: 'Kelly',
+    titleCompany: 'Owner, Mandala Integrative Veterinary Care',
   },
 ]
 
@@ -31,8 +25,8 @@ export function TestimonialsSection() {
         What Our Customers Say
       </h2>
 
-      {/* Desktop: 3-column grid */}
-      <div className="hidden gap-6 min-[800px]:grid min-[800px]:grid-cols-3">
+      {/* Desktop: 2-column grid */}
+      <div className="hidden gap-6 min-[800px]:grid min-[800px]:grid-cols-2 min-[800px]:max-w-4xl min-[800px]:mx-auto">
         {TESTIMONIALS.map((t) => (
           <figure
             key={t.name}
