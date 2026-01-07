@@ -67,6 +67,7 @@ async function handleCheckoutCompleted(
   eventId: string
 ): Promise<void> {
   const leadId = session.metadata?.leadId
+  const contactId = session.metadata?.contactId
   const customerEmail =
     session.customer_details?.email || session.customer_email
   const paymentIntentId =
@@ -77,6 +78,7 @@ async function handleCheckoutCompleted(
   console.log('[Stripe Webhook] Processing checkout.session.completed:', {
     sessionId: session.id,
     leadId,
+    contactId,
     customerEmail,
     paymentIntentId,
     amountTotal: session.amount_total,
@@ -116,33 +118,40 @@ async function handleCheckoutCompleted(
     runId: report.run_id,
   })
 
-  // 2. Upsert sales row with status='paid'
-  // Use payment_intent_id as idempotency key
-  const { error: salesError } = await supabase.from('sales').upsert(
-    {
-      report_id: report.id,
-      stripe_payment_intent_id: paymentIntentId,
-      amount_cents: session.amount_total || 0,
-      currency: session.currency || 'usd',
-      status: 'paid',
-      customer_email: customerEmail,
-      metadata: {
-        session_id: session.id,
-        business_id: session.metadata?.businessId,
-        utm_token: session.metadata?.utmToken,
+  // 2. Insert sales row with status='paid'
+  // Use payment_intent_id as idempotency key (UNIQUE constraint)
+  // Include contact_id for multi-buyer tracking
+  const { data: sale, error: salesError } = await supabase
+    .from('sales')
+    .upsert(
+      {
+        report_id: report.id,
+        contact_id: contactId ? parseInt(contactId, 10) : null,
+        stripe_payment_intent_id: paymentIntentId,
+        amount_cents: session.amount_total || 0,
+        currency: session.currency || 'usd',
+        status: 'paid',
+        customer_email: customerEmail,
+        metadata: {
+          session_id: session.id,
+          business_id: session.metadata?.businessId,
+          utm_token: session.metadata?.utmToken,
+        },
       },
-    },
-    {
-      onConflict: 'stripe_payment_intent_id',
-      ignoreDuplicates: false,
-    }
-  )
+      {
+        onConflict: 'stripe_payment_intent_id',
+        ignoreDuplicates: false,
+      }
+    )
+    .select('id')
+    .single()
 
   if (salesError) {
     throw new Error(`Failed to upsert sales row: ${salesError.message}`)
   }
 
-  console.log('[Stripe Webhook] Sales row upserted successfully')
+  const saleId = sale?.id
+  console.log('[Stripe Webhook] Sales row upserted successfully:', { saleId })
 
   // 3. Trigger PostPurchaseWorkflow via Temporal
   // Use event ID in workflow ID for idempotency - same event = same workflow
@@ -158,6 +167,9 @@ async function handleCheckoutCompleted(
           lead_id: parseInt(leadId, 10),
           run_id: report.run_id,
           customer_email: customerEmail,
+          // Multi-buyer support: pass sale_id and contact_id
+          sale_id: saleId,
+          contact_id: contactId ? parseInt(contactId, 10) : null,
         },
       ],
     })
@@ -165,6 +177,8 @@ async function handleCheckoutCompleted(
     console.log('[Stripe Webhook] Started PostPurchaseWorkflow:', {
       workflowId: handle.workflowId,
       runId: handle.firstExecutionRunId,
+      saleId,
+      contactId,
     })
   } catch (err) {
     // Check if workflow already exists (idempotency - this is expected on retries)

@@ -61,6 +61,8 @@ export interface LandingContext {
   leadId: string
   /** Business identifier */
   businessId: string
+  /** Contact identifier (for multi-buyer support) */
+  contactId?: string
 }
 
 /**

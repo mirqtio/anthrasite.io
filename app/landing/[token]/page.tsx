@@ -82,7 +82,11 @@ export default async function LandingPage(props: LandingPageProps) {
     return <TokenError message="This link has expired or is invalid" />
   }
 
-  const context = await lookupLandingContext(payload.leadId, payload.runId)
+  const context = await lookupLandingContext(
+    payload.leadId,
+    payload.runId,
+    payload.contactId
+  )
 
   if (!context) {
     return <TokenError message="Report not found for this link" />

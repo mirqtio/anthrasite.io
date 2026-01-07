@@ -72,11 +72,13 @@ function formatDollarAmount(value: string | number | null | undefined): string {
  *
  * @param leadId - Lead identifier from validated token
  * @param runId - Optional run identifier for specific report version
+ * @param contactId - Optional contact identifier for multi-buyer support
  * @returns LandingContext or null if not found
  */
 export async function lookupLandingContext(
   leadId: string,
-  runId?: string
+  runId?: string,
+  contactId?: string
 ): Promise<LandingContext | null> {
   const leadIdInt = parseInt(leadId, 10)
   if (isNaN(leadIdInt)) {
@@ -279,6 +281,7 @@ export async function lookupLandingContext(
       price: 199,
       leadId: leadId,
       businessId: `business-${leadId}`,
+      contactId: contactId,
     }
 
     return context

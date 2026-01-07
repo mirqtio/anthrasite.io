@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import type { LandingContext, FAQItem } from '@/lib/landing/types'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { ValueSection } from '@/components/landing/ValueSection'
@@ -10,6 +10,14 @@ import { LandingFooter } from '@/components/landing/LandingFooter'
 import { MobileStickyCTA } from '@/components/landing/MobileStickyCTA'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { SecureCheckout } from '@/components/landing/SecureCheckout'
+import { RecentPurchaseModal } from '@/components/landing/RecentPurchaseModal'
+
+/** Recent purchase info from soft-gate check */
+interface RecentPurchase {
+  saleId: number
+  purchasedAt: string
+  email: string
+}
 
 interface LandingPageClientProps {
   context: LandingContext
@@ -50,9 +58,38 @@ const FAQ_ITEMS: FAQItem[] = [
   },
 ]
 
+/**
+ * Get or create purchase attempt ID for idempotent checkout sessions.
+ * Stored in sessionStorage so same tab = same checkout session.
+ */
+function getPurchaseAttemptId(): string {
+  if (typeof window === 'undefined') return crypto.randomUUID()
+
+  let attemptId = sessionStorage.getItem('purchase_attempt_id')
+  if (!attemptId) {
+    attemptId = crypto.randomUUID()
+    sessionStorage.setItem('purchase_attempt_id', attemptId)
+  }
+  return attemptId
+}
+
+/**
+ * Clear purchase attempt ID to force new checkout session.
+ * Used when user intentionally wants to buy again.
+ */
+function clearPurchaseAttemptId(): void {
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem('purchase_attempt_id')
+  }
+}
+
 export function LandingPageClient({ context, token }: LandingPageClientProps) {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  const [recentPurchase, setRecentPurchase] = useState<RecentPurchase | null>(
+    null
+  )
+  const [showRecentPurchaseModal, setShowRecentPurchaseModal] = useState(false)
 
   const handleCheckout = useCallback(async () => {
     if (isCheckoutLoading) return
@@ -69,6 +106,8 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
         body: JSON.stringify({
           businessId: context.businessId,
           leadId: context.leadId,
+          contactId: context.contactId,
+          purchaseAttemptId: getPurchaseAttemptId(),
           token,
         }),
       })
@@ -77,10 +116,18 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
         throw new Error('Failed to create checkout session')
       }
 
-      const { url } = await response.json()
+      const data = await response.json()
 
-      if (url) {
-        window.location.href = url
+      // Soft-gate: recent purchase detected
+      if (data.recentPurchase) {
+        setRecentPurchase(data.recentPurchase)
+        setShowRecentPurchaseModal(true)
+        setIsCheckoutLoading(false)
+        return
+      }
+
+      if (data.url) {
+        window.location.href = data.url
       } else {
         throw new Error('No checkout URL returned')
       }
@@ -89,7 +136,48 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
       setCheckoutError('Unable to start checkout. Please try again.')
       setIsCheckoutLoading(false)
     }
-  }, [context.businessId, context.leadId, token, isCheckoutLoading])
+  }, [
+    context.businessId,
+    context.leadId,
+    context.contactId,
+    token,
+    isCheckoutLoading,
+  ])
+
+  // Handle resend email from recent purchase modal
+  const handleResendEmail = useCallback(async () => {
+    if (!recentPurchase) return
+
+    try {
+      const response = await fetch('/api/resend-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ saleId: recentPurchase.saleId }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to resend email')
+      }
+
+      // Close modal and show success message
+      setShowRecentPurchaseModal(false)
+      setCheckoutError(null)
+      // Could add a success toast here
+    } catch (error) {
+      console.error('Resend error:', error)
+      setCheckoutError('Unable to resend email. Please try again.')
+    }
+  }, [recentPurchase])
+
+  // Handle buy again from recent purchase modal
+  const handleBuyAgain = useCallback(() => {
+    // Clear attempt ID so a fresh checkout session is created
+    clearPurchaseAttemptId()
+    setShowRecentPurchaseModal(false)
+    setRecentPurchase(null)
+    // Trigger checkout flow again
+    handleCheckout()
+  }, [handleCheckout])
 
   return (
     <div className="min-h-screen">
@@ -239,6 +327,16 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
         isLoading={isCheckoutLoading}
         onCheckout={handleCheckout}
       />
+
+      {/* Recent Purchase Modal (soft-gate) */}
+      {showRecentPurchaseModal && recentPurchase && (
+        <RecentPurchaseModal
+          purchase={recentPurchase}
+          onResendEmail={handleResendEmail}
+          onBuyAgain={handleBuyAgain}
+          onClose={() => setShowRecentPurchaseModal(false)}
+        />
+      )}
     </div>
   )
 }

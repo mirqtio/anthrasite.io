@@ -14,6 +14,8 @@ export interface CreateCheckoutSessionParams {
   customerEmail?: string
   baseUrl: string
   leadId?: string
+  contactId?: string
+  purchaseAttemptId?: string
 }
 
 /**
@@ -25,11 +27,14 @@ export async function createCheckoutSession({
   customerEmail,
   baseUrl,
   leadId,
+  contactId,
+  purchaseAttemptId,
 }: CreateCheckoutSessionParams): Promise<Stripe.Checkout.Session> {
   try {
     const urls = getStripeUrls(baseUrl)
 
-    const session = await stripe.checkout.sessions.create({
+    // Build Stripe create options
+    const createOptions: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -52,6 +57,7 @@ export async function createCheckoutSession({
         businessId,
         utmToken,
         ...(leadId && { leadId }),
+        ...(contactId && { contactId }),
       },
       // Additional options for better UX
       allow_promotion_codes: true,
@@ -59,7 +65,19 @@ export async function createCheckoutSession({
       submit_type: 'pay',
       // Expire after 24 hours
       expires_at: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
-    })
+    }
+
+    // Build request options with optional idempotency key
+    const requestOptions: Stripe.RequestOptions = {}
+    if (purchaseAttemptId) {
+      // Idempotency key prevents double-click/refresh duplicates
+      requestOptions.idempotencyKey = `checkout:${purchaseAttemptId}`
+    }
+
+    const session = await stripe.checkout.sessions.create(
+      createOptions,
+      requestOptions
+    )
 
     // Cache the session for recovery
     sessionCache.set(session.id, session)

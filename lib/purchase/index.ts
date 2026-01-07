@@ -9,16 +9,17 @@ const VALID_AUDIENCES = ['purchase', 'landing'] as const
 
 /**
  * Validate purchase/landing JWT token
- * Extracts leadId and runId from the token payload
+ * Extracts leadId, runId, and contactId from the token payload
  *
  * Token must contain:
  * - leadId: Lead identifier
  * - runId: Run identifier (for data consistency)
+ * - contactId: Contact identifier (for multi-buyer support)
  * - aud: 'purchase' or 'landing'
  */
 export async function validatePurchaseToken(
   token: string
-): Promise<{ leadId: string; runId?: string } | null> {
+): Promise<{ leadId: string; runId?: string; contactId?: string } | null> {
   // Dev-only: Allow numeric tokens for local testing (NEVER in production)
   if (process.env.NODE_ENV !== 'production') {
     if (token === 'test-token' || token === '3102') {
@@ -57,7 +58,10 @@ export async function validatePurchaseToken(
       console.warn('Token missing runId - will use latest run for lead', leadId)
     }
 
-    return { leadId, runId }
+    // Extract contactId (for multi-buyer support)
+    const contactId = payload.contactId as string | undefined
+
+    return { leadId, runId, contactId }
   } catch (error) {
     console.error('Token validation failed:', error)
     return null
