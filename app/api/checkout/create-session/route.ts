@@ -9,7 +9,14 @@ const SOFT_GATE_WINDOW_MS = 30 * 60 * 1000
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { businessId, leadId, contactId, purchaseAttemptId, token } = body
+    const {
+      businessId,
+      leadId,
+      contactId,
+      purchaseAttemptId,
+      token,
+      skipSoftGate,
+    } = body
 
     // Validate required fields
     if (!businessId || !leadId || !token) {
@@ -29,7 +36,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Soft-gate check: look for recent purchase by this contact
-    if (contactId) {
+    // Skip if user explicitly chose "Buy again"
+    if (contactId && !skipSoftGate) {
       const supabase = getAdminClient()
 
       // Find the report for this lead

@@ -91,58 +91,68 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
   )
   const [showRecentPurchaseModal, setShowRecentPurchaseModal] = useState(false)
 
-  const handleCheckout = useCallback(async () => {
-    if (isCheckoutLoading) return
+  const handleCheckout = useCallback(
+    async (eventOrOptions?: React.MouseEvent | { skipSoftGate?: boolean }) => {
+      // Handle both onClick (MouseEvent) and programmatic calls (options object)
+      const options =
+        eventOrOptions && 'skipSoftGate' in eventOrOptions
+          ? eventOrOptions
+          : undefined
 
-    setIsCheckoutLoading(true)
-    setCheckoutError(null)
+      if (isCheckoutLoading) return
 
-    try {
-      const response = await fetch('/api/checkout/create-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          businessId: context.businessId,
-          leadId: context.leadId,
-          contactId: context.contactId,
-          purchaseAttemptId: getPurchaseAttemptId(),
-          token,
-        }),
-      })
+      setIsCheckoutLoading(true)
+      setCheckoutError(null)
 
-      if (!response.ok) {
-        throw new Error('Failed to create checkout session')
-      }
+      try {
+        const response = await fetch('/api/checkout/create-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            businessId: context.businessId,
+            leadId: context.leadId,
+            contactId: context.contactId,
+            purchaseAttemptId: getPurchaseAttemptId(),
+            token,
+            skipSoftGate: options?.skipSoftGate ?? false,
+          }),
+        })
 
-      const data = await response.json()
+        if (!response.ok) {
+          throw new Error('Failed to create checkout session')
+        }
 
-      // Soft-gate: recent purchase detected
-      if (data.recentPurchase) {
-        setRecentPurchase(data.recentPurchase)
-        setShowRecentPurchaseModal(true)
+        const data = await response.json()
+
+        // Soft-gate: recent purchase detected
+        if (data.recentPurchase) {
+          setRecentPurchase(data.recentPurchase)
+          setShowRecentPurchaseModal(true)
+          setIsCheckoutLoading(false)
+          return
+        }
+
+        if (data.url) {
+          window.location.href = data.url
+        } else {
+          throw new Error('No checkout URL returned')
+        }
+      } catch (error) {
+        console.error('Checkout error:', error)
+        setCheckoutError('Unable to start checkout. Please try again.')
         setIsCheckoutLoading(false)
-        return
       }
-
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        throw new Error('No checkout URL returned')
-      }
-    } catch (error) {
-      console.error('Checkout error:', error)
-      setCheckoutError('Unable to start checkout. Please try again.')
-      setIsCheckoutLoading(false)
-    }
-  }, [
-    context.businessId,
-    context.leadId,
-    context.contactId,
-    token,
-    isCheckoutLoading,
-  ])
+    },
+    [
+      context.businessId,
+      context.leadId,
+      context.contactId,
+      token,
+      isCheckoutLoading,
+    ]
+  )
 
   // Handle resend email from recent purchase modal
   const handleResendEmail = useCallback(async () => {
@@ -175,8 +185,8 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
     clearPurchaseAttemptId()
     setShowRecentPurchaseModal(false)
     setRecentPurchase(null)
-    // Trigger checkout flow again
-    handleCheckout()
+    // Trigger checkout flow again, skipping soft-gate since user explicitly chose to buy again
+    handleCheckout({ skipSoftGate: true })
   }, [handleCheckout])
 
   return (
