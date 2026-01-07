@@ -50,6 +50,19 @@ export default function PrivacyPolicyPage() {
           </tr>
           <tr className="border-b border-white/10">
             <td className="py-3">
+              <strong>Session recordings</strong>
+            </td>
+            <td className="py-3 opacity-80">
+              Mouse movements, clicks, scrolls, and anonymized page content on
+              certain pages (e.g., landing pages)
+            </td>
+            <td className="py-3 opacity-80">
+              Collected via Microsoft Clarity for UX analysis; IP addresses are
+              masked
+            </td>
+          </tr>
+          <tr className="border-b border-white/10">
+            <td className="py-3">
               <strong>Derived analytics</strong>
             </td>
             <td className="py-3 opacity-80">
@@ -96,10 +109,10 @@ export default function PrivacyPolicyPage() {
       <ul className="list-disc pl-6 text-[17px] opacity-80 space-y-2 mb-6">
         <li>
           <strong>Service providers</strong> – such as payment processors
-          (Stripe), cloud hosting providers (Vercel, Supabase), and analytics
-          providers (PostHog), who are contractually bound to protect the data.
-          For a full list, see our{' '}
-          <a href="/legal/subprocessors">Subprocessor List</a>.
+          (Stripe), cloud hosting providers (Vercel, Supabase), analytics
+          providers (PostHog), and session recording tools (Microsoft Clarity),
+          who are contractually bound to protect the data. For a full list, see
+          our <a href="/legal/subprocessors">Subprocessor List</a>.
         </li>
         <li>
           <strong>Corporate events</strong> – in connection with a merger,

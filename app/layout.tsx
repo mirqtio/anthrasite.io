@@ -10,6 +10,7 @@ import {
   AnalyticsWrapper,
   AnalyticsNoScriptWrapper,
 } from '@/app/_components/Analytics/AnalyticsWrapper'
+import { ClarityWrapper } from '@/app/_components/Analytics/ClarityWrapper'
 import ReadyGate from '@/app/_components/ReadyGate'
 import { AuthListener } from '@/components/auth/AuthListener'
 import './globals.css'
@@ -60,6 +61,7 @@ export default function RootLayout({
                   <ConditionalHelpWidget />
                   <AnalyticsWrapper />
                   <AnalyticsNoScriptWrapper />
+                  <ClarityWrapper />
                   <ReadyGate />
                   <Suspense fallback={null}>
                     <AuthListener />
