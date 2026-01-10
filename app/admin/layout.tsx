@@ -34,6 +34,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             >
               Prompt Lab
             </Link>
+            <Link
+              href="/admin/mockups"
+              className="hover:text-white transition-colors"
+            >
+              Mockups
+            </Link>
           </nav>
         </div>
 
