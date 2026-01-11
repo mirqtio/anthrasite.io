@@ -5,11 +5,13 @@ import { ConsentPreferences } from '@/lib/context/ConsentContext'
 const CONSENT_KEY = 'anthrasite_cookie_consent'
 
 export function getCookieConsent(): ConsentPreferences {
+  // US legal model: analytics enabled by default with legal notice
+  // No consent banner required - see privacy policy
   if (typeof window === 'undefined') {
     return {
-      analytics: false,
+      analytics: true,
       marketing: false,
-      performance: false,
+      performance: true,
       functional: true,
       doNotSell: false,
       timestamp: new Date().toISOString(),
@@ -23,9 +25,9 @@ export function getCookieConsent(): ConsentPreferences {
       // Check if it has the version/preferences structure
       if (parsed.version && parsed.preferences) {
         return {
-          analytics: parsed.preferences.analytics ?? false,
+          analytics: parsed.preferences.analytics ?? true,
           marketing: parsed.preferences.marketing ?? false,
-          performance: parsed.preferences.performance ?? false,
+          performance: parsed.preferences.performance ?? true,
           functional: parsed.preferences.functional ?? true,
           doNotSell: parsed.preferences.doNotSell ?? false,
           timestamp: parsed.preferences.timestamp ?? new Date().toISOString(),
@@ -33,9 +35,9 @@ export function getCookieConsent(): ConsentPreferences {
       }
       // Fall back to direct structure for backward compatibility
       return {
-        analytics: parsed.analytics ?? false,
+        analytics: parsed.analytics ?? true,
         marketing: parsed.marketing ?? false,
-        performance: parsed.performance ?? false,
+        performance: parsed.performance ?? true,
         functional: parsed.functional ?? true,
         doNotSell: parsed.doNotSell ?? false,
         timestamp: parsed.timestamp ?? new Date().toISOString(),
@@ -45,10 +47,11 @@ export function getCookieConsent(): ConsentPreferences {
     console.error('Error reading consent preferences:', error)
   }
 
+  // Default: analytics enabled (US legal model with notice)
   return {
-    analytics: false,
+    analytics: true,
     marketing: false,
-    performance: false,
+    performance: true,
     functional: true,
     doNotSell: false,
     timestamp: new Date().toISOString(),

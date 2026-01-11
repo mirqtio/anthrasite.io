@@ -74,6 +74,8 @@ describe('Consent Integration', () => {
     expect(stored.preferences.functional).toBe(true)
   })
 
+  // NOTE: US legal model - analytics enabled by default without consent banner
+  // This test now reflects that analytics starts immediately
   it('should show banner and handle reject all flow', async () => {
     render(
       <ConsentProvider>
@@ -94,10 +96,13 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    // Analytics should not be initialized when consent is rejected
-    await waitFor(() => {
-      expect(mockStartAnalyticsImport).not.toHaveBeenCalled()
-    })
+    // With US legal model, analytics is enabled by default
+    // so it may have already been called before rejection
+    // The key is that the rejection is stored for future sessions
+    const stored = JSON.parse(
+      localStorage.getItem('anthrasite_cookie_consent') || '{}'
+    )
+    expect(stored.preferences.analytics).toBe(false)
   })
 
   it('should handle preferences modal flow', async () => {

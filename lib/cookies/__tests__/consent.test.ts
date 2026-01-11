@@ -12,10 +12,11 @@ describe('Cookie Consent', () => {
     it('should return default consent when no stored preferences', () => {
       const consent = getCookieConsent()
 
+      // US legal model: analytics and performance enabled by default
       expect(consent).toEqual({
-        analytics: false,
+        analytics: true,
         marketing: false,
-        performance: false,
+        performance: true,
         functional: true,
         doNotSell: false,
         timestamp: expect.any(String),
@@ -55,10 +56,11 @@ describe('Cookie Consent', () => {
 
       const consent = getCookieConsent()
 
+      // US legal model: analytics and performance enabled by default
       expect(consent).toEqual({
-        analytics: false,
+        analytics: true,
         marketing: false,
-        performance: false,
+        performance: true,
         functional: true,
         doNotSell: false,
         timestamp: expect.any(String),
@@ -71,10 +73,11 @@ describe('Cookie Consent', () => {
 
       const consent = getCookieConsent()
 
+      // US legal model: analytics and performance enabled by default
       expect(consent).toEqual({
-        analytics: false,
+        analytics: true,
         marketing: false,
-        performance: false,
+        performance: true,
         functional: true,
         doNotSell: false,
         timestamp: expect.any(String),
@@ -93,10 +96,11 @@ describe('Cookie Consent', () => {
 
       const consent = getCookieConsent()
 
+      // US legal model: analytics and performance enabled by default
       expect(consent).toEqual({
-        analytics: false,
+        analytics: true,
         marketing: false,
-        performance: false,
+        performance: true,
         functional: true,
         doNotSell: false,
         timestamp: expect.any(String),
@@ -114,10 +118,11 @@ describe('Cookie Consent', () => {
 
       const consent = getCookieConsent()
 
+      // US legal model: analytics and performance enabled by default
       expect(consent).toEqual({
-        analytics: false,
+        analytics: true,
         marketing: false,
-        performance: false,
+        performance: true,
         functional: true,
         doNotSell: false,
         timestamp: expect.any(String),
