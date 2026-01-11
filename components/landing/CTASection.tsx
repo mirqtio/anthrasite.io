@@ -2,6 +2,7 @@
 
 import { Shield, ArrowRight, Loader2 } from 'lucide-react'
 import { SecureCheckout } from '@/components/landing/SecureCheckout'
+import { trackEvent } from '@/lib/analytics/analytics-client'
 
 interface CTASectionProps {
   company: string
@@ -111,7 +112,10 @@ export function CTASection({
           <div className="flex flex-col items-center gap-2">
             <button
               id="main-cta-button"
-              onClick={onCheckout}
+              onClick={() => {
+                trackEvent('cta_click', { location: 'cta_section' })
+                onCheckout()
+              }}
               disabled={isLoading}
               className="w-full sm:w-auto min-w-[320px] inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white text-[18px] min-[800px]:text-[20px] font-semibold rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] hover:shadow-[0_6px_20px_rgba(0,102,255,0.5)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed"
             >

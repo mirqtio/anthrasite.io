@@ -310,7 +310,10 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
               {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
               <div className="hidden min-[800px]:flex flex-col items-center gap-2">
                 <button
-                  onClick={handleCheckout}
+                  onClick={() => {
+                    trackEvent('cta_click', { location: 'value_section' })
+                    handleCheckout()
+                  }}
                   disabled={isCheckoutLoading}
                   className="w-full sm:w-auto min-w-[280px] inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white text-[18px] min-[800px]:text-[20px] font-semibold rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] hover:shadow-[0_6px_20px_rgba(0,102,255,0.5)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F9FA] disabled:cursor-not-allowed"
                 >

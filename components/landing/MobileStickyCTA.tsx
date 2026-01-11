@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Lock, ArrowRight, Loader2 } from 'lucide-react'
+import { trackEvent } from '@/lib/analytics/analytics-client'
 
 interface MobileStickyCTAProps {
   price: number
@@ -57,7 +58,10 @@ export function MobileStickyCTA({
     >
       <div className="bg-[#141414]/95 border-t border-white/10 px-3 py-2 safe-area-inset-bottom">
         <button
-          onClick={onCheckout}
+          onClick={() => {
+            trackEvent('cta_click', { location: 'mobile_sticky' })
+            onCheckout()
+          }}
           disabled={isLoading}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0066FF] hover:bg-[#0052CC] active:bg-[#004099] disabled:opacity-50 text-white rounded-md shadow-[0_4px_14px_rgba(0,102,255,0.4)] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF] focus-visible:ring-offset-2 disabled:cursor-not-allowed"
         >

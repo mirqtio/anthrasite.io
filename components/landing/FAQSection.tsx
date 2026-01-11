@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import type { FAQItem } from '@/lib/landing/types'
+import { trackEvent } from '@/lib/analytics/analytics-client'
 
 interface FAQSectionProps {
   items: FAQItem[]
@@ -71,7 +72,16 @@ export function FAQSection({ items }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   const handleToggle = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index)
+    const isOpening = openIndex !== index
+    setOpenIndex(isOpening ? index : null)
+
+    // Track FAQ expansion (only when opening, not closing)
+    if (isOpening) {
+      trackEvent('faq_expand', {
+        question: items[index].question,
+        index,
+      })
+    }
   }
 
   return (
