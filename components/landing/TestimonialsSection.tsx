@@ -3,7 +3,7 @@
 const TESTIMONIALS = [
   {
     quote:
-      "We thought we'd nailed it—professional photos, premium look, clear calls to action. Then I saw how few people were actually finding us in local searches. That one insight changed our whole priority list.",
+      'We were surprised by our low score—professional photos, premium look, clear calls to action. Then I saw how few people were actually finding us in local searches. That one insight changed our whole priority list.',
     name: 'Chelsea',
     titleCompany: 'Partner, Invest in Yakima',
   },
@@ -12,6 +12,12 @@ const TESTIMONIALS = [
       "I was bracing for a laundry list of expensive fixes. Instead, I got two things I could do this week—and suddenly all the branding work we'd already done would actually get seen. That's the kind of clarity you can act on.",
     name: 'Kelly',
     titleCompany: 'Owner, Mandala Integrative Veterinary Care',
+  },
+  {
+    quote:
+      'It clearly connected performance metrics to real business impact—showing not just what needed improvement, but how each issue could be costing us visibility, trust, and revenue.',
+    name: 'Madeline',
+    titleCompany: 'Owner, The Parlor Room, Virginia Beach',
   },
 ]
 
@@ -25,8 +31,8 @@ export function TestimonialsSection() {
         What Our Customers Say
       </h2>
 
-      {/* Desktop: 2-column grid */}
-      <div className="hidden gap-6 min-[800px]:grid min-[800px]:grid-cols-2 min-[800px]:max-w-4xl min-[800px]:mx-auto">
+      {/* Desktop: 3-column grid */}
+      <div className="hidden gap-6 min-[800px]:grid min-[800px]:grid-cols-3 min-[800px]:max-w-5xl min-[800px]:mx-auto">
         {TESTIMONIALS.map((t) => (
           <figure
             key={t.name}

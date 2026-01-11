@@ -8,8 +8,17 @@ jest.mock('@/lib/monitoring/hooks', () => ({
   useRenderTracking: jest.fn(),
 }))
 
-// Mock the fetch function for waitlist form
+// Mock the fetch function for form submissions
 global.fetch = jest.fn()
+
+// Mock IntersectionObserver (not available in jsdom)
+const mockIntersectionObserver = jest.fn()
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+})
+window.IntersectionObserver = mockIntersectionObserver
 
 describe('OrganicHomepage', () => {
   beforeEach(() => {
@@ -20,95 +29,64 @@ describe('OrganicHomepage', () => {
     })
   })
 
-  it('should render with default content', () => {
+  it('should render with hero content', () => {
     render(<OrganicHomepage />)
 
-    // Check for actual content that exists in the component
+    // Check for main headline
     expect(
-      screen.getByText('Your website has untapped potential')
+      screen.getByText(/Is your website costing you customers/i)
     ).toBeInTheDocument()
-    expect(
-      screen.getByText(/We analyze hundreds of data points/)
-    ).toBeInTheDocument()
+    // Check for subheadline
+    expect(screen.getByText(/Find out in 2 minutes/i)).toBeInTheDocument()
   })
 
-  it('should render consistently', () => {
+  it('should render form inputs', () => {
     render(<OrganicHomepage />)
 
-    expect(screen.getByTestId('organic-homepage')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('yourcompany.com')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('you@company.com')).toBeInTheDocument()
   })
 
-  it('should track page view on mount', () => {
-    // Note: useRenderTracking is currently commented out in OrganicHomepage
-    // This test verifies the hook is available when needed
-    const { useRenderTracking } = require('@/lib/monitoring/hooks')
-
+  it('should render Analyze Website button', () => {
     render(<OrganicHomepage />)
 
-    // Hook is mocked and available, but not currently called (commented out)
-    expect(useRenderTracking).toBeDefined()
+    const buttons = screen.getAllByText('Analyze Website')
+    expect(buttons.length).toBeGreaterThan(0)
   })
 
-  it('should show waitlist form', () => {
-    render(<OrganicHomepage />)
-
-    expect(screen.getByTestId('waitlist-form')).toBeInTheDocument()
-  })
-
-  it('should handle waitlist success', async () => {
-    render(<OrganicHomepage />)
-
-    // Click opens modal - use the Join Waitlist button in the hero
-    const heroButton = screen.getByText('Join Waitlist')
-    fireEvent.click(heroButton)
-
-    // Find the form in the modal
-    const form = screen.getByTestId('waitlist-form')
-    expect(form).toBeInTheDocument()
-  })
-
-  it('should show value propositions', () => {
-    render(<OrganicHomepage />)
-
-    expect(screen.getByText(/Load Performance/i)).toBeInTheDocument()
-    expect(screen.getByText(/Mobile Experience/i)).toBeInTheDocument()
-
-    // Use a more specific selector for Revenue Impact heading
-    const revenueHeading = screen.getByRole('heading', {
-      name: /Revenue Impact/i,
-    })
-    expect(revenueHeading).toBeInTheDocument()
-  })
-
-  it('should show what we analyze section', () => {
-    render(<OrganicHomepage />)
-
-    expect(screen.getByText(/What This Looks Like/i)).toBeInTheDocument()
-    expect(screen.getByText(/4.8s/i)).toBeInTheDocument()
-    expect(screen.getByText(/47%/i)).toBeInTheDocument()
-  })
-
-  it('should show assessment information', () => {
+  it('should show trust signals', () => {
     render(<OrganicHomepage />)
 
     expect(
-      screen.getByText(/No fluff. No 50-page reports/i)
+      screen.getByText(/See your score and top issue free/i)
     ).toBeInTheDocument()
-    expect(
-      screen.getByText(/Just what's broken and what it's worth to fix it/i)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Results in under 2 minutes/i)).toBeInTheDocument()
+    expect(screen.getByText(/No credit card required/i)).toBeInTheDocument()
+  })
+
+  it('should show How It Works section', () => {
+    render(<OrganicHomepage />)
+
+    // Multiple "How It Works" links in nav + section heading
+    const howItWorksElements = screen.getAllByText('How It Works')
+    expect(howItWorksElements.length).toBeGreaterThan(0)
+    expect(screen.getByText('Find')).toBeInTheDocument()
+    expect(screen.getByText('Trust')).toBeInTheDocument()
+    expect(screen.getByText('Understand')).toBeInTheDocument()
+    // Contact appears in steps and footer
+    const contactElements = screen.getAllByText('Contact')
+    expect(contactElements.length).toBeGreaterThan(0)
   })
 
   it('should show FAQ section', () => {
     render(<OrganicHomepage />)
 
-    expect(screen.getByText(/Questions/i)).toBeInTheDocument()
     expect(screen.getByText(/What does Anthrasite do\?/i)).toBeInTheDocument()
     expect(
-      screen.getByText(/How do you analyze my site\?/i)
+      screen.getByText(/Do you actually look at my website\?/i)
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/What exactly do I get in the full report\?/i)
+      screen.getByText(/How is this different from free tools\?/i)
     ).toBeInTheDocument()
   })
 
@@ -119,7 +97,7 @@ describe('OrganicHomepage', () => {
     fireEvent.click(faqButton)
 
     expect(
-      screen.getByText(/Our goal is to help small businesses/i)
+      screen.getByText(/We analyze your website using industry-standard tools/i)
     ).toBeInTheDocument()
   })
 
@@ -136,26 +114,38 @@ describe('OrganicHomepage', () => {
     expect(footer).toHaveTextContent(/Terms of Service/i)
   })
 
-  it('should have proper styling classes', () => {
-    const { container } = render(<OrganicHomepage />)
-
-    const hero = container.querySelector('.hero')
-    expect(hero).toBeInTheDocument()
-  })
-
-  it('should handle modal opening and closing', () => {
+  it('should validate URL input', async () => {
     render(<OrganicHomepage />)
 
-    const heroButton = screen.getByText('Join Waitlist')
-    fireEvent.click(heroButton)
+    const urlInput = screen.getByPlaceholderText('yourcompany.com')
 
-    expect(screen.getByTestId('waitlist-form')).toBeInTheDocument()
+    // Enter invalid URL and blur
+    fireEvent.change(urlInput, { target: { value: 'not a url' } })
+    fireEvent.blur(urlInput)
+
+    // Error should appear (matches actual message from component)
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Please enter a valid website/i)
+      ).toBeInTheDocument()
+    })
   })
 
-  it('should use responsive design', () => {
+  it('should render navigation links', () => {
     render(<OrganicHomepage />)
 
-    const container = screen.getByTestId('organic-homepage')
-    expect(container).toHaveClass('hero')
+    // Multiple About Us links exist (nav, mobile nav, potentially footer)
+    const aboutLinks = screen.getAllByRole('link', { name: /About Us/i })
+    expect(aboutLinks.length).toBeGreaterThan(0)
+
+    // Footer links (Privacy, Terms)
+    const privacyLinks = screen.getAllByRole('link', {
+      name: /Privacy Policy/i,
+    })
+    expect(privacyLinks.length).toBeGreaterThan(0)
+    const termsLinks = screen.getAllByRole('link', {
+      name: /Terms of Service/i,
+    })
+    expect(termsLinks.length).toBeGreaterThan(0)
   })
 })
