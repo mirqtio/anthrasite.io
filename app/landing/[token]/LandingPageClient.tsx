@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import type { LandingContext, FAQItem } from '@/lib/landing/types'
+import { trackEvent } from '@/lib/analytics/analytics-client'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { ValueSection } from '@/components/landing/ValueSection'
 import { CTASection } from '@/components/landing/CTASection'
@@ -91,6 +92,23 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
   )
   const [showRecentPurchaseModal, setShowRecentPurchaseModal] = useState(false)
 
+  // Track landing page view on mount
+  const hasTrackedView = useRef(false)
+  useEffect(() => {
+    if (hasTrackedView.current) return
+    hasTrackedView.current = true
+
+    trackEvent('landing_view', {
+      lead_id: context.leadId,
+      business_name: context.company,
+      domain: context.domainUrl,
+      score: context.score,
+      issue_count: context.issueCount,
+      impact_low: context.impactLow,
+      impact_high: context.impactHigh,
+    })
+  }, [context])
+
   const handleCheckout = useCallback(
     async (eventOrOptions?: React.MouseEvent | { skipSoftGate?: boolean }) => {
       // Handle both onClick (MouseEvent) and programmatic calls (options object)
@@ -100,6 +118,13 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
           : undefined
 
       if (isCheckoutLoading) return
+
+      // Track checkout click
+      trackEvent('landing_checkout_click', {
+        lead_id: context.leadId,
+        business_name: context.company,
+        price: context.price,
+      })
 
       setIsCheckoutLoading(true)
       setCheckoutError(null)

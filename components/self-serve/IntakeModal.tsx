@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Loader2, ArrowRight, X } from 'lucide-react'
+import { trackEvent } from '@/lib/analytics/analytics-client'
 
 // Industry options (2-digit NAICS)
 const INDUSTRY_OPTIONS = [
@@ -204,6 +205,18 @@ export function IntakeModal({
     return () => clearTimeout(timer)
   }, [state, company, zip])
 
+  // Track form view when modal opens with form
+  const hasTrackedFormView = useRef(false)
+  useEffect(() => {
+    if (state === 'form' && !hasTrackedFormView.current) {
+      hasTrackedFormView.current = true
+      trackEvent('intake_form_view', {
+        url: canonicalUrl,
+        source: 'organic_homepage',
+      })
+    }
+  }, [state, canonicalUrl])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -251,6 +264,15 @@ export function IntakeModal({
         setState('form')
         return
       }
+
+      // Track successful submission
+      trackEvent('intake_submit', {
+        domain: canonicalUrl,
+        company: company.trim(),
+        industry: industry || undefined,
+        revenue_range: revenueRange,
+        marketing_opt_in: marketingOptIn,
+      })
 
       // If cached results exist, redirect directly to landing page
       if (data.landing_url) {

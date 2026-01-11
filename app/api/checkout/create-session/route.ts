@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createCheckoutSession } from '@/lib/stripe/checkout'
 import { validatePurchaseToken } from '@/lib/landing/context'
 import { getAdminClient } from '@/lib/supabase/admin'
+import { trackEvent } from '@/lib/analytics/analytics-server'
 
 // Soft-gate window: 30 minutes
 const SOFT_GATE_WINDOW_MS = 30 * 60 * 1000
@@ -95,6 +96,15 @@ export async function POST(request: NextRequest) {
       contactId,
       purchaseAttemptId,
       baseUrl,
+    })
+
+    // Track checkout session creation
+    await trackEvent('checkout_session_created', {
+      lead_id: leadId,
+      contact_id: contactId,
+      session_id: session.id,
+      soft_gate_triggered: false,
+      price: session.amount_total,
     })
 
     // Return the checkout URL for redirect

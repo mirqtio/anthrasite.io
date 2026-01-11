@@ -4,6 +4,7 @@ import Stripe from 'stripe'
 import { getStripe, webhookSecret } from '@/lib/stripe/config'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { getTemporalClient } from '@/lib/temporal/client'
+import { trackEvent } from '@/lib/analytics/analytics-server'
 
 /**
  * ANT-88: Stripe Webhook Handler
@@ -152,6 +153,17 @@ async function handleCheckoutCompleted(
 
   const saleId = sale?.id
   console.log('[Stripe Webhook] Sales row upserted successfully:', { saleId })
+
+  // Track purchase completion
+  await trackEvent('purchase_complete', {
+    session_id: session.id,
+    lead_id: leadId,
+    contact_id: contactId || undefined,
+    sale_id: saleId,
+    amount: session.amount_total,
+    currency: session.currency || 'usd',
+    payment_intent_id: paymentIntentId,
+  })
 
   // 3. Trigger PostPurchaseWorkflow via Temporal
   // Use event ID in workflow ID for idempotency - same event = same workflow
