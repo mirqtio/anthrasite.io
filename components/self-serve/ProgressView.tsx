@@ -50,7 +50,7 @@ interface ProgressViewProps {
   onClose: () => void
 }
 
-type ViewState = 'running' | 'ready' | 'error' | 'redirecting'
+type ViewState = 'running' | 'ready' | 'error'
 
 export function ProgressView({
   requestId,
@@ -161,16 +161,12 @@ export function ProgressView({
     if (viewState !== 'ready' || !landingUrl) return
 
     // Show "ready" state briefly, then redirect
-    const timer = setTimeout(() => {
-      setViewState('redirecting')
-    }, 1500)
-
+    // Note: We do NOT change viewState to avoid effect re-run which would clear the timer
     const redirectTimer = setTimeout(() => {
       window.location.href = landingUrl
-    }, 2500)
+    }, 1500)
 
     return () => {
-      clearTimeout(timer)
       clearTimeout(redirectTimer)
     }
   }, [viewState, landingUrl])
@@ -245,8 +241,8 @@ export function ProgressView({
     )
   }
 
-  // Ready/Redirecting state
-  if (viewState === 'ready' || viewState === 'redirecting') {
+  // Ready state - show success and redirect
+  if (viewState === 'ready') {
     return (
       <div className="fixed inset-0 z-[2000] bg-[#232323] flex flex-col">
         <div className="p-8">
@@ -271,14 +267,10 @@ export function ProgressView({
           </h1>
 
           <p className="text-white/60 text-[18px] animate-[fade-in_0.5s_ease-out_0.6s_both]">
-            {viewState === 'redirecting' ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Redirecting to your results...
-              </span>
-            ) : (
-              'Preparing your results...'
-            )}
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Redirecting to your results...
+            </span>
           </p>
         </div>
 
