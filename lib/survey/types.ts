@@ -21,7 +21,14 @@ export const VALID_AUDIENCES = ['survey', 'report'] as const
 export type TokenAudience = (typeof VALID_AUDIENCES)[number]
 
 // Valid token scopes
-export const VALID_SCOPES = ['feedback', 'report:download'] as const
+// - feedback: Survey submission access (30-day, issued by survey page)
+// - report:download: Report PDF download access (90-day, issued by LeadShop)
+// - survey:access: Stable survey permalink access (90-day, issued by LeadShop for reply automation)
+export const VALID_SCOPES = [
+  'feedback',
+  'report:download',
+  'survey:access',
+] as const
 export type TokenScope = (typeof VALID_SCOPES)[number]
 
 // Question Types

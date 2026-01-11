@@ -45,8 +45,10 @@ export async function validateSurveyToken(
 
     // Enforce scope/audience consistency
     const aud = payload.aud as string
-    if (aud === 'survey' && scope !== 'feedback') {
-      console.error('Survey tokens must have scope=feedback')
+    if (aud === 'survey' && scope !== 'feedback' && scope !== 'survey:access') {
+      console.error(
+        'Survey tokens must have scope=feedback or scope=survey:access'
+      )
       return null
     }
     if (aud === 'report' && scope !== 'report:download') {

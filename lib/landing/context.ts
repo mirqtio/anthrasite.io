@@ -153,9 +153,9 @@ export async function lookupLandingContext(
     const budgetRow = budgetResult[0]
     const impactLowCents = budgetRow?.budget_low_cents || 0
     const impactHighCents = budgetRow?.budget_high_cents || 0
-    // Convert cents to dollars and round to nearest $100
-    const impactRangeLow = Math.round(impactLowCents / 100 / 100) * 100
-    const impactRangeHigh = Math.round(impactHighCents / 100 / 100) * 100
+    // Convert cents to dollars (divide by 100 once)
+    const impactRangeLow = Math.round(impactLowCents / 100)
+    const impactRangeHigh = Math.round(impactHighCents / 100)
 
     // Count total friction points across all buckets
     const allFrictionPoints = [

@@ -37,12 +37,9 @@ const PROGRESS_STEPS = [
   },
 ]
 
-// Map backend phases to step indices
-const PHASE_TO_STEP: Record<string, number> = {
-  validating: 0,
-  assessing: 2,
-  generating: 4,
-}
+// NOTE: Previously we mapped backend phases to steps, but this caused
+// jarring jumps in the UI. Now we use timing-based progress only,
+// with backend polling just checking for completion status.
 
 interface ProgressViewProps {
   requestId: string
@@ -74,10 +71,9 @@ export function ProgressView({
         return false // Stop polling
       }
 
-      // Update step based on phase
-      if (data.phase && PHASE_TO_STEP[data.phase] !== undefined) {
-        setCurrentStep(PHASE_TO_STEP[data.phase])
-      }
+      // NOTE: We intentionally do NOT update step based on phase.
+      // The visual progress uses timing-based auto-advance for smoother UX.
+      // Backend polling only checks for terminal states (completion/error).
 
       // Check for terminal states
       if (data.status === 'ready_for_lp') {
@@ -151,7 +147,7 @@ export function ProgressView({
         if (prev >= 4) return prev
         return prev + 1
       })
-    }, 15000)
+    }, 20000)
 
     return () => clearInterval(timer)
   }, [viewState])

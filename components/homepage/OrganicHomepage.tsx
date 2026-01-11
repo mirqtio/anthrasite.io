@@ -130,6 +130,7 @@ export function OrganicHomepage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [urlError, setUrlError] = useState('')
+  const [emailError, setEmailError] = useState('')
 
   // Modal/progress state
   const [showIntakeModal, setShowIntakeModal] = useState(false)
@@ -152,7 +153,7 @@ export function OrganicHomepage() {
 
   const validateUrl = (value: string): boolean => {
     if (!value.trim()) {
-      setUrlError('')
+      setUrlError('Please enter a website URL')
       return false
     }
     if (!isValidUrl(value)) {
@@ -160,6 +161,27 @@ export function OrganicHomepage() {
       return false
     }
     setUrlError('')
+    return true
+  }
+
+  // Email validation - standard email format check
+  const isValidEmail = (input: string): boolean => {
+    const trimmed = input.trim().toLowerCase()
+    // Standard email pattern: local@domain.tld
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+    return emailPattern.test(trimmed)
+  }
+
+  const validateEmail = (value: string): boolean => {
+    if (!value.trim()) {
+      setEmailError('Please enter your email')
+      return false
+    }
+    if (!isValidEmail(value)) {
+      setEmailError('Please enter a valid email (e.g., you@company.com)')
+      return false
+    }
+    setEmailError('')
     return true
   }
   const [showStickyCta, setShowStickyCta] = useState(false)
@@ -196,15 +218,15 @@ export function OrganicHomepage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!url || !email) return
 
-    // Validate URL before submitting
-    if (!validateUrl(url)) {
-      return
-    }
+    // Trigger validation (same as blur) for any untouched fields
+    const urlValid = validateUrl(url)
+    const emailValid = validateEmail(email)
+
+    // Stop if either field is invalid or empty
+    if (!urlValid || !emailValid) return
 
     setError('')
-    setUrlError('')
 
     // Normalize the domain
     let normalized = url.trim()
@@ -403,11 +425,12 @@ export function OrganicHomepage() {
                       className={`block w-full rounded-md border-0 shadow-sm px-4 py-3 text-gray-900 bg-white text-[16px] ${
                         urlError ? 'ring-2 ring-red-500' : ''
                       }`}
-                      required
                     />
-                    {urlError && (
-                      <p className="text-red-400 text-sm mt-1">{urlError}</p>
-                    )}
+                    <p
+                      className={`text-red-400 text-sm mt-1 h-5 transition-opacity ${urlError ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                      {urlError || '\u00A0'}
+                    </p>
                   </div>
                   <div className="flex-1">
                     <label className="block text-white/80 text-sm font-medium mb-1 tracking-[0.02em]">
@@ -416,31 +439,47 @@ export function OrganicHomepage() {
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (emailError) validateEmail(e.target.value)
+                      }}
+                      onBlur={(e) => validateEmail(e.target.value)}
                       placeholder="you@company.com"
-                      className="block w-full rounded-md border-0 shadow-sm px-4 py-3 text-gray-900 bg-white text-[16px]"
+                      className={`block w-full rounded-md border-0 shadow-sm px-4 py-3 text-gray-900 bg-white text-[16px] ${
+                        emailError ? 'ring-2 ring-red-500' : ''
+                      }`}
                       autoComplete="email"
-                      required
                     />
+                    <p
+                      className={`text-red-400 text-sm mt-1 h-5 transition-opacity ${emailError ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                      {emailError || '\u00A0'}
+                    </p>
                   </div>
-                  <button
-                    ref={mainCtaRef}
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`${PRIMARY_BUTTON_CLASSES} focus-visible:ring-offset-[#232323] min-[800px]:flex-shrink-0`}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>Analyzing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Analyze Website</span>
-                        <ArrowRight className="w-5 h-5" />
-                      </>
-                    )}
-                  </button>
+                  <div className="min-[800px]:flex-shrink-0">
+                    {/* Spacer to match label height on desktop */}
+                    <div className="hidden min-[800px]:block h-[22px]" />
+                    <button
+                      ref={mainCtaRef}
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`${PRIMARY_BUTTON_CLASSES} focus-visible:ring-offset-[#232323] w-full min-[800px]:w-auto`}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Analyzing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Analyze Website</span>
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      )}
+                    </button>
+                    {/* Spacer to match error message height on desktop */}
+                    <div className="hidden min-[800px]:block h-5 mt-1" />
+                  </div>
                 </form>
                 {error && (
                   <div className="text-red-400 text-sm mt-3">{error}</div>

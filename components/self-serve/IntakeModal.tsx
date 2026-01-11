@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Loader2, ArrowRight, X } from 'lucide-react'
 
 // Industry options (2-digit NAICS)
@@ -129,6 +129,10 @@ export function IntakeModal({
   const [acceptedTerms, setAcceptedTerms] = useState(true)
   const [marketingOptIn, setMarketingOptIn] = useState(true)
 
+  // Refs for auto-focus
+  const companyInputRef = useRef<HTMLInputElement>(null)
+  const zipInputRef = useRef<HTMLInputElement>(null)
+
   // Call validate endpoint when modal opens
   useEffect(() => {
     if (!isOpen) return
@@ -181,19 +185,39 @@ export function IntakeModal({
     validateUrl()
   }, [isOpen, url, email])
 
+  // Auto-focus appropriate field when form appears
+  useEffect(() => {
+    if (state !== 'form') return
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      if (!company) {
+        companyInputRef.current?.focus()
+      } else if (!zip) {
+        zipInputRef.current?.focus()
+      } else {
+        // All fields filled, focus company anyway for Enter key
+        companyInputRef.current?.focus()
+      }
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [state, company, zip])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!acceptedTerms) {
-      setError('Please accept the Terms of Service and Privacy Policy.')
+    // Check for missing required fields
+    const missing = new Set<string>()
+    if (!company.trim()) missing.add('company')
+    if (!acceptedTerms) missing.add('terms')
+
+    if (missing.size > 0) {
+      setMissingFields(missing)
       return
     }
 
-    if (!company.trim()) {
-      setError('Please enter your company name.')
-      return
-    }
-
+    setMissingFields(new Set())
     setState('submitting')
     setError(null)
 
@@ -228,7 +252,13 @@ export function IntakeModal({
         return
       }
 
-      // Success - pass request ID to parent
+      // If cached results exist, redirect directly to landing page
+      if (data.landing_url) {
+        window.location.href = data.landing_url
+        return
+      }
+
+      // Success - pass request ID to parent for progress tracking
       onSubmitSuccess(data.request_id)
     } catch (err) {
       console.error('Submit error:', err)
@@ -237,9 +267,29 @@ export function IntakeModal({
     }
   }
 
-  const getConfidenceClass = (confidence?: number) => {
-    if (!confidence) return 'border-gray-300'
-    return confidence >= 0.7 ? 'border-green-500' : 'border-yellow-500'
+  // Track which required fields are missing (for red outline)
+  const [missingFields, setMissingFields] = useState<Set<string>>(new Set())
+
+  // Form ref for programmatic submission
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // Look up city/state from ZIP code
+  const lookupZip = async (zipCode: string) => {
+    if (zipCode.length !== 5 || !/^\d{5}$/.test(zipCode)) return
+
+    try {
+      const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`)
+      if (!response.ok) return
+
+      const data = await response.json()
+      if (data.places && data.places.length > 0) {
+        const place = data.places[0]
+        setCity(place['place name'] || '')
+        setFormState(place['state abbreviation'] || '')
+      }
+    } catch {
+      // Silently fail - user can still enter manually
+    }
   }
 
   if (!isOpen) return null
@@ -267,7 +317,9 @@ export function IntakeModal({
           <div className="p-8 text-center">
             <div className="flex items-center justify-center gap-3 text-gray-700">
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span className="text-[18px]">Analyzing your website...</span>
+              <span className="text-[18px]">
+                Checking to make sure we can analyze this site...
+              </span>
             </div>
             <p className="text-gray-500 text-sm mt-2">
               This takes about 4 seconds
@@ -290,7 +342,20 @@ export function IntakeModal({
 
         {/* Form State */}
         {(state === 'form' || state === 'submitting') && (
-          <form onSubmit={handleSubmit} className="p-8">
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey && state !== 'submitting') {
+                // Don't submit if focus is on a select (let it open dropdown)
+                if ((e.target as HTMLElement).tagName !== 'SELECT') {
+                  e.preventDefault()
+                  formRef.current?.requestSubmit()
+                }
+              }
+            }}
+            className="p-8"
+          >
             <h2 className="text-gray-900 text-[24px] font-semibold mb-6">
               Confirm Your Details
             </h2>
@@ -308,18 +373,25 @@ export function IntakeModal({
                   Company name <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={companyInputRef}
                   type="text"
                   value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  className={`block w-full rounded-md border shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 ${getConfidenceClass(prefill?.company?.confidence)}`}
-                  required
+                  onChange={(e) => {
+                    setCompany(e.target.value)
+                    if (missingFields.has('company') && e.target.value.trim()) {
+                      setMissingFields((prev) => {
+                        const next = new Set(prev)
+                        next.delete('company')
+                        return next
+                      })
+                    }
+                  }}
+                  className={`block w-full rounded-md border shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 ${
+                    missingFields.has('company')
+                      ? 'border-red-500 ring-1 ring-red-500'
+                      : 'border-gray-300'
+                  }`}
                 />
-                {prefill?.company?.confidence &&
-                  prefill.company.confidence < 0.7 && (
-                    <p className="text-yellow-600 text-xs mt-1">
-                      Please verify
-                    </p>
-                  )}
               </div>
 
               {/* City, State, ZIP row */}
@@ -332,7 +404,7 @@ export function IntakeModal({
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className={`block w-full rounded-md border shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 ${getConfidenceClass(prefill?.city?.confidence)}`}
+                    className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11"
                   />
                 </div>
                 <div>
@@ -342,7 +414,7 @@ export function IntakeModal({
                   <select
                     value={formState}
                     onChange={(e) => setFormState(e.target.value)}
-                    className={`block w-full rounded-md border shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 bg-white ${getConfidenceClass(prefill?.state?.confidence)}`}
+                    className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 bg-white"
                   >
                     <option value="">--</option>
                     {US_STATES.map((s) => (
@@ -357,17 +429,22 @@ export function IntakeModal({
                     ZIP
                   </label>
                   <input
+                    ref={zipInputRef}
                     type="text"
                     value={zip}
-                    onChange={(e) => setZip(e.target.value)}
-                    className={`block w-full rounded-md border shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 ${getConfidenceClass(prefill?.zip?.confidence)}`}
+                    onChange={(e) => {
+                      const value = e.target.value
+                        .replace(/\D/g, '')
+                        .slice(0, 5)
+                      setZip(value)
+                      if (value.length === 5) {
+                        lookupZip(value)
+                      }
+                    }}
+                    className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11"
                     maxLength={5}
+                    inputMode="numeric"
                   />
-                  {prefill?.zip?.confidence && prefill.zip.confidence < 0.7 && (
-                    <p className="text-yellow-600 text-xs mt-1">
-                      Please verify
-                    </p>
-                  )}
                 </div>
               </div>
 
@@ -379,7 +456,7 @@ export function IntakeModal({
                 <select
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
-                  className={`block w-full rounded-md border shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 bg-white ${getConfidenceClass(prefill?.industry?.confidence)}`}
+                  className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 bg-white"
                 >
                   <option value="">Select industry...</option>
                   {INDUSTRY_OPTIONS.map((opt) => (
@@ -388,12 +465,6 @@ export function IntakeModal({
                     </option>
                   ))}
                 </select>
-                {prefill?.industry?.confidence &&
-                  prefill.industry.confidence < 0.7 && (
-                    <p className="text-yellow-600 text-xs mt-1">
-                      Please verify
-                    </p>
-                  )}
               </div>
 
               <hr className="my-6" />
@@ -436,12 +507,29 @@ export function IntakeModal({
 
               {/* Terms */}
               <div className="space-y-3">
-                <label className="flex items-start gap-3 cursor-pointer">
+                <label
+                  className={`flex items-start gap-3 cursor-pointer p-2 -m-2 rounded ${
+                    missingFields.has('terms') ? 'ring-1 ring-red-500' : ''
+                  }`}
+                >
                   <input
                     type="checkbox"
-                    className="mt-1 rounded border-gray-300 text-[#0066FF] focus:ring-[#0066FF]"
+                    className={`mt-1 rounded text-[#0066FF] focus:ring-[#0066FF] ${
+                      missingFields.has('terms')
+                        ? 'border-red-500'
+                        : 'border-gray-300'
+                    }`}
                     checked={acceptedTerms}
-                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    onChange={(e) => {
+                      setAcceptedTerms(e.target.checked)
+                      if (e.target.checked && missingFields.has('terms')) {
+                        setMissingFields((prev) => {
+                          const next = new Set(prev)
+                          next.delete('terms')
+                          return next
+                        })
+                      }
+                    }}
                   />
                   <span className="text-sm text-gray-700">
                     I accept the{' '}
