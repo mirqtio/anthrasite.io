@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://anthrasite.io/sitemap.xml',
+    sitemap: 'https://www.anthrasite.io/sitemap.xml',
   }
 }
