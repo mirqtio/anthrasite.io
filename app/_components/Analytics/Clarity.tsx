@@ -10,7 +10,8 @@ declare global {
 }
 
 /**
- * Microsoft Clarity session replay for /landing/* routes only.
+ * Microsoft Clarity session replay for sales and conversion pages.
+ * Enabled on: homepage (/), /landing/*, /purchase
  * Bypasses consent system - relies on Privacy Policy disclosure.
  */
 export function Clarity() {
@@ -19,10 +20,19 @@ export function Clarity() {
   useEffect(() => {
     const projectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID
 
-    // Only load on /landing/* routes in production with valid project ID
+    // Only load in production with valid project ID
     if (!projectId) return
     if (process.env.NODE_ENV !== 'production') return
-    if (!pathname?.startsWith('/landing')) return
+
+    // Enable Clarity on sales/conversion pages
+    const enabledRoutes = [
+      '/', // Homepage (self-serve intake)
+      '/purchase', // Purchase flow
+    ]
+    const isEnabledRoute =
+      enabledRoutes.includes(pathname || '') || pathname?.startsWith('/landing')
+
+    if (!isEnabledRoute) return
 
     // Prevent duplicate script injection
     if (document.getElementById('clarity-script')) return
