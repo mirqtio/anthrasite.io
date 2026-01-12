@@ -69,6 +69,22 @@ export default async function Image() {
         >
           VALUE, CRYSTALLIZED
         </div>
+
+        {/* CTA */}
+        <div
+          style={{
+            display: 'flex',
+            marginTop: '32px',
+            padding: '16px 32px',
+            backgroundColor: '#0066FF',
+            borderRadius: '8px',
+            color: 'white',
+            fontSize: '24px',
+            fontWeight: 600,
+          }}
+        >
+          Get Your Website Audit →
+        </div>
       </div>
     ),
     {

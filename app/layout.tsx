@@ -26,25 +26,25 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Anthrasite | Value, Crystallized',
+  title: 'Anthrasite | Website Audits That Show What to Fix',
   description:
-    "Find what's costing you customers. Website audits that show exactly what to fix—and what it's worth.",
+    "Find what's costing you customers. Website audits that show exactly what to fix—and what it's worth. Prioritized by business impact, not technical jargon.",
   metadataBase: new URL('https://www.anthrasite.io'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Anthrasite | Value, Crystallized',
+    title: 'Anthrasite | Website Audits That Show What to Fix',
     description:
-      "Find what's costing you customers. Website audits that show exactly what to fix—and what it's worth.",
+      "Find what's costing you customers. Website audits that show exactly what to fix—and what it's worth. Prioritized by business impact, not technical jargon.",
     type: 'website',
     siteName: 'Anthrasite',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Anthrasite | Value, Crystallized',
+    title: 'Anthrasite | Website Audits That Show What to Fix',
     description:
-      "Find what's costing you customers. Website audits that show exactly what to fix—and what it's worth.",
+      "Find what's costing you customers. Website audits that show exactly what to fix—and what it's worth. Prioritized by business impact, not technical jargon.",
   },
 }
 
