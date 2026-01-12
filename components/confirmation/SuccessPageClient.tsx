@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
 import { LandingFooter } from '@/components/landing/LandingFooter'
+import { ShareWidget } from '@/components/referral/ShareWidget'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 import type { ConfirmationContext } from '@/lib/confirmation/types'
 
@@ -152,7 +153,15 @@ export function SuccessPageClient({ context }: SuccessPageClientProps) {
             </div>
           </div>
 
-          {/* Section 3: Support - full width */}
+          {/* Section 3: Referral Share Widget (conditional) */}
+          {context.referralCode && context.referralDiscountDisplay && (
+            <ShareWidget
+              code={context.referralCode}
+              discountDisplay={context.referralDiscountDisplay}
+            />
+          )}
+
+          {/* Section 4: Support - full width */}
           <section className="text-center pb-8">
             <p className="text-white/60 text-[18px] min-[800px]:text-[20px] tracking-[0.02em] leading-[1.6]">
               Still have questions?{' '}

@@ -3,6 +3,7 @@ import { createCheckoutSession } from '@/lib/stripe/checkout'
 import { validatePurchaseToken } from '@/lib/landing/context'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { trackEvent } from '@/lib/analytics/analytics-server'
+import { validateForCheckout } from '@/lib/referral/validation'
 
 // Soft-gate window: 30 minutes
 const SOFT_GATE_WINDOW_MS = 30 * 60 * 1000
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
       purchaseAttemptId,
       token,
       skipSoftGate,
+      referralCode,
     } = body
 
     // Validate required fields
@@ -83,6 +85,57 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate referral code if provided
+    let validatedReferral: {
+      code: string
+      stripePromotionCodeId: string
+    } | null = null
+    if (referralCode) {
+      // Look up contact email for self-referral check (if contactId provided)
+      let refereeEmail: string | undefined
+      if (contactId) {
+        const supabase = getAdminClient()
+        const { data: contact } = await supabase
+          .from('contacts')
+          .select('email')
+          .eq('id', parseInt(contactId, 10))
+          .single()
+        refereeEmail = contact?.email ?? undefined
+      }
+
+      const referralValidation = await validateForCheckout(
+        referralCode,
+        parseInt(leadId, 10),
+        refereeEmail
+      )
+
+      if (!referralValidation.valid) {
+        console.log(
+          `[create-session] Referral code invalid: ${referralValidation.reason}`
+        )
+        await trackEvent('referral_code_invalid', {
+          code: referralCode,
+          reason: referralValidation.reason,
+          lead_id: leadId,
+        })
+        return NextResponse.json(
+          { error: `Invalid referral code: ${referralValidation.reason}` },
+          { status: 400 }
+        )
+      }
+
+      if (referralValidation.code?.stripe_promotion_code_id) {
+        validatedReferral = {
+          code: referralValidation.code.code,
+          stripePromotionCodeId:
+            referralValidation.code.stripe_promotion_code_id,
+        }
+        console.log(
+          `[create-session] Referral code valid: ${validatedReferral.code}`
+        )
+      }
+    }
+
     // Get base URL for redirect URLs
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
     const host = request.headers.get('host') || 'localhost:3000'
@@ -96,6 +149,9 @@ export async function POST(request: NextRequest) {
       contactId,
       purchaseAttemptId,
       baseUrl,
+      // Pass referral info for discount application
+      referralCode: validatedReferral?.code,
+      stripePromotionCodeId: validatedReferral?.stripePromotionCodeId,
     })
 
     // Track checkout session creation
@@ -105,6 +161,7 @@ export async function POST(request: NextRequest) {
       session_id: session.id,
       soft_gate_triggered: false,
       price: session.amount_total,
+      referral_code: validatedReferral?.code,
     })
 
     // Return the checkout URL for redirect

@@ -35,6 +35,12 @@ export interface ConfirmationContext {
 
   /** Upper bound of impact range, formatted (e.g., "$62,500") */
   impactHigh: string
+
+  /** Referral code for this purchase (if generated) */
+  referralCode?: string | null
+
+  /** Referral discount display text (e.g., "$100 off") */
+  referralDiscountDisplay?: string | null
 }
 
 /**

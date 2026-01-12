@@ -11,6 +11,7 @@ import {
 import { extractUtmToken } from '@/lib/stripe/utils'
 import { validatePurchaseToken } from '@/lib/purchase'
 import { lookupLandingContext } from '@/lib/landing/context'
+import { getAdminClient } from '@/lib/supabase/admin'
 import type { ConfirmationContext } from './types'
 
 /**
@@ -72,7 +73,47 @@ export async function lookupConfirmationContext(
     // 7. Reuse landing page context for lead/run data (company, domain, issues, impact)
     const landingContext = await lookupLandingContext(leadId, runId)
 
-    // 8. Build and return context
+    // 8. Look up referral code for this purchase
+    let referralCode: string | null = null
+    let referralDiscountDisplay: string | null = null
+    try {
+      const supabase = getAdminClient()
+      // Find the sale for this session to get the referral code
+      const { data: sale } = await supabase
+        .from('sales')
+        .select('id')
+        .eq(
+          'stripe_payment_intent_id',
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent?.id
+        )
+        .single()
+
+      if (sale) {
+        // Look up referral code generated for this sale
+        const { data: code } = await supabase
+          .from('referral_codes')
+          .select(
+            'code, discount_type, discount_amount_cents, discount_percent'
+          )
+          .eq('sale_id', sale.id)
+          .single()
+
+        if (code) {
+          referralCode = code.code
+          referralDiscountDisplay =
+            code.discount_type === 'fixed'
+              ? `$${(code.discount_amount_cents! / 100).toFixed(0)} off`
+              : `${code.discount_percent}% off`
+        }
+      }
+    } catch (error) {
+      console.error('[Confirmation] Error looking up referral code:', error)
+      // Non-fatal - continue without referral info
+    }
+
+    // 9. Build and return context
     return {
       sessionId,
       orderRef: sessionId.slice(-8),
@@ -85,6 +126,8 @@ export async function lookupConfirmationContext(
       issueCount: landingContext?.issueCount ?? 0,
       impactLow: landingContext?.impactLow ?? '$0',
       impactHigh: landingContext?.impactHigh ?? '$0',
+      referralCode,
+      referralDiscountDisplay,
     }
   } catch (error) {
     console.error('Error looking up confirmation context:', error)

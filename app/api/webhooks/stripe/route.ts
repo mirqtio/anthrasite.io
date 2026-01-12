@@ -5,6 +5,17 @@ import { getStripe, webhookSecret } from '@/lib/stripe/config'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { getTemporalClient } from '@/lib/temporal/client'
 import { trackEvent } from '@/lib/analytics/analytics-server'
+import { getOrCreateCoupon, createPromotionCode } from '@/lib/stripe/referral'
+import {
+  getConfig,
+  getReferralCodeByStripePromoId,
+} from '@/lib/referral/validation'
+import {
+  calculateReward,
+  executePayout,
+  recordConversion,
+  incrementRedemptionCount,
+} from '@/lib/referral/payout'
 
 /**
  * ANT-88: Stripe Webhook Handler
@@ -201,8 +212,363 @@ async function handleCheckoutCompleted(
       console.log(
         `[Stripe Webhook] Workflow ${workflowId} already exists (idempotent retry)`
       )
-      return // Success - already processed
+      // Don't return - still need to process referrals
+    } else {
+      throw err // Re-throw other errors
     }
-    throw err // Re-throw other errors
   }
+
+  // 4. Process referrals (both generation and conversion tracking)
+  await processReferrals(
+    session,
+    parseInt(leadId, 10),
+    saleId,
+    paymentIntentId,
+    customerEmail,
+    supabase
+  )
+}
+
+/**
+ * Generate referral code for the purchaser and track conversions if a referral was used
+ */
+async function processReferrals(
+  session: Stripe.Checkout.Session,
+  leadId: number,
+  saleId: number,
+  paymentIntentId: string,
+  customerEmail: string,
+  supabase: ReturnType<typeof getAdminClient>
+): Promise<void> {
+  try {
+    // A. Track conversion if a referral code was used
+    await trackReferralConversion(
+      session,
+      leadId,
+      saleId,
+      customerEmail,
+      supabase
+    )
+
+    // B. Generate referral code for this purchase
+    await generateReferralCode(leadId, saleId, supabase)
+  } catch (err) {
+    // Log but don't fail the webhook - referral processing is non-critical
+    console.error(
+      '[Stripe Webhook] Referral processing error (non-fatal):',
+      err
+    )
+  }
+}
+
+/**
+ * Track conversion if this purchase used a referral code
+ */
+async function trackReferralConversion(
+  session: Stripe.Checkout.Session,
+  refereeLeadId: number,
+  refereeSaleId: number,
+  refereeEmail: string,
+  supabase: ReturnType<typeof getAdminClient>
+): Promise<void> {
+  // Get session with discount details from Stripe
+  const stripe = getStripe()
+  const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+    expand: ['total_details.breakdown'],
+  })
+
+  // Check if any discounts were applied
+  const discounts = fullSession.total_details?.breakdown?.discounts || []
+  if (discounts.length === 0) {
+    console.log(
+      '[Stripe Webhook] No discounts applied, skipping conversion tracking'
+    )
+    return
+  }
+
+  // Find referral discount (look for our promotion codes)
+  for (const discount of discounts) {
+    const promoCodeId =
+      typeof discount.discount?.promotion_code === 'string'
+        ? discount.discount.promotion_code
+        : discount.discount?.promotion_code?.id
+
+    if (!promoCodeId) continue
+
+    // Look up the referral code by Stripe promo ID
+    const referralCode = await getReferralCodeByStripePromoId(promoCodeId)
+    if (!referralCode) {
+      console.log(
+        `[Stripe Webhook] Promo code ${promoCodeId} is not a referral code`
+      )
+      continue
+    }
+
+    console.log(
+      `[Stripe Webhook] Found referral conversion for code: ${referralCode.code}`
+    )
+
+    // Self-referral check
+    if (referralCode.lead_id === refereeLeadId) {
+      console.log('[Stripe Webhook] Self-referral blocked: same lead_id')
+      await recordConversion({
+        referrerCodeId: referralCode.id,
+        refereeSaleId,
+        refereeLeadId,
+        stripePromotionCodeId: promoCodeId,
+        stripeCheckoutSessionId: session.id,
+        discountAppliedCents: discount.amount || 0,
+        rewardEarnedCents: 0,
+        rewardPaidCents: 0,
+        payoutStatus: 'skipped',
+        payoutError: 'self_referral',
+      })
+      await trackEvent('referral_self_referral_blocked', {
+        code: referralCode.code,
+        referee_lead_id: refereeLeadId,
+        referrer_lead_id: referralCode.lead_id,
+      })
+      return
+    }
+
+    // Check email match for self-referral
+    if (referralCode.sale_id) {
+      const { data: referrerSale } = await supabase
+        .from('sales')
+        .select('customer_email')
+        .eq('id', referralCode.sale_id)
+        .single()
+
+      if (
+        referrerSale?.customer_email?.toLowerCase() ===
+        refereeEmail.toLowerCase()
+      ) {
+        console.log('[Stripe Webhook] Self-referral blocked: same email')
+        await recordConversion({
+          referrerCodeId: referralCode.id,
+          refereeSaleId,
+          refereeLeadId,
+          stripePromotionCodeId: promoCodeId,
+          stripeCheckoutSessionId: session.id,
+          discountAppliedCents: discount.amount || 0,
+          rewardEarnedCents: 0,
+          rewardPaidCents: 0,
+          payoutStatus: 'skipped',
+          payoutError: 'self_referral',
+        })
+        await trackEvent('referral_self_referral_blocked', {
+          code: referralCode.code,
+          referee_email: refereeEmail,
+          referrer_email: referrerSale.customer_email,
+        })
+        return
+      }
+    }
+
+    // Check if this is first conversion for this code
+    const { count: existingConversions } = await supabase
+      .from('referral_conversions')
+      .select('id', { count: 'exact', head: true })
+      .eq('referrer_code_id', referralCode.id)
+      .eq('payout_status', 'paid')
+
+    const isFirstConversion = (existingConversions || 0) === 0
+
+    // Calculate reward
+    const reward = await calculateReward(
+      referralCode,
+      session.amount_total || 0,
+      isFirstConversion
+    )
+
+    console.log('[Stripe Webhook] Reward calculation:', {
+      code: referralCode.code,
+      earnedCents: reward.earnedCents,
+      payableCents: reward.payableCents,
+      reason: reward.reason,
+    })
+
+    // Execute payout if applicable
+    let payoutResult = null
+    if (!reward.skipPayout && reward.payableCents > 0 && referralCode.sale_id) {
+      // Get referrer's payment intent for refund
+      const { data: referrerSale } = await supabase
+        .from('sales')
+        .select('stripe_payment_intent_id')
+        .eq('id', referralCode.sale_id)
+        .single()
+
+      if (referrerSale?.stripe_payment_intent_id) {
+        payoutResult = await executePayout(
+          referralCode,
+          `${referralCode.id}-${refereeSaleId}`,
+          reward.payableCents,
+          referrerSale.stripe_payment_intent_id
+        )
+
+        console.log('[Stripe Webhook] Payout result:', payoutResult)
+      }
+    }
+
+    // Record conversion
+    const conversionId = await recordConversion({
+      referrerCodeId: referralCode.id,
+      refereeSaleId,
+      refereeLeadId,
+      stripePromotionCodeId: promoCodeId,
+      stripeCheckoutSessionId: session.id,
+      discountAppliedCents: discount.amount || 0,
+      rewardEarnedCents: reward.earnedCents,
+      rewardPaidCents: payoutResult?.amountPaidCents || 0,
+      payoutStatus: reward.skipPayout
+        ? 'skipped'
+        : payoutResult?.success
+          ? 'paid'
+          : 'failed',
+      payoutMethod: payoutResult?.method || undefined,
+      stripeRefundId: payoutResult?.refundId,
+      payoutError:
+        payoutResult?.error || (reward.skipPayout ? reward.reason : undefined),
+    })
+
+    // Increment redemption count
+    await incrementRedemptionCount(referralCode.id)
+
+    // Track analytics
+    await trackEvent('referral_purchase_completed', {
+      referrer_code: referralCode.code,
+      referee_sale_id: refereeSaleId,
+      discount_cents: discount.amount || 0,
+      reward_earned_cents: reward.earnedCents,
+      reward_paid_cents: payoutResult?.amountPaidCents || 0,
+      payout_method: payoutResult?.method,
+    })
+
+    if (payoutResult?.amountPaidCents && payoutResult.amountPaidCents > 0) {
+      await trackEvent('referral_payout_issued', {
+        code: referralCode.code,
+        amount_cents: payoutResult.amountPaidCents,
+        method: payoutResult.method,
+      })
+    }
+
+    // Only process first referral discount found
+    return
+  }
+}
+
+/**
+ * Generate a new referral code for the purchaser
+ */
+async function generateReferralCode(
+  leadId: number,
+  saleId: number,
+  supabase: ReturnType<typeof getAdminClient>
+): Promise<void> {
+  // Check if code already exists for this sale (idempotency)
+  const { data: existing } = await supabase
+    .from('referral_codes')
+    .select('id, code')
+    .eq('sale_id', saleId)
+    .single()
+
+  if (existing) {
+    console.log(
+      `[Stripe Webhook] Referral code already exists for sale ${saleId}: ${existing.code}`
+    )
+    return
+  }
+
+  // Get lead company name
+  const { data: lead } = await supabase
+    .from('leads')
+    .select('company_name')
+    .eq('id', leadId)
+    .single()
+
+  const companyName = lead?.company_name || `LEAD${leadId}`
+
+  // Get default config values
+  const defaultDiscount = await getConfig(
+    'default_standard_discount_cents',
+    10000
+  )
+  const defaultReward = await getConfig('default_standard_reward_cents', 10000)
+
+  // Generate unique code from company name
+  const code = await generateUniqueCode(companyName, supabase)
+
+  // Create Stripe coupon (or get existing)
+  const couponId = await getOrCreateCoupon('fixed', defaultDiscount)
+
+  // Create Stripe promotion code
+  const { promotionCodeId } = await createPromotionCode(code, couponId)
+
+  // Insert referral_codes row
+  const { error } = await supabase.from('referral_codes').insert({
+    sale_id: saleId,
+    lead_id: leadId,
+    code,
+    stripe_promotion_code_id: promotionCodeId,
+    stripe_coupon_id: couponId,
+    tier: 'standard',
+    is_active: true,
+    discount_type: 'fixed',
+    discount_amount_cents: defaultDiscount,
+    reward_type: 'fixed',
+    reward_amount_cents: defaultReward,
+    reward_trigger: 'first',
+    company_name: companyName,
+  })
+
+  if (error) {
+    console.error('[Stripe Webhook] Failed to insert referral code:', error)
+    throw error
+  }
+
+  console.log(
+    `[Stripe Webhook] Generated referral code: ${code} for sale ${saleId}`
+  )
+
+  await trackEvent('referral_code_issued', {
+    sale_id: saleId,
+    code,
+    tier: 'standard',
+  })
+}
+
+/**
+ * Generate a unique referral code from company name
+ */
+async function generateUniqueCode(
+  baseName: string,
+  supabase: ReturnType<typeof getAdminClient>
+): Promise<string> {
+  // Normalize: uppercase, alphanumeric only, max 12 chars
+  const normalized = baseName
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 12)
+
+  // If empty after normalization, use fallback
+  const base = normalized || 'REFERRAL'
+
+  for (let suffix = 0; suffix < 100; suffix++) {
+    const code = suffix === 0 ? base : `${base}${suffix}`
+
+    // Check DB for existing code
+    const { data: existing } = await supabase
+      .from('referral_codes')
+      .select('id')
+      .eq('code', code)
+      .single()
+
+    if (!existing) {
+      return code
+    }
+  }
+
+  // Fallback with random suffix
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase()
+  return `${base.slice(0, 8)}${random}`
 }

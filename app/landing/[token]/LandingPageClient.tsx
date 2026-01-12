@@ -12,12 +12,20 @@ import { MobileStickyCTA } from '@/components/landing/MobileStickyCTA'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { SecureCheckout } from '@/components/landing/SecureCheckout'
 import { RecentPurchaseModal } from '@/components/landing/RecentPurchaseModal'
+import { getReferralCode, clearReferralCode } from '@/lib/referral/storage'
 
 /** Recent purchase info from soft-gate check */
 interface RecentPurchase {
   saleId: number
   purchasedAt: string
   email: string
+}
+
+/** Referral discount info from localStorage */
+interface ReferralDiscount {
+  code: string
+  discountDisplay: string
+  discountedPrice: number
 }
 
 interface LandingPageClientProps {
@@ -91,6 +99,55 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
     null
   )
   const [showRecentPurchaseModal, setShowRecentPurchaseModal] = useState(false)
+  const [referralDiscount, setReferralDiscount] =
+    useState<ReferralDiscount | null>(null)
+
+  // Load referral code from localStorage on mount
+  useEffect(() => {
+    const stored = getReferralCode()
+    if (stored) {
+      // Calculate discounted price based on stored discount
+      // Parse discount from discountDisplay (e.g., "$100 off" or "50% off")
+      let discountedPrice = context.price
+      const fixedMatch = stored.discountDisplay.match(/\$(\d+)\s*off/i)
+      const percentMatch = stored.discountDisplay.match(/(\d+)%\s*off/i)
+
+      if (fixedMatch) {
+        discountedPrice = Math.max(
+          0,
+          context.price - parseInt(fixedMatch[1], 10)
+        )
+      } else if (percentMatch) {
+        const percentOff = parseInt(percentMatch[1], 10)
+        discountedPrice = Math.max(
+          0,
+          Math.round((context.price * (100 - percentOff)) / 100)
+        )
+      }
+
+      setReferralDiscount({
+        code: stored.code,
+        discountDisplay: stored.discountDisplay,
+        discountedPrice,
+      })
+
+      trackEvent('referral_discount_loaded', {
+        code: stored.code,
+        discount_display: stored.discountDisplay,
+        original_price: context.price,
+        discounted_price: discountedPrice,
+      })
+    }
+  }, [context.price])
+
+  // Handle removing referral discount
+  const handleRemoveReferral = useCallback(() => {
+    clearReferralCode()
+    setReferralDiscount(null)
+    trackEvent('referral_discount_removed', {
+      code: referralDiscount?.code,
+    })
+  }, [referralDiscount?.code])
 
   // Track landing page view on mount
   const hasTrackedView = useRef(false)
@@ -106,8 +163,9 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
       issue_count: context.issueCount,
       impact_low: context.impactLow,
       impact_high: context.impactHigh,
+      referral_code: referralDiscount?.code,
     })
-  }, [context])
+  }, [context, referralDiscount?.code])
 
   const handleCheckout = useCallback(
     async (eventOrOptions?: React.MouseEvent | { skipSoftGate?: boolean }) => {
@@ -142,6 +200,8 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
             purchaseAttemptId: getPurchaseAttemptId(),
             token,
             skipSoftGate: options?.skipSoftGate ?? false,
+            // Include referral code if present
+            referralCode: referralDiscount?.code,
           }),
         })
 
@@ -176,6 +236,7 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
       context.contactId,
       token,
       isCheckoutLoading,
+      referralDiscount?.code,
     ]
   )
 
@@ -230,6 +291,8 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
               price={context.price}
               isLoading={isCheckoutLoading}
               onCheckout={handleCheckout}
+              referralDiscount={referralDiscount}
+              onRemoveReferral={handleRemoveReferral}
             />
           </div>
         </div>
@@ -364,6 +427,7 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
         price={context.price}
         isLoading={isCheckoutLoading}
         onCheckout={handleCheckout}
+        discountedPrice={referralDiscount?.discountedPrice}
       />
 
       {/* Recent Purchase Modal (soft-gate) */}

@@ -6,8 +6,16 @@ import Image from 'next/image'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { SecureCheckout } from '@/components/landing/SecureCheckout'
+import { ReferralPricingBadge } from '@/components/landing/ReferralPricingBadge'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 import type { HookOpportunity } from '@/lib/landing/types'
+
+/** Referral discount info from localStorage */
+interface ReferralDiscount {
+  code: string
+  discountDisplay: string
+  discountedPrice: number
+}
 
 interface HeroSectionProps {
   company: string
@@ -19,6 +27,10 @@ interface HeroSectionProps {
   price: number
   isLoading: boolean
   onCheckout: () => void
+  /** Optional referral discount info */
+  referralDiscount?: ReferralDiscount | null
+  /** Called when user clicks "remove" on referral badge */
+  onRemoveReferral?: () => void
 }
 
 export function HeroSection({
@@ -31,7 +43,11 @@ export function HeroSection({
   price,
   isLoading,
   onCheckout,
+  referralDiscount,
+  onRemoveReferral,
 }: HeroSectionProps) {
+  // Determine display price (discounted or original)
+  const displayPrice = referralDiscount?.discountedPrice ?? price
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -152,10 +168,22 @@ export function HeroSection({
         </div>
 
         {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
-        <div className="hidden min-[800px]:flex flex-col items-center gap-2">
+        <div className="hidden min-[800px]:flex flex-col items-center gap-3">
+          {/* Referral pricing badge - show above CTA when discount active */}
+          {referralDiscount && onRemoveReferral && (
+            <ReferralPricingBadge
+              originalPrice={price}
+              discountedPrice={referralDiscount.discountedPrice}
+              discountDisplay={referralDiscount.discountDisplay}
+              onRemove={onRemoveReferral}
+            />
+          )}
           <button
             onClick={() => {
-              trackEvent('cta_click', { location: 'hero' })
+              trackEvent('cta_click', {
+                location: 'hero',
+                referral_code: referralDiscount?.code,
+              })
               onCheckout()
             }}
             disabled={isLoading}
@@ -168,7 +196,7 @@ export function HeroSection({
               </>
             ) : (
               <>
-                <span>Get Your Report – ${price}</span>
+                <span>Get Your Report – ${displayPrice}</span>
                 <ArrowRight className="w-5 h-5" />
               </>
             )}

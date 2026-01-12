@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 import { MonitoringProvider } from '@/components/MonitoringProvider'
 import { SiteModeProvider } from '@/lib/context/SiteModeContext'
 import { ConsentProvider } from '@/lib/context/ConsentContext'
@@ -58,6 +59,7 @@ export default function RootLayout({
               <SiteModeProvider>
                 <HelpWidgetProvider>
                   {children}
+                  <Toaster position="top-center" richColors />
                   <ConditionalHelpWidget />
                   <AnalyticsWrapper />
                   <AnalyticsNoScriptWrapper />

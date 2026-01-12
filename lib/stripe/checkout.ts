@@ -16,6 +16,10 @@ export interface CreateCheckoutSessionParams {
   leadId?: string
   contactId?: string
   purchaseAttemptId?: string
+  /** Referral code (for tracking in metadata) */
+  referralCode?: string
+  /** Stripe promotion code ID to apply discount */
+  stripePromotionCodeId?: string
 }
 
 /**
@@ -29,6 +33,8 @@ export async function createCheckoutSession({
   leadId,
   contactId,
   purchaseAttemptId,
+  referralCode,
+  stripePromotionCodeId,
 }: CreateCheckoutSessionParams): Promise<Stripe.Checkout.Session> {
   try {
     const urls = getStripeUrls(baseUrl)
@@ -58,9 +64,19 @@ export async function createCheckoutSession({
         utmToken,
         ...(leadId && { leadId }),
         ...(contactId && { contactId }),
+        ...(referralCode && { referralCode }),
       },
-      // Additional options for better UX
-      allow_promotion_codes: true,
+      // Referral discount handling:
+      // - If referral code provided: apply via discounts array, disable manual entry
+      // - If no referral code: allow manual promo code entry at checkout
+      ...(stripePromotionCodeId
+        ? {
+            discounts: [{ promotion_code: stripePromotionCodeId }],
+            allow_promotion_codes: false,
+          }
+        : {
+            allow_promotion_codes: true,
+          }),
       billing_address_collection: 'auto',
       submit_type: 'pay',
       // Expire after 24 hours

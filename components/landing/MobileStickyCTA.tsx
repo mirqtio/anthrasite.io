@@ -8,13 +8,18 @@ interface MobileStickyCTAProps {
   price: number
   isLoading: boolean
   onCheckout: () => void
+  /** Optional discounted price (when referral is active) */
+  discountedPrice?: number
 }
 
 export function MobileStickyCTA({
   price,
   isLoading,
   onCheckout,
+  discountedPrice,
 }: MobileStickyCTAProps) {
+  // Use discounted price if available
+  const displayPrice = discountedPrice ?? price
   const [isVisible, setIsVisible] = useState(false)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
@@ -71,7 +76,7 @@ export function MobileStickyCTA({
             <Lock className="w-4 h-4" aria-hidden="true" />
           )}
           <span className="text-[18px] font-semibold tracking-[0.02em]">
-            Get Your Report — ${price}
+            Get Your Report — ${displayPrice}
           </span>
           {!isLoading && <ArrowRight className="w-5 h-5" />}
         </button>
