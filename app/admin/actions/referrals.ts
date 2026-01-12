@@ -201,7 +201,7 @@ export async function updateReferralCode(
 export async function toggleCodeStatus(
   codeId: string,
   isActive: boolean
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; warning?: string }> {
   const sql = getSql()
 
   try {
@@ -214,21 +214,29 @@ export async function toggleCodeStatus(
       return { success: false, error: 'Code not found' }
     }
 
-    // 2. Update Stripe promotion code status
+    let warning: string | undefined
+
+    // 2. Update Stripe promotion code status (if we have one)
     if (code.stripe_promotion_code_id) {
-      if (isActive) {
-        const reactivated = await reactivatePromotionCode(
-          code.stripe_promotion_code_id
-        )
-        if (!reactivated) {
-          return { success: false, error: 'Failed to reactivate in Stripe' }
-        }
-      } else {
-        const deactivated = await deactivatePromotionCode(
-          code.stripe_promotion_code_id
-        )
-        if (!deactivated) {
-          return { success: false, error: 'Failed to deactivate in Stripe' }
+      const result = isActive
+        ? await reactivatePromotionCode(code.stripe_promotion_code_id)
+        : await deactivatePromotionCode(code.stripe_promotion_code_id)
+
+      if (!result.success) {
+        // If the promo code doesn't exist in Stripe, proceed but warn
+        if (result.notFound) {
+          warning = 'Promotion code not found in Stripe (may have been deleted)'
+          // Clear the invalid Stripe ID from our database
+          await sql`
+            UPDATE referral_codes
+            SET stripe_promotion_code_id = NULL
+            WHERE id = ${codeId}
+          `
+        } else {
+          return {
+            success: false,
+            error: result.error || 'Stripe update failed',
+          }
         }
       }
     }
@@ -241,7 +249,7 @@ export async function toggleCodeStatus(
     `
 
     revalidatePath('/admin/referrals')
-    return { success: true }
+    return { success: true, warning }
   } catch (error: any) {
     console.error('[referrals] Failed to toggle code status:', error)
     return { success: false, error: error.message || 'Failed to toggle status' }

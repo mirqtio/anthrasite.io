@@ -199,32 +199,68 @@ export async function getRefundCapacity(
 
 /**
  * Deactivates a promotion code in Stripe.
+ * Returns { success: true } or { success: false, error: string, notFound: boolean }
  */
 export async function deactivatePromotionCode(
   promotionCodeId: string
-): Promise<boolean> {
+): Promise<{ success: boolean; error?: string; notFound?: boolean }> {
   try {
     await stripe.promotionCodes.update(promotionCodeId, { active: false })
     console.log(`[referral] Deactivated promotion code: ${promotionCodeId}`)
-    return true
+    return { success: true }
   } catch (error) {
-    console.error('[referral] Failed to deactivate promotion code:', error)
-    return false
+    const stripeError = error as Stripe.errors.StripeError
+    console.error(
+      '[referral] Failed to deactivate promotion code:',
+      stripeError.message
+    )
+
+    // If the promotion code doesn't exist in Stripe, treat as "not found" (non-fatal)
+    if (stripeError.code === 'resource_missing') {
+      return {
+        success: false,
+        error: 'Promotion code not found in Stripe',
+        notFound: true,
+      }
+    }
+
+    return {
+      success: false,
+      error: stripeError.message || 'Unknown Stripe error',
+    }
   }
 }
 
 /**
  * Reactivates a promotion code in Stripe.
+ * Returns { success: true } or { success: false, error: string, notFound: boolean }
  */
 export async function reactivatePromotionCode(
   promotionCodeId: string
-): Promise<boolean> {
+): Promise<{ success: boolean; error?: string; notFound?: boolean }> {
   try {
     await stripe.promotionCodes.update(promotionCodeId, { active: true })
     console.log(`[referral] Reactivated promotion code: ${promotionCodeId}`)
-    return true
+    return { success: true }
   } catch (error) {
-    console.error('[referral] Failed to reactivate promotion code:', error)
-    return false
+    const stripeError = error as Stripe.errors.StripeError
+    console.error(
+      '[referral] Failed to reactivate promotion code:',
+      stripeError.message
+    )
+
+    // If the promotion code doesn't exist in Stripe, treat as "not found" (non-fatal)
+    if (stripeError.code === 'resource_missing') {
+      return {
+        success: false,
+        error: 'Promotion code not found in Stripe',
+        notFound: true,
+      }
+    }
+
+    return {
+      success: false,
+      error: stripeError.message || 'Unknown Stripe error',
+    }
   }
 }

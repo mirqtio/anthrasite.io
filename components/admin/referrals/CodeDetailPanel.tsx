@@ -70,6 +70,9 @@ export function CodeDetailPanel({ code, onClose }: CodeDetailPanelProps) {
   const handleToggle = async () => {
     const result = await toggleCodeStatus(code.id, !code.is_active)
     if (result.success) {
+      if (result.warning) {
+        alert(`Status updated, but: ${result.warning}`)
+      }
       router.refresh()
     } else {
       alert(result.error || 'Failed to toggle status')

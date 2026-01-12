@@ -42,6 +42,9 @@ export function CodesTable({
       const result = await toggleCodeStatus(code.id, !code.is_active)
       if (!result.success) {
         alert(result.error || 'Failed to toggle code')
+      } else if (result.warning) {
+        // Success but with a warning (e.g., Stripe promo not found)
+        alert(`Status updated, but: ${result.warning}`)
       }
       router.refresh()
     } catch (error) {
