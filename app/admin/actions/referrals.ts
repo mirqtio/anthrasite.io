@@ -383,7 +383,13 @@ export async function fetchReferralConfig(): Promise<
   }
 
   for (const row of rows) {
-    config[row.key] = row.value
+    // Values are stored as JSON strings, need to parse them
+    try {
+      config[row.key] =
+        typeof row.value === 'string' ? JSON.parse(row.value) : row.value
+    } catch {
+      config[row.key] = row.value
+    }
   }
 
   return config as Record<ReferralConfigKey, any>
