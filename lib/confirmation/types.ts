@@ -41,6 +41,9 @@ export interface ConfirmationContext {
 
   /** Referral discount display text (e.g., "$100 off") */
   referralDiscountDisplay?: string | null
+
+  /** Referral reward display text (e.g., "$100", "10%") - what referrer earns */
+  referralRewardDisplay?: string | null
 }
 
 /**

@@ -7,6 +7,7 @@ import { trackEvent } from '@/lib/analytics/analytics-client'
 interface ShareWidgetProps {
   code: string
   discountDisplay: string
+  rewardDisplay?: string // Optional for backwards compatibility; defaults to discountDisplay
 }
 
 /**
@@ -15,7 +16,13 @@ interface ShareWidgetProps {
  * Shows the code prominently with a copy-to-clipboard button
  * and the shareable link.
  */
-export function ShareWidget({ code, discountDisplay }: ShareWidgetProps) {
+export function ShareWidget({
+  code,
+  discountDisplay,
+  rewardDisplay,
+}: ShareWidgetProps) {
+  // Use rewardDisplay if provided, otherwise fall back to discountDisplay
+  const effectiveRewardDisplay = rewardDisplay || discountDisplay
   const [copied, setCopied] = useState(false)
   const shareUrl = `https://www.anthrasite.io/?promo=${code}`
 
@@ -54,7 +61,7 @@ export function ShareWidget({ code, discountDisplay }: ShareWidgetProps) {
         <p className="text-white/80 text-[16px] min-[800px]:text-[18px] tracking-[0.02em] leading-[1.6]">
           Know someone who could use a website audit? Share your code and
           they&apos;ll get {discountDisplay}. When they purchase, you get{' '}
-          {discountDisplay} back.
+          {effectiveRewardDisplay} back.
         </p>
 
         {/* Code display */}

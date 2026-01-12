@@ -158,6 +158,7 @@ export function SuccessPageClient({ context }: SuccessPageClientProps) {
             <ShareWidget
               code={context.referralCode}
               discountDisplay={context.referralDiscountDisplay}
+              rewardDisplay={context.referralRewardDisplay ?? undefined}
             />
           )}
 

@@ -76,6 +76,7 @@ export async function lookupConfirmationContext(
     // 8. Look up referral code for this purchase
     let referralCode: string | null = null
     let referralDiscountDisplay: string | null = null
+    let referralRewardDisplay: string | null = null
     try {
       const supabase = getAdminClient()
       // Find the sale for this session to get the referral code
@@ -95,7 +96,7 @@ export async function lookupConfirmationContext(
         const { data: code } = await supabase
           .from('referral_codes')
           .select(
-            'code, discount_type, discount_amount_cents, discount_percent'
+            'code, discount_type, discount_amount_cents, discount_percent, reward_type, reward_amount_cents, reward_percent'
           )
           .eq('sale_id', sale.id)
           .single()
@@ -106,6 +107,16 @@ export async function lookupConfirmationContext(
             code.discount_type === 'fixed'
               ? `$${(code.discount_amount_cents! / 100).toFixed(0)} off`
               : `${code.discount_percent}% off`
+
+          // Format reward display (what the referrer earns)
+          if (code.reward_type === 'fixed' && code.reward_amount_cents) {
+            referralRewardDisplay = `$${(code.reward_amount_cents / 100).toFixed(0)}`
+          } else if (code.reward_type === 'percent' && code.reward_percent) {
+            referralRewardDisplay = `${code.reward_percent}%`
+          } else {
+            // No reward configured, fall back to discount display
+            referralRewardDisplay = referralDiscountDisplay
+          }
         }
       }
     } catch (error) {
@@ -128,6 +139,7 @@ export async function lookupConfirmationContext(
       impactHigh: landingContext?.impactHigh ?? '$0',
       referralCode,
       referralDiscountDisplay,
+      referralRewardDisplay,
     }
   } catch (error) {
     console.error('Error looking up confirmation context:', error)

@@ -40,6 +40,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             >
               Mockups
             </Link>
+            <Link
+              href="/admin/referrals"
+              className="hover:text-white transition-colors"
+            >
+              Referrals
+            </Link>
           </nav>
         </div>
 
