@@ -6,166 +6,507 @@
 
   - https://linear.app/anthrasite/issue/ANT-585/seo-performance-accessibility-baseline-pass
 
-- ANT-656 — Funnel analytics: self-serve intake → ready → LP view → checkout start → purchase
-  - https://linear.app/anthrasite/issue/ANT-656/funnel-analytics-self-serve-intake-→-ready-→-lp-view-→-checkout-start
+---
 
-## Notes
+# Referral Admin UI — Implementation Plan
 
-- Self-serve flow work (ANT-637 + children) is complete; the epic is canceled and closed tickets have been cleaned out of this scratchpad.
+**Date:** 2026-01-12
+**Status:** Ready for implementation
+
+## Overview
+
+Build a UI in the existing admin portal (`/admin/referrals`) to manage the referral program. This replaces the current CLI scripts (`create-ff-code.ts`, `toggle-code.ts`, etc.) with a proper admin interface.
 
 ---
 
-## Analytics Setup (for ANT-656)
+## Data Architecture
 
-### Current State
+### Source of Truth
 
-| Tool               | Status     | Coverage                       |
-| ------------------ | ---------- | ------------------------------ |
-| Microsoft Clarity  | ✅ Active  | `/`, `/landing/*`, `/purchase` |
-| Google Analytics 4 | ❌ Dormant | Code present, env vars not set |
-| PostHog            | ❌ Dormant | Code present, env vars not set |
-
-### 1. Microsoft Clarity (Session Recording)
-
-**Status:** Already active
-
-**Vercel Env Var:**
+All values are stored in the database and read by the application at runtime:
 
 ```
-NEXT_PUBLIC_CLARITY_PROJECT_ID=<project-id>
+┌─────────────────────────────────────────────────────────────────┐
+│                         Admin UI                                 │
+│                    /admin/referrals                              │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │ writes to
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        Database                                  │
+│  ┌─────────────────────┐    ┌─────────────────────┐            │
+│  │   referral_codes    │    │   referral_config   │            │
+│  │   (per-code)        │    │   (global settings) │            │
+│  └──────────┬──────────┘    └──────────┬──────────┘            │
+└─────────────┼──────────────────────────┼────────────────────────┘
+              │ read by                   │ read by
+              ▼                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     Application Layer                            │
+│  • /api/referral/validate → Toast, Pricing Badge                │
+│  • /api/checkout/create-session → Stripe discount               │
+│  • Stripe webhook → Payout calculation                          │
+│  • ShareWidget → Success page messaging                         │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-**Get Project ID:**
+### Tables
 
-1. Go to https://clarity.microsoft.com/
-2. Create project or select existing
-3. Settings → Setup → Copy project ID
+**`referral_codes`** — Per-code configuration:
 
-**Coverage configured in:** `app/_components/Analytics/Clarity.tsx`
+- `code`, `tier`, `is_active`
+- `discount_type`, `discount_amount_cents`, `discount_percent`
+- `reward_type`, `reward_amount_cents`, `reward_percent`, `reward_trigger`
+- `max_redemptions`, `redemption_count`
+- `max_reward_total_cents`, `total_reward_paid_cents`
+- `max_reward_per_period_cents`, `period_reward_paid_cents`, `reward_period_days`
+- `company_name`, `notes`, `expires_at`
 
-Currently enabled on:
+**`referral_config`** — Global settings:
 
-- `/` (homepage/self-serve intake)
-- `/landing/*` (landing pages)
-- `/purchase` (purchase flow)
+- `ff_enabled` (boolean)
+- `default_standard_discount_cents` (number)
+- `default_standard_reward_cents` (number)
+- `default_ff_discount_cents` (number)
+- `default_affiliate_discount_cents` (number)
+- `default_affiliate_reward_percent` (number)
 
-To add more routes, edit the `enabledRoutes` array.
+**`referral_conversions`** — Conversion history (read-only in admin):
+
+- Links referrer code to referee sale
+- Tracks payout status, amounts, errors
 
 ---
 
-### 2. Google Analytics 4
+## UI Design
 
-**Status:** Dormant - code ready, needs env vars
+### Navigation
 
-**Vercel Env Vars:**
+Add "Referrals" link to admin layout nav bar:
+
+```tsx
+// app/admin/layout.tsx
+<Link href="/admin/referrals" className="hover:text-white transition-colors">
+  Referrals
+</Link>
+```
+
+### Route: `/admin/referrals`
+
+Three-tab interface:
+
+#### Tab 1: Codes (Default)
+
+**List View:**
+
+| Code       | Tier           | Status   | Discount | Reward       | Uses | Paid Out   | Created    | Actions       |
+| ---------- | -------------- | -------- | -------- | ------------ | ---- | ---------- | ---------- | ------------- |
+| ACMECORP   | standard       | Active   | $100     | $100 (first) | 3    | $100       | 2026-01-10 | Edit, Disable |
+| FRIENDS100 | friends_family | Active   | $100     | —            | 5/10 | —          | 2026-01-08 | Edit, Disable |
+| INFLUENCER | affiliate      | Inactive | $50      | 10%          | 12   | $450/$1000 | 2026-01-05 | Edit, Enable  |
+
+**Features:**
+
+- Filter by: tier (all/standard/ff/affiliate), status (all/active/inactive)
+- Search by code
+- Sort by: created_at, redemption_count, total_reward_paid
+- "Create Code" button → opens modal
+
+**Create Code Modal:**
+
+Step 1: Select tier
+
+- Standard (auto-generated for purchasers)
+- Friends & Family (manual seeding)
+- Affiliate (recurring rewards)
+
+Step 2: Configure (fields vary by tier)
+
+| Field             | Standard           | F&F               | Affiliate               |
+| ----------------- | ------------------ | ----------------- | ----------------------- |
+| Code              | Auto or custom     | Required          | Required                |
+| Discount Type     | Fixed/Percent      | Fixed/Percent     | Fixed/Percent           |
+| Discount Amount   | Default or custom  | Default or custom | Default or custom       |
+| Reward Type       | Fixed (first only) | None              | Fixed/Percent           |
+| Reward Amount     | Default or custom  | —                 | Required                |
+| Max Redemptions   | Optional           | Optional          | Optional                |
+| Max Reward Total  | —                  | —                 | Optional                |
+| Max Reward/Period | —                  | —                 | Optional                |
+| Period (days)     | —                  | —                 | Optional (if above set) |
+| Expires At        | Optional           | Optional          | Optional                |
+| Notes             | Optional           | Optional          | Optional                |
+
+**Edit Code Slide-out Panel:**
+
+Click a row → slide-out panel with:
+
+- All editable fields
+- Read-only: code, tier, created_at, sale_id, lead_id
+- Conversion history for this code
+- "Save" and "Cancel" buttons
+
+#### Tab 2: Conversions
+
+**List View:**
+
+| Date       | Referrer   | Referee     | Discount | Reward | Payout Status | Refund ID |
+| ---------- | ---------- | ----------- | -------- | ------ | ------------- | --------- |
+| 2026-01-12 | ACMECORP   | Widgets Inc | $100     | $100   | paid          | re_xxx    |
+| 2026-01-11 | FRIENDS100 | Test Co     | $100     | —      | skipped       | —         |
+| 2026-01-10 | INFLUENCER | BigCorp     | $50      | $15    | pending       | —         |
+
+**Features:**
+
+- Filter by: payout_status (all/paid/pending/failed/skipped)
+- Filter by: referrer code
+- Date range picker
+- Click row → view full details
+
+#### Tab 3: Settings
+
+Global configuration form:
 
 ```
-NEXT_PUBLIC_ANALYTICS_ENABLED=true
-NEXT_PUBLIC_GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+┌─────────────────────────────────────────────────────────────────┐
+│ GLOBAL SETTINGS                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ Friends & Family Program                                        │
+│ ┌─────────────────────────────────────────────────────────────┐│
+│ │ [Toggle] Enable F&F codes                            ✓ ON  ││
+│ └─────────────────────────────────────────────────────────────┘│
+│                                                                 │
+│ Default Values (used when creating new codes)                   │
+│ ┌─────────────────────────────────────────────────────────────┐│
+│ │ Standard Discount    [$] [100.00]                          ││
+│ │ Standard Reward      [$] [100.00]                          ││
+│ │ F&F Discount         [$] [100.00]                          ││
+│ │ Affiliate Discount   [$] [100.00]                          ││
+│ │ Affiliate Reward     [%] [10]                              ││
+│ └─────────────────────────────────────────────────────────────┘│
+│                                                                 │
+│                                            [ Save Settings ]    │
+└─────────────────────────────────────────────────────────────────┘
 ```
-
-**Get Measurement ID:**
-
-1. Go to https://analytics.google.com/
-2. Admin → Data Streams → Web
-3. Create stream for `anthrasite.io`
-4. Copy Measurement ID (format: `G-XXXXXXXX`)
-
-**How it works:**
-
-- Loads only when user has analytics consent (cookie banner)
-- Script injected dynamically in `app/_components/Analytics/Analytics.tsx`
-- Provider class: `lib/analytics/providers/ga4.ts`
-
-**Events tracked:**
-
-- `page_view` (automatic on route change)
-- `analytics_initialized` (test event on load)
-- Custom events via `trackEvent()` calls
 
 ---
 
-### 3. PostHog (Product Analytics + Feature Flags)
+## API Endpoints
 
-**Status:** Dormant - code ready, needs env vars
-
-**Vercel Env Vars:**
+### Codes
 
 ```
-NEXT_PUBLIC_POSTHOG_KEY=phc_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+GET    /api/admin/referrals/codes
+       Query: ?tier=&status=&search=&sort=&order=&limit=&offset=
+       Returns: { codes: ReferralCode[], total: number }
+
+POST   /api/admin/referrals/codes
+       Body: { code?, tier, discount_type, discount_amount_cents?, ... }
+       Returns: { code: ReferralCode }
+       Side effects: Creates Stripe coupon + promotion code
+
+GET    /api/admin/referrals/codes/[id]
+       Returns: { code: ReferralCode, conversions: Conversion[] }
+
+PATCH  /api/admin/referrals/codes/[id]
+       Body: { is_active?, max_redemptions?, notes?, ... }
+       Returns: { code: ReferralCode }
+       Side effects: Updates Stripe promotion code active status
+
+DELETE /api/admin/referrals/codes/[id]
+       Returns: { success: true }
+       Note: Soft delete (set is_active = false) or hard delete?
 ```
 
-**Get API Key:**
+### Conversions
 
-1. Go to https://app.posthog.com/
-2. Create project or select existing
-3. Settings → Project API Key
-4. Copy the key (format: `phc_...`)
+```
+GET    /api/admin/referrals/conversions
+       Query: ?code_id=&status=&from=&to=&limit=&offset=
+       Returns: { conversions: Conversion[], total: number }
 
-**How it works:**
+GET    /api/admin/referrals/conversions/[id]
+       Returns: { conversion: ConversionDetail }
+```
 
-- Loads only when user has analytics consent
-- Provider class: `lib/analytics/providers/posthog.ts`
-- Also powers A/B testing via `lib/ab-testing/middleware.ts`
+### Config
 
-**Features available:**
+```
+GET    /api/admin/referrals/config
+       Returns: { config: Record<string, any> }
 
-- Event tracking (`capture`)
-- User identification (`identify`)
-- Feature flags (`getFeatureFlag`, `isFeatureEnabled`)
-- Session recording (if enabled in PostHog dashboard)
+PATCH  /api/admin/referrals/config
+       Body: { ff_enabled?: boolean, default_standard_discount_cents?: number, ... }
+       Returns: { config: Record<string, any> }
+```
 
 ---
 
-### Enabling All Analytics
+## Implementation Phases
 
-**Step 1:** Add env vars in Vercel Dashboard:
+### Phase 1: API Foundation
 
-- Project → Settings → Environment Variables
-- Add for Production (and Preview if desired)
+**Files to create:**
 
-**Step 2:** Redeploy:
-
-```bash
-# Vercel auto-deploys on env var changes, or force:
-vercel --prod
+```
+app/api/admin/referrals/codes/route.ts          # GET, POST
+app/api/admin/referrals/codes/[id]/route.ts     # GET, PATCH, DELETE
+app/api/admin/referrals/conversions/route.ts    # GET
+app/api/admin/referrals/config/route.ts         # GET, PATCH
+lib/admin/referrals/types.ts                    # Shared types
+lib/admin/referrals/queries.ts                  # DB queries
 ```
 
-**Step 3:** Verify in browser:
+**Validation:**
 
-1. Open https://www.anthrasite.io/
-2. Accept cookies in consent banner
-3. Open DevTools → Network
-4. Look for:
-   - `googletagmanager.com/gtag/js?id=G-...` (GA4)
-   - `app.posthog.com/static/array.js` (PostHog)
-   - Clarity should already be loading
+- [ ] GET /api/admin/referrals/codes returns list
+- [ ] POST creates code + Stripe promo
+- [ ] PATCH updates code
+- [ ] Config endpoints work
 
-**Step 4:** Verify in dashboards:
+### Phase 2: Codes List UI
 
-- GA4: Realtime → Overview (should show active user)
-- PostHog: Activity → Live Events
-- Clarity: Dashboard → Recordings
+**Files to create:**
+
+```
+app/admin/referrals/page.tsx                    # Main page with tabs
+components/admin/referrals/CodesTable.tsx       # Table component
+components/admin/referrals/CodesToolbar.tsx     # Filters + search
+components/admin/referrals/CodeStatusBadge.tsx  # Active/Inactive badge
+components/admin/referrals/TierBadge.tsx        # Tier indicator
+```
+
+**Files to modify:**
+
+```
+app/admin/layout.tsx                            # Add nav link
+```
+
+**Validation:**
+
+- [ ] Table renders with data
+- [ ] Filters work (tier, status)
+- [ ] Search works
+- [ ] Sorting works
+
+### Phase 3: Create Code Modal
+
+**Files to create:**
+
+```
+components/admin/referrals/CreateCodeModal.tsx  # Modal wrapper
+components/admin/referrals/CodeForm.tsx         # Form fields
+components/admin/referrals/TierSelector.tsx     # Step 1: tier selection
+```
+
+**Validation:**
+
+- [ ] Modal opens/closes
+- [ ] Tier selection changes form fields
+- [ ] Form validates input
+- [ ] Submit creates code
+- [ ] Success shows new code in list
+
+### Phase 4: Edit Code Panel
+
+**Files to create:**
+
+```
+components/admin/referrals/CodeDetailPanel.tsx  # Slide-out panel
+components/admin/referrals/CodeEditForm.tsx     # Edit form
+components/admin/referrals/CodeConversions.tsx  # Mini conversion list
+```
+
+**Validation:**
+
+- [ ] Panel opens on row click
+- [ ] Shows all code details
+- [ ] Edit form saves changes
+- [ ] Toggle active/inactive works
+- [ ] Shows conversion history
+
+### Phase 5: Conversions Tab
+
+**Files to create:**
+
+```
+components/admin/referrals/ConversionsTable.tsx
+components/admin/referrals/ConversionsToolbar.tsx
+components/admin/referrals/PayoutStatusBadge.tsx
+```
+
+**Validation:**
+
+- [ ] Table renders conversions
+- [ ] Filters work
+- [ ] Date range picker works
+- [ ] Click shows detail
+
+### Phase 6: Settings Tab
+
+**Files to create:**
+
+```
+components/admin/referrals/SettingsForm.tsx
+```
+
+**Validation:**
+
+- [ ] Form loads current config
+- [ ] Toggle F&F works
+- [ ] Default values save
+- [ ] Changes reflect in new code creation
 
 ---
 
-### Funnel Events to Track (ANT-656)
+## Bug Fix: ShareWidget Reward Display
 
-For self-serve funnel analytics, these events should be tracked:
+**Issue:** `components/referral/ShareWidget.tsx` uses `discountDisplay` for both discount and reward, but these can differ.
 
-| Step                 | Event Name          | Properties                     |
-| -------------------- | ------------------- | ------------------------------ |
-| 1. Intake form shown | `intake_form_view`  | `source`                       |
-| 2. Intake submitted  | `intake_submit`     | `domain`, `email_domain`       |
-| 3. Analysis ready    | `analysis_ready`    | `lead_id`, `domain`            |
-| 4. Landing page view | `landing_view`      | `lead_id`, `token`             |
-| 5. Checkout started  | `checkout_start`    | `lead_id`, `price`             |
-| 6. Purchase complete | `purchase_complete` | `lead_id`, `sale_id`, `amount` |
+**Fix:**
 
-Implementation locations:
+```tsx
+// Current (line 56-57):
+they'll get {discountDisplay}. When they purchase, you get {discountDisplay} back.
 
-- Steps 1-2: `app/page.tsx` or intake form component
-- Step 3: Backend (LeadShop workflow sends email)
-- Step 4: `app/landing/[token]/page.tsx`
-- Steps 5-6: Checkout flow components
+// Fixed:
+interface ShareWidgetProps {
+  code: string
+  discountDisplay: string
+  rewardDisplay: string  // NEW
+}
+
+// Usage:
+they'll get {discountDisplay}. When they purchase, you get {rewardDisplay} back.
+```
+
+**Also update:** wherever ShareWidget is rendered to pass `rewardDisplay` from the referral code data.
+
+---
+
+## Security Considerations
+
+1. **Admin auth:** All `/api/admin/referrals/*` endpoints use existing admin auth middleware
+2. **Input validation:** Validate all inputs server-side (amounts, codes, etc.)
+3. **Stripe sync:** When toggling `is_active`, also update Stripe promotion code `active` status
+4. **Audit trail:** Log all admin actions (create, update, disable) with admin user ID
+
+---
+
+## Testing Plan
+
+### Unit Tests
+
+- [ ] `lib/admin/referrals/queries.ts` — query builders
+- [ ] API route handlers — input validation
+
+### Integration Tests
+
+- [ ] Create code → verify DB + Stripe promo created
+- [ ] Disable code → verify Stripe promo deactivated
+- [ ] Update config → verify validation API returns new defaults
+
+### E2E Tests
+
+- [ ] Admin can create F&F code via UI
+- [ ] Admin can disable code via UI
+- [ ] Admin can update global settings
+- [ ] Disabled code rejected at checkout
+
+---
+
+## Open Questions
+
+1. **Hard delete vs soft delete?** Currently leaning toward soft delete (is_active = false) to preserve conversion history.
+
+2. **Audit log?** Should we add an `admin_actions` table to track who changed what?
+
+3. **Bulk operations?** Should the UI support bulk disable/enable?
+
+---
+
+## Definition of Done
+
+- [x] All 6 phases implemented
+- [x] ShareWidget bug fixed
+- [x] Admin can manage all referral codes without CLI
+- [x] Changes in admin UI immediately reflect in customer-facing flows
+- [ ] All tests passing
+
+---
+
+## Browser-Based Functional Testing Results
+
+**Date:** 2026-01-12
+**Status:** ✅ All tests passed
+
+### Bug Found & Fixed During Testing
+
+**Issue:** Settings form validation error "Expected boolean, received string" for `ff_enabled`
+
+**Root cause:** Config values stored as JSON strings in DB (`"true"` instead of `true`) weren't being parsed on retrieval.
+
+**Fix:** Added JSON.parse in `fetchReferralConfig()`:
+
+```typescript
+for (const row of rows) {
+  try {
+    config[row.key] =
+      typeof row.value === 'string' ? JSON.parse(row.value) : row.value
+  } catch {
+    config[row.key] = row.value
+  }
+}
+```
+
+**Commit:** `cda1ee0 fix(admin): Parse JSON config values from database`
+
+### Test Results Summary
+
+#### Codes Tab
+
+| Feature                 | Status  | Notes                                        |
+| ----------------------- | ------- | -------------------------------------------- |
+| Toggle Status (Enable)  | ✅ Pass | BROWSERTEST: Inactive → Active               |
+| Toggle Status (Disable) | ✅ Pass | Working correctly                            |
+| Search filter           | ✅ Pass | `?q=LEAD` filtered correctly                 |
+| Tier filter             | ✅ Pass | `?tier=friends_family` filtered correctly    |
+| Status filter           | ✅ Pass | `?status=inactive` / `?status=active` worked |
+| Column sorting          | ✅ Pass | `?sort=code&order=asc` sorted alphabetically |
+| Code Detail Panel       | ✅ Pass | Shows code details, promo URL, Stripe link   |
+| Edit code               | ✅ Pass | Added notes to BROWSERTEST                   |
+| Soft-delete             | ✅ Pass | Uses Disable button (sets is_active=false)   |
+
+#### Conversions Tab
+
+| Feature       | Status  | Notes                                 |
+| ------------- | ------- | ------------------------------------- |
+| Code filter   | ✅ Pass | `?codeId=...` filtered by TESTCODE100 |
+| Status filter | ✅ Pass | `?status=skipped` filtered correctly  |
+
+#### Settings Tab
+
+| Feature           | Status  | Notes                |
+| ----------------- | ------- | -------------------- |
+| F&F global toggle | ✅ Pass | Toggle + Save worked |
+
+#### Create Code
+
+| Feature               | Status  | Notes                                      |
+| --------------------- | ------- | ------------------------------------------ |
+| Create F&F code       | ✅ Pass | BROWSERTEST created                        |
+| Create Affiliate code | ✅ Pass | AFFILIATE10 created - 10% reward on EVERY  |
+| Create Standard code  | ✅ Pass | STANDARD100 created - $100 reward on FIRST |
+
+### Codes Created During Testing
+
+| Code        | Tier      | Discount | Reward       |
+| ----------- | --------- | -------- | ------------ |
+| BROWSERTEST | F&F       | $100 off | None         |
+| AFFILIATE10 | Affiliate | $100 off | 10% (every)  |
+| STANDARD100 | Standard  | $100 off | $100 (first) |
+
+### Commits
+
+1. `7841d09` - feat(admin): Add referral program admin UI (21 files)
+2. `cda1ee0` - fix(admin): Parse JSON config values from database (1 file)
