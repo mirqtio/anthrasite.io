@@ -67,12 +67,11 @@ export async function createCheckoutSession({
         ...(referralCode && { referralCode }),
       },
       // Referral discount handling:
-      // - If referral code provided: apply via discounts array, disable manual entry
+      // - If referral code provided: apply via discounts array (allow_promotion_codes must be omitted)
       // - If no referral code: allow manual promo code entry at checkout
       ...(stripePromotionCodeId
         ? {
             discounts: [{ promotion_code: stripePromotionCodeId }],
-            allow_promotion_codes: false,
           }
         : {
             allow_promotion_codes: true,

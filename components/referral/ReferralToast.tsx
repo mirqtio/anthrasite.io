@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import {
   setReferralCode,
@@ -19,13 +19,26 @@ interface ReferralToastProps {
  * Only shows toast once per code (tracks via localStorage).
  */
 export function ReferralToast({ promoCode }: ReferralToastProps) {
+  // Ref to prevent double execution in React Strict Mode
+  const hasValidated = useRef(false)
+
   useEffect(() => {
-    if (!promoCode) return
+    if (!promoCode) {
+      return
+    }
+
+    // Prevent double execution in React Strict Mode
+    if (hasValidated.current) {
+      return
+    }
 
     // Check if toast already shown for this code
     if (hasToastBeenShown(promoCode)) {
       return
     }
+
+    // Mark as validated immediately to prevent race conditions
+    hasValidated.current = true
 
     // Validate the code
     async function validateAndShowToast() {

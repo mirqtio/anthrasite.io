@@ -57,7 +57,7 @@ async function main() {
 
     // Create Stripe promotion code
     const promoCode = await createPromotionCode(code, couponId)
-    console.log(`Created Stripe promotion code: ${promoCode.id}`)
+    console.log(`Created Stripe promotion code: ${promoCode.promotionCodeId}`)
 
     // Insert into database
     const { data: created, error } = await supabase
@@ -71,7 +71,7 @@ async function main() {
         reward_type: 'none',
         reward_amount_cents: 0,
         stripe_coupon_id: couponId,
-        stripe_promotion_code_id: promoCode.id,
+        stripe_promotion_code_id: promoCode.promotionCodeId,
       })
       .select()
       .single()

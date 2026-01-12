@@ -107,7 +107,7 @@ async function main() {
       couponId,
       maxRedemptions || undefined
     )
-    console.log(`Created Stripe promotion code: ${promoCode.id}`)
+    console.log(`Created Stripe promotion code: ${promoCode.promotionCodeId}`)
 
     // Insert into database
     const { data: created, error } = await supabase
@@ -129,7 +129,7 @@ async function main() {
         max_reward_per_period_cents: maxRewardPerPeriodCents,
         period_start_at: periodDays ? new Date().toISOString() : null,
         stripe_coupon_id: couponId,
-        stripe_promotion_code_id: promoCode.id,
+        stripe_promotion_code_id: promoCode.promotionCodeId,
       })
       .select()
       .single()
