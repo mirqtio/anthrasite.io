@@ -3,17 +3,30 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js'
 import { createContext, useContext, useEffect, useState } from 'react'
 
-// Initialize Stripe client lazily to avoid errors if env var is missing
+// Stripe promise singleton - initialized lazily on first access
+let stripePromise: Promise<Stripe | null> | null = null
+
+// Initialize Stripe client lazily to avoid SSR errors
 const getStripePromise = () => {
+  // Only initialize on client side
+  if (typeof window === 'undefined') {
+    return Promise.resolve(null)
+  }
+
+  // Return existing promise if already initialized
+  if (stripePromise) {
+    return stripePromise
+  }
+
   const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   if (!key) {
     console.error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not configured')
     return Promise.resolve(null)
   }
-  return loadStripe(key)
-}
 
-const stripePromise = getStripePromise()
+  stripePromise = loadStripe(key)
+  return stripePromise
+}
 
 interface StripeContextValue {
   stripe: Stripe | null
@@ -33,7 +46,7 @@ export function StripeProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    stripePromise
+    getStripePromise()
       .then((stripe) => {
         setStripe(stripe)
         setIsLoading(false)
@@ -57,7 +70,7 @@ export function useStripe() {
 
 // Export getStripe for direct usage outside of React context
 export function getStripe() {
-  return stripePromise
+  return getStripePromise()
 }
 
 export default getStripe

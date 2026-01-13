@@ -27,14 +27,14 @@ export async function initSentryLazy() {
       // Release tracking
       release: process.env.NEXT_PUBLIC_RELEASE || 'development',
 
-      // Integrations
+      // Integrations - filter(Boolean) prevents WeakMap errors if any integration returns null
       integrations: [
         Sentry.replayIntegration({
           maskAllText: false,
           blockAllMedia: false,
         }),
         Sentry.browserTracingIntegration(),
-      ],
+      ].filter(Boolean),
 
       // Filtering
       beforeSend(event, hint) {
