@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { getCookieConsent } from '@/lib/cookies/consent'
 
 /**
  * User data for Enhanced Conversions (Google Ads)
@@ -50,13 +49,6 @@ export function GoogleAdsConversion({
   useEffect(() => {
     // Prevent duplicate conversions
     if (hasFired.current) return
-
-    // Check consent
-    const consent = getCookieConsent()
-    if (!consent.analytics) {
-      console.log('[GoogleAds] Conversion skipped - no analytics consent')
-      return
-    }
 
     // Check if Google Ads is configured
     const conversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID

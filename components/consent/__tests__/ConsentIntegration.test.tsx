@@ -1,36 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ConsentProvider } from '@/lib/context/ConsentContext'
 import { ConsentManager } from '../ConsentManager'
-import { Analytics } from '@/app/_components/Analytics/Analytics'
 
-// Mock the analytics module
-jest.mock('@/lib/analytics', () => ({
-  startAnalytics: jest.fn().mockResolvedValue(undefined),
-}))
-
-// Mock analytics client
-jest.mock('@/lib/analytics/analytics-client', () => ({
-  trackPageView: jest.fn(),
-}))
-
-// Mock useWebVitals hook
-jest.mock('@/lib/analytics/hooks/useWebVitals', () => ({
-  useWebVitals: jest.fn(),
-}))
-
-// Mock next/navigation
-jest.mock('next/navigation', () => ({
-  usePathname: () => '/',
-  useSearchParams: () => ({ toString: () => '' }),
-}))
-
-// Import the mocked function after the mock is set up
-import { startAnalytics } from '@/lib/analytics'
-
-// Cast to access jest mock methods
-const mockStartAnalyticsImport = startAnalytics as jest.MockedFunction<
-  typeof startAnalytics
->
+// Note: Analytics component no longer depends on consent - it loads immediately.
+// These tests validate the ConsentManager UI flow and localStorage persistence.
 
 describe('Consent Integration', () => {
   beforeEach(() => {
@@ -42,7 +15,6 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
-        <Analytics />
       </ConsentProvider>
     )
 
@@ -61,12 +33,7 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    // Analytics should be initialized with consent
-    await waitFor(() => {
-      expect(mockStartAnalyticsImport).toHaveBeenCalled()
-    })
-
-    // Check localStorage
+    // Check localStorage has consent saved
     const stored = JSON.parse(
       localStorage.getItem('anthrasite_cookie_consent') || '{}'
     )
@@ -74,13 +41,10 @@ describe('Consent Integration', () => {
     expect(stored.preferences.functional).toBe(true)
   })
 
-  // NOTE: US legal model - analytics enabled by default without consent banner
-  // This test now reflects that analytics starts immediately
   it('should show banner and handle reject all flow', async () => {
     render(
       <ConsentProvider>
         <ConsentManager />
-        <Analytics />
       </ConsentProvider>
     )
 
@@ -96,9 +60,7 @@ describe('Consent Integration', () => {
       ).not.toBeInTheDocument()
     })
 
-    // With US legal model, analytics is enabled by default
-    // so it may have already been called before rejection
-    // The key is that the rejection is stored for future sessions
+    // The rejection should be stored for future sessions
     const stored = JSON.parse(
       localStorage.getItem('anthrasite_cookie_consent') || '{}'
     )
@@ -109,7 +71,6 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
-        <Analytics />
       </ConsentProvider>
     )
 
@@ -144,11 +105,6 @@ describe('Consent Integration', () => {
         screen.queryByText('We value your privacy')
       ).not.toBeInTheDocument()
     })
-
-    // Check that analytics was initialized
-    await waitFor(() => {
-      expect(mockStartAnalyticsImport).toHaveBeenCalled()
-    })
   })
 
   it('should remember consent on page reload', async () => {
@@ -170,11 +126,10 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
-        <Analytics />
       </ConsentProvider>
     )
 
-    // Banner should not be shown
+    // Banner should not be shown since consent already exists
     await waitFor(
       () => {
         expect(
@@ -183,11 +138,6 @@ describe('Consent Integration', () => {
       },
       { timeout: 1000 }
     )
-
-    // Analytics should be initialized with stored preferences
-    await waitFor(() => {
-      expect(mockStartAnalyticsImport).toHaveBeenCalled()
-    })
   })
 
   it('should show banner again if consent version changes', async () => {
@@ -207,7 +157,6 @@ describe('Consent Integration', () => {
     render(
       <ConsentProvider>
         <ConsentManager />
-        <Analytics />
       </ConsentProvider>
     )
 

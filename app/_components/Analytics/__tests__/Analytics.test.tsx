@@ -2,27 +2,8 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { Analytics } from '../Analytics'
 
-// Mock the analytics module with startAnalytics
-jest.mock('@/lib/analytics', () => ({
-  __esModule: true,
-  startAnalytics: jest.fn().mockResolvedValue(undefined),
-}))
-
 jest.mock('@/lib/analytics/analytics-client', () => ({
   trackPageView: jest.fn(),
-}))
-
-jest.mock('@/lib/cookies/consent', () => ({
-  getCookieConsent: jest.fn(() => ({
-    analytics: true,
-    marketing: true,
-    performance: true,
-    functional: true,
-  })),
-  onConsentChange: jest.fn((callback) => {
-    // Return an unsubscribe function
-    return () => {}
-  }),
 }))
 
 jest.mock('@/lib/analytics/hooks/useWebVitals', () => ({
@@ -35,14 +16,13 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Import after mocks to ensure mocks are applied
-import { startAnalytics } from '@/lib/analytics'
 import { trackPageView } from '@/lib/analytics/analytics-client'
-import { getCookieConsent } from '@/lib/cookies/consent'
 import { useWebVitals } from '@/lib/analytics/hooks/useWebVitals'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 describe('Analytics Component', () => {
   const originalEnv = process.env
+  let appendChildSpy: jest.SpyInstance
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -51,57 +31,64 @@ describe('Analytics Component', () => {
     // Reset window objects
     delete (window as any).gtag
     delete (window as any).dataLayer
+
+    // Spy on appendChild to track script loading
+    appendChildSpy = jest.spyOn(document.head, 'appendChild')
   })
 
   afterEach(() => {
     process.env = originalEnv
+    appendChildSpy.mockRestore()
+    // Clean up any scripts added during tests
+    document
+      .querySelectorAll('script[src*="googletagmanager.com"]')
+      .forEach((el) => el.remove())
   })
 
-  it('should initialize analytics when measurement ID is provided', async () => {
+  it('should load gtag script when analytics is enabled', async () => {
     process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID = 'G-TESTID123'
-    process.env.NEXT_PUBLIC_POSTHOG_KEY = 'phc_test123'
     process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'true'
 
     render(<Analytics />)
 
-    // Wait for async initialization
     await waitFor(() => {
-      expect(startAnalytics).toHaveBeenCalled()
+      const scripts = document.querySelectorAll(
+        'script[src*="googletagmanager.com"]'
+      )
+      expect(scripts.length).toBe(1)
+      expect(scripts[0].getAttribute('src')).toContain('G-TESTID123')
     })
   })
 
-  it('should not initialize analytics when analytics is disabled', () => {
+  it('should not load script when analytics is disabled', () => {
     process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'false'
-
-    // Mock consent as false to ensure startAnalytics is not called
-    const mockGetCookieConsent = getCookieConsent as jest.Mock
-    mockGetCookieConsent.mockReturnValue({
-      analytics: false,
-      marketing: false,
-      performance: false,
-      functional: true,
-    })
+    process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID = 'G-TESTID123'
 
     render(<Analytics />)
 
-    expect(startAnalytics).not.toHaveBeenCalled()
+    const scripts = document.querySelectorAll(
+      'script[src*="googletagmanager.com"]'
+    )
+    expect(scripts.length).toBe(0)
   })
 
-  it('should track page view when analytics consent is given', () => {
-    const mockGetCookieConsent = getCookieConsent as jest.Mock
+  it('should not load script when measurement ID is missing', () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'true'
+    delete process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
 
-    // Clear and reset mocks for this test
-    jest.clearAllMocks()
+    render(<Analytics />)
 
-    // Re-mock consent after clearing
-    mockGetCookieConsent.mockReturnValue({
-      analytics: true,
-      marketing: true,
-      performance: true,
-      functional: true,
-    })
+    const scripts = document.querySelectorAll(
+      'script[src*="googletagmanager.com"]'
+    )
+    expect(scripts.length).toBe(0)
+  })
 
-    // Set up window.gtag to simulate non-initial load
+  it('should track page view when gtag is available', () => {
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'true'
+    process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID = 'G-TESTID123'
+
+    // Set up window.gtag to simulate script already loaded
     ;(window as any).gtag = jest.fn()
 
     render(<Analytics />)
@@ -119,25 +106,9 @@ describe('Analytics Component', () => {
     expect(useWebVitals).toHaveBeenCalled()
   })
 
-  it('should not initialize analytics when consent is not given', () => {
-    const mockGetCookieConsent = getCookieConsent as jest.Mock
-    mockGetCookieConsent.mockReturnValue({
-      analytics: false,
-      marketing: false,
-      performance: false,
-      functional: true,
-    })
-
+  it('should call navigation hooks', () => {
     render(<Analytics />)
 
-    // Component should still call initialize, but won't proceed due to consent check
-    expect(mockGetCookieConsent).toHaveBeenCalled()
-  })
-
-  it('should call analytics hooks', () => {
-    render(<Analytics />)
-
-    expect(useWebVitals).toHaveBeenCalled()
     expect(usePathname).toHaveBeenCalled()
     expect(useSearchParams).toHaveBeenCalled()
   })
@@ -145,20 +116,10 @@ describe('Analytics Component', () => {
   it('should track page view on route change', () => {
     const mockUsePathname = usePathname as jest.Mock
     const mockUseSearchParams = useSearchParams as jest.Mock
-    const mockGetCookieConsent = getCookieConsent as jest.Mock
 
-    // Clear and reset mocks for this test
-    jest.clearAllMocks()
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'true'
 
-    // Re-mock consent after clearing
-    mockGetCookieConsent.mockReturnValue({
-      analytics: true,
-      marketing: true,
-      performance: true,
-      functional: true,
-    })
-
-    // Set up window.gtag to simulate non-initial load
+    // Set up window.gtag to simulate script already loaded
     ;(window as any).gtag = jest.fn()
 
     mockUsePathname.mockReturnValue('/test-page')
@@ -182,14 +143,40 @@ describe('Analytics Component', () => {
 
   it('should handle missing environment variables gracefully', () => {
     delete process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
-    delete process.env.NEXT_PUBLIC_POSTHOG_KEY
 
     expect(() => render(<Analytics />)).not.toThrow()
   })
 
-  it('should check consent before initializing', () => {
+  it('should not load duplicate scripts', async () => {
+    process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID = 'G-TESTID123'
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'true'
+
+    // Pre-add a script to simulate already loaded
+    const existingScript = document.createElement('script')
+    existingScript.src =
+      'https://www.googletagmanager.com/gtag/js?id=G-EXISTING'
+    document.head.appendChild(existingScript)
+
     render(<Analytics />)
 
-    expect(getCookieConsent).toHaveBeenCalled()
+    // Should not add another script
+    const scripts = document.querySelectorAll(
+      'script[src*="googletagmanager.com"]'
+    )
+    expect(scripts.length).toBe(1)
+  })
+
+  it('should skip analytics in E2E mode', () => {
+    process.env.NEXT_PUBLIC_E2E = 'true'
+    process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID = 'G-TESTID123'
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED = 'true'
+
+    render(<Analytics />)
+
+    const scripts = document.querySelectorAll(
+      'script[src*="googletagmanager.com"]'
+    )
+    expect(scripts.length).toBe(0)
+    expect(trackPageView).not.toHaveBeenCalled()
   })
 })

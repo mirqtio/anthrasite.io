@@ -73,7 +73,25 @@ export default function RootLayout({
               <SiteModeProvider>
                 <HelpWidgetProvider>
                   {children}
-                  <Toaster position="top-center" richColors />
+                  <Toaster
+                    position="top-center"
+                    toastOptions={{
+                      className:
+                        'bg-[#232323] border border-white/10 text-white shadow-lg',
+                      descriptionClassName: 'text-white/70',
+                      style: {
+                        background: '#232323',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        color: '#ffffff',
+                      },
+                      classNames: {
+                        success:
+                          'bg-[#232323] border-green-500/30 text-white [&>svg]:text-green-500',
+                        error:
+                          'bg-[#232323] border-red-500/30 text-white [&>svg]:text-red-400',
+                      },
+                    }}
+                  />
                   <ConditionalHelpWidget />
                   <AnalyticsWrapper />
                   <AnalyticsNoScriptWrapper />
