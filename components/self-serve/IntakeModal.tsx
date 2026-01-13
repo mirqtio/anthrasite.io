@@ -133,10 +133,15 @@ export function IntakeModal({
   // Refs for auto-focus
   const companyInputRef = useRef<HTMLInputElement>(null)
   const zipInputRef = useRef<HTMLInputElement>(null)
+  const hasAutoFocused = useRef(false)
 
   // Call validate endpoint when modal opens
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      // Reset auto-focus flag when modal closes
+      hasAutoFocused.current = false
+      return
+    }
 
     const validateUrl = async () => {
       setState('loading')
@@ -186,9 +191,11 @@ export function IntakeModal({
     validateUrl()
   }, [isOpen, url, email])
 
-  // Auto-focus appropriate field when form appears
+  // Auto-focus appropriate field when form first appears (once only)
   useEffect(() => {
     if (state !== 'form') return
+    if (hasAutoFocused.current) return
+    hasAutoFocused.current = true
 
     // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
