@@ -44,6 +44,24 @@ export interface ConfirmationContext {
 
   /** Referral reward display text (e.g., "$100", "10%") - what referrer earns */
   referralRewardDisplay?: string | null
+
+  // Enhanced Conversions customer data (from Stripe)
+  /** Customer first name (for Enhanced Conversions) */
+  customerFirstName?: string | null
+  /** Customer last name (for Enhanced Conversions) */
+  customerLastName?: string | null
+  /** Customer phone number (for Enhanced Conversions) */
+  customerPhone?: string | null
+  /** Customer street address (for Enhanced Conversions) */
+  customerStreet?: string | null
+  /** Customer city (for Enhanced Conversions) */
+  customerCity?: string | null
+  /** Customer state/region (for Enhanced Conversions) */
+  customerState?: string | null
+  /** Customer postal code (for Enhanced Conversions) */
+  customerPostalCode?: string | null
+  /** Customer country code (for Enhanced Conversions) */
+  customerCountry?: string | null
 }
 
 /**

@@ -40,7 +40,10 @@ export function Analytics() {
       if (newConsent.analytics) {
         // Start analytics with centralized, guarded initialization
         startAnalytics().catch((err) => {
-          console.error('[Analytics] Initialization error on consent change:', err)
+          console.error(
+            '[Analytics] Initialization error on consent change:',
+            err
+          )
         })
       }
     })
@@ -114,6 +117,16 @@ export function Analytics() {
           debug_mode: true, // Enable debug mode to see events in real-time
         })
         console.log('[GA4] Initialized with measurement ID:', measurementId)
+
+        // Also configure Google Ads for conversion tracking
+        const adsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID
+        if (adsConversionId) {
+          window.gtag('config', adsConversionId)
+          console.log(
+            '[GoogleAds] Configured with conversion ID:',
+            adsConversionId
+          )
+        }
 
         // Send a test event to verify GA4 is working
         window.gtag('event', 'analytics_initialized', {

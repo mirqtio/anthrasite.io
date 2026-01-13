@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Logo } from '@/components/Logo'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { ShareWidget } from '@/components/referral/ShareWidget'
+import { GoogleAdsConversion } from '@/app/_components/Analytics'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 import type { ConfirmationContext } from '@/lib/confirmation/types'
 
@@ -179,6 +180,24 @@ export function SuccessPageClient({ context }: SuccessPageClientProps) {
 
       {/* Footer - matches LP */}
       <LandingFooter />
+
+      {/* Google Ads Enhanced Conversion tracking */}
+      <GoogleAdsConversion
+        value={context.price}
+        currency="USD"
+        transactionId={context.sessionId}
+        userData={{
+          email: context.purchaseEmail,
+          phone: context.customerPhone,
+          firstName: context.customerFirstName,
+          lastName: context.customerLastName,
+          street: context.customerStreet,
+          city: context.customerCity,
+          region: context.customerState,
+          postalCode: context.customerPostalCode,
+          country: context.customerCountry,
+        }}
+      />
     </div>
   )
 }

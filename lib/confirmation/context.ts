@@ -124,7 +124,21 @@ export async function lookupConfirmationContext(
       // Non-fatal - continue without referral info
     }
 
-    // 9. Build and return context
+    // 9. Extract customer details from Stripe for Enhanced Conversions
+    const customerDetails = session.customer_details
+    const billingAddress = customerDetails?.address
+
+    // Parse name into first/last (Stripe provides full name)
+    let customerFirstName: string | null = null
+    let customerLastName: string | null = null
+    if (customerDetails?.name) {
+      const nameParts = customerDetails.name.trim().split(/\s+/)
+      customerFirstName = nameParts[0] || null
+      customerLastName =
+        nameParts.length > 1 ? nameParts.slice(1).join(' ') : null
+    }
+
+    // 10. Build and return context
     return {
       sessionId,
       orderRef: sessionId.slice(-8),
@@ -140,6 +154,15 @@ export async function lookupConfirmationContext(
       referralCode,
       referralDiscountDisplay,
       referralRewardDisplay,
+      // Enhanced Conversions data
+      customerFirstName,
+      customerLastName,
+      customerPhone: customerDetails?.phone ?? null,
+      customerStreet: billingAddress?.line1 ?? null,
+      customerCity: billingAddress?.city ?? null,
+      customerState: billingAddress?.state ?? null,
+      customerPostalCode: billingAddress?.postal_code ?? null,
+      customerCountry: billingAddress?.country ?? null,
     }
   } catch (error) {
     console.error('Error looking up confirmation context:', error)
