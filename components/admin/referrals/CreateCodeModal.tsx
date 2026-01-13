@@ -5,28 +5,40 @@ import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 import { createReferralCode } from '@/app/admin/actions/referrals'
-import type { TierType, DiscountType, RewardType } from '@/types/referral-admin'
+import type {
+  TierType,
+  DiscountType,
+  RewardType,
+  ReferralConfigMap,
+} from '@/types/referral-admin'
 
 interface CreateCodeModalProps {
   onClose: () => void
+  config: ReferralConfigMap
 }
 
-export function CreateCodeModal({ onClose }: CreateCodeModalProps) {
+export function CreateCodeModal({ onClose, config }: CreateCodeModalProps) {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Form state
+  // Form state - initialize with config defaults
   const [step, setStep] = useState<1 | 2>(1)
   const [tier, setTier] = useState<TierType | null>(null)
   const [code, setCode] = useState('')
   const [discountType, setDiscountType] = useState<DiscountType>('fixed')
-  const [discountAmount, setDiscountAmount] = useState('100')
+  const [discountAmount, setDiscountAmount] = useState(
+    (config.default_standard_discount_cents / 100).toString()
+  )
   const [discountPercent, setDiscountPercent] = useState('10')
   const [rewardType, setRewardType] = useState<RewardType>('fixed')
-  const [rewardAmount, setRewardAmount] = useState('100')
-  const [rewardPercent, setRewardPercent] = useState('10')
+  const [rewardAmount, setRewardAmount] = useState(
+    (config.default_standard_reward_cents / 100).toString()
+  )
+  const [rewardPercent, setRewardPercent] = useState(
+    config.default_affiliate_reward_percent.toString()
+  )
   const [maxRedemptions, setMaxRedemptions] = useState('')
   const [maxRewardTotal, setMaxRewardTotal] = useState('')
   const [notes, setNotes] = useState('')
@@ -36,17 +48,26 @@ export function CreateCodeModal({ onClose }: CreateCodeModalProps) {
     return () => setMounted(false)
   }, [])
 
-  // Set defaults based on tier
+  // Set defaults based on tier selection
   useEffect(() => {
     if (tier === 'friends_family') {
       setRewardType('none')
+      setDiscountAmount((config.default_ff_discount_cents / 100).toString())
     } else if (tier === 'standard') {
       setRewardType('fixed')
+      setDiscountAmount(
+        (config.default_standard_discount_cents / 100).toString()
+      )
+      setRewardAmount((config.default_standard_reward_cents / 100).toString())
     } else if (tier === 'affiliate') {
       setRewardType('percent')
       setDiscountType('fixed')
+      setDiscountAmount(
+        (config.default_affiliate_discount_cents / 100).toString()
+      )
+      setRewardPercent(config.default_affiliate_reward_percent.toString())
     }
-  }, [tier])
+  }, [tier, config])
 
   const handleSubmit = async () => {
     if (!tier) return

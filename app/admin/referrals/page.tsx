@@ -1,7 +1,11 @@
 import Link from 'next/link'
-import { fetchReferralCodes } from '@/app/admin/actions/referrals'
+import {
+  fetchReferralCodes,
+  fetchReferralConfig,
+} from '@/app/admin/actions/referrals'
 import { CodesTable } from '@/components/admin/referrals/CodesTable'
 import { CodesToolbar } from '@/components/admin/referrals/CodesToolbar'
+import type { ReferralConfigMap } from '@/types/referral-admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,14 +25,30 @@ export default async function ReferralsPage({
 }) {
   const params = await searchParams
 
-  const codes = await fetchReferralCodes({
-    search: params.q || '',
-    tier: params.tier,
-    status: params.status,
-    sort: params.sort || 'created_at',
-    order: (params.order as 'asc' | 'desc') || 'desc',
-    limit: parseInt(params.limit || '50'),
-  })
+  const [codes, configRaw] = await Promise.all([
+    fetchReferralCodes({
+      search: params.q || '',
+      tier: params.tier,
+      status: params.status,
+      sort: params.sort || 'created_at',
+      order: (params.order as 'asc' | 'desc') || 'desc',
+      limit: parseInt(params.limit || '50'),
+    }),
+    fetchReferralConfig(),
+  ])
+
+  const config: ReferralConfigMap = {
+    ff_enabled: configRaw.ff_enabled ?? true,
+    default_standard_discount_cents:
+      configRaw.default_standard_discount_cents ?? 10000,
+    default_standard_reward_cents:
+      configRaw.default_standard_reward_cents ?? 10000,
+    default_ff_discount_cents: configRaw.default_ff_discount_cents ?? 10000,
+    default_affiliate_discount_cents:
+      configRaw.default_affiliate_discount_cents ?? 10000,
+    default_affiliate_reward_percent:
+      configRaw.default_affiliate_reward_percent ?? 10,
+  }
 
   return (
     <div className="space-y-6">
@@ -66,6 +86,7 @@ export default async function ReferralsPage({
         currentSearch={params.q || ''}
         currentTier={params.tier}
         currentStatus={params.status}
+        config={config}
       />
 
       <CodesTable

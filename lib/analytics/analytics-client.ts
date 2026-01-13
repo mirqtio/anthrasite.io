@@ -10,42 +10,50 @@ export function trackEvent(
   properties?: EventProperties
 ): void {
   const analytics = getAnalytics()
-  if (!analytics) {
-    console.warn('Analytics not initialized')
+  if (analytics) {
+    analytics.track(eventName, properties)
     return
   }
 
-  analytics.track(eventName, properties)
+  // Fall back to gtag if AnalyticsManager not initialized
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, properties)
+    return
+  }
 }
 
 export function trackPageView(properties?: EventProperties): void {
   const analytics = getAnalytics()
-  if (!analytics) {
-    console.warn('Analytics not initialized')
+  if (analytics) {
+    analytics.page(properties)
     return
   }
 
-  analytics.page(properties)
+  // Fall back to gtag if AnalyticsManager not initialized
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'page_view', properties)
+  }
 }
 
 export function identifyUser(userId: string, traits?: EventProperties): void {
   const analytics = getAnalytics()
-  if (!analytics) {
-    console.warn('Analytics not initialized')
+  if (analytics) {
+    analytics.identify(userId, traits)
     return
   }
 
-  analytics.identify(userId, traits)
+  // Fall back to gtag user_id
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('set', { user_id: userId, ...traits })
+  }
 }
 
 export function resetUser(): void {
   const analytics = getAnalytics()
-  if (!analytics) {
-    console.warn('Analytics not initialized')
-    return
+  if (analytics) {
+    analytics.reset()
   }
-
-  analytics.reset()
+  // No gtag equivalent for reset
 }
 
 // Funnel tracking helpers
@@ -56,12 +64,20 @@ export function trackFunnelStep(
   properties?: EventProperties
 ): void {
   const analytics = getAnalytics()
-  if (!analytics) {
-    console.warn('Analytics not initialized')
+  if (analytics) {
+    analytics.trackFunnelStep(funnelName, step, stepName, properties)
     return
   }
 
-  analytics.trackFunnelStep(funnelName, step, stepName, properties)
+  // Fall back to gtag
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'funnel_step', {
+      funnel_name: funnelName,
+      funnel_step: step,
+      step_name: stepName,
+      ...properties,
+    })
+  }
 }
 
 // E-commerce tracking helpers
@@ -72,12 +88,20 @@ export function trackPurchase(
   properties?: EventProperties
 ): void {
   const analytics = getAnalytics()
-  if (!analytics) {
-    console.warn('Analytics not initialized')
+  if (analytics) {
+    analytics.trackPurchase(orderId, amount, currency, properties)
     return
   }
 
-  analytics.trackPurchase(orderId, amount, currency, properties)
+  // Fall back to gtag purchase event
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'purchase', {
+      transaction_id: orderId,
+      value: amount,
+      currency,
+      ...properties,
+    })
+  }
 }
 
 // Performance tracking helpers
@@ -103,7 +127,6 @@ export function trackWebVitals(metrics: {
 export function getFeatureFlag(flagKey: string): boolean | string | undefined {
   const analytics = getAnalytics()
   if (!analytics) {
-    console.warn('Analytics not initialized')
     return undefined
   }
 
@@ -113,7 +136,6 @@ export function getFeatureFlag(flagKey: string): boolean | string | undefined {
 export function isFeatureEnabled(flagKey: string): boolean {
   const analytics = getAnalytics()
   if (!analytics) {
-    console.warn('Analytics not initialized')
     return false
   }
 

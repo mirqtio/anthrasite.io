@@ -5,17 +5,20 @@ import { useState, useTransition } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { Search, Plus, X } from 'lucide-react'
 import { CreateCodeModal } from './CreateCodeModal'
+import type { ReferralConfigMap } from '@/types/referral-admin'
 
 interface CodesToolbarProps {
   currentSearch: string
   currentTier?: string
   currentStatus?: string
+  config: ReferralConfigMap
 }
 
 export function CodesToolbar({
   currentSearch,
   currentTier,
   currentStatus,
+  config,
 }: CodesToolbarProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -136,7 +139,10 @@ export function CodesToolbar({
 
       {/* Create Modal */}
       {showCreateModal && (
-        <CreateCodeModal onClose={() => setShowCreateModal(false)} />
+        <CreateCodeModal
+          onClose={() => setShowCreateModal(false)}
+          config={config}
+        />
       )}
     </>
   )

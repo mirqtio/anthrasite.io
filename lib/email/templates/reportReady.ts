@@ -15,12 +15,20 @@
  * - CTA button: #0066FF
  * - Section backgrounds: rgba(255,255,255,0.05)
  * - Borders: rgba(255,255,255,0.1)
+ * - Element spacing: 48px
  */
 
 export interface ReportReadyContext {
   firstName: string
   businessName: string
   reportLink: string // The tracked click URL (via /api/email/click)
+  // Optional referral info (if customer has a referral code)
+  referral?: {
+    code: string
+    shareUrl: string // e.g., https://www.anthrasite.io/?promo=CODE
+    discountDisplay: string // e.g., "$100 off"
+    rewardDisplay: string // e.g., "$100"
+  }
 }
 
 export interface ReportReadyEmail {
@@ -54,7 +62,38 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Prevent Gmail/email clients from auto-darkening or lightening -->
+  <meta name="color-scheme" content="only">
+  <meta name="supported-color-schemes" content="only">
   <title>Your Anthrasite report for ${escapeHtml(businessName)}</title>
+  <style>
+    /* Prevent Gmail dark mode color inversion */
+    :root {
+      color-scheme: only;
+      supported-color-schemes: only;
+    }
+    /* Gmail dark mode prevention - force our colors */
+    u + .body, /* Gmail */
+    #MessageViewBody, /* Gmail */
+    div[style*="margin: 16px 0"] /* Gmail iOS */ {
+      background-color: #232323 !important;
+    }
+    /* Override Gmail's data attributes for color manipulation */
+    [data-ogsc] .dark-bg,
+    [data-ogsb] .dark-bg { background-color: #232323 !important; }
+    [data-ogsc] .white-text,
+    [data-ogsb] .white-text { color: #FFFFFF !important; }
+    [data-ogsc] .muted-text,
+    [data-ogsb] .muted-text { color: rgba(255,255,255,0.6) !important; }
+    /* Standard class overrides */
+    .dark-bg { background-color: #232323 !important; }
+    .white-text { color: #FFFFFF !important; }
+    .muted-text { color: rgba(255,255,255,0.6) !important; }
+    /* Gmail app-specific overrides */
+    .dark-bg[style] { background-color: #232323 !important; }
+    td.dark-bg { background-color: #232323 !important; }
+    table.dark-bg { background-color: #232323 !important; }
+  </style>
   <!--[if mso]>
   <style type="text/css">
     table { border-collapse: collapse; }
@@ -62,29 +101,44 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
   </style>
   <![endif]-->
 </head>
-<body style="margin: 0; padding: 0; background-color: #232323; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+<body class="body dark-bg" style="margin: 0; padding: 0; background-color: #232323; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <!-- Wrapper table for email clients -->
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #232323;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dark-bg" style="background-color: #232323;">
     <tr>
-      <td align="center" style="padding: 40px 20px;">
+      <td align="center" class="dark-bg" style="padding: 40px 20px; background-color: #232323;">
         <!-- Content container -->
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%;">
 
-          <!-- Greeting + Intro -->
+          <!-- Logo + Tagline -->
           <tr>
-            <td style="padding: 0 0 32px 0;">
-              <p style="margin: 0 0 16px 0; font-size: 18px; color: #FFFFFF; line-height: 1.6;">
+            <td style="padding: 0 0 48px 0;">
+              <a href="https://anthrasite.io" target="_blank" style="text-decoration: none;">
+                <img src="https://assets.anthrasite.io/logo_tagline_final.png" alt="Anthrasite - Value, Crystallized" width="220" height="35" style="display: block; width: 220px; height: auto; border: 0;" />
+              </a>
+            </td>
+          </tr>
+
+          <!-- Greeting -->
+          <tr>
+            <td style="padding: 0 0 24px 0;">
+              <p class="white-text" style="margin: 0; font-size: 18px; color: #FFFFFF; line-height: 1.6;">
                 Hi ${escapeHtml(firstName)},
-              </p>
-              <p style="margin: 0 0 24px 0; font-size: 18px; color: #FFFFFF; line-height: 1.6;">
-                Your website audit for ${escapeHtml(businessName)} is ready.
               </p>
             </td>
           </tr>
 
-          <!-- Primary CTA Button -->
+          <!-- Intro paragraph -->
           <tr>
-            <td align="center" style="padding: 0 0 32px 0;">
+            <td style="padding: 0 0 48px 0;">
+              <p class="muted-text" style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                This report shows how well ${escapeHtml(businessName)}'s site helps people find you, trust you, and take action. It's designed to be practical, not theoretical.
+              </p>
+            </td>
+          </tr>
+
+          <!-- CTA Button (first) -->
+          <tr>
+            <td align="center" style="padding: 0 0 48px 0;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="center" style="background-color: #0066FF; border-radius: 6px;">
@@ -97,18 +151,9 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
             </td>
           </tr>
 
-          <!-- Intro paragraph -->
-          <tr>
-            <td style="padding: 0 0 32px 0;">
-              <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
-                This report shows where ${escapeHtml(businessName)}'s site is helping&mdash;or holding back&mdash;people who are trying to find you, trust you, and take action. It's designed to be practical, not theoretical.
-              </p>
-            </td>
-          </tr>
-
           <!-- How to Use the Report -->
           <tr>
-            <td style="padding: 24px; background-color: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 24px;">
+            <td style="padding: 24px; background-color: rgba(255,255,255,0.05); border-radius: 8px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="padding: 0 0 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
@@ -119,11 +164,18 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
                 </tr>
                 <tr>
                   <td style="padding: 16px 0 0 0;">
-                    <ul style="margin: 0; padding: 0 0 0 20px; color: rgba(255,255,255,0.6); font-size: 16px; line-height: 1.8;">
-                      <li style="margin: 0 0 8px 0;">Start with Page 1 for the overall score, impact range, and top priorities.</li>
-                      <li style="margin: 0 0 8px 0;">The Priority Details pages explain what matters most and why, in order of business impact.</li>
-                      <li style="margin: 0;">The Detailed Results sections show the exact measurements behind each finding.</li>
-                    </ul>
+                    <p style="margin: 0 0 16px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                      You can tackle these findings yourself or hand this report to the person who helps with your website.
+                    </p>
+                    <p style="margin: 0 0 12px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                      <strong style="color: #FFFFFF;">Page 1</strong> shows your total score, the expected financial impact, and top priorities. This gives you a clear overview of where you stand.
+                    </p>
+                    <p style="margin: 0 0 12px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                      <strong style="color: #FFFFFF;">The Priority Details page</strong> shows each issue we found, ranked by business impact. It is a list of opportunities to improve your website and business.
+                    </p>
+                    <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                      <strong style="color: #FFFFFF;">The Detailed Results sections</strong> show the exact measurements behind each finding. We give you the details behind the conclusions, with clear explanations of what they mean.
+                    </p>
                   </td>
                 </tr>
               </table>
@@ -131,7 +183,7 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
           </tr>
 
           <!-- Spacer -->
-          <tr><td style="height: 24px;"></td></tr>
+          <tr><td style="height: 48px;"></td></tr>
 
           <!-- What's in the Report -->
           <tr>
@@ -146,70 +198,70 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
                 </tr>
                 <tr>
                   <td style="padding: 16px 0 0 0;">
-                    <ul style="margin: 0; padding: 0 0 0 20px; color: rgba(255,255,255,0.6); font-size: 16px; line-height: 1.8;">
-                      <li style="margin: 0 0 8px 0;">Your overall performance score</li>
-                      <li style="margin: 0 0 8px 0;">A ranked list of the most important issues</li>
-                      <li style="margin: 0 0 8px 0;">Estimated monthly value ranges tied to fixing each issue</li>
-                      <li style="margin: 0;">Detailed measurements organized by how visitors experience your site</li>
-                    </ul>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Spacer -->
-          <tr><td style="height: 24px;"></td></tr>
-
-          <!-- How Issues and Dollar Estimates Work -->
-          <tr>
-            <td style="padding: 24px; background-color: rgba(255,255,255,0.05); border-radius: 8px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 0 0 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.05em;">
-                      How Issues and Dollar Estimates Work
-                    </h2>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 16px 0 0 0;">
-                    <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
-                      Issues are identified by grouping related metrics that create real friction for visitors. Dollar ranges are directional estimates, based on your business size, issue severity, and where the problem appears in the customer journey. They're meant to help you prioritize&mdash;not to forecast outcomes.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Spacer -->
-          <tr><td style="height: 24px;"></td></tr>
-
-          <!-- How the Sections are Organized -->
-          <tr>
-            <td style="padding: 24px; background-color: rgba(255,255,255,0.05); border-radius: 8px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 0 0 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.05em;">
-                      How the Sections are Organized
-                    </h2>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding: 16px 0 0 0;">
                     <p style="margin: 0 0 16px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
-                      Findings are grouped by four journey stages:
+                      <strong style="color: #FFFFFF;">Your overall performance score.</strong> The weighted total of how your site performed across all the metrics we measure.
                     </p>
-                    <ul style="margin: 0 0 16px 0; padding: 0 0 0 20px; color: rgba(255,255,255,0.6); font-size: 16px; line-height: 1.8;">
-                      <li style="margin: 0 0 8px 0;"><strong style="color: #FFFFFF;">Find</strong> &mdash; how customers discover you</li>
-                      <li style="margin: 0 0 8px 0;"><strong style="color: #FFFFFF;">Trust</strong> &mdash; whether you appear credible</li>
-                      <li style="margin: 0 0 8px 0;"><strong style="color: #FFFFFF;">Understand</strong> &mdash; how clearly you explain what you offer</li>
-                      <li style="margin: 0;"><strong style="color: #FFFFFF;">Contact</strong> &mdash; how easily customers can take the next step</li>
+                    <p style="margin: 0 0 16px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                      <strong style="color: #FFFFFF;">Estimated monthly value across all issues.</strong> Dollar ranges are rough estimates. They depend on your business size, the severity of the issue, and where it happens in the customer journey. They're meant to help you prioritize&mdash;not to forecast outcomes.
+                    </p>
+                    <p style="margin: 0 0 16px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                      <strong style="color: #FFFFFF;">A ranked list of the most important issues.</strong> We identify issues by grouping related metrics that create real friction for visitors.
+                    </p>
+                    <p style="margin: 0 0 16px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                      <strong style="color: #FFFFFF;">Detailed measurements organized by how visitors experience your site.</strong> We group findings into four customer journey stages:
+                    </p>
+                    <ul style="margin: 0; padding: 0 0 0 20px; color: rgba(255,255,255,0.6); font-size: 16px; line-height: 1.8;">
+                      <li style="margin: 0 0 8px 0;"><strong style="color: #FFFFFF;">Find</strong> &mdash; how customers discover you.</li>
+                      <li style="margin: 0 0 8px 0;"><strong style="color: #FFFFFF;">Trust</strong> &mdash; whether you appear credible.</li>
+                      <li style="margin: 0 0 8px 0;"><strong style="color: #FFFFFF;">Understand</strong> &mdash; how clearly you explain what you offer.</li>
+                      <li style="margin: 0;"><strong style="color: #FFFFFF;">Contact</strong> &mdash; how easily customers can take the next step.</li>
                     </ul>
-                    <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
-                      You don't need to read it all at once. Fixing even one or two high-impact items can make a meaningful difference.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Spacer -->
+          <tr><td style="height: 48px;"></td></tr>
+
+          <!-- Encouragement text (moved out of card) -->
+          <tr>
+            <td style="padding: 0 0 48px 0;">
+              <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                You don't need to read it all at once. Fixing even one or two high-impact items can make a meaningful difference.
+              </p>
+            </td>
+          </tr>
+
+          ${
+            ctx.referral
+              ? `
+          <!-- Referral Share Section -->
+          <tr>
+            <td style="padding: 24px; background-color: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(0,102,255,0.2);">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding: 0 0 16px 0;">
+                    <h2 style="margin: 0; font-size: 20px; font-weight: 600; color: #FFFFFF;">
+                      Know someone who'd find this useful?
+                    </h2>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 0 0 16px 0;">
+                    <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.6;">
+                      Share your code &mdash; they'll get ${escapeHtml(ctx.referral.discountDisplay)}, and you'll get ${escapeHtml(ctx.referral.rewardDisplay)} back when they buy.
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p style="margin: 0 0 8px 0; font-size: 14px; color: rgba(255,255,255,0.6);">
+                      Just share this link:
+                    </p>
+                    <p style="margin: 0; padding: 12px 16px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-family: monospace; font-size: 14px; color: rgba(255,255,255,0.8);">
+                      ${escapeHtml(ctx.referral.shareUrl)}
                     </p>
                   </td>
                 </tr>
@@ -218,11 +270,11 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
           </tr>
 
           <!-- Spacer -->
-          <tr><td style="height: 32px;"></td></tr>
+          <tr><td style="height: 48px;"></td></tr>
 
-          <!-- Secondary CTA Button -->
+          <!-- Second CTA Button -->
           <tr>
-            <td align="center" style="padding: 0 0 32px 0;">
+            <td align="center" style="padding: 0 0 48px 0;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="center" style="background-color: #0066FF; border-radius: 6px;">
@@ -234,17 +286,19 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
               </table>
             </td>
           </tr>
+          `
+              : ''
+          }
 
-          <!-- Reply invitation + Sign-off -->
+          <!-- Agency help + Sign-off -->
           <tr>
-            <td style="padding: 0 0 32px 0;">
+            <td style="padding: 0;">
               <p style="margin: 0 0 24px 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
-                If you have questions or want help interpreting anything, just reply to this email.
+                If you need help finding an agency to work with, reply to this email.
               </p>
               <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.6;">
-                &mdash;<br>
-                Charlie<br>
-                Founder, Anthrasite
+                &mdash; Charlie<br>
+                <span style="font-size: 14px;">Founder, Anthrasite</span>
               </p>
             </td>
           </tr>
@@ -263,52 +317,65 @@ function buildHtmlEmail(ctx: ReportReadyContext): string {
 function buildPlainTextEmail(ctx: ReportReadyContext): string {
   const { firstName, businessName, reportLink } = ctx
 
-  return `Hi ${firstName},
+  return `ANTHRASITE
+VALUE, CRYSTALLIZED
 
-Your website audit for ${businessName} is ready.
+Hi ${firstName},
 
-Download your report: ${reportLink}
-
-This report shows where ${businessName}'s site is helping—or holding back—people who are trying to find you, trust you, and take action. It's designed to be practical, not theoretical.
+This report shows how well ${businessName}'s site helps people find you, trust you, and take action. It's designed to be practical, not theoretical.
 
 
 HOW TO USE THE REPORT
 
-- Start with Page 1 for the overall score, impact range, and top priorities.
-- The Priority Details pages explain what matters most and why, in order of business impact.
-- The Detailed Results sections show the exact measurements behind each finding.
+You can tackle these findings yourself or hand this report to the person who helps with your website.
+
+Page 1 shows your total score, the expected financial impact, and top priorities. This gives you a clear overview of where you stand.
+
+The Priority Details page shows each issue we found, ranked by business impact. It is a list of opportunities to improve your website and business.
+
+The Detailed Results sections show the exact measurements behind each finding. We give you the details behind the conclusions, with clear explanations of what they mean.
 
 
 WHAT'S IN THE REPORT
 
-- Your overall performance score
-- A ranked list of the most important issues
-- Estimated monthly value ranges tied to fixing each issue
-- Detailed measurements organized by how visitors experience your site
+Your overall performance score. The weighted total of how your site performed across all the metrics we measure.
 
+Estimated monthly value across all issues. Dollar ranges are rough estimates. They depend on your business size, the severity of the issue, and where it happens in the customer journey. They're meant to help you prioritize—not to forecast outcomes.
 
-HOW ISSUES AND DOLLAR ESTIMATES WORK
+A ranked list of the most important issues. We identify issues by grouping related metrics that create real friction for visitors.
 
-Issues are identified by grouping related metrics that create real friction for visitors. Dollar ranges are directional estimates, based on your business size, issue severity, and where the problem appears in the customer journey. They're meant to help you prioritize—not to forecast outcomes.
+Detailed measurements organized by how visitors experience your site. We group findings into four customer journey stages:
 
+- Find — how customers discover you.
+- Trust — whether you appear credible.
+- Understand — how clearly you explain what you offer.
+- Contact — how easily customers can take the next step.
 
-HOW THE SECTIONS ARE ORGANIZED
-
-Findings are grouped by four journey stages:
-
-- Find — how customers discover you
-- Trust — whether you appear credible
-- Understand — how clearly you explain what you offer
-- Contact — how easily customers can take the next step
 
 You don't need to read it all at once. Fixing even one or two high-impact items can make a meaningful difference.
 
-Download your report: ${reportLink}
 
-If you have questions or want help interpreting anything, just reply to this email.
+Download Your Report: ${reportLink}
 
-—
-Charlie
+${
+  ctx.referral
+    ? `
+KNOW SOMEONE WHO'D FIND THIS USEFUL?
+
+Share your code — they'll get ${ctx.referral.discountDisplay}, and you'll get ${ctx.referral.rewardDisplay} back when they buy.
+
+Just share this link:
+${ctx.referral.shareUrl}
+
+
+Download Your Report: ${reportLink}
+
+`
+    : ''
+}
+If you need help finding an agency to work with, reply to this email.
+
+— Charlie
 Founder, Anthrasite
 `
 }
