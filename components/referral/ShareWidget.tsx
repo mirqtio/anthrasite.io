@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Copy, Check, Gift } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 
 interface ShareWidgetProps {
@@ -81,6 +82,18 @@ export function ShareWidget({
             )}
             <span className="text-[14px]">{copied ? 'Copied!' : 'Copy'}</span>
           </button>
+        </div>
+
+        {/* QR Code */}
+        <div className="flex justify-center py-4">
+          <div className="p-4 bg-white rounded-xl">
+            <QRCodeSVG
+              value={shareUrl}
+              size={120}
+              level="M"
+              includeMargin={false}
+            />
+          </div>
         </div>
 
         {/* Share link */}
