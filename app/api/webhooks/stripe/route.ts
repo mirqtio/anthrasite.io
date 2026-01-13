@@ -15,7 +15,9 @@ import {
   executePayout,
   recordConversion,
   incrementRedemptionCount,
+  updateCodeTracking,
 } from '@/lib/referral/payout'
+import { sendWebhookFailureAlert } from '@/lib/slack/alerts'
 
 /**
  * ANT-88: Stripe Webhook Handler
@@ -45,6 +47,11 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
     console.error('[Stripe Webhook] Signature verification failed:', message)
+    // Alert to Slack - signature failures are critical config issues
+    await sendWebhookFailureAlert({
+      error: `Signature verification failed: ${message}`,
+      eventType: 'unknown (signature failed)',
+    })
     return NextResponse.json(
       { error: `Webhook signature verification failed: ${message}` },
       { status: 400 }
@@ -62,6 +69,21 @@ export async function POST(request: NextRequest) {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       console.error('[Stripe Webhook] Error handling checkout:', message)
+      // Alert to Slack with customer details
+      await sendWebhookFailureAlert({
+        eventId: event.id,
+        eventType: event.type,
+        error: message,
+        customerEmail:
+          session.customer_details?.email ||
+          session.customer_email ||
+          undefined,
+        leadId: session.metadata?.leadId,
+        paymentIntentId:
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent?.id,
+      })
       // Return 500 so Stripe retries
       return NextResponse.json(
         { error: `Failed to process checkout: ${message}` },
@@ -407,6 +429,20 @@ async function trackReferralConversion(
         )
 
         console.log('[Stripe Webhook] Payout result:', payoutResult)
+
+        // Update code tracking counters (total_reward_paid_cents, period_reward_paid_cents, pending_payout_cents)
+        if (payoutResult.amountPaidCents > 0 || payoutResult.pendingCents > 0) {
+          await updateCodeTracking(
+            referralCode.id,
+            payoutResult.amountPaidCents,
+            payoutResult.pendingCents
+          )
+          console.log('[Stripe Webhook] Updated code tracking:', {
+            codeId: referralCode.id,
+            amountPaid: payoutResult.amountPaidCents,
+            pending: payoutResult.pendingCents,
+          })
+        }
       }
     }
 
