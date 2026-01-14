@@ -8,12 +8,14 @@ import { Logo } from '@/components/Logo'
 interface LegalPageLayoutProps {
   title: string
   lastUpdated?: string
+  showLastUpdated?: boolean
   children: React.ReactNode
 }
 
 export function LegalPageLayout({
   title,
   lastUpdated = 'October 14, 2025',
+  showLastUpdated = true,
   children,
 }: LegalPageLayoutProps) {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
@@ -51,10 +53,10 @@ export function LegalPageLayout({
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              href="/#assessment"
+              href="/#how-it-works"
               className="text-[17px] opacity-70 hover:opacity-100 transition-opacity"
             >
-              Method
+              How It Works
             </Link>
             <Link
               href="/#faq"
@@ -89,11 +91,11 @@ export function LegalPageLayout({
           <div className="md:hidden absolute top-full left-0 right-0 bg-[#141414] border-t border-white/10">
             <div className="flex flex-col py-4">
               <Link
-                href="/#assessment"
+                href="/#how-it-works"
                 className="px-5 py-3 text-[17px] opacity-70 hover:opacity-100 transition-opacity"
                 onClick={() => setShowMobileMenu(false)}
               >
-                Method
+                How It Works
               </Link>
               <Link
                 href="/#faq"
@@ -118,10 +120,14 @@ export function LegalPageLayout({
       <main className="pt-[120px] pb-[60px] px-10">
         <div className="max-w-[800px] mx-auto prose prose-invert">
           <h1 className="text-[48px] font-light mb-8">{title}</h1>
-          <p className="text-[17px] opacity-60 mb-12">
-            Last updated: {lastUpdated}
-          </p>
-          <hr className="border-white/10 my-12" />
+          {showLastUpdated && (
+            <>
+              <p className="text-[17px] opacity-60 mb-12">
+                Last updated: {lastUpdated}
+              </p>
+              <hr className="border-white/10 my-12" />
+            </>
+          )}
           {children}
         </div>
       </main>

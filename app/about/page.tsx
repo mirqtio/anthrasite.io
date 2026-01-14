@@ -3,36 +3,35 @@ import { LegalPageLayout } from '@/components/legal/LegalPageLayout'
 
 export default function AboutPage() {
   return (
-    <LegalPageLayout title="About Anthrasite">
+    <LegalPageLayout title="About Us" showLastUpdated={false}>
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        Anthrasite helps growth teams understand how their websites actually
-        perform for real visitors. We combine technical audits, behavioral data,
-        and narrative reporting so you can see where you are leaving money on
-        the table Instead of generic best-practices checklists, we focus on the
-        specific frictions your visitors encounter 7e2 from content clarity and
-        information architecture to perceived performance, trust, and UX debt.
+        I'm Charlie, the founder.
       </p>
 
-      <h3 className="text-[24px] font-light mt-8 mb-4">What we do</h3>
-      <ul className="list-disc pl-6 text-[17px] opacity-80 space-y-2 mb-6">
-        <li>Run deep, page-level audits of high-intent flows</li>
-        <li>Quantify narrative and UX issues in plain language</li>
-        <li>Prioritize fixes by business impact, not just severity labels</li>
-        <li>Provide concrete, implementation-ready recommendations</li>
-      </ul>
-
-      <h3 className="text-[24px] font-light mt-8 mb-4">Who it is for</h3>
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        Anthrasite is designed for founders, marketing leaders, and growth teams
-        who already invest in acquisition and want clearer visibility into how
-        well their website converts that demand.
+        Before Anthrasite, I was VP of Engineering at Gainbridge, where I helped
+        scale the business from $30 million to over a billion in two years.
+        Along the way, I kept seeing the same gap: enterprise companies had
+        entire teams dedicated to understanding how their websites performed.
+        Small businesses—the ones who actually depend on their websites to bring
+        in customers—got generic checklists and scare tactics.
       </p>
 
-      <h3 className="text-[24px] font-light mt-8 mb-4">How to get in touch</h3>
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        If you would like to learn more, request an assessment, or talk about a
-        custom engagement, email <strong>hello@anthrasite.io</strong> and we
-        will get back to you.
+        Most audit tools tell you what's broken. They don't tell you what it's
+        costing you or what to fix first.
+      </p>
+
+      <p className="text-[17px] opacity-80 leading-relaxed mb-6">
+        I built Anthrasite to change that. Every report translates technical
+        issues into business impact, prioritizes what actually matters to your
+        revenue, and gives you a clear path forward—whether you fix it yourself
+        or hand it to someone who can.
+      </p>
+
+      <p className="text-[17px] opacity-80 leading-relaxed mb-6">
+        If you have questions or want to talk, I'm at{' '}
+        <strong>hello@anthrasite.io</strong>.
       </p>
     </LegalPageLayout>
   )
