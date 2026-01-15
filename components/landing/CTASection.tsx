@@ -10,6 +10,7 @@ interface CTASectionProps {
   impactLow: string
   impactHigh: string
   price: number
+  discountedPrice?: number
   isLoading: boolean
   onCheckout: () => void
   error?: string | null
@@ -21,6 +22,7 @@ export function CTASection({
   impactLow,
   impactHigh,
   price,
+  discountedPrice,
   isLoading,
   onCheckout,
   error,
@@ -126,7 +128,20 @@ export function CTASection({
                 </>
               ) : (
                 <>
-                  <span>Get Your Report – ${price}</span>
+                  <span>
+                    Get Your Report –{' '}
+                    {discountedPrice !== undefined &&
+                    discountedPrice < price ? (
+                      <>
+                        <span className="line-through opacity-60">
+                          ${price}
+                        </span>{' '}
+                        ${discountedPrice}
+                      </>
+                    ) : (
+                      `$${price}`
+                    )}
+                  </span>
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
