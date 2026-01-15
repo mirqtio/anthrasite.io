@@ -12,6 +12,90 @@ import { CATALOG_HOOKS } from './catalog-hooks'
 
 export { validatePurchaseToken }
 
+/**
+ * LeadShop API URL for short token lookups
+ */
+const LEADSHOP_API_URL =
+  process.env.LEADSHOP_API_URL || 'http://5.161.19.136:8000'
+
+/**
+ * Response from short token lookup API
+ */
+export interface ShortTokenData {
+  leadId: string
+  runId: string | null
+}
+
+/**
+ * Looks up a short landing token from LeadShop API.
+ * Short tokens are 8-character case-insensitive IDs (e.g., "k4m7np2q").
+ *
+ * @param shortId - The short token ID from the URL
+ * @returns Token data with leadId/runId, or null with error reason
+ */
+export async function lookupShortToken(
+  shortId: string
+): Promise<{ data: ShortTokenData | null; error: string | null }> {
+  try {
+    const response = await fetch(
+      `${LEADSHOP_API_URL}/api/v1/landing-tokens/${shortId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Don't cache - we need fresh data and access tracking
+        cache: 'no-store',
+      }
+    )
+
+    if (response.status === 404) {
+      const errorData = await response.json().catch(() => ({}))
+      return {
+        data: null,
+        error: errorData.detail || 'This link is invalid.',
+      }
+    }
+
+    if (response.status === 410) {
+      return {
+        data: null,
+        error: 'This link has expired.',
+      }
+    }
+
+    if (response.status === 429) {
+      return {
+        data: null,
+        error: 'Too many requests. Please try again later.',
+      }
+    }
+
+    if (!response.ok) {
+      console.error('Short token lookup failed:', response.status)
+      return {
+        data: null,
+        error: 'Unable to load this page. Please try again.',
+      }
+    }
+
+    const data = await response.json()
+    return {
+      data: {
+        leadId: data.leadId,
+        runId: data.runId || null,
+      },
+      error: null,
+    }
+  } catch (error) {
+    console.error('Short token lookup error:', error)
+    return {
+      data: null,
+      error: 'Unable to connect to server. Please try again.',
+    }
+  }
+}
+
 const s3Client = new S3Client({
   region: 'us-east-1',
 })
