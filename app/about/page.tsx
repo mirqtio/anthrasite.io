@@ -3,34 +3,42 @@ import { LegalPageLayout } from '@/components/legal/LegalPageLayout'
 
 export default function AboutPage() {
   return (
-    <LegalPageLayout title="About Us" showLastUpdated={false}>
+    <LegalPageLayout title="About Anthrasite" showLastUpdated={false}>
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        I'm Charlie, the founder.
+        Most website audits are designed to scare you into buying something.
       </p>
 
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        Before Anthrasite, I was VP of Engineering at Gainbridge, where I helped
-        scale the business from $30 million to over a billion in two years.
-        Along the way, I kept seeing the same gap: enterprise companies had
-        entire teams dedicated to understanding how their websites performed.
-        Small businesses—the ones who actually depend on their websites to bring
-        in customers—got generic checklists and scare tactics.
+        They flood you with technical jargon, label everything "critical," and
+        leave you feeling like your site is a disaster—without telling you what
+        actually matters or where to start.
       </p>
 
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        Most audit tools tell you what's broken. They don't tell you what it's
-        costing you or what to fix first.
+        We think small businesses deserve better.
       </p>
 
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        I built Anthrasite to change that. Every report translates technical
-        issues into business impact, prioritizes what actually matters to your
-        revenue, and gives you a clear path forward—whether you fix it yourself
-        or hand it to someone who can.
+        Anthrasite was built on a simple belief: the insights that help
+        enterprise companies understand their websites shouldn't require an
+        enterprise budget. Every business owner should be able to see what's
+        working, what isn't, and what to fix first—in plain language,
+        prioritized by real business impact.
       </p>
 
       <p className="text-[17px] opacity-80 leading-relaxed mb-6">
-        If you have questions or want to talk, I'm at{' '}
+        We lead with value, not fear. Our reports tell you what's costing you
+        money and equip you with the information to address it. We'd rather help
+        you make a confident decision than pressure you into a panicked one.
+      </p>
+
+      <p className="text-[17px] opacity-80 leading-relaxed mb-6">
+        The good news: most website problems are fixable, and simpler than they
+        sound.
+      </p>
+
+      <p className="text-[17px] opacity-80 leading-relaxed mb-6">
+        If that sounds like the kind of company you want to work with, we're at{' '}
         <strong>hello@anthrasite.io</strong>.
       </p>
     </LegalPageLayout>
