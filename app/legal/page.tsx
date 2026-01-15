@@ -29,6 +29,17 @@ export default function LegalHubPage() {
         </li>
         <li>
           <Link
+            href="/legal/refund-policy"
+            className="text-accent hover:underline"
+          >
+            Refund Policy
+          </Link>
+          <p className="opacity-70">
+            Our 90-day performance guarantee and how to request a refund.
+          </p>
+        </li>
+        <li>
+          <Link
             href="/legal/do-not-sell"
             className="text-accent hover:underline"
           >

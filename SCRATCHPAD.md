@@ -510,3 +510,85 @@ for (const row of rows) {
 
 1. `7841d09` - feat(admin): Add referral program admin UI (21 files)
 2. `cda1ee0` - fix(admin): Parse JSON config values from database (1 file)
+
+---
+
+## ANT-677: UX Copy Rewrite
+
+**Date:** 2026-01-13
+**Status:** In progress
+
+### Completed
+
+#### A-F: Component Copy Review
+
+- ShareWidget converted to expandable accordion (grid animation pattern from FAQSection)
+- Analytics warnings fixed (added gtag fallback in analytics-client.ts)
+- API error messages confirmed - toast handles friendly copy
+- Terminology standardized: "referral code" (user), "?promo=" (URL), "promotion code" (Stripe)
+
+#### Report Ready Email - Referral Section
+
+Added conditional referral share section to `lib/email/templates/reportReady.ts`
+
+**New interface field:**
+
+```typescript
+referral?: {
+  code: string
+  shareUrl: string      // e.g., https://www.anthrasite.io/?promo=CODE
+  discountDisplay: string  // e.g., "$100 off"
+  rewardDisplay: string    // e.g., "$100"
+}
+```
+
+**Email structure (with referral):**
+
+1. Logo + Tagline
+2. Greeting
+3. Intro paragraph
+4. **First CTA** (Download Your Report)
+5. How to Use the Report card
+6. What's in the Report card
+7. Encouragement text
+8. **Referral section** (blue border accent) — "Know someone who'd find this useful?"
+9. **Second CTA** (Download Your Report)
+10. Agency help + Sign-off
+
+**Preview file:** `email-preview.html` (delete after review)
+
+#### G: Admin Portal Integration
+
+Wired config variables from Settings to CreateCodeModal:
+
+1. `app/admin/referrals/page.tsx` - Fetches config, passes to CodesToolbar
+2. `components/admin/referrals/CodesToolbar.tsx` - Accepts config prop, passes to CreateCodeModal
+3. `components/admin/referrals/CreateCodeModal.tsx` - Uses config values as form defaults:
+   - Initial values when modal opens
+   - Tier-specific defaults when user selects a tier type
+
+**Config values now wired:**
+
+- Standard: discount, reward
+- F&F: discount
+- Affiliate: discount, reward percent
+
+### Commit
+
+```
+1508dd4 feat(referrals): Update referral UX copy and wire admin config
+
+- Convert ShareWidget to expandable accordion pattern
+- Add gtag fallback to analytics-client for when AnalyticsManager not initialized
+- Add referral share section to report ready email template
+- Wire admin config values to CreateCodeModal form defaults
+- Fix ToasterClient descriptionStyle TypeScript error
+```
+
+**Files changed:** 7 files, 401 insertions(+), 225 deletions(-)
+
+**Pushed to:** origin/main (2026-01-13)
+
+### Status: Complete
+
+All sections A-G reviewed, committed, and pushed.

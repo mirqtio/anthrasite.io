@@ -219,6 +219,7 @@ export function PurchaseHomepage() {
         <div className="footer-links">
           <a href="/legal/privacy">Privacy Policy</a>
           <a href="/legal/terms">Terms of Service</a>
+          <a href="/legal/refund-policy">Refund policy</a>
           <a href="/legal/do-not-sell">
             Do Not Sell or Share My Personal Information
           </a>

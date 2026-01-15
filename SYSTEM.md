@@ -1,8 +1,8 @@
-# SYSTEM.md (v1.5)
+# SYSTEM.md (v1.6)
 
 **Project**: Anthrasite.io
-**Last Updated**: 2025-12-25
-**Change Summary**: Updated Cross-Project Temporal Contract for journey_v2 profile support.
+**Last Updated**: 2025-12-31
+**Change Summary**: Added JWT-authenticated route patterns and operational notes.
 **Owner**: Anthrasite Platform Team
 **Status**: Canonical Architecture Document (Ground Truth)
 
@@ -28,19 +28,16 @@
 
 ## 3. Core Technology Stack
 
-| Layer                    | Technology                               | Notes                                                      |
-| :----------------------- | :--------------------------------------- | :--------------------------------------------------------- |
-| **Frontend**             | Next.js (App Router)                     | React 18, streaming server components enabled              |
-| **Styling**              | Tailwind CSS                             | Consistent with Anthrasite brand kit                       |
-| **Database**             | PostgreSQL (Vercel-hosted)               | Supabase-compatible schema                                 |
-| **ORM**                  | Prisma                                   | Enforces type safety and schema consistency                |
-| **Payments**             | Stripe Payment Element                   | Embedded flow using `PaymentIntent` API                    |
-| **Queue / Job Dispatch** | Vercel KV or Upstash Queue               | Provides lightweight asynchronous job delivery             |
-| **Worker Runtime**       | Node.js Worker or Supabase Edge Function | Consumes queued jobs and generates reports                 |
-| **PDF Generation**       | Playwright (print-to-PDF)                | Deterministic, headless Chromium rendering                 |
-| **Email Delivery**       | Google Workspace (Gmail SMTP)            | Provider-abstracted; swappable later for Postmark/SendGrid |
-| **Testing**              | Vitest (unit) / Playwright (E2E)         | Multi-project CI pipeline with Vercel build parity         |
-| **Deployment**           | Vercel                                   | Continuous deployment from main branch                     |
+| Layer              | Technology                       | Notes                                                      |
+| :----------------- | :------------------------------- | :--------------------------------------------------------- |
+| **Frontend**       | Next.js (App Router)             | React 18, streaming server components enabled              |
+| **Styling**        | Tailwind CSS                     | Consistent with Anthrasite brand kit                       |
+| **Database**       | PostgreSQL (Vercel-hosted)       | Supabase-compatible schema                                 |
+| **ORM**            | Prisma                           | Enforces type safety and schema consistency                |
+| **Payments**       | Stripe Payment Element           | Embedded flow using `PaymentIntent` API                    |
+| **Email Delivery** | Google Workspace (Gmail SMTP)    | Provider-abstracted; swappable later for Postmark/SendGrid |
+| **Testing**        | Vitest (unit) / Playwright (E2E) | Multi-project CI pipeline with Vercel build parity         |
+| **Deployment**     | Vercel                           | Continuous deployment from main branch                     |
 
 ## 4. Key Architectural Decisions & Patterns
 
@@ -54,9 +51,92 @@
 - **ADR-P08 (Build-Time Rendering)**: Pages with runtime dependencies must be explicitly marked for dynamic rendering (`export const dynamic = 'force-dynamic'`)
 - **ADR-P11 (Middleware Architecture)**: Middleware is implemented as a single, chainable architecture in `middleware.ts`.
 - **ADR-P12 (CI/CD & Testing)**: The CI pipeline uses a multi-project Playwright setup with Vercel build parity, favoring integration tests over heavy mocking.
+- **ADR-P15 (Token & Run Consistency)**: Landing pages use JWT tokens containing `runId` to ensure email, LP, and report show consistent data from the same pipeline run.
 
 **Operational Reliability Patterns:**
-Anthrasite.io inherits the _Producer–Validator_ and _Failure Contract_ conventions defined in LeadShop’s SYSTEM.md §4.3 and §6, ensuring consistent idempotency and explicit validation across environments.
+Anthrasite.io inherits the _Producer–Validator_ and _Failure Contract_ conventions defined in LeadShop's SYSTEM.md §4.3 and §6, ensuring consistent idempotency and explicit validation across environments.
+
+## 4.1 JWT-Authenticated Routes
+
+### Production URL Patterns
+
+| Route         | URL Pattern                 | Token Location | Purpose                                         |
+| ------------- | --------------------------- | -------------- | ----------------------------------------------- |
+| Landing Page  | `/landing/{jwt_token}`      | Path segment   | Pre-purchase sales page with lead-specific data |
+| Purchase Page | `/purchase?sid={jwt_token}` | Query param    | Post-intent checkout flow                       |
+| Survey        | `/survey?token={jwt_token}` | Query param    | Customer feedback collection                    |
+
+### Token Specification
+
+**Algorithm**: HS256 (HMAC-SHA256)
+**Secret**: `SURVEY_SECRET_KEY` environment variable (shared with LeadShop)
+
+**Token Payload (Landing)**:
+
+```json
+{
+  "leadId": "3093",
+  "runId": "lead_3093_batch_20251227_013442_191569fa",
+  "jti": "landing-1767172542628",
+  "scope": "view",
+  "aud": "landing",
+  "iat": 1767172542,
+  "exp": 1769764542
+}
+```
+
+**Token Payload (Purchase)**:
+
+```json
+{
+  "leadId": "3093",
+  "runId": "lead_3093_batch_...",
+  "jti": "purchase-...",
+  "scope": "buy",
+  "tier": "basic",
+  "aud": "purchase",
+  "iat": ...,
+  "exp": ...
+}
+```
+
+### Token TTL
+
+| Token Type | TTL     | Rationale                          |
+| ---------- | ------- | ---------------------------------- |
+| Landing    | 30 days | Email campaign lifecycle           |
+| Purchase   | 7 days  | Shorter window for checkout intent |
+
+### Key Locations
+
+| Environment   | Location        | Notes                         |
+| ------------- | --------------- | ----------------------------- |
+| Local dev     | `.env`          | Primary source                |
+| Local scripts | `.env.local`    | **Must match `.env`**         |
+| Production    | Vercel env vars | `SURVEY_SECRET_KEY`           |
+| LeadShop      | `.env`          | Same key for token generation |
+
+### Development Bypass Rules
+
+In **development only** (`NODE_ENV !== 'production'`):
+
+- Numeric tokens (e.g., `/landing/3093`) are accepted and converted to `{ leadId: token }`
+- Special tokens `test-token` and `3102` map to lead ID `3102`
+
+**Production**: ALL tokens must be valid JWTs signed with `SURVEY_SECRET_KEY`. Numeric tokens are rejected.
+
+### Error States
+
+| Condition                   | User-Facing Message                   | Code Location                  |
+| --------------------------- | ------------------------------------- | ------------------------------ |
+| Invalid/expired JWT         | "This link has expired or is invalid" | `app/landing/[token]/page.tsx` |
+| Missing lead data           | "Report not found for this link"      | `app/landing/[token]/page.tsx` |
+| Missing `SURVEY_SECRET_KEY` | Logs error, returns null              | `lib/purchase/index.ts`        |
+
+### Token Generation
+
+**LeadShop (Python)**: `construct_landing_url()` in `src/leadshop/api/email_routes.py`
+**Local testing (Node)**: `scripts/gen_purchase_token.mjs`
 
 ## 5. Post-G1 File Structure
 

@@ -12,45 +12,53 @@ import Image from 'next/image'
 
 const PROGRESS_STEPS = [
   {
-    label: 'Checking security',
-    title: 'Security & Trust',
+    label: 'Find',
+    title: 'Can customers discover your business?',
     description:
-      'We check for SSL certificates, security headers, and common vulnerabilities. Visitors abandon sites that feel unsafe—and Google penalizes insecure pages in search rankings.',
+      "If people can't find you in search results or on maps, nothing else matters. We look at local search presence, page speed, and the technical signals Google uses to decide what to show.",
   },
   {
-    label: 'Measuring speed',
-    title: 'Page Speed',
+    label: 'Trust',
+    title: 'Does your website inspire confidence?',
     description:
-      'We measure how fast your site loads on real devices. Every second of delay costs you customers—53% of mobile visitors leave if a page takes over 3 seconds to load.',
+      'Visitors decide in seconds whether your business feels legitimate. We look at security indicators, reviews, professional presentation—the signals that make people stay or leave.',
   },
   {
-    label: 'Analyzing design',
-    title: 'Visual Experience',
+    label: 'Understand',
+    title: 'Is it clear what you offer?',
     description:
-      'We review your layout, typography, and mobile responsiveness. First impressions happen in milliseconds, and outdated design erodes trust before visitors even read your content.',
+      'Once visitors stay, they need to quickly grasp your value. We assess your layout, messaging, and how easily someone can understand what makes you different.',
   },
   {
-    label: 'Generating insights',
-    title: 'Business Impact',
+    label: 'Contact',
+    title: 'Can interested visitors take action?',
     description:
-      'We translate technical findings into revenue impact. Not all issues matter equally—we prioritize what will actually move the needle for your specific business.',
+      'This is where browsers become buyers. We check whether your calls-to-action are visible, contact info is findable, and everything works on mobile.',
+  },
+  {
+    label: 'Impact',
+    title: 'Calculating what matters for you',
+    description:
+      "Every website has issues. The question is which ones matter for yours. We're combining what we found with your industry, location, and size to calculate what these problems are actually costing you—and which fixes will move the needle most.",
   },
 ]
 
 function ProgressPageRunning({ onComplete }: { onComplete?: () => void }) {
   const [currentStep, setCurrentStep] = useState(0)
+  const isLastStep = currentStep === PROGRESS_STEPS.length - 1
 
   useEffect(() => {
     if (currentStep < PROGRESS_STEPS.length - 1) {
+      // Steps 1-4: 20 seconds each
       const timer = setTimeout(() => {
         setCurrentStep((prev) => prev + 1)
-      }, 4000)
+      }, 20000)
       return () => clearTimeout(timer)
     } else {
-      // All steps complete, advance after a moment
+      // Last step (Impact): holds until ready, then auto-completes after 5s for demo
       const timer = setTimeout(() => {
         onComplete?.()
-      }, 4000)
+      }, 5000)
       return () => clearTimeout(timer)
     }
   }, [currentStep, onComplete])
@@ -66,9 +74,9 @@ function ProgressPageRunning({ onComplete }: { onComplete?: () => void }) {
           Analyzing acmeplumbing.com...
         </h1>
 
-        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
+        <div className="flex flex-col md:flex-row items-start justify-center gap-8 md:gap-0">
           {/* Left: Progress checklist */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 md:mr-12">
             {PROGRESS_STEPS.map((step, i) => (
               <div key={step.label} className="flex items-center gap-3">
                 {i < currentStep ? (
@@ -94,8 +102,8 @@ function ProgressPageRunning({ onComplete }: { onComplete?: () => void }) {
           </div>
 
           {/* Right: Step explanation */}
-          <div className="bg-white/5 rounded-xl p-6">
-            <h3 className="text-white text-[20px] font-medium mb-3">
+          <div className="bg-white/5 rounded-xl p-6 max-w-md">
+            <h3 className="text-white text-[20px] font-medium mb-2">
               {PROGRESS_STEPS[currentStep].title}
             </h3>
             <p className="text-white/70 text-[15px] leading-relaxed">
@@ -105,7 +113,7 @@ function ProgressPageRunning({ onComplete }: { onComplete?: () => void }) {
         </div>
 
         <p className="text-white/60 text-[16px] mt-12 text-center">
-          This usually takes 1-2 minutes.
+          This usually takes about 90 seconds.
         </p>
         <p className="text-white/40 text-[14px] mt-4 text-center">
           We&apos;ll email you when it&apos;s ready.
@@ -282,7 +290,8 @@ function IntakeForm({ onSubmit }: { onSubmit?: () => void }) {
     { label: 'Under $10k', value: 'under-10k' },
     { label: '$10k-$25k', value: '10k-25k' },
     { label: '$25k-$75k', value: '25k-75k' },
-    { label: '$75k-$200k', value: '75k-200k' },
+    { label: '$75k-$125k', value: '75k-125k' },
+    { label: '$125k-$200k', value: '125k-200k' },
     { label: 'Over $200k', value: 'over-200k' },
   ]
 
@@ -322,15 +331,16 @@ function IntakeForm({ onSubmit }: { onSubmit?: () => void }) {
               <label className="block text-gray-700 text-sm font-medium mb-1">
                 State
               </label>
-              <select className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 bg-white">
+              <select
+                defaultValue="CO"
+                className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2.5 text-gray-900 h-11 bg-white"
+              >
                 <option value="">--</option>
                 <option value="AL">AL</option>
                 <option value="AK">AK</option>
                 <option value="AZ">AZ</option>
                 <option value="CA">CA</option>
-                <option value="CO" selected>
-                  CO
-                </option>
+                <option value="CO">CO</option>
                 <option value="NY">NY</option>
                 <option value="TX">TX</option>
               </select>
@@ -686,9 +696,9 @@ export default function MockupsPage() {
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div>
+        <div>
+          <div className="overflow-hidden">
             {activeTab === 'homepage' && (
               <HomepageEntry onSubmit={goToIntakeLoading} />
             )}

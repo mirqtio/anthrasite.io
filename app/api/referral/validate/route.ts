@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
       valid: true,
       code: result.code?.code,
       discountDisplay: result.discountDisplay,
+      referrerName: result.code?.company_name || null,
       originalPriceCents: REPORT_PRICE.amount,
       discountedPriceCents,
     })

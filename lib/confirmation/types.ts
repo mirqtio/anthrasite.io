@@ -45,6 +45,9 @@ export interface ConfirmationContext {
   /** Referral reward display text (e.g., "$100", "10%") - what referrer earns */
   referralRewardDisplay?: string | null
 
+  /** Max redemptions for this referral code (null = unlimited) */
+  referralMaxRedemptions?: number | null
+
   // Enhanced Conversions customer data (from Stripe)
   /** Customer first name (for Enhanced Conversions) */
   customerFirstName?: string | null

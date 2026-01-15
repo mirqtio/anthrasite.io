@@ -2,11 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
-import {
-  setReferralCode,
-  hasToastBeenShown,
-  markToastShown,
-} from '@/lib/referral/storage'
+import { setReferralCode } from '@/lib/referral/storage'
 
 interface ReferralToastProps {
   promoCode: string | null
@@ -16,7 +12,6 @@ interface ReferralToastProps {
  * ReferralToast - Shows toast notification when user arrives with referral code
  *
  * Validates the code server-side, shows success/error toast, and stores valid codes.
- * Only shows toast once per code (tracks via localStorage).
  */
 export function ReferralToast({ promoCode }: ReferralToastProps) {
   // Ref to prevent double execution in React Strict Mode
@@ -32,11 +27,6 @@ export function ReferralToast({ promoCode }: ReferralToastProps) {
       return
     }
 
-    // Check if toast already shown for this code
-    if (hasToastBeenShown(promoCode)) {
-      return
-    }
-
     // Mark as validated immediately to prevent race conditions
     hasValidated.current = true
 
@@ -48,18 +38,24 @@ export function ReferralToast({ promoCode }: ReferralToastProps) {
         )
         const data = await response.json()
 
+        // Delay to ensure Toaster is fully hydrated before showing toast
+        await new Promise((resolve) => setTimeout(resolve, 500))
+
         if (data.valid) {
           // Store the code
           setReferralCode(promoCode!, data.discountDisplay)
 
-          // Show success toast
-          toast.success('Referral discount activated!', {
-            description: `${data.discountDisplay} will be applied at checkout.`,
-            duration: 4000,
-          })
+          // Build toast message with optional referrer name
+          const title = data.referrerName
+            ? `Referred by ${data.referrerName}`
+            : 'Referral discount activated!'
 
-          // Mark toast as shown
-          markToastShown(promoCode!)
+          // Show success toast with unique ID to prevent duplicates
+          toast.success(title, {
+            id: 'referral-toast',
+            description: `${data.discountDisplay} will be applied at checkout.`,
+            duration: 6000,
+          })
         } else {
           // Show error toast based on reason
           const messages: Record<string, string> = {
@@ -71,16 +67,13 @@ export function ReferralToast({ promoCode }: ReferralToastProps) {
           }
 
           toast.error('Invalid referral code', {
+            id: 'referral-toast',
             description:
               messages[data.reason] || 'Please check the code and try again.',
-            duration: 5000,
+            duration: 6000,
           })
-
-          // Still mark as shown to avoid repeated errors
-          markToastShown(promoCode!)
         }
-      } catch (error) {
-        console.error('[ReferralToast] Validation error:', error)
+      } catch {
         // Don't show error toast for network issues - user might be offline
       }
     }
@@ -88,6 +81,6 @@ export function ReferralToast({ promoCode }: ReferralToastProps) {
     validateAndShowToast()
   }, [promoCode])
 
-  // This component doesn't render anything - it just handles the toast
+  // Component renders nothing - toast is shown via sonner
   return null
 }

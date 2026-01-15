@@ -77,6 +77,7 @@ export async function lookupConfirmationContext(
     let referralCode: string | null = null
     let referralDiscountDisplay: string | null = null
     let referralRewardDisplay: string | null = null
+    let referralMaxRedemptions: number | null = null
     try {
       const supabase = getAdminClient()
       // Find the sale for this session to get the referral code
@@ -96,7 +97,7 @@ export async function lookupConfirmationContext(
         const { data: code } = await supabase
           .from('referral_codes')
           .select(
-            'code, discount_type, discount_amount_cents, discount_percent, reward_type, reward_amount_cents, reward_percent'
+            'code, discount_type, discount_amount_cents, discount_percent, reward_type, reward_amount_cents, reward_percent, max_redemptions'
           )
           .eq('sale_id', sale.id)
           .single()
@@ -117,6 +118,9 @@ export async function lookupConfirmationContext(
             // No reward configured, fall back to discount display
             referralRewardDisplay = referralDiscountDisplay
           }
+
+          // Capture max redemptions (null = unlimited)
+          referralMaxRedemptions = code.max_redemptions ?? null
         }
       }
     } catch (error) {
@@ -154,6 +158,7 @@ export async function lookupConfirmationContext(
       referralCode,
       referralDiscountDisplay,
       referralRewardDisplay,
+      referralMaxRedemptions,
       // Enhanced Conversions data
       customerFirstName,
       customerLastName,

@@ -21,6 +21,13 @@ export async function POST(request: NextRequest) {
       referralCode,
     } = body
 
+    // DEBUG: Log incoming referral code
+    console.log('[create-session] Request body:', {
+      leadId,
+      contactId,
+      referralCode: referralCode || '(none)',
+    })
+
     // Validate required fields
     if (!businessId || !leadId || !token) {
       return NextResponse.json(

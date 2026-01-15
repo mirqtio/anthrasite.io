@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { SecureCheckout } from '@/components/landing/SecureCheckout'
-import { ReferralPricingBadge } from '@/components/landing/ReferralPricingBadge'
 import { trackEvent } from '@/lib/analytics/analytics-client'
 import type { HookOpportunity } from '@/lib/landing/types'
 
@@ -29,8 +28,6 @@ interface HeroSectionProps {
   onCheckout: () => void
   /** Optional referral discount info */
   referralDiscount?: ReferralDiscount | null
-  /** Called when user clicks "remove" on referral badge */
-  onRemoveReferral?: () => void
 }
 
 export function HeroSection({
@@ -44,7 +41,6 @@ export function HeroSection({
   isLoading,
   onCheckout,
   referralDiscount,
-  onRemoveReferral,
 }: HeroSectionProps) {
   // Determine display price (discounted or original)
   const displayPrice = referralDiscount?.discountedPrice ?? price
@@ -169,15 +165,6 @@ export function HeroSection({
 
         {/* CTA Button - Hidden on mobile (sticky CTA handles it) */}
         <div className="hidden min-[800px]:flex flex-col items-center gap-3">
-          {/* Referral pricing badge - show above CTA when discount active */}
-          {referralDiscount && onRemoveReferral && (
-            <ReferralPricingBadge
-              originalPrice={price}
-              discountedPrice={referralDiscount.discountedPrice}
-              discountDisplay={referralDiscount.discountDisplay}
-              onRemove={onRemoveReferral}
-            />
-          )}
           <button
             onClick={() => {
               trackEvent('cta_click', {

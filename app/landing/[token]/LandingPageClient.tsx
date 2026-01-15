@@ -13,6 +13,7 @@ import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { SecureCheckout } from '@/components/landing/SecureCheckout'
 import { RecentPurchaseModal } from '@/components/landing/RecentPurchaseModal'
 import { getReferralCode, clearReferralCode } from '@/lib/referral/storage'
+import { ReferralDiscountIndicator } from '@/components/landing/ReferralDiscountIndicator'
 
 /** Recent purchase info from soft-gate check */
 interface RecentPurchase {
@@ -292,7 +293,6 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
               isLoading={isCheckoutLoading}
               onCheckout={handleCheckout}
               referralDiscount={referralDiscount}
-              onRemoveReferral={handleRemoveReferral}
             />
           </div>
         </div>
@@ -421,6 +421,14 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
         {/* Footer */}
         <LandingFooter />
       </div>
+
+      {/* Referral Discount Indicator - shows at bottom when discount active */}
+      {referralDiscount && (
+        <ReferralDiscountIndicator
+          discountDisplay={referralDiscount.discountDisplay}
+          onDismiss={handleRemoveReferral}
+        />
+      )}
 
       {/* Mobile Sticky CTA */}
       <MobileStickyCTA

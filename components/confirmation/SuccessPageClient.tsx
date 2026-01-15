@@ -81,7 +81,17 @@ export function SuccessPageClient({ context }: SuccessPageClientProps) {
             </p>
           </section>
 
-          {/* Section 2: Bento - 3 equal columns on desktop, stacked on mobile */}
+          {/* Section 2: Referral Share Widget (conditional) - above columns */}
+          {context.referralCode && context.referralDiscountDisplay && (
+            <ShareWidget
+              code={context.referralCode}
+              discountDisplay={context.referralDiscountDisplay}
+              rewardDisplay={context.referralRewardDisplay ?? undefined}
+              maxRedemptions={context.referralMaxRedemptions ?? undefined}
+            />
+          )}
+
+          {/* Section 3: Bento - 3 equal columns on desktop, stacked on mobile */}
           <div className="flex flex-col gap-8 min-[800px]:grid min-[800px]:grid-cols-3 min-[800px]:gap-8">
             {/* Column 1: Now What */}
             <div className="p-8 bg-white/5 rounded-2xl">
@@ -153,15 +163,6 @@ export function SuccessPageClient({ context }: SuccessPageClientProps) {
               </ul>
             </div>
           </div>
-
-          {/* Section 3: Referral Share Widget (conditional) */}
-          {context.referralCode && context.referralDiscountDisplay && (
-            <ShareWidget
-              code={context.referralCode}
-              discountDisplay={context.referralDiscountDisplay}
-              rewardDisplay={context.referralRewardDisplay ?? undefined}
-            />
-          )}
 
           {/* Section 4: Support - full width */}
           <section className="text-center pb-8">
