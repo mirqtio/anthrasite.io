@@ -14,6 +14,10 @@ import { SecureCheckout } from '@/components/landing/SecureCheckout'
 import { RecentPurchaseModal } from '@/components/landing/RecentPurchaseModal'
 import { getReferralCode, clearReferralCode } from '@/lib/referral/storage'
 import { ReferralDiscountIndicator } from '@/components/landing/ReferralDiscountIndicator'
+import {
+  VocSurveyModal,
+  markCtaClicked,
+} from '@/components/landing/VocSurveyModal'
 
 /** Recent purchase info from soft-gate check */
 interface RecentPurchase {
@@ -177,6 +181,9 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
           : undefined
 
       if (isCheckoutLoading) return
+
+      // Mark CTA as clicked to suppress VoC survey
+      markCtaClicked()
 
       // Track checkout click
       trackEvent('landing_checkout_click', {
@@ -457,6 +464,9 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
           onClose={() => setShowRecentPurchaseModal(false)}
         />
       )}
+
+      {/* VoC Abandoner Survey Modal */}
+      <VocSurveyModal leadId={context.leadId} landingTokenId={token} />
     </div>
   )
 }

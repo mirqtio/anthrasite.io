@@ -53,3 +53,19 @@ model WaitlistEntry {
   variantData Json?
   createdAt   DateTime @default(now())
 }
+
+// VoC Survey Response Model (ANT-691)
+model VocSurveyResponse {
+  id             String   @id @default(uuid())
+  landingTokenId String?  @map("landing_token_id")
+  leadId         String?  @map("lead_id")
+  answer         String?  // null if dismissed
+  otherText      String?  @map("other_text")
+  triggerType    String   @map("trigger_type")
+  secondsOnPage  Int      @map("seconds_on_page")
+  dismissed      Boolean  @default(false)
+  ipAddress      String?  @map("ip_address")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("voc_survey_responses")
+}
