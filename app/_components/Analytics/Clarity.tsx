@@ -30,7 +30,9 @@ export function Clarity() {
       '/purchase', // Purchase flow
     ]
     const isEnabledRoute =
-      enabledRoutes.includes(pathname || '') || pathname?.startsWith('/landing')
+      enabledRoutes.includes(pathname || '') ||
+      pathname?.startsWith('/landing') ||
+      pathname?.startsWith('/l/')
 
     if (!isEnabledRoute) return
 
