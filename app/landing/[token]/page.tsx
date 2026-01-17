@@ -8,6 +8,7 @@ import {
 import type { LandingContext } from '@/lib/landing/types'
 import { LandingPageClient } from './LandingPageClient'
 import { LandingPageSkeleton } from './loading'
+import { ReferralToast } from '@/components/referral/ReferralToast'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +16,7 @@ interface LandingPageProps {
   params: Promise<{
     token: string
   }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 /**
@@ -76,6 +78,10 @@ export default async function LandingPage(props: LandingPageProps) {
     redirect('/')
   }
 
+  // Extract promo code from URL (e.g., ?promo=OUTAGE20)
+  const sp = await props.searchParams
+  const promoParam = typeof sp?.promo === 'string' ? sp.promo : null
+
   const payload = await validatePurchaseToken(token)
 
   if (!payload) {
@@ -94,6 +100,7 @@ export default async function LandingPage(props: LandingPageProps) {
 
   return (
     <main className="bg-[#232323] text-white" data-testid="landing-root">
+      <ReferralToast promoCode={promoParam} silent />
       <Suspense fallback={<LandingPageSkeleton />}>
         <LandingContent token={token} context={context} />
       </Suspense>

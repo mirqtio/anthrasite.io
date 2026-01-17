@@ -6,14 +6,20 @@ import { setReferralCode } from '@/lib/referral/storage'
 
 interface ReferralToastProps {
   promoCode: string | null
+  /** If true, validates and stores code but skips showing success toast (for landing pages that have their own indicator) */
+  silent?: boolean
 }
 
 /**
  * ReferralToast - Shows toast notification when user arrives with referral code
  *
  * Validates the code server-side, shows success/error toast, and stores valid codes.
+ * Use silent={true} on landing pages where ReferralDiscountIndicator handles the UI.
  */
-export function ReferralToast({ promoCode }: ReferralToastProps) {
+export function ReferralToast({
+  promoCode,
+  silent = false,
+}: ReferralToastProps) {
   // Ref to prevent double execution in React Strict Mode
   const hasValidated = useRef(false)
 
@@ -45,17 +51,20 @@ export function ReferralToast({ promoCode }: ReferralToastProps) {
           // Store the code
           setReferralCode(promoCode!, data.discountDisplay)
 
-          // Build toast message with optional referrer name
-          const title = data.referrerName
-            ? `Referred by ${data.referrerName}`
-            : 'Referral discount activated!'
+          // Show success toast unless silent (landing pages have ReferralDiscountIndicator)
+          if (!silent) {
+            // Build toast message with optional referrer name
+            const title = data.referrerName
+              ? `Referred by ${data.referrerName}`
+              : 'Referral discount activated!'
 
-          // Show success toast with unique ID to prevent duplicates
-          toast.success(title, {
-            id: 'referral-toast',
-            description: `${data.discountDisplay} will be applied at checkout.`,
-            duration: 6000,
-          })
+            // Show success toast with unique ID to prevent duplicates
+            toast.success(title, {
+              id: 'referral-toast',
+              description: `${data.discountDisplay} will be applied at checkout.`,
+              duration: 6000,
+            })
+          }
         } else {
           // Show error toast based on reason
           const messages: Record<string, string> = {

@@ -18,6 +18,7 @@ import { lookupShortToken, lookupLandingContext } from '@/lib/landing/context'
 import type { LandingContext } from '@/lib/landing/types'
 import { LandingPageClient } from '@/app/landing/[token]/LandingPageClient'
 import { LandingPageSkeleton } from '@/app/landing/[token]/loading'
+import { ReferralToast } from '@/components/referral/ReferralToast'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,6 +26,7 @@ interface ShortLinkPageProps {
   params: Promise<{
     shortId: string
   }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 /**
@@ -87,6 +89,10 @@ export default async function ShortLinkPage(props: ShortLinkPageProps) {
     redirect('/')
   }
 
+  // Extract promo code from URL (e.g., ?promo=OUTAGE20)
+  const sp = await props.searchParams
+  const promoParam = typeof sp?.promo === 'string' ? sp.promo : null
+
   // Look up the short token from LeadShop API
   const { data: tokenData, error: tokenError } = await lookupShortToken(shortId)
 
@@ -107,6 +113,7 @@ export default async function ShortLinkPage(props: ShortLinkPageProps) {
 
   return (
     <main className="bg-[#232323] text-white" data-testid="landing-root">
+      <ReferralToast promoCode={promoParam} silent />
       <Suspense fallback={<LandingPageSkeleton />}>
         <LandingContent shortId={shortId} context={context} />
       </Suspense>
