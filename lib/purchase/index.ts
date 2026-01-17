@@ -7,15 +7,65 @@ export * from './types'
 // Valid audiences for purchase/landing tokens
 const VALID_AUDIENCES = ['purchase', 'landing'] as const
 
+// LeadShop API URL for short token lookups
+const LEADSHOP_API_URL =
+  process.env.LEADSHOP_API_URL || 'http://5.161.19.136:8000'
+
 /**
- * Validate purchase/landing JWT token
- * Extracts leadId, runId, and contactId from the token payload
+ * Check if a string looks like a short link ID vs a JWT.
+ * Short IDs are 8 alphanumeric chars, JWTs have dots and are longer.
+ */
+function isShortLinkId(token: string): boolean {
+  // Short link IDs are 8 lowercase alphanumeric characters
+  // JWTs have dots (header.payload.signature) and are much longer
+  return /^[a-z0-9]{8}$/i.test(token) && !token.includes('.')
+}
+
+/**
+ * Look up a short link ID from LeadShop API to get leadId/runId.
+ */
+async function lookupShortToken(
+  shortId: string
+): Promise<{ leadId: string; runId?: string } | null> {
+  try {
+    const response = await fetch(
+      `${LEADSHOP_API_URL}/api/v1/landing-tokens/${shortId}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+      }
+    )
+
+    if (!response.ok) {
+      console.error(
+        `Short token lookup failed: ${response.status} for ${shortId}`
+      )
+      return null
+    }
+
+    const data = await response.json()
+    return {
+      leadId: String(data.leadId),
+      runId: data.runId || undefined,
+    }
+  } catch (error) {
+    console.error('Short token lookup error:', error)
+    return null
+  }
+}
+
+/**
+ * Validate purchase/landing token - supports both JWT tokens and short link IDs.
+ * Extracts leadId, runId, and contactId from the token payload.
  *
- * Token must contain:
+ * For JWTs, token must contain:
  * - leadId: Lead identifier
  * - runId: Run identifier (for data consistency)
  * - contactId: Contact identifier (for multi-buyer support)
  * - aud: 'purchase' or 'landing'
+ *
+ * For short link IDs (8-char alphanumeric), looks up via LeadShop API.
  */
 export async function validatePurchaseToken(
   token: string
@@ -30,6 +80,17 @@ export async function validatePurchaseToken(
     }
   }
 
+  // Check if this is a short link ID (8 alphanumeric chars, no dots)
+  if (isShortLinkId(token)) {
+    const result = await lookupShortToken(token)
+    if (result) {
+      return { leadId: result.leadId, runId: result.runId }
+    }
+    console.error('Short token lookup returned null for:', token)
+    return null
+  }
+
+  // Otherwise, treat as JWT
   try {
     // Use SURVEY_SECRET_KEY (shared secret for all JWT tokens)
     if (!process.env.SURVEY_SECRET_KEY) {

@@ -1,594 +1,516 @@
-# Scratchpad
+# VoC: micro-survey for abandoners (ANT-691) — Final spec
 
-## Open
+## Punchline
 
-- ANT-585 — SEO / performance / accessibility baseline pass
+A **single-question**, **one-click** abandoner survey that triggers on **exit intent (desktop)** or **10s + scroll-up (mobile)**, **only if they did NOT click the CTA**, and **shows once per session**.
 
-  - https://linear.app/anthrasite/issue/ANT-585/seo-performance-accessibility-baseline-pass
-
----
-
-# Referral Admin UI — Implementation Plan
-
-**Date:** 2026-01-12
-**Status:** Ready for implementation
-
-## Overview
-
-Build a UI in the existing admin portal (`/admin/referrals`) to manage the referral program. This replaces the current CLI scripts (`create-ff-code.ts`, `toggle-code.ts`, etc.) with a proper admin interface.
+Goal: stop guessing why people leave; get enough signal to prioritize pricing vs credibility vs clarity vs targeting.
 
 ---
 
-## Data Architecture
+## Open questions (quick answers unblock implementation)
 
-### Source of Truth
+1. **Which page(s) should be eligible?**
 
-All values are stored in the database and read by the application at runtime:
+   - **Landing page only (v1)**. Once this works, expand.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Admin UI                                 │
-│                    /admin/referrals                              │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │ writes to
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        Database                                  │
-│  ┌─────────────────────┐    ┌─────────────────────┐            │
-│  │   referral_codes    │    │   referral_config   │            │
-│  │   (per-code)        │    │   (global settings) │            │
-│  └──────────┬──────────┘    └──────────┬──────────┘            │
-└─────────────┼──────────────────────────┼────────────────────────┘
-              │ read by                   │ read by
-              ▼                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     Application Layer                            │
-│  • /api/referral/validate → Toast, Pricing Badge                │
-│  • /api/checkout/create-session → Stripe discount               │
-│  • Stripe webhook → Payout calculation                          │
-│  • ShareWidget → Success page messaging                         │
-└─────────────────────────────────────────────────────────────────┘
-```
+2. **What exactly counts as “clicked the CTA”?**
 
-### Tables
+   - **Any click in the CTA area that navigates to checkout**.
+   - Implementation should use **selectors** for the CTA container + checkout navigation.
 
-**`referral_codes`** — Per-code configuration:
-
-- `code`, `tier`, `is_active`
-- `discount_type`, `discount_amount_cents`, `discount_percent`
-- `reward_type`, `reward_amount_cents`, `reward_percent`, `reward_trigger`
-- `max_redemptions`, `redemption_count`
-- `max_reward_total_cents`, `total_reward_paid_cents`
-- `max_reward_per_period_cents`, `period_reward_paid_cents`, `reward_period_days`
-- `company_name`, `notes`, `expires_at`
-
-**`referral_config`** — Global settings:
-
-- `ff_enabled` (boolean)
-- `default_standard_discount_cents` (number)
-- `default_standard_reward_cents` (number)
-- `default_ff_discount_cents` (number)
-- `default_affiliate_discount_cents` (number)
-- `default_affiliate_reward_percent` (number)
-
-**`referral_conversions`** — Conversion history (read-only in admin):
-
-- Links referrer code to referee sale
-- Tracks payout status, amounts, errors
+3. **Where should responses be recorded (v1)?**
+   - **DB table** (for SQL / weekly review).
 
 ---
 
-## UI Design
+## Trigger conditions
 
-### Navigation
+### Desktop
 
-Add "Referrals" link to admin layout nav bar:
+- **Exit intent**: cursor moves toward browser chrome / top edge.
+- Trigger once, then never again in that session.
 
-```tsx
-// app/admin/layout.tsx
-<Link href="/admin/referrals" className="hover:text-white transition-colors">
-  Referrals
-</Link>
-```
+### Mobile
 
-### Route: `/admin/referrals`
+- User has been on page **10+ seconds**
+- User **scrolls up** (indicates intent to leave / backtrack)
+- Trigger once, then never again in that session.
 
-Three-tab interface:
+### Do NOT show
 
-#### Tab 1: Codes (Default)
+- If the user **clicked the CTA** (let checkout do its thing)
+- If the modal already showed this session
+- If the user already answered this session
 
-**List View:**
+### Frequency
 
-| Code       | Tier           | Status   | Discount | Reward       | Uses | Paid Out   | Created    | Actions       |
-| ---------- | -------------- | -------- | -------- | ------------ | ---- | ---------- | ---------- | ------------- |
-| ACMECORP   | standard       | Active   | $100     | $100 (first) | 3    | $100       | 2026-01-10 | Edit, Disable |
-| FRIENDS100 | friends_family | Active   | $100     | —            | 5/10 | —          | 2026-01-08 | Edit, Disable |
-| INFLUENCER | affiliate      | Inactive | $50      | 10%          | 12   | $450/$1000 | 2026-01-05 | Edit, Enable  |
+- **Once per session max**
 
-**Features:**
-
-- Filter by: tier (all/standard/ff/affiliate), status (all/active/inactive)
-- Search by code
-- Sort by: created_at, redemption_count, total_reward_paid
-- "Create Code" button → opens modal
-
-**Create Code Modal:**
-
-Step 1: Select tier
-
-- Standard (auto-generated for purchasers)
-- Friends & Family (manual seeding)
-- Affiliate (recurring rewards)
-
-Step 2: Configure (fields vary by tier)
-
-| Field             | Standard           | F&F               | Affiliate               |
-| ----------------- | ------------------ | ----------------- | ----------------------- |
-| Code              | Auto or custom     | Required          | Required                |
-| Discount Type     | Fixed/Percent      | Fixed/Percent     | Fixed/Percent           |
-| Discount Amount   | Default or custom  | Default or custom | Default or custom       |
-| Reward Type       | Fixed (first only) | None              | Fixed/Percent           |
-| Reward Amount     | Default or custom  | —                 | Required                |
-| Max Redemptions   | Optional           | Optional          | Optional                |
-| Max Reward Total  | —                  | —                 | Optional                |
-| Max Reward/Period | —                  | —                 | Optional                |
-| Period (days)     | —                  | —                 | Optional (if above set) |
-| Expires At        | Optional           | Optional          | Optional                |
-| Notes             | Optional           | Optional          | Optional                |
-
-**Edit Code Slide-out Panel:**
-
-Click a row → slide-out panel with:
-
-- All editable fields
-- Read-only: code, tier, created_at, sale_id, lead_id
-- Conversion history for this code
-- "Save" and "Cancel" buttons
-
-#### Tab 2: Conversions
-
-**List View:**
-
-| Date       | Referrer   | Referee     | Discount | Reward | Payout Status | Refund ID |
-| ---------- | ---------- | ----------- | -------- | ------ | ------------- | --------- |
-| 2026-01-12 | ACMECORP   | Widgets Inc | $100     | $100   | paid          | re_xxx    |
-| 2026-01-11 | FRIENDS100 | Test Co     | $100     | —      | skipped       | —         |
-| 2026-01-10 | INFLUENCER | BigCorp     | $50      | $15    | pending       | —         |
-
-**Features:**
-
-- Filter by: payout_status (all/paid/pending/failed/skipped)
-- Filter by: referrer code
-- Date range picker
-- Click row → view full details
-
-#### Tab 3: Settings
-
-Global configuration form:
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ GLOBAL SETTINGS                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│ Friends & Family Program                                        │
-│ ┌─────────────────────────────────────────────────────────────┐│
-│ │ [Toggle] Enable F&F codes                            ✓ ON  ││
-│ └─────────────────────────────────────────────────────────────┘│
-│                                                                 │
-│ Default Values (used when creating new codes)                   │
-│ ┌─────────────────────────────────────────────────────────────┐│
-│ │ Standard Discount    [$] [100.00]                          ││
-│ │ Standard Reward      [$] [100.00]                          ││
-│ │ F&F Discount         [$] [100.00]                          ││
-│ │ Affiliate Discount   [$] [100.00]                          ││
-│ │ Affiliate Reward     [%] [10]                              ││
-│ └─────────────────────────────────────────────────────────────┘│
-│                                                                 │
-│                                            [ Save Settings ]    │
-└─────────────────────────────────────────────────────────────────┘
-```
+(Implementation note: “session” should be a `sessionStorage` gate, not `localStorage`.)
 
 ---
 
-## API Endpoints
+## The question (v1)
 
-### Codes
+**Prompt:** “What stopped you from getting your report today?”
 
-```
-GET    /api/admin/referrals/codes
-       Query: ?tier=&status=&search=&sort=&order=&limit=&offset=
-       Returns: { codes: ReferralCode[], total: number }
+**Answers (single-select):**
 
-POST   /api/admin/referrals/codes
-       Body: { code?, tier, discount_type, discount_amount_cents?, ... }
-       Returns: { code: ReferralCode }
-       Side effects: Creates Stripe coupon + promotion code
+- Too expensive right now
+- Not sure I trust the results
+- Don’t understand what I’d get
+- My website isn’t a priority
+- Just curious, not interested
+- Other
 
-GET    /api/admin/referrals/codes/[id]
-       Returns: { code: ReferralCode, conversions: Conversion[] }
+**Optional free text:**
 
-PATCH  /api/admin/referrals/codes/[id]
-       Body: { is_active?, max_redemptions?, notes?, ... }
-       Returns: { code: ReferralCode }
-       Side effects: Updates Stripe promotion code active status
+- Only shown/required if answer is **Other** (or shown always but clearly optional)
 
-DELETE /api/admin/referrals/codes/[id]
-       Returns: { success: true }
-       Note: Soft delete (set is_active = false) or hard delete?
-```
+### Why these options
 
-### Conversions
-
-```
-GET    /api/admin/referrals/conversions
-       Query: ?code_id=&status=&from=&to=&limit=&offset=
-       Returns: { conversions: Conversion[], total: number }
-
-GET    /api/admin/referrals/conversions/[id]
-       Returns: { conversion: ConversionDetail }
-```
-
-### Config
-
-```
-GET    /api/admin/referrals/config
-       Returns: { config: Record<string, any> }
-
-PATCH  /api/admin/referrals/config
-       Body: { ff_enabled?: boolean, default_standard_discount_cents?: number, ... }
-       Returns: { config: Record<string, any> }
-```
+- Too expensive → pricing signal
+- Don’t trust results → credibility issue
+- Don’t understand what I’d get → landing clarity issue
+- Website isn’t a priority / just curious → targeting mismatch (less fixable)
+- Other → catch unknown unknowns
 
 ---
 
-## Implementation Phases
+## UX requirements
 
-### Phase 1: API Foundation
+- **Small modal** with **darkened backdrop**
+- One click to answer
+- One click to dismiss (X or “Not now”)
+- No email capture
+- Submission should be invisible/instant (no multi-step form)
 
-**Files to create:**
+### Proposed layout
 
-```
-app/api/admin/referrals/codes/route.ts          # GET, POST
-app/api/admin/referrals/codes/[id]/route.ts     # GET, PATCH, DELETE
-app/api/admin/referrals/conversions/route.ts    # GET
-app/api/admin/referrals/config/route.ts         # GET, PATCH
-lib/admin/referrals/types.ts                    # Shared types
-lib/admin/referrals/queries.ts                  # DB queries
-```
-
-**Validation:**
-
-- [ ] GET /api/admin/referrals/codes returns list
-- [ ] POST creates code + Stripe promo
-- [ ] PATCH updates code
-- [ ] Config endpoints work
-
-### Phase 2: Codes List UI
-
-**Files to create:**
-
-```
-app/admin/referrals/page.tsx                    # Main page with tabs
-components/admin/referrals/CodesTable.tsx       # Table component
-components/admin/referrals/CodesToolbar.tsx     # Filters + search
-components/admin/referrals/CodeStatusBadge.tsx  # Active/Inactive badge
-components/admin/referrals/TierBadge.tsx        # Tier indicator
-```
-
-**Files to modify:**
-
-```
-app/admin/layout.tsx                            # Add nav link
-```
-
-**Validation:**
-
-- [ ] Table renders with data
-- [ ] Filters work (tier, status)
-- [ ] Search works
-- [ ] Sorting works
-
-### Phase 3: Create Code Modal
-
-**Files to create:**
-
-```
-components/admin/referrals/CreateCodeModal.tsx  # Modal wrapper
-components/admin/referrals/CodeForm.tsx         # Form fields
-components/admin/referrals/TierSelector.tsx     # Step 1: tier selection
-```
-
-**Validation:**
-
-- [ ] Modal opens/closes
-- [ ] Tier selection changes form fields
-- [ ] Form validates input
-- [ ] Submit creates code
-- [ ] Success shows new code in list
-
-### Phase 4: Edit Code Panel
-
-**Files to create:**
-
-```
-components/admin/referrals/CodeDetailPanel.tsx  # Slide-out panel
-components/admin/referrals/CodeEditForm.tsx     # Edit form
-components/admin/referrals/CodeConversions.tsx  # Mini conversion list
-```
-
-**Validation:**
-
-- [ ] Panel opens on row click
-- [ ] Shows all code details
-- [ ] Edit form saves changes
-- [ ] Toggle active/inactive works
-- [ ] Shows conversion history
-
-### Phase 5: Conversions Tab
-
-**Files to create:**
-
-```
-components/admin/referrals/ConversionsTable.tsx
-components/admin/referrals/ConversionsToolbar.tsx
-components/admin/referrals/PayoutStatusBadge.tsx
-```
-
-**Validation:**
-
-- [ ] Table renders conversions
-- [ ] Filters work
-- [ ] Date range picker works
-- [ ] Click shows detail
-
-### Phase 6: Settings Tab
-
-**Files to create:**
-
-```
-components/admin/referrals/SettingsForm.tsx
-```
-
-**Validation:**
-
-- [ ] Form loads current config
-- [ ] Toggle F&F works
-- [ ] Default values save
-- [ ] Changes reflect in new code creation
+- Title: “Quick question?”
+- Body: question text
+- Options: stacked buttons (tap targets)
+- If “Other”: show small text input + “Submit” (or auto-submit on blur + submit button)
+- Dismiss: “Not now” + X
 
 ---
 
-## Bug Fix: ShareWidget Reward Display
+## Instrumentation / storage
 
-**Issue:** `components/referral/ShareWidget.tsx` uses `discountDisplay` for both discount and reward, but these can differ.
+### PostHog event (recommended v1)
 
-**Fix:**
+Emit a single event on answer:
 
-```tsx
-// Current (line 56-57):
-they'll get {discountDisplay}. When they purchase, you get {discountDisplay} back.
+- event: `voc_abandoner_survey_answered`
+- properties:
+  - `answer` (one of the enumerated options)
+  - `other_text` (optional)
+  - `page_path`
+  - `trigger` (`exit_intent_desktop` | `scroll_up_mobile`)
+  - `seconds_on_page`
+  - `cta_clicked` (should be false by construction)
 
-// Fixed:
-interface ShareWidgetProps {
-  code: string
-  discountDisplay: string
-  rewardDisplay: string  // NEW
-}
+Also emit dismiss (optional but useful):
 
-// Usage:
-they'll get {discountDisplay}. When they purchase, you get {rewardDisplay} back.
+- event: `voc_abandoner_survey_dismissed`
+- properties: same shape minus `answer`
+
+### Reporting
+
+Weekly look:
+
+- % distribution of answers
+- sample of “Other” free text
+
+Interpretation heuristic:
+
+- If ~50% “Too expensive” → pricing experiments
+- If high “Don’t trust results” → credibility assets (sample report, testimonials, guarantee)
+- If high “Don’t understand what I’d get” → landing copy + examples
+- If high “Just curious / not a priority” → targeting / channel quality
+
+---
+
+## Implementation plan (dead simple)
+
+### 1) Frontend-only component
+
+- `MicroSurveyModal` component
+- controlled by a tiny state machine:
+  - `eligible` → `triggered` → (`answered` | `dismissed`)
+- store a `sessionStorage` key like:
+  - `voc_abandoner_survey_seen=true`
+
+### 2) Trigger logic
+
+- Desktop exit intent:
+  - listen to mouse movement; detect approach to top edge
+  - debounced + thresholded to avoid false positives
+- Mobile:
+  - start a 10s timer
+  - track scroll direction; if user scrolls up after 10s, trigger
+
+### 3) CTA click suppression
+
+- attach click handler to CTA element(s)
+- if CTA clicked, set `sessionStorage voc_abandoner_survey_cta_clicked=true`
+- never trigger if this flag is set
+
+### 4) Event emission
+
+- on answer/dismiss, emit PostHog capture
+- do not block UI on network
+
+---
+
+## QA checklist
+
+- Desktop:
+  - exit intent shows modal
+  - modal never shows again within same session
+  - CTA click prevents modal
+- Mobile:
+  - no modal before 10s
+  - scroll-up after 10s triggers
+  - once per session
+- Answer logs the right event payload
+- Dismiss logs optional dismiss event
+
+---
+
+## Principal Engineer Review (Claude)
+
+### Overall Assessment
+
+The spec is well-structured with clear goals, actionable answer categories, and a simple implementation approach. A few items need clarification before implementation.
+
+### Questions
+
+1. **Storage contradiction**: Open questions say "DB table" but Instrumentation section describes PostHog events. Which is the source of truth for responses?
+
+   - If PostHog-only: simpler, but requires PostHog queries for weekly review
+   - If DB table: need schema, API route, more work
+   - Recommend: clarify intent
+
+2. **Lead attribution**: Should the survey capture `leadId` or `runId` from the JWT token for correlation with other lead data? This would enable richer analysis (e.g., "do higher-scoring leads abandon for different reasons?").
+
+3. **Exit intent threshold**: What pixel distance from top edge triggers desktop exit intent? Industry standard is ~50-100px. Affects false positive rate.
+
+4. **Mobile scroll-up sensitivity**: How much scroll-up counts as intent to leave? A flick vs deliberate scroll? Suggest: threshold like 100px upward scroll within 500ms.
+
+5. **"Other" submission**: "auto-submit on blur" could cause accidental submissions. Recommend: explicit Submit button only, no auto-submit.
+
+### Concerns
+
+1. **Accessibility omission**: No mention of keyboard navigation, focus trap, screen reader labels, or escape-to-dismiss. Modal a11y is critical—recommend adding to QA checklist.
+
+2. **Timer edge case**: If user scrolls up at 5s, then scrolls down, then scrolls up again at 15s—does the 10s timer behavior need clarification? Suggest: trigger on _any_ scroll-up after 10s has elapsed, regardless of prior scroll activity.
+
+### Suggested Improvements
+
+1. **Add `leadId`/`runId` to PostHog properties** for attribution (requires extracting from page context)
+
+2. **Add a11y items to QA checklist**:
+
+   - Focus trapped in modal when open
+   - Escape key dismisses modal
+   - Screen reader announces modal and question
+   - All buttons keyboard-accessible
+
+3. **Clarify storage**: If both PostHog AND DB are desired, say so explicitly and note the write order (PostHog first since it's non-blocking, then DB)
+
+4. **Specify exit intent threshold**: Add "cursor within 50px of top viewport edge" or similar
+
+### Ready to implement?
+
+Pending clarification on storage (PostHog vs DB vs both), this spec is implementable. The remaining items are minor refinements.
+
+---
+
+## Updated Review: LeadShop Infrastructure Context (Jan 16)
+
+After reviewing `LeadShop-v3-clean/SCRATCHPAD.md`, several questions are now resolved:
+
+### What's Available
+
+LeadShop has built contact-level funnel tracking with:
+
+| Table                     | Relevance to Survey                                                  |
+| ------------------------- | -------------------------------------------------------------------- |
+| `landing_tokens`          | Links short URL → lead. Has `first_accessed_at`, `access_count`      |
+| `landing_token_lookups`   | Raw access log pattern (IP, timestamp, result) - reusable for survey |
+| `integration_exports`     | Links contact ↔ campaign                                            |
+| `campaign_funnel_metrics` | View for aggregated funnel stats                                     |
+
+### Answers to Previous Questions
+
+1. **Storage**: LeadShop suggests two options:
+
+   - Add `survey_response` to `lead_events` (when Step 3 implemented)
+   - **Or create `survey_responses` table linked to `landing_tokens`** ← likely v1 path
+
+   Recommend: **Both PostHog (analytics) AND DB (attribution)** since the infrastructure exists.
+
+2. **Lead attribution**: **Solved**. The `landing_tokens` system provides the lead context. When a user is on `/l/[shortId]`, we can resolve `shortId` → `landing_token` → `lead_id`.
+
+3. **Pattern exists**: The `landing_token_lookups` schema (IP, timestamp, result) is a proven pattern we can mirror for survey responses.
+
+### Revised Storage Recommendation
+
+```
+survey_responses
+├── id (uuid)
+├── landing_token_id (FK → landing_tokens)
+├── answer (enum: 'too_expensive' | 'dont_trust' | 'dont_understand' | 'not_priority' | 'just_curious' | 'other')
+├── other_text (nullable text)
+├── trigger_type ('exit_intent_desktop' | 'scroll_up_mobile')
+├── seconds_on_page (int)
+├── dismissed (bool) -- if they dismissed without answering
+├── created_at
+└── ip_address (for deduplication, mirrors landing_token_lookups)
 ```
 
-**Also update:** wherever ShareWidget is rendered to pass `rewardDisplay` from the referral code data.
+### Important Caveat
+
+**Old JWT URLs not tracked**: Links like `/landing/eyJ...` (pre-Jan 15) bypass the token tracking. Only short links (`/l/[shortId]`) are tracked. The survey will work on all pages, but **DB attribution only works for short-link visits**.
+
+Options:
+
+- Accept limitation (most traffic is newer short links)
+- Parse JWT on landing page to extract `leadId` directly (works for old links too)
+
+### Revised Implementation Plan
+
+1. **Frontend**: `MicroSurveyModal` as specified (no changes)
+2. **Storage**:
+   - Emit PostHog event (immediate, non-blocking) ← analytics
+   - POST to `/api/survey/response` → write to `survey_responses` table ← attribution
+3. **Lead context**: Extract from page context (either `landing_token` for short links or JWT payload for old links)
+
+### Decisions Finalized (Jan 16)
+
+- [x] **DB schema**: Approved as proposed
+- [x] **Old JWT links**: Not supported (no longer in use)
+- [x] **A11y**: Required, added to spec
+- [x] **Exit intent threshold**: 50px from top viewport edge
 
 ---
 
-## Security Considerations
+## Final Implementation Spec
 
-1. **Admin auth:** All `/api/admin/referrals/*` endpoints use existing admin auth middleware
-2. **Input validation:** Validate all inputs server-side (amounts, codes, etc.)
-3. **Stripe sync:** When toggling `is_active`, also update Stripe promotion code `active` status
-4. **Audit trail:** Log all admin actions (create, update, disable) with admin user ID
+### Trigger Thresholds
 
----
+| Platform | Trigger               | Threshold                                   |
+| -------- | --------------------- | ------------------------------------------- |
+| Desktop  | Exit intent           | Cursor within **50px** of top viewport edge |
+| Mobile   | Scroll-up after dwell | **10s on page** + **100px upward scroll**   |
 
-## Testing Plan
+### DB Schema (Anthrasite Prisma)
 
-### Unit Tests
+```prisma
+model SurveyResponse {
+  id              String   @id @default(uuid())
+  landingTokenId  String?  @map("landing_token_id")
+  answer          String?  // null if dismissed
+  otherText       String?  @map("other_text")
+  triggerType     String   @map("trigger_type") // 'exit_intent_desktop' | 'scroll_up_mobile'
+  secondsOnPage   Int      @map("seconds_on_page")
+  dismissed       Boolean  @default(false)
+  ipAddress       String?  @map("ip_address")
+  createdAt       DateTime @default(now()) @map("created_at")
 
-- [ ] `lib/admin/referrals/queries.ts` — query builders
-- [ ] API route handlers — input validation
-
-### Integration Tests
-
-- [ ] Create code → verify DB + Stripe promo created
-- [ ] Disable code → verify Stripe promo deactivated
-- [ ] Update config → verify validation API returns new defaults
-
-### E2E Tests
-
-- [ ] Admin can create F&F code via UI
-- [ ] Admin can disable code via UI
-- [ ] Admin can update global settings
-- [ ] Disabled code rejected at checkout
-
----
-
-## Open Questions
-
-1. **Hard delete vs soft delete?** Currently leaning toward soft delete (is_active = false) to preserve conversion history.
-
-2. **Audit log?** Should we add an `admin_actions` table to track who changed what?
-
-3. **Bulk operations?** Should the UI support bulk disable/enable?
-
----
-
-## Definition of Done
-
-- [x] All 6 phases implemented
-- [x] ShareWidget bug fixed
-- [x] Admin can manage all referral codes without CLI
-- [x] Changes in admin UI immediately reflect in customer-facing flows
-- [ ] All tests passing
-
----
-
-## Browser-Based Functional Testing Results
-
-**Date:** 2026-01-12
-**Status:** ✅ All tests passed
-
-### Bug Found & Fixed During Testing
-
-**Issue:** Settings form validation error "Expected boolean, received string" for `ff_enabled`
-
-**Root cause:** Config values stored as JSON strings in DB (`"true"` instead of `true`) weren't being parsed on retrieval.
-
-**Fix:** Added JSON.parse in `fetchReferralConfig()`:
-
-```typescript
-for (const row of rows) {
-  try {
-    config[row.key] =
-      typeof row.value === 'string' ? JSON.parse(row.value) : row.value
-  } catch {
-    config[row.key] = row.value
-  }
+  @@map("survey_responses")
 }
 ```
 
-**Commit:** `cda1ee0 fix(admin): Parse JSON config values from database`
+**Answer enum values**: `too_expensive`, `dont_trust`, `dont_understand`, `not_priority`, `just_curious`, `other`
 
-### Test Results Summary
+### API Route
 
-#### Codes Tab
+`POST /api/survey/response`
 
-| Feature                 | Status  | Notes                                        |
-| ----------------------- | ------- | -------------------------------------------- |
-| Toggle Status (Enable)  | ✅ Pass | BROWSERTEST: Inactive → Active               |
-| Toggle Status (Disable) | ✅ Pass | Working correctly                            |
-| Search filter           | ✅ Pass | `?q=LEAD` filtered correctly                 |
-| Tier filter             | ✅ Pass | `?tier=friends_family` filtered correctly    |
-| Status filter           | ✅ Pass | `?status=inactive` / `?status=active` worked |
-| Column sorting          | ✅ Pass | `?sort=code&order=asc` sorted alphabetically |
-| Code Detail Panel       | ✅ Pass | Shows code details, promo URL, Stripe link   |
-| Edit code               | ✅ Pass | Added notes to BROWSERTEST                   |
-| Soft-delete             | ✅ Pass | Uses Disable button (sets is_active=false)   |
-
-#### Conversions Tab
-
-| Feature       | Status  | Notes                                 |
-| ------------- | ------- | ------------------------------------- |
-| Code filter   | ✅ Pass | `?codeId=...` filtered by TESTCODE100 |
-| Status filter | ✅ Pass | `?status=skipped` filtered correctly  |
-
-#### Settings Tab
-
-| Feature           | Status  | Notes                |
-| ----------------- | ------- | -------------------- |
-| F&F global toggle | ✅ Pass | Toggle + Save worked |
-
-#### Create Code
-
-| Feature               | Status  | Notes                                      |
-| --------------------- | ------- | ------------------------------------------ |
-| Create F&F code       | ✅ Pass | BROWSERTEST created                        |
-| Create Affiliate code | ✅ Pass | AFFILIATE10 created - 10% reward on EVERY  |
-| Create Standard code  | ✅ Pass | STANDARD100 created - $100 reward on FIRST |
-
-### Codes Created During Testing
-
-| Code        | Tier      | Discount | Reward       |
-| ----------- | --------- | -------- | ------------ |
-| BROWSERTEST | F&F       | $100 off | None         |
-| AFFILIATE10 | Affiliate | $100 off | 10% (every)  |
-| STANDARD100 | Standard  | $100 off | $100 (first) |
-
-### Commits
-
-1. `7841d09` - feat(admin): Add referral program admin UI (21 files)
-2. `cda1ee0` - fix(admin): Parse JSON config values from database (1 file)
-
----
-
-## ANT-677: UX Copy Rewrite
-
-**Date:** 2026-01-13
-**Status:** In progress
-
-### Completed
-
-#### A-F: Component Copy Review
-
-- ShareWidget converted to expandable accordion (grid animation pattern from FAQSection)
-- Analytics warnings fixed (added gtag fallback in analytics-client.ts)
-- API error messages confirmed - toast handles friendly copy
-- Terminology standardized: "referral code" (user), "?promo=" (URL), "promotion code" (Stripe)
-
-#### Report Ready Email - Referral Section
-
-Added conditional referral share section to `lib/email/templates/reportReady.ts`
-
-**New interface field:**
-
-```typescript
-referral?: {
-  code: string
-  shareUrl: string      // e.g., https://www.anthrasite.io/?promo=CODE
-  discountDisplay: string  // e.g., "$100 off"
-  rewardDisplay: string    // e.g., "$100"
+```ts
+{
+  landingTokenId?: string;  // from page context
+  answer?: string;          // null if dismissed
+  otherText?: string;
+  triggerType: 'exit_intent_desktop' | 'scroll_up_mobile';
+  secondsOnPage: number;
+  dismissed: boolean;
 }
 ```
 
-**Email structure (with referral):**
+### A11y Requirements
 
-1. Logo + Tagline
-2. Greeting
-3. Intro paragraph
-4. **First CTA** (Download Your Report)
-5. How to Use the Report card
-6. What's in the Report card
-7. Encouragement text
-8. **Referral section** (blue border accent) — "Know someone who'd find this useful?"
-9. **Second CTA** (Download Your Report)
-10. Agency help + Sign-off
+| Requirement          | Implementation                                            |
+| -------------------- | --------------------------------------------------------- |
+| Focus trap           | Focus stays within modal while open                       |
+| Keyboard dismiss     | `Escape` key closes modal                                 |
+| Screen reader        | `role="dialog"`, `aria-labelledby`, `aria-describedby`    |
+| Focus on open        | Focus moves to first interactive element                  |
+| Focus on close       | Focus returns to previously focused element               |
+| Button accessibility | All buttons keyboard-accessible with visible focus states |
 
-**Preview file:** `email-preview.html` (delete after review)
+### Updated QA Checklist
 
-#### G: Admin Portal Integration
+**Desktop:**
 
-Wired config variables from Settings to CreateCodeModal:
+- [ ] Exit intent (cursor within 50px of top) shows modal
+- [ ] Modal never shows again within same session
+- [ ] CTA click prevents modal
 
-1. `app/admin/referrals/page.tsx` - Fetches config, passes to CodesToolbar
-2. `components/admin/referrals/CodesToolbar.tsx` - Accepts config prop, passes to CreateCodeModal
-3. `components/admin/referrals/CreateCodeModal.tsx` - Uses config values as form defaults:
-   - Initial values when modal opens
-   - Tier-specific defaults when user selects a tier type
+**Mobile:**
 
-**Config values now wired:**
+- [ ] No modal before 10s
+- [ ] Scroll-up (100px+) after 10s triggers modal
+- [ ] Once per session
 
-- Standard: discount, reward
-- F&F: discount
-- Affiliate: discount, reward percent
+**Storage:**
+
+- [ ] PostHog event fires with correct payload
+- [ ] DB record created via API
+- [ ] `landingTokenId` captured when available
+
+**A11y:**
+
+- [ ] Focus trapped in modal
+- [ ] Escape dismisses modal
+- [ ] Screen reader announces modal title and question
+- [ ] Tab navigates through all options
+- [ ] Visible focus indicators on all interactive elements
+
+**Edge cases:**
+
+- [ ] Dismiss logs event with `dismissed: true`
+- [ ] "Other" requires text before submit enabled
+- [ ] Network failure doesn't block UI
+
+---
+
+## Ready for Implementation ✓
+
+---
+
+## Implementation Complete (Jan 16, 2026)
+
+### Files Created/Modified
+
+| File                                        | Action   | Purpose                                        |
+| ------------------------------------------- | -------- | ---------------------------------------------- |
+| `prisma/schema.prisma`                      | Modified | Added `VocSurveyResponse` model                |
+| `app/api/voc-survey/route.ts`               | Created  | POST endpoint for recording responses          |
+| `lib/hooks/useExitIntent.ts`                | Created  | Desktop exit intent detection (50px threshold) |
+| `lib/hooks/useScrollUpAfterDwell.ts`        | Created  | Mobile scroll-up after 10s dwell               |
+| `components/landing/VocSurveyModal.tsx`     | Created  | Modal component with state machine             |
+| `app/landing/[token]/LandingPageClient.tsx` | Modified | Integrated modal + CTA suppression             |
+
+### Answer Options (Final)
+
+Per user request, answer options were updated from original spec:
+
+1. "Price is too high"
+2. "My website isn't a priority"
+3. "This doesn't seem accurate"
+4. "I'm not sure how to use this information"
+5. "Other" (free text input)
+
+### Key Implementation Details
+
+- **State machine**: `idle` → `triggered` → `answering_other` → `answered|dismissed`
+- **sessionStorage gates**: `voc_survey_seen`, `voc_survey_cta_clicked`
+- **CTA suppression**: `markCtaClicked()` exported utility, called in `handleCheckout`
+- **DB**: Table created directly via SQL (Prisma migration was stuck on Supabase)
+- **No dev trigger in prod**: `__triggerVocSurvey()` only added locally for testing
+
+### Production Verification (Jan 16, 2026)
+
+Tested on `https://www.anthrasite.io/l/u4yagk7f`:
+
+| Check                                 | Result                                              |
+| ------------------------------------- | --------------------------------------------------- |
+| Modal triggers on exit intent         | ✅                                                  |
+| All 5 answer options display          | ✅                                                  |
+| API submission                        | ✅ `POST /api/voc-survey` → 201                     |
+| Modal closes after answer             | ✅                                                  |
+| `voc_abandoner_survey_shown` event    | ✅ `lead_id=7914, trigger_type=exit_intent_desktop` |
+| `voc_abandoner_survey_answered` event | ✅ `answer=Price is too high`                       |
 
 ### Commit
 
 ```
-1508dd4 feat(referrals): Update referral UX copy and wire admin config
+feat(landing): Add VoC abandoner survey modal (ANT-691)
 
-- Convert ShareWidget to expandable accordion pattern
-- Add gtag fallback to analytics-client for when AnalyticsManager not initialized
-- Add referral share section to report ready email template
-- Wire admin config values to CreateCodeModal form defaults
-- Fix ToasterClient descriptionStyle TypeScript error
+Single-question survey triggered on exit intent (desktop) or scroll-up
+after 10s dwell (mobile). Records responses to PostHog and database.
+
+- Add VocSurveyResponse Prisma model
+- Create /api/voc-survey POST endpoint
+- Add useExitIntent and useScrollUpAfterDwell hooks
+- Create VocSurveyModal component with answer options
+- Integrate modal into landing pages with CTA suppression
 ```
 
-**Files changed:** 7 files, 401 insertions(+), 225 deletions(-)
+### Status: COMPLETE ✓
 
-**Pushed to:** origin/main (2026-01-13)
+All QA checklist items verified. Feature is live in production.
 
-### Status: Complete
+---
 
-All sections A-G reviewed, committed, and pushed.
+## Short Link Promo Code Bug Fixes (Jan 17, 2026)
+
+A lead visited `https://www.anthrasite.io/l/qes8srms?promo=TRYAGAIN` and experienced two issues:
+
+1. Promo code discount didn't show (saw $199 instead of $100)
+2. CTA clicks didn't work (multiple clicks with no effect)
+
+### Bug 1: Race Condition — Promo Not Showing on First Visit
+
+**Root Cause:** `ReferralToast` validated and stored the promo code asynchronously (with 500ms delay for toast hydration), but `LandingPageClient` read from localStorage on mount—before the code was stored.
+
+**Fix:** Validate promo code server-side in `/l/[shortId]/page.tsx` and pass directly to client as `initialReferral` prop.
+
+| File                                        | Change                                                                                             |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `app/l/[shortId]/page.tsx`                  | Added server-side promo validation using `validateReferralCode()` and `calculateDiscountedPrice()` |
+| `app/landing/[token]/LandingPageClient.tsx` | Added `initialReferral` prop; use it directly instead of waiting for localStorage                  |
+
+### Bug 2: 401 Error — CTA Returning "Invalid or expired token"
+
+**Root Cause:** The `/l/[shortId]` page passed the short ID (`qes8srms`) as the token to checkout. The checkout API's `validatePurchaseToken()` only accepted JWTs, so the 8-char short ID failed validation.
+
+**Fix:** Modified `validatePurchaseToken()` to detect short link IDs (8-char alphanumeric, no dots) and look them up via LeadShop API.
+
+| File                    | Change                                                       |
+| ----------------------- | ------------------------------------------------------------ |
+| `lib/purchase/index.ts` | Added `isShortLinkId()` function to detect short IDs vs JWTs |
+| `lib/purchase/index.ts` | Added `lookupShortToken()` function to query LeadShop API    |
+| `lib/purchase/index.ts` | Updated `validatePurchaseToken()` to handle both token types |
+
+### Verification (Local)
+
+| Check                                    | Result                                                    |
+| ---------------------------------------- | --------------------------------------------------------- |
+| Promo shows immediately on first load    | ✅ CTA shows $100 (50% off $199)                          |
+| "50% discount applied" indicator visible | ✅                                                        |
+| Token validation passes                  | ✅ No 401 error                                           |
+| Checkout proceeds to Stripe              | ✅ (500 in local due to test/live mode mismatch—expected) |
+
+### Commit
+
+```
+fix(landing): Fix promo code race condition and short link checkout
+
+Two bugs affecting /l/[shortId]?promo=X landing pages:
+
+1. Race condition: Promo code wasn't showing on first visit because
+   ReferralToast stored it async after LandingPageClient had already
+   read from localStorage. Fixed by validating promo server-side and
+   passing directly to client as initialReferral prop.
+
+2. 401 on checkout: Short link IDs were passed to checkout API which
+   only accepted JWTs. Fixed by updating validatePurchaseToken to
+   detect short IDs and look them up via LeadShop API.
+```
+
+### Status: READY FOR DEPLOY

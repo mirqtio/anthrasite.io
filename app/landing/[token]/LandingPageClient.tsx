@@ -33,9 +33,18 @@ interface ReferralDiscount {
   discountedPrice: number
 }
 
+/** Server-validated referral info, passed from page component */
+interface InitialReferral {
+  code: string
+  discountDisplay: string
+  discountedPrice: number
+}
+
 interface LandingPageClientProps {
   context: LandingContext
   token: string
+  /** Pre-validated referral from server - avoids race condition with localStorage */
+  initialReferral?: InitialReferral | null
 }
 
 // Static FAQ content
@@ -97,18 +106,29 @@ function clearPurchaseAttemptId(): void {
   }
 }
 
-export function LandingPageClient({ context, token }: LandingPageClientProps) {
+export function LandingPageClient({
+  context,
+  token,
+  initialReferral,
+}: LandingPageClientProps) {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const [recentPurchase, setRecentPurchase] = useState<RecentPurchase | null>(
     null
   )
   const [showRecentPurchaseModal, setShowRecentPurchaseModal] = useState(false)
+  // Use server-validated referral if provided, otherwise null
   const [referralDiscount, setReferralDiscount] =
-    useState<ReferralDiscount | null>(null)
+    useState<ReferralDiscount | null>(initialReferral || null)
 
-  // Load referral code from localStorage on mount
+  // Load referral code from localStorage on mount (fallback for when no initialReferral)
+  // This handles:
+  // 1. Users who arrive without ?promo= param but have a stored code
+  // 2. Old /landing/[token] pages that don't pass initialReferral
   useEffect(() => {
+    // Skip if we already have a referral from server
+    if (initialReferral) return
+
     const stored = getReferralCode()
     if (stored) {
       // Calculate discounted price based on stored discount
@@ -141,9 +161,10 @@ export function LandingPageClient({ context, token }: LandingPageClientProps) {
         discount_display: stored.discountDisplay,
         original_price: context.price,
         discounted_price: discountedPrice,
+        source: 'localStorage',
       })
     }
-  }, [context.price])
+  }, [context.price, initialReferral])
 
   // Handle removing referral discount
   const handleRemoveReferral = useCallback(() => {

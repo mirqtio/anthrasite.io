@@ -8,7 +8,8 @@
  * 1. Extract shortId from URL
  * 2. Call LeadShop API to get leadId/runId
  * 3. Look up landing context from database
- * 4. Render landing page with context
+ * 4. Validate promo code server-side (if present)
+ * 5. Render landing page with context and referral info
  */
 
 import { Suspense } from 'react'
@@ -19,6 +20,10 @@ import type { LandingContext } from '@/lib/landing/types'
 import { LandingPageClient } from '@/app/landing/[token]/LandingPageClient'
 import { LandingPageSkeleton } from '@/app/landing/[token]/loading'
 import { ReferralToast } from '@/components/referral/ReferralToast'
+import {
+  validateReferralCode,
+  calculateDiscountedPrice,
+} from '@/lib/referral/validation'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,15 +75,30 @@ function TokenError({ message }: { message: string }) {
   )
 }
 
+/** Validated referral info passed to client */
+interface ValidatedReferral {
+  code: string
+  discountDisplay: string
+  discountedPrice: number
+}
+
 async function LandingContent({
   shortId,
   context,
+  validatedReferral,
 }: {
   shortId: string
   context: LandingContext
+  validatedReferral: ValidatedReferral | null
 }) {
-  // Pass shortId as the token - the client doesn't need to know the difference
-  return <LandingPageClient context={context} token={shortId} />
+  // Pass shortId as the token - checkout API now supports both JWT and short IDs
+  return (
+    <LandingPageClient
+      context={context}
+      token={shortId}
+      initialReferral={validatedReferral}
+    />
+  )
 }
 
 export default async function ShortLinkPage(props: ShortLinkPageProps) {
@@ -111,11 +131,34 @@ export default async function ShortLinkPage(props: ShortLinkPageProps) {
     return <TokenError message="Report not found for this link" />
   }
 
+  // Validate promo code server-side to avoid race condition
+  // This ensures the discount shows immediately on first page load
+  let validatedReferral: ValidatedReferral | null = null
+  if (promoParam) {
+    const validation = await validateReferralCode(promoParam)
+    if (validation.valid && validation.code && validation.discountDisplay) {
+      const discountedPriceCents = calculateDiscountedPrice(
+        context.price * 100, // Convert dollars to cents
+        validation.code
+      )
+      validatedReferral = {
+        code: validation.code.code,
+        discountDisplay: validation.discountDisplay,
+        discountedPrice: Math.round(discountedPriceCents / 100), // Convert back to dollars
+      }
+    }
+  }
+
   return (
     <main className="bg-[#232323] text-white" data-testid="landing-root">
+      {/* ReferralToast still runs to store the code in localStorage for future visits */}
       <ReferralToast promoCode={promoParam} silent />
       <Suspense fallback={<LandingPageSkeleton />}>
-        <LandingContent shortId={shortId} context={context} />
+        <LandingContent
+          shortId={shortId}
+          context={context}
+          validatedReferral={validatedReferral}
+        />
       </Suspense>
     </main>
   )
